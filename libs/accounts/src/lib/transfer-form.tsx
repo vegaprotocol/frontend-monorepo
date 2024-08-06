@@ -19,6 +19,7 @@ import {
   Tooltip,
   TradingButton,
   truncateMiddle,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import type { Key, Transfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
@@ -459,8 +460,14 @@ export const TransferForm = ({
           decimals={asset.decimals}
         />
       )}
-      <TradingButton type="submit" fill={true} disabled={isReadOnly}>
-        {t('Confirm transfer')}
+      <TradingButton
+        type="submit"
+        fill={true}
+        disabled={isReadOnly}
+        intent={Intent.Secondary}
+        size="large"
+      >
+        {t('Transfer')}
       </TradingButton>
     </form>
   );

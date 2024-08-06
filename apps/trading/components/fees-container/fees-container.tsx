@@ -36,7 +36,7 @@ export const FeesContainer = () => {
     NetworkParams.market_fee_factors_infrastructureFee,
   ]);
 
-  const { data: markets, loading: marketsLoading } = useDataProvider({
+  const { data: markets } = useDataProvider({
     dataProvider: activeMarketsProvider,
     variables: undefined,
   });
@@ -96,126 +96,122 @@ export const FeesContainer = () => {
   );
 
   return (
-    <div
-      className="grid auto-rows-min grid-cols-4 gap-3"
-      data-testid="fees-container"
-    >
-      {isConnected && (
-        <>
-          <Card
-            title={t('My trading fees')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            <TradingFees
-              params={params}
-              markets={markets}
-              referralDiscount={referralDiscount}
-              volumeDiscount={volumeDiscount}
-            />
-          </Card>
-          <Card
-            title={t('Total discount')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            <TotalDiscount
-              referralDiscount={referralDiscount}
-              volumeDiscount={volumeDiscount}
-              isReferralProgramRunning={isReferralProgramRunning}
-              isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
-            />
-          </Card>
-          <Card
-            title={t('My current volume')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            {isVolumeDiscountProgramRunning ? (
-              <CurrentVolume
-                tiers={volumeTiers}
-                tierIndex={volumeTierIndex}
-                windowLengthVolume={volumeInWindow}
-                windowLength={volumeDiscountWindowLength}
-              />
-            ) : (
-              <p
-                className="text-muted pt-3 text-sm"
-                data-testid="no-volume-discount"
-              >
-                {t('No volume discount program active')}
-              </p>
-            )}
-          </Card>
-          <Card
-            title={t('Referral benefits')}
-            className="sm:col-span-2"
-            loading={loading}
-            data-testid="referral-benefits-card"
-          >
-            {isReferrer ? (
-              <ReferrerInfo code={code} data-testid="referrer-info" />
-            ) : isReferralProgramRunning ? (
-              <ReferralBenefits
-                setRunningNotionalTakerVolume={referralVolumeInWindow}
-                epochsInSet={epochsInSet}
-                epochs={referralDiscountWindowLength}
-                data-testid="referral-benefits"
-              />
-            ) : (
-              <p
-                className="text-muted pt-3 text-sm"
-                data-testid="no-referral-program"
-              >
-                {t('No referral program active')}
-              </p>
-            )}
-          </Card>
-        </>
-      )}
-      <Card
-        title={t('Volume discount')}
-        className="lg:col-span-full xl:col-span-2"
-        loading={loading}
-        data-testid="volume-discount-card"
-        noBackgroundOnMobile={true}
+    <>
+      <section
+        className="grid auto-rows-min grid-cols-4 gap-3 lg:gap-x-4 lg:gap-y-8"
+        data-testid="fees-container"
       >
-        <VolumeTiers
-          tiers={volumeTiers}
-          tierIndex={volumeTierIndex}
-          lastEpochVolume={volumeInWindow}
-          windowLength={volumeDiscountWindowLength}
-        />
-      </Card>
-      <Card
-        title={t('Referral discount')}
-        className="lg:col-span-full xl:col-span-2"
-        loading={loading}
-        data-testid="referral-discount-card"
-        noBackgroundOnMobile={true}
-      >
-        <ReferralTiers
-          tiers={referralTiers}
-          tierIndex={referralTierIndex}
-          epochsInSet={epochsInSet}
-          referralVolumeInWindow={referralVolumeInWindow}
-          referralDiscountWindowLength={referralDiscountWindowLength}
-        />
-      </Card>
-      <Card
-        title={t('Fees by market')}
-        className="lg:col-span-full"
-        loading={marketsLoading}
+        {isConnected && (
+          <>
+            <Card
+              title={t('My trading fees')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TradingFees
+                params={params}
+                markets={markets}
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
+              />
+            </Card>
+            <Card
+              title={t('Total discount')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TotalDiscount
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
+                isReferralProgramRunning={isReferralProgramRunning}
+                isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
+              />
+            </Card>
+            <Card
+              title={t('My current volume')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              {isVolumeDiscountProgramRunning ? (
+                <CurrentVolume
+                  tiers={volumeTiers}
+                  tierIndex={volumeTierIndex}
+                  windowLengthVolume={volumeInWindow}
+                  windowLength={volumeDiscountWindowLength}
+                />
+              ) : (
+                <p
+                  className="text-muted pt-3 text-sm"
+                  data-testid="no-volume-discount"
+                >
+                  {t('No volume discount program active')}
+                </p>
+              )}
+            </Card>
+            <Card
+              title={t('Referral benefits')}
+              className="sm:col-span-2"
+              loading={loading}
+              data-testid="referral-benefits-card"
+            >
+              {isReferrer ? (
+                <ReferrerInfo code={code} data-testid="referrer-info" />
+              ) : isReferralProgramRunning ? (
+                <ReferralBenefits
+                  setRunningNotionalTakerVolume={referralVolumeInWindow}
+                  epochsInSet={epochsInSet}
+                  epochs={referralDiscountWindowLength}
+                  data-testid="referral-benefits"
+                />
+              ) : (
+                <p
+                  className="text-muted pt-3 text-sm"
+                  data-testid="no-referral-program"
+                >
+                  {t('No referral program active')}
+                </p>
+              )}
+            </Card>
+          </>
+        )}
+        <div
+          className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
+          data-testid="volume-discount-card"
+        >
+          <h3>{t('Volume discount')}</h3>
+          <VolumeTiers
+            tiers={volumeTiers}
+            tierIndex={volumeTierIndex}
+            lastEpochVolume={volumeInWindow}
+            windowLength={volumeDiscountWindowLength}
+          />
+        </div>
+        <div
+          className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
+          data-testid="referral-discount-card"
+        >
+          <h3>{t('Referral discount')}</h3>
+          <ReferralTiers
+            tiers={referralTiers}
+            tierIndex={referralTierIndex}
+            epochsInSet={epochsInSet}
+            referralVolumeInWindow={referralVolumeInWindow}
+            referralDiscountWindowLength={referralDiscountWindowLength}
+          />
+        </div>
+      </section>
+      <section
+        className="flex flex-col gap-2"
         data-testid="fees-by-market-card"
-        noBackgroundOnMobile={true}
       >
+        <h3>{t('Fees by market')}</h3>
         <MarketFees
           markets={markets}
           referralDiscount={referralDiscount}
           volumeDiscount={volumeDiscount}
         />
-      </Card>
-    </div>
+      </section>
+    </>
   );
 };
 
@@ -286,7 +282,7 @@ export const TradingFees = ({
         </p>
         <CardTable>
           <tr className="text-default" data-testid="total-fee-before-discount">
-            <CardTableTH>{t('Total fee before discount')}</CardTableTH>
+            <CardTableTH>{t('Taker fee before discount')}</CardTableTH>
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
                 ? `${formatPercentage(minTotal.toNumber())}%-${formatPercentage(

@@ -4,7 +4,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import { TradingButton as Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import { MarginChange } from './margin-change';
-import { NoWalletWarning } from '@vegaprotocol/deal-ticket';
+import { NoWalletWarning } from './no-wallet-warning';
 
 export const CrossDialog = ({
   open,

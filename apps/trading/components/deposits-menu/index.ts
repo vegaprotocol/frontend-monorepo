@@ -1,1 +1,0 @@
-export * from './deposits-menu';

@@ -1,4 +1,5 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { NodeHealthContainer, NodeUrl } from './node-health';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
@@ -47,9 +48,11 @@ describe('NodeHealthContainer', () => {
 
   const renderComponent = (mocks: MockedResponse[] = []) => {
     return render(
-      <MockedProvider mocks={mocks}>
-        <NodeHealthContainer />
-      </MockedProvider>
+      <MemoryRouter>
+        <MockedProvider mocks={mocks}>
+          <NodeHealthContainer />
+        </MockedProvider>
+      </MemoryRouter>
     );
   };
 

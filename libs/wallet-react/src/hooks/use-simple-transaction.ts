@@ -12,7 +12,16 @@ import {
 } from '../__generated__/SimpleTransaction';
 import { useT } from './use-t';
 
-export type Status = 'idle' | 'requested' | 'pending' | 'confirmed';
+export enum TxStatus {
+  Idle = 'Idle',
+  Requested = 'Requested',
+  Pending = 'Pending',
+  Confirmed = 'Confirmed',
+  Rejected = 'Rejected',
+  Failed = 'Failed',
+}
+
+export type Status = keyof typeof TxStatus;
 
 export type Result = {
   txHash: string;
@@ -29,12 +38,12 @@ export const useSimpleTransaction = (opts?: Options) => {
   const t = useT();
   const { pubKey, isReadOnly, sendTx } = useVegaWallet();
 
-  const [status, setStatus] = useState<Status>('idle');
+  const [status, setStatus] = useState<Status>(TxStatus.Idle);
   const [result, setResult] = useState<Result>();
   const [error, setError] = useState<string>();
 
   const reset = () => {
-    setStatus('idle');
+    setStatus(TxStatus.Idle);
     setResult(undefined);
     setError(undefined);
   };
@@ -48,13 +57,13 @@ export const useSimpleTransaction = (opts?: Options) => {
       throw new Error('cant submit in read only mode');
     }
 
-    setStatus('requested');
+    setStatus(TxStatus.Requested);
     setError(undefined);
 
     try {
       const res = await sendTx(pubKey, tx);
 
-      setStatus('pending');
+      setStatus(TxStatus.Pending);
       setResult({
         txHash: res?.transactionHash.toLowerCase(),
         signature: res.signature,
@@ -63,16 +72,16 @@ export const useSimpleTransaction = (opts?: Options) => {
     } catch (err) {
       if (err instanceof ConnectorError) {
         if (err.code === ConnectorErrors.userRejected.code) {
-          setStatus('idle');
+          setStatus(TxStatus.Rejected);
         } else {
           setError(`${err.message}${err.data ? `: ${err.data}` : ''}`);
-          setStatus('idle');
+          setStatus(TxStatus.Rejected);
           opts?.onError?.(err.message);
         }
       } else {
         const msg = t('Something went wrong');
         setError(msg);
-        setStatus('idle');
+        setStatus(TxStatus.Rejected);
         opts?.onError?.(msg);
       }
     }
@@ -104,12 +113,12 @@ export const useSimpleTransaction = (opts?: Options) => {
       const event = e.event as SimpleTransactionFieldsFragment;
 
       if (event.status && !event.error) {
-        setStatus('confirmed');
+        setStatus(TxStatus.Confirmed);
         opts?.onSuccess?.(result);
       } else {
         const msg = event?.error || t('Transaction was not successful');
         setError(msg);
-        setStatus('idle');
+        setStatus(TxStatus.Failed);
         opts?.onError?.(msg);
       }
     },

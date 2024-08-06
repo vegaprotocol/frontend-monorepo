@@ -347,7 +347,7 @@ const WithdrawForm = ({
         fill={true}
         intent={Intent.Secondary}
       >
-        {t('Submit')}
+        {t('Withdraw')}
       </TradingButton>
     </form>
   );

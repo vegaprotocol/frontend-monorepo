@@ -39,7 +39,6 @@ import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { TeamStats } from '../../components/competitions/team-stats';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
-import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { JoinTeam } from './join-team';
 import { UpdateTeamButton } from './update-team-button';
@@ -62,6 +61,7 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { NotFoundSplash } from '../../components/not-found-splash';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
@@ -77,7 +77,6 @@ export const CompetitionsTeam = () => {
 };
 
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
-  const t = useT();
   const { pubKey } = useVegaWallet();
   const { data, team, partyTeam, stats, members, loading, refetch } = useTeam(
     teamId,
@@ -103,11 +102,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   }
 
   if (!team) {
-    return (
-      <Splash>
-        <p>{t('Page not found')}</p>
-      </Splash>
-    );
+    return <NotFoundSplash />;
   }
 
   return (
@@ -174,7 +169,7 @@ const TeamPage = ({
   );
 
   return (
-    <LayoutWithGradient>
+    <>
       <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
         <div className="flex flex-col items-start gap-1 lg:gap-2">
@@ -270,7 +265,7 @@ const TeamPage = ({
         )}
         {tab === Tab.Members && <Members members={members} />}
       </section>
-    </LayoutWithGradient>
+    </>
   );
 };
 

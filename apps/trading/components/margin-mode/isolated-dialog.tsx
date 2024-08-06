@@ -12,7 +12,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect, useState } from 'react';
 import { useMaxLeverage } from '@vegaprotocol/positions';
 import { MarginChange } from './margin-change';
-import { NoWalletWarning } from '@vegaprotocol/deal-ticket';
+import { NoWalletWarning } from './no-wallet-warning';
 
 export const IsolatedDialog = ({
   open,

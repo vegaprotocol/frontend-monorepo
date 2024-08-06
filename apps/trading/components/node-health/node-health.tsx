@@ -6,16 +6,20 @@ import {
 import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
+import { useMatch } from 'react-router-dom';
 
 export const NodeHealthContainer = ({
-  variant = 'normal',
+  variant: _variant,
 }: {
-  variant?: 'compact' | 'normal';
+  variant?: 'normal' | 'compact';
 }) => {
   const t = useT();
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const { text, intent, datanodeBlockHeight } = useNodeHealth();
+
+  const tradePageMatch = useMatch('/markets/:marketId');
+  const variant = _variant || tradePageMatch ? 'normal' : 'compact';
 
   return (
     <Tooltip

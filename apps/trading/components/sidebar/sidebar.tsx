@@ -1,4 +1,3 @@
-import { create } from 'zustand';
 import {
   SidebarAccordion,
   SidebarAccordionContent,
@@ -7,32 +6,22 @@ import {
   SidebarAccordionTrigger,
 } from './sidebar-accordion';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
+
 import { ErrorBoundary } from '../error-boundary';
-import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
-import {
-  SidebarAccountsContainer,
-  SidebarAccountsViewType,
-  useSidebarAccountsInnerView,
-} from '../accounts-container/sidebar-accounts-container';
+import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
+import { TicketContainer } from '../ticket';
 import classNames from 'classnames';
 import { MarginModeToggle } from '../margin-mode';
-
-export enum ViewType {
-  Trade = 'Trade',
-  Info = 'Info',
-  Assets = 'Assets',
-}
+import { useSidebar, ViewType } from '../../lib/hooks/use-sidebar';
 
 export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
   const t = useT();
   const params = useParams();
   const { view, setView } = useSidebar();
-  const setInnerView = useSidebarAccountsInnerView((state) => state.setView);
 
   return (
     <div className="grid grid-rows-[1fr_min-content] h-full">
@@ -56,19 +45,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
             <MarginModeToggle />
           </SidebarAccordionHeader>
           <SidebarAccordionContent>
-            <div className="p-2">
-              <ErrorBoundary feature="deal-ticket">
-                {params.marketId && (
-                  <DealTicketContainer
-                    marketId={params.marketId}
-                    onDeposit={(assetId) => {
-                      setView(ViewType.Assets);
-                      setInnerView([SidebarAccountsViewType.Deposit, assetId]);
-                    }}
-                  />
-                )}
-              </ErrorBoundary>
-            </div>
+            <ErrorBoundary feature="deal-ticket">
+              <TicketContainer />
+            </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Info}>
@@ -118,17 +97,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
-      <div className="mt-1 flex justify-end">
-        <NodeHealthContainer />
+      <div className="mt-1 h-5 flex justify-end">
+        {/* Element to provide space for the node health */}
       </div>
     </div>
   );
 };
-
-export const useSidebar = create<{
-  view: ViewType;
-  setView: (view: ViewType) => void;
-}>()((set) => ({
-  view: ViewType.Trade,
-  setView: (view) => set({ view }),
-}));

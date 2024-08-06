@@ -1,5 +1,5 @@
 import { getLogoPaths } from './market-emblem';
-
+import { LOADING } from '../config';
 describe('getLogoPaths', () => {
   it('should return correct logo paths when baseLogo and quoteLogo are provided', () => {
     const baseLogo = '/logo1.svg';
@@ -19,7 +19,7 @@ describe('getLogoPaths', () => {
     const quoteLogo = undefined;
     const expected = {
       base: 'https://icon.vega.xyz/logo1.svg',
-      quote: 'https://icon.vega.xyz/missing.svg',
+      quote: LOADING,
     };
 
     const result = getLogoPaths(baseLogo, quoteLogo);
@@ -31,7 +31,7 @@ describe('getLogoPaths', () => {
     const baseLogo = undefined;
     const quoteLogo = '/logo2.svg';
     const expected = {
-      base: 'https://icon.vega.xyz/missing.svg',
+      base: LOADING,
       quote: 'https://icon.vega.xyz/logo2.svg',
     };
 
@@ -44,8 +44,8 @@ describe('getLogoPaths', () => {
     const baseLogo = undefined;
     const quoteLogo = undefined;
     const expected = {
-      base: 'https://icon.vega.xyz/missing.svg',
-      quote: 'https://icon.vega.xyz/missing.svg',
+      base: LOADING,
+      quote: LOADING,
     };
 
     const result = getLogoPaths(baseLogo, quoteLogo);

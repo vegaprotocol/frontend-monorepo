@@ -8,10 +8,10 @@ describe('isDepositStatus & getDepositWithdrawalStatusLabel', () => {
     expect(isDepositStatus(WithdrawalStatus['STATUS_OPEN'])).toBe(true);
     expect(
       getDepositWithdrawalStatusLabel(DepositStatus['STATUS_OPEN'])
-    ).toEqual('Open');
+    ).toEqual('Pending');
     expect(
       getDepositWithdrawalStatusLabel(WithdrawalStatus['STATUS_OPEN'])
-    ).toEqual('Open');
+    ).toEqual('Pending');
   });
 
   it('Use deposit status label for finalized, regardless of type (custom label - incomplete)', () => {

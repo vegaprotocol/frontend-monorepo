@@ -446,9 +446,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_METAMASK_SNAPS']
       ) as string
     ),
-    REFERRALS: TRUTHY.includes(
-      windowOrDefault('NX_REFERRALS', process.env['NX_REFERRALS']) as string
-    ),
     DISABLE_CLOSE_POSITION: TRUTHY.includes(
       windowOrDefault(
         'NX_DISABLE_CLOSE_POSITION',
@@ -471,12 +468,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       windowOrDefault(
         'NX_VOLUME_DISCOUNTS',
         process.env['NX_VOLUME_DISCOUNTS']
-      ) as string
-    ),
-    TEAM_COMPETITION: TRUTHY.includes(
-      windowOrDefault(
-        'NX_TEAM_COMPETITION',
-        process.env['NX_TEAM_COMPETITION']
       ) as string
     ),
   };

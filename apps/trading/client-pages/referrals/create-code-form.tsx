@@ -3,13 +3,12 @@ import { RainbowButton } from '../../components/rainbow-button';
 import { useState } from 'react';
 import {
   CopyWithTooltip,
-  Dialog,
   ExternalLink,
-  InputError,
   Intent,
   Tooltip,
   TradingAnchorButton,
   TradingButton,
+  TradingDialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -26,6 +25,7 @@ import {
   useFindReferralSet,
   useIsInReferralSet,
 } from './hooks/use-find-referral-set';
+import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 
 export const CreateCodeContainer = () => {
   const t = useT();
@@ -73,7 +73,31 @@ export const CreateCodeForm = () => {
   const t = useT();
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [txDialogOpen, setTxDialogOpen] = useState(false);
   const { isReadOnly } = useVegaWallet();
+
+  const { pubKey } = useVegaWallet();
+  const { refetch } = useFindReferralSet(pubKey);
+  const {
+    err,
+    code,
+    status,
+    result,
+    reset: resetTx,
+    onSubmit: submit,
+  } = useReferralSetTransaction();
+
+  const onSubmit = () => {
+    setDialogOpen(false);
+    setTxDialogOpen(true);
+    submit({ createReferralSet: { isTeam: false } });
+  };
+
+  const reset = () => {
+    resetTx();
+    refetch();
+    setTxDialogOpen(false);
+  };
 
   return (
     <>
@@ -105,7 +129,7 @@ export const CreateCodeForm = () => {
                 to={Links.COMPETITIONS()}
                 className="underline"
               >
-                Compeitionts Homepage
+                Competitions Homepage
               </Link>,
             ]}
           />
@@ -128,80 +152,81 @@ export const CreateCodeForm = () => {
           {t('Go to competitions')}
         </Link>
       </p>
-      <Dialog
+
+      <TradingDialog
         title={t('Create a referral code')}
         open={dialogOpen}
-        onChange={() => setDialogOpen(false)}
-        size="small"
+        onOpenChange={() => setDialogOpen(false)}
       >
-        <CreateCodeDialog setDialogOpen={setDialogOpen} />
-      </Dialog>
+        <CreateCodeDialog
+          onSubmit={onSubmit}
+          onCancel={() => {
+            setDialogOpen(false);
+          }}
+        />
+      </TradingDialog>
+
+      <TradingDialog
+        open={txDialogOpen}
+        onOpenChange={(open) => {
+          setTxDialogOpen(open);
+        }}
+        title={t('Create a referral code')}
+      >
+        <TransactionSteps
+          status={status}
+          result={result}
+          error={err || undefined}
+          reset={reset}
+          confirmedLabel={
+            code ? (
+              <div className="flex flex-col justify-start items-start gap-0 w-full">
+                <span>{t('Referral code created')}</span>
+
+                <div className="flex gap-1 max-w-full overflow-hidden">
+                  <span className="truncate">{code}</span>
+
+                  <CopyWithTooltip text={code}>
+                    <TradingButton
+                      size="extra-small"
+                      icon={<VegaIcon name={VegaIconNames.COPY} />}
+                    >
+                      <span>{t('Copy')}</span>
+                    </TradingButton>
+                  </CopyWithTooltip>
+                </div>
+              </div>
+            ) : (
+              t('Referral code created')
+            )
+          }
+        />
+      </TradingDialog>
     </>
   );
 };
 
 const CreateCodeDialog = ({
-  setDialogOpen,
+  onSubmit,
+  onCancel,
 }: {
-  setDialogOpen: (open: boolean) => void;
+  onSubmit: () => void;
+  onCancel: () => void;
 }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
   const { pubKey } = useVegaWallet();
   const { refetch } = useFindReferralSet(pubKey);
-  const {
-    err,
-    code,
-    status,
-    stakeAvailable: currentStakeAvailable,
-    requiredStake,
-    onSubmit,
-  } = useReferralSetTransaction();
+  const { stakeAvailable: currentStakeAvailable, requiredStake } =
+    useReferralSetTransaction();
 
   const { details: programDetails } = useReferralProgram();
 
-  const getButtonProps = () => {
-    if (status === 'idle') {
-      return {
-        children: t('Generate code'),
-        onClick: () => onSubmit({ createReferralSet: { isTeam: false } }),
-      };
-    }
-
-    if (status === 'requested') {
-      return {
-        children: t('Confirm in wallet...'),
-        disabled: true,
-      };
-    }
-
-    if (status === 'pending') {
-      return {
-        children: t('Waiting for transaction...'),
-        disabled: true,
-      };
-    }
-
-    if (status === 'confirmed') {
-      return {
-        children: t('Close'),
-        intent: Intent.Success,
-        onClick: () => {
-          refetch();
-          setDialogOpen(false);
-        },
-      };
-    }
-  };
-
   if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <p>{t('You must be connected to the Vega wallet.')}</p>
-        <TradingButton
-          intent={Intent.Primary}
-          onClick={() => setDialogOpen(false)}
-        >
+        <TradingButton intent={Intent.Primary} onClick={onCancel}>
           {t('Close')}
         </TradingButton>
       </div>
@@ -210,7 +235,7 @@ const CreateCodeDialog = ({
 
   if (currentStakeAvailable < requiredStake) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <p>
           {t(
             'You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.',
@@ -233,110 +258,64 @@ const CreateCodeDialog = ({
     );
   }
 
-  if (!programDetails) {
-    return (
-      <div className="flex flex-col gap-4">
-        {(status === 'idle' ||
-          status === 'requested' ||
-          status === 'pending' ||
-          err) && (
-          <>
-            {
-              <p>
-                {t(
-                  'There is currently no referral program active, are you sure you want to create a code?'
-                )}
-              </p>
-            }
-          </>
-        )}
-        {status === 'confirmed' && code && (
-          <div className="flex items-center gap-2">
-            <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
-              <p className="overflow-hidden whitespace-nowrap text-ellipsis">
-                {code}
-              </p>
-            </div>
-            <CopyWithTooltip text={code}>
-              <TradingButton
-                className="text-sm no-underline"
-                icon={<VegaIcon name={VegaIconNames.COPY} />}
-              >
-                <span>{t('Copy')}</span>
-              </TradingButton>
-            </CopyWithTooltip>
-          </div>
-        )}
-        <TradingButton
-          fill={true}
-          intent={Intent.Primary}
-          onClick={() => onSubmit({ createReferralSet: { isTeam: false } })}
-          {...getButtonProps()}
-        >
-          {t('Yes')}
-        </TradingButton>
-        {status === 'idle' && (
-          <TradingButton
-            fill={true}
-            intent={Intent.Primary}
-            onClick={() => {
-              refetch();
-              setDialogOpen(false);
-            }}
-          >
-            {t('No')}
-          </TradingButton>
-        )}
-        {err && <InputError>{err}</InputError>}
-        <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
+  const YES_OR_NO = (
+    <>
+      <TradingButton
+        fill={true}
+        intent={Intent.Primary}
+        onClick={() => {
+          onSubmit();
+        }}
+      >
+        {t('Yes')}
+      </TradingButton>
+
+      <TradingButton
+        fill={true}
+        intent={Intent.Primary}
+        onClick={() => {
+          refetch();
+          onCancel();
+        }}
+      >
+        {t('No')}
+      </TradingButton>
+    </>
+  );
+
+  const GENERATE = (
+    <TradingButton
+      fill={true}
+      intent={Intent.Primary}
+      onClick={() => {
+        onSubmit();
+      }}
+    >
+      {t('Generate code')}
+    </TradingButton>
+  );
+
+  return (
+    <>
+      <div className="flex flex-col gap-6">
+        <p>
+          {!programDetails
+            ? t(
+                'There is currently no referral program active, are you sure you want to create a code?'
+              )
+            : t(
+                'Generate a referral code to share with your friends and access the commission benefits of the current program.'
+              )}
+        </p>
+
+        {!programDetails ? YES_OR_NO : GENERATE}
+
+        <div className="flex justify-center text-sm gap-4 text-default ">
           <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
             {t('About the referral program')}
           </ExternalLink>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      {(status === 'idle' ||
-        status === 'requested' ||
-        status === 'pending' ||
-        err) && (
-        <p>
-          {t(
-            'Generate a referral code to share with your friends and access the commission benefits of the current program.'
-          )}
-        </p>
-      )}
-      {status === 'confirmed' && code && (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
-            <p className="overflow-hidden whitespace-nowrap text-ellipsis">
-              {code}
-            </p>
-          </div>
-          <CopyWithTooltip text={code}>
-            <TradingButton
-              className="text-sm no-underline"
-              icon={<VegaIcon name={VegaIconNames.COPY} />}
-            >
-              <span>{t('Copy')}</span>
-            </TradingButton>
-          </CopyWithTooltip>
-        </div>
-      )}
-      <TradingButton
-        fill={true}
-        intent={Intent.Primary}
-        {...getButtonProps()}
-      />
-      {err && <InputError>{err}</InputError>}
-      <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
-        <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
-          {t('About the referral program')}
-        </ExternalLink>
-      </div>
-    </div>
+    </>
   );
 };

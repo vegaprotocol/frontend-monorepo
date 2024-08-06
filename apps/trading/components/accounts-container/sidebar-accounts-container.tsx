@@ -13,28 +13,12 @@ import {
   Notification,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
-import { create } from 'zustand';
 import { SquidContainer } from '../squid-container';
-
-export enum SidebarAccountsViewType {
-  Deposit = 'Deposit',
-  CrossChainDeposit = 'Cross-chain deposit',
-  Swap = 'Swap',
-  Transfer = 'Transfer',
-  Withdraw = 'Withdraw',
-}
-
-type InnerView = [view: SidebarAccountsViewType, assetId: string];
-
-type SidebarAccountsInnerViewStore = {
-  view: InnerView | undefined;
-  setView: (view: InnerView | undefined) => void;
-};
-export const useSidebarAccountsInnerView =
-  create<SidebarAccountsInnerViewStore>()((set) => ({
-    view: undefined,
-    setView: (view) => set({ view }),
-  }));
+import {
+  type InnerView,
+  useSidebarAccountsInnerView,
+  SidebarAccountsViewType,
+} from '../../lib/hooks/use-sidebar';
 
 export const SidebarAccountsContainer = ({
   pinnedAssets,
@@ -53,7 +37,7 @@ export const SidebarAccountsContainer = ({
     <>
       {innerView && (
         <div className="p-2">
-          <header className="text-lg">
+          <header className="text-base">
             <button
               className="flex gap-1 items-center"
               onClick={() => {
@@ -61,7 +45,7 @@ export const SidebarAccountsContainer = ({
               }}
             >
               <span className="text-muted inline-flex items-center">
-                <VegaIcon name={VegaIconNames.CHEVRON_LEFT} size={20} />
+                <VegaIcon name={VegaIconNames.CHEVRON_LEFT} size={14} />
               </span>
               <span>{t(innerView[0])}</span>
             </button>
@@ -117,7 +101,7 @@ const InnerContainer = ({
           <Notification
             intent={Intent.Info}
             message={t(
-              'Use this form to utilise Squid Router to make cross-chain deposits from any supported chain onto Vega. The amount you receive will be deposited directly to the network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets'
+              'This form only supports deposits in Arbitrum USDT since the majority of markets on Vega settle in this asset. If you wish to deposit a different asset please use the normal deposit flow.'
             )}
           />
           <SquidContainer />

@@ -34,7 +34,6 @@ import {
   type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { GetStarted } from '../../components/welcome-dialog/get-started';
 import { SpotData } from './spot-data';
@@ -281,7 +280,7 @@ export const SwapForm = ({
           !market || marketData?.marketState !== MarketState.STATE_ACTIVE
         }
       >
-        {t('Swap now')}
+        {t('Swap')}
       </TradingButton>
       <GetStarted lead={t('Connect wallet')} />
       {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
@@ -504,4 +503,22 @@ const useSwapMarket = (data: {
   bottomAsset?: AssetFieldsFragment;
 }) => {
   return deriveMarket(data);
+};
+
+const getNotionalSize = (
+  price: string | null | undefined,
+  size: string | undefined,
+  decimalPlaces: number,
+  positionDecimalPlaces: number,
+  decimals: number
+) => {
+  if (price && size) {
+    return removeDecimal(
+      toBigNum(size, positionDecimalPlaces).multipliedBy(
+        toBigNum(price, decimalPlaces)
+      ),
+      decimals
+    );
+  }
+  return undefined;
 };

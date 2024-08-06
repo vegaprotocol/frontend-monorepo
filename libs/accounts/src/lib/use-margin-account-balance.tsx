@@ -3,7 +3,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { accountsDataProvider } from './accounts-data-provider';
 import { AccountType } from '@vegaprotocol/types';
 
-export const useMarginAccountBalance = (marketId: string) => {
+export const useMarginAccountBalance = (marketId?: string) => {
   const { pubKey } = useVegaWallet();
 
   const { data, loading, error } = useDataProvider({

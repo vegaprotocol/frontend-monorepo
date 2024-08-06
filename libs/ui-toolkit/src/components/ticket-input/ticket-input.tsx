@@ -10,17 +10,19 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
   ({ label, appendElement, ...props }: Props, ref) => {
     return (
       <div
-        className="relative flex items-center gap-1 pr-2 h-full w-hidde focus-within:outline outline-2 outline-vega-blue-550 rounded bg-vega-clight-700 dark:bg-vega-cdark-700"
+        className="relative flex items-center gap-1 pr-2 h-full w-full focus-within:outline outline-2 outline-vega-blue-550 rounded bg-vega-clight-700 dark:bg-vega-cdark-700"
         data-testid="ticket-input"
       >
         <input
           ref={ref}
+          type="number"
+          onWheel={(e) => e.currentTarget.blur()} // prevent mousewheel changing the number
           {...props}
           // Always need a placeholder value present so that the placeholder-shown: class works
           placeholder={props.placeholder || 'hidden'}
           value={props.value}
           onChange={props.onChange}
-          className="peer flex-1 appearance-none dark:color-scheme-dark outline-none bg-transparent pt-5 pb-1 px-2 placeholder-transparent"
+          className="peer flex-1 w-full appearance-none dark:color-scheme-dark outline-none bg-transparent pt-5 pb-1 px-2 placeholder-transparent"
         />
         {appendElement && appendElement}
         <label

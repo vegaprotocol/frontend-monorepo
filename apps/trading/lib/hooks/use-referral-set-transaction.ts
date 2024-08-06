@@ -11,7 +11,7 @@ import { useStakeAvailable } from './use-stake-available';
 export const useReferralSetTransaction = (opts?: Options) => {
   const { stakeAvailable, requiredStake, isEligible } = useStakeAvailable();
 
-  const { status, result, error, send } = useSimpleTransaction({
+  const { status, result, error, send, reset } = useSimpleTransaction({
     onSuccess: opts?.onSuccess,
     onError: opts?.onError,
   });
@@ -24,6 +24,8 @@ export const useReferralSetTransaction = (opts?: Options) => {
     err: error ? error : null,
     code: result ? result.id : null,
     status,
+    result,
+    reset,
     stakeAvailable,
     requiredStake,
     onSubmit,

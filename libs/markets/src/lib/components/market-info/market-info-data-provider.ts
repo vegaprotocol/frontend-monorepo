@@ -1,6 +1,7 @@
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import {
   MarketInfoDocument,
@@ -12,6 +13,7 @@ import {
   type MarketData,
 } from '../../market-data-provider';
 import type { Candle } from '../../market-candles-provider';
+import { useMemo } from 'react';
 
 export type MarketInfo = NonNullable<MarketInfoQuery['market']>;
 export type MarketInfoWithData = MarketInfo & { data?: MarketData };
@@ -50,3 +52,12 @@ export const marketInfoWithDataProvider = makeDerivedDataProvider<
     }
   );
 });
+
+export const useMarketInfo = (marketId?: string) => {
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  return useDataProvider({
+    dataProvider: marketInfoProvider,
+    variables,
+    skip: !marketId,
+  });
+};

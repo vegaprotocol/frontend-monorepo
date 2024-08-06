@@ -33,6 +33,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { AssetStatus } from '@vegaprotocol/types';
 import { getVegaAssetLogoUrl } from '@vegaprotocol/emblem';
+import { isAssetUSDTArb } from '../utils/is-asset-usdt-arb';
 
 /**
  * A flag determining whether the final deposit via SquidRouter should be done
@@ -242,8 +243,10 @@ export const useEnrichedSquidFriendlyAssets = () => {
     })
   );
 
+  const allowedAssets = enriched.filter((e) => isAssetUSDTArb(e));
+
   return {
-    assets: enriched,
+    assets: allowedAssets,
     loading: ethLoading || evmLoading || enablesAssetsLoading,
     error: ethError || evmError || enabledAssetsError,
   };

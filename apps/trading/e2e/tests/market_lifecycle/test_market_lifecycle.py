@@ -193,7 +193,8 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
         forward_time_to_enactment=False,
         price=107,
     )
-    may_close_warning_pattern = r"Trading on market BTC:DAI_2023 may close on \d+ \w+\.\s*There is an open proposal to close this market.\s*Proposed final price is 107\.00 BTC\.\s*View proposal"
+
+    may_close_warning_pattern = r"Trading on market BTC:DAI_2023 may close on \d{2} [A-Za-z]+ \d{2}\:\d{2}\. There is an open proposal to close this market.\s*Proposed final price is 107\.00 BTC\.\s*View proposal"
     banner_locator = page.get_by_test_id(f"update-state-banner-{market_id}")
     banner_text = banner_locator.inner_text()
     match_result = re.fullmatch(may_close_warning_pattern, banner_text)
@@ -205,7 +206,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     )
     vega.wait_fn(60)
     vega.wait_for_total_catchup()
-    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL CLOSE ON \d+ \w+\s+You will no longer be able to hold a position on this market when it terminates in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
+    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL CLOSE ON \d{2} [A-Za-z]+ \d{2}\:\d{2}\s*You will no longer be able to hold a position on this market when it terminates in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
     banner_locator = page.get_by_test_id(f"update-state-banner-{market_id}")
     actual_text = banner_locator.inner_text()
     match_result = re.fullmatch(will_close_pattern, actual_text)

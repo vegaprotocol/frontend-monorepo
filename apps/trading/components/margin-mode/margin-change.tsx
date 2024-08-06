@@ -2,13 +2,12 @@ import {
   useAccountBalance,
   useMarginAccountBalance,
 } from '@vegaprotocol/accounts';
-import {
-  DealTicketMarginDetails,
-  usePositionEstimate,
-} from '@vegaprotocol/deal-ticket';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
 import { useActiveOrders } from '@vegaprotocol/orders';
-import { useOpenVolume } from '@vegaprotocol/positions';
+import {
+  useEstimatePositionQuery,
+  useOpenVolume,
+} from '@vegaprotocol/positions';
 import {
   type OrderInfo,
   MarginMode,
@@ -19,6 +18,7 @@ import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { MarginDetails } from './margin-details';
 
 export const MarginChange = ({
   partyId,
@@ -62,8 +62,9 @@ export const MarginChange = ({
     (!orders?.length && openVolume === '0') ||
     marginAccountBalanceLoading ||
     generalAccountBalanceLoading;
-  const estimateMargin = usePositionEstimate(
-    {
+
+  const { data } = useEstimatePositionQuery({
+    variables: {
       generalAccountBalance: generalAccountBalance || '0',
       marginAccountBalance: marginAccountBalance || '0',
       marginFactor,
@@ -75,13 +76,15 @@ export const MarginChange = ({
       includeRequiredPositionMarginInAvailableCollateral: true,
       orders,
     },
-    skip
-  );
-  if (!asset || !estimateMargin?.estimatePosition) {
+    skip,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  if (!asset || !data?.estimatePosition) {
     return null;
   }
   const collateralIncreaseEstimate = BigInt(
-    estimateMargin.estimatePosition.collateralIncreaseEstimate.bestCase
+    data.estimatePosition.collateralIncreaseEstimate.bestCase
   );
 
   return (
@@ -93,13 +96,13 @@ export const MarginChange = ({
         openVolume={openVolume}
         asset={asset}
       />
-      <DealTicketMarginDetails
+      <MarginDetails
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         orderMarginAccountBalance={orderMarginAccountBalance}
         asset={asset}
         market={market}
-        positionEstimate={estimateMargin.estimatePosition}
+        positionEstimate={data.estimatePosition}
         side={openVolume.startsWith('-') ? Side.SIDE_SELL : Side.SIDE_BUY}
       />
     </div>

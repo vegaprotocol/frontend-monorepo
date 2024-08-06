@@ -3,20 +3,14 @@ import userEvent from '@testing-library/user-event';
 import { Sidebar } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-jest.mock('@vegaprotocol/deal-ticket', () => ({
-  DealTicketContainer: ({ marketId }: { marketId: string }) => (
-    <div data-testid="deal-ticket">{marketId}</div>
-  ),
+jest.mock('../ticket', () => ({
+  TicketContainer: () => <div data-testid="deal-ticket" />,
 }));
 
 jest.mock('@vegaprotocol/markets', () => ({
   MarketInfoAccordionContainer: ({ marketId }: { marketId: string }) => (
     <div data-testid="market-info">{marketId}</div>
   ),
-}));
-
-jest.mock('../node-health', () => ({
-  NodeHealthContainer: () => <div>NodeHealthContainer</div>,
 }));
 
 jest.mock('../asset-card', () => ({
@@ -27,8 +21,6 @@ jest.mock('../asset-card', () => ({
 
 jest.mock('../accounts-container/sidebar-accounts-container.tsx', () => ({
   SidebarAccountsContainer: () => <div data-testid="accounts-list"></div>,
-  SidebarAccountsViewType: '',
-  useSidebarAccountsInnerView: () => () => ({}),
 }));
 
 jest.mock('../margin-mode', () => ({
@@ -56,8 +48,7 @@ describe('Sidebar', () => {
 
   it('switches between accordion sections', async () => {
     const { user } = renderComponent();
-    expect(screen.getByTestId('deal-ticket')).toHaveTextContent(marketId);
-    expect(screen.getByText('NodeHealthContainer')).toBeInTheDocument();
+    expect(screen.getByTestId('deal-ticket')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Market info' }));
 

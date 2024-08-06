@@ -10,7 +10,7 @@ import {
   type ConnectorType,
   isMetaMaskInstalled,
 } from '@vegaprotocol/wallet';
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { DialogTitle, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../hooks/use-t';
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
@@ -41,7 +41,7 @@ export const ConnectionOptions = ({
 
   return (
     <div className="flex flex-col items-start gap-4">
-      <h2 className="text-xl">{t('Connect to Vega')}</h2>
+      <DialogTitle>{t('Connect to Vega')}</DialogTitle>
       {isInstalling ? (
         <p className="text-warning">
           <Trans

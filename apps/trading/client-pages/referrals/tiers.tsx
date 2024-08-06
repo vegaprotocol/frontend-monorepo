@@ -143,14 +143,11 @@ export const TiersContainer = () => {
 
   return (
     <>
-      <h2
-        className="text-3xl mt-10 font-alpha calt"
-        id="current-program-details"
-      >
+      <h2 className="text-3xl font-alpha calt" id="current-program-details">
         {t('Current program details')}
       </h2>
       {details?.id && (
-        <p>
+        <p className="mb-10">
           <Trans
             defaults="As a result of governance proposal <0>{{proposal}}</0> the program below is currently active on the Vega network."
             values={{ proposal: truncateMiddle(details.id) }}
@@ -168,7 +165,7 @@ export const TiersContainer = () => {
       )}
 
       {/* Meta */}
-      <div className="mt-10 flex flex-row items-baseline justify-between text-xs text-vega-clight-100 dark:text-vega-cdark-100 font-alpha calt">
+      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-vega-clight-100 dark:text-vega-cdark-100 font-alpha calt">
         {details?.id && (
           <span>
             {t('Proposal ID:')}{' '}
@@ -194,9 +191,7 @@ export const TiersContainer = () => {
           'md:text-black',
           'md:dark:text-white',
           'md:rounded-lg',
-          'md:p-6',
-          'mt-1',
-          'mb-20'
+          'md:p-6'
         )}
       >
         {/* Benefit tiers */}

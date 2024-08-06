@@ -31,9 +31,9 @@ export const MarketSelectorItem = ({
         className={classNames(
           'h-full grid grid-cols-6 sm:grid-cols-12 items-center gap-2 mx-2 px-2',
           {
-            'hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700':
+            'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
               market.id !== currentMarketId,
-            'bg-vega-clight-600 dark:bg-vega-cdark-600':
+            'bg-vega-clight-500 dark:bg-vega-cdark-500':
               market.id === currentMarketId,
           }
         )}

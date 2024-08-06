@@ -1,13 +1,12 @@
 import {
   type RouteObject,
   Navigate,
-  Outlet,
   useRoutes,
+  Outlet,
 } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { compact } from 'lodash';
 
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 
 import { Home } from '../client-pages/home';
@@ -19,12 +18,11 @@ import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
-import { Rewards } from '../client-pages/rewards';
+import { Rewards, RewardsDetail } from '../client-pages/rewards';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
-import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
@@ -33,97 +31,75 @@ import { CompetitionsUpdateTeam } from '../client-pages/competitions/competition
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
 import { Swap } from '../client-pages/swap/swap';
 import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
+import { NotFound } from '../client-pages/not-found';
 
-import { LayoutCentered, LayoutWithNodeHealth } from '../components/layouts';
-import { LayoutWithSky } from '../components/layouts-inner';
+import { LayoutCentered } from '../components/layouts';
+import { LayoutFull } from '../components/layouts/layout-full';
 
 import { Routes as AppRoutes } from '../lib/links';
-import { useT } from '../lib/use-t';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
-const NotFound = () => {
-  const t = useT();
-  return (
-    <Splash>
-      <p>{t('Page not found')}</p>
-    </Splash>
-  );
-};
-
 export const useRouterConfig = (): RouteObject[] => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
-
   const routeConfig = compact([
     {
       index: true,
       element: <Home />,
-      id: AppRoutes.HOME,
     },
     {
-      path: 'disclaimer',
+      path: AppRoutes.DISCLAIMER,
       element: <LayoutCentered />,
-      id: AppRoutes.DISCLAIMER,
       children: [{ index: true, element: <Disclaimer /> }],
     },
-    // Referrals routing (the pages should be available if the feature flag is on)
-    featureFlags.REFERRALS
-      ? {
-          path: AppRoutes.REFERRALS,
-          element: <LayoutWithNodeHealth />,
+    {
+      path: AppRoutes.REFERRALS,
+      element: <LayoutCentered variant="sky" />,
+      children: [
+        {
+          element: <Referrals />,
           children: [
             {
-              element: (
-                <LayoutWithSky>
-                  <Referrals />
-                </LayoutWithSky>
-              ),
-              children: [
-                {
-                  index: true,
-                  element: <ReferralStatistics />,
-                },
-                {
-                  path: AppRoutes.REFERRALS_CREATE_CODE,
-                  element: <CreateCodeContainer />,
-                },
-                {
-                  path: AppRoutes.REFERRALS_APPLY_CODE,
-                  element: <ApplyCodeFormContainer />,
-                },
-              ],
+              index: true,
+              element: <ReferralStatistics />,
             },
             {
-              path: '*',
-              element: <ReferralNotFound />,
+              path: AppRoutes.REFERRALS_CREATE_CODE,
+              element: <CreateCodeContainer />,
+            },
+            {
+              path: AppRoutes.REFERRALS_APPLY_CODE,
+              element: <ApplyCodeFormContainer />,
             },
           ],
-        }
-      : undefined,
-    featureFlags.TEAM_COMPETITION
-      ? {
-          path: AppRoutes.COMPETITIONS,
-          element: <LayoutWithNodeHealth />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.COMPETITIONS,
+      element: <Outlet />,
+      children: [
+        {
+          element: <LayoutCentered variant="sky" />,
           children: [
-            // pages with planets and stars
+            // with planet/stars
+            { index: true, element: <CompetitionsHome /> },
             {
-              element: <LayoutWithSky />,
-              children: [
-                { index: true, element: <CompetitionsHome /> },
-                {
-                  path: AppRoutes.COMPETITIONS_TEAMS,
-                  element: <CompetitionsTeams />,
-                },
-                {
-                  path: AppRoutes.COMPETITIONS_GAME,
-                  element: <CompetitionsGame />,
-                },
-              ],
+              path: AppRoutes.COMPETITIONS_TEAMS,
+              element: <CompetitionsTeams />,
             },
-            // pages with blurred background
+            {
+              path: AppRoutes.COMPETITIONS_GAME,
+              element: <CompetitionsGame />,
+            },
+          ],
+        },
+        // pages with blurred background
+        {
+          element: <LayoutCentered variant="gradient" />,
+          children: [
             {
               path: AppRoutes.COMPETITIONS_CREATE_TEAM,
               element: <CompetitionsCreateTeam />,
@@ -137,11 +113,12 @@ export const useRouterConfig = (): RouteObject[] => {
               element: <CompetitionsTeam />,
             },
           ],
-        }
-      : undefined,
+        },
+      ],
+    },
     {
-      path: 'fees/*',
-      element: <LayoutWithNodeHealth />,
+      path: AppRoutes.FEES,
+      element: <LayoutCentered />,
       children: [
         {
           index: true,
@@ -150,8 +127,8 @@ export const useRouterConfig = (): RouteObject[] => {
       ],
     },
     {
-      path: 'rewards/*',
-      element: <LayoutWithNodeHealth />,
+      path: AppRoutes.REWARDS,
+      element: <LayoutCentered />,
       children: [
         {
           index: true,
@@ -160,59 +137,61 @@ export const useRouterConfig = (): RouteObject[] => {
       ],
     },
     {
-      path: 'markets/*',
-      element: <Outlet />,
+      path: AppRoutes.REWARDS_DETAIL,
+      element: <LayoutCentered variant="gradient" />,
       children: [
         {
-          element: <LayoutWithNodeHealth />,
-          children: [
-            { id: AppRoutes.MARKETS, index: true, element: <MarketsPage /> },
-          ],
+          index: true,
+          element: <RewardsDetail />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.MARKETS,
+      element: <LayoutFull />,
+      children: [
+        {
+          element: <LayoutCentered />,
+          children: [{ index: true, element: <MarketsPage /> }],
         },
         {
           path: 'all',
-          element: <Navigate to="/markets" />,
+          element: <Navigate to={AppRoutes.MARKETS} />,
         },
         {
           path: ':marketId',
           element: <MarketPage />,
-          id: AppRoutes.MARKET,
         },
       ],
     },
     {
-      path: 'portfolio/*',
-      element: <LayoutWithNodeHealth />,
+      path: AppRoutes.PORTFOLIO,
+      element: <LayoutFull />,
       children: [
         {
           index: true,
           element: <Portfolio />,
-          id: AppRoutes.PORTFOLIO,
         },
         {
           path: 'assets',
           element: <Assets />,
-          id: AppRoutes.ASSETS,
           children: [
             { index: true, element: <Navigate to="deposit" /> },
-            { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
-            { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
-            { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+            { path: 'deposit', element: <Deposit /> },
+            { path: 'withdraw', element: <Withdraw /> },
+            { path: 'transfer', element: <Transfer /> },
             {
               path: 'deposit-cross-chain',
               element: <DepositCrossChain />,
-              id: AppRoutes.DEPOSIT_CROSS_CHAIN,
             },
-            { path: 'swap', element: <Swap />, id: AppRoutes.SWAP },
+            { path: 'swap', element: <Swap /> },
           ],
         },
       ],
     },
-
     {
-      path: 'liquidity/*',
-      element: <Outlet />,
-      id: AppRoutes.LIQUIDITY,
+      path: 'liquidity',
+      element: <LayoutFull />,
       children: [
         {
           path: ':marketId',
@@ -220,7 +199,6 @@ export const useRouterConfig = (): RouteObject[] => {
         },
       ],
     },
-
     {
       path: '*',
       element: <NotFound />,

@@ -1,4 +1,5 @@
 import pytest
+import re
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from typing import List
@@ -191,7 +192,10 @@ def test_orderbook_resolution_change(setup_environment: Tuple[Page, VegaServiceN
 def test_orderbook_price_size_copy(setup_environment: Tuple[Page, VegaServiceNull, str],
     ) -> None:
     page, vega, market_id = setup_environment
+
+    page.goto(f"/#/markets/{market_id}")
     # 6003-ORDB-009
+    page.pause()
     page.get_by_test_id("resolution").click()
     page.get_by_role("menuitem").get_by_text("0.00001", exact=True).click()
     prices = page.get_by_test_id("tab-orderbook").locator('[data-testid^="price-"]')
@@ -200,13 +204,18 @@ def test_orderbook_price_size_copy(setup_environment: Tuple[Page, VegaServiceNul
     page.goto(f"/#/markets/{market_id}")
     prices.first.wait_for(state="visible")
 
+    # To trim trailing zeroes
+    pattern = r"\.0*$|(\..*[^0])0+$"
+
     for price in prices.all():
         price.click()
-        expect(page.get_by_test_id("order-price")).to_have_value(price.text_content())
+        expected_value = re.sub(pattern, r"\1", price.text_content())
+        expect(page.get_by_test_id("order-price")).to_have_value(expected_value)
 
     for volume in volumes.all():
         volume.click()
-        expect(page.get_by_test_id("order-size")).to_have_value(volume.text_content())
+        expected_value = re.sub(pattern, r"\1", volume.text_content())
+        expect(page.get_by_test_id("order-size")).to_have_value(expected_value)
 
 
 

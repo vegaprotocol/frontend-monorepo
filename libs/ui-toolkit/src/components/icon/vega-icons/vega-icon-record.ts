@@ -9,12 +9,14 @@ import { IconChevronDown } from './svg-icons/icon-chevron-down';
 import { IconChevronLeft } from './svg-icons/icon-chevron-left';
 import { IconChevronRight } from './svg-icons/icon-chevron-right';
 import { IconChevronUp } from './svg-icons/icon-chevron-up';
+import { IconClock } from './svg-icons/icon-clock';
 import { IconCog } from './svg-icons/icon-cog';
 import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
 import { IconDeposit } from './svg-icons/icon-deposit';
 import { IconEdit } from './svg-icons/icon-edit';
 import { IconExclamationMark } from './svg-icons/icon-exclamation-mark';
+import { IconExclamationSign } from './svg-icons/icon-exclamation-sign';
 import { IconEye } from './svg-icons/icon-eye';
 import { IconEyeOff } from './svg-icons/icon-eye-off';
 import { IconForum } from './svg-icons/icon-forum';
@@ -22,7 +24,9 @@ import { IconGlobe } from './svg-icons/icon-globe';
 import { IconInfo } from './svg-icons/icon-info';
 import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconLoading } from './svg-icons/icon-loading';
 import { IconLock } from './svg-icons/icon-lock';
+import { IconMedal } from './svg-icons/icon-medal';
 import { IconMetaMask } from './svg-icons/icon-metamask';
 import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
@@ -30,6 +34,7 @@ import { IconOpenExternal } from './svg-icons/icon-open-external';
 import { IconPlus } from './svg-icons/icon-plus';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconSearch } from './svg-icons/icon-search';
+import { IconSlimTick } from './svg-icons/icon-slim-tick';
 import { IconStar } from './svg-icons/icon-star';
 import { IconSun } from './svg-icons/icon-sun';
 import { IconSwap } from './svg-icons/icon-swap';
@@ -64,12 +69,14 @@ export enum VegaIconNames {
   CHEVRON_LEFT = 'chevron-left',
   CHEVRON_RIGHT = 'chevron-right',
   CHEVRON_UP = 'chevron-up',
+  CLOCK = 'clock',
   COG = 'cog',
   COPY = 'copy',
   CROSS = 'cross',
   DEPOSIT = 'deposit',
   EDIT = 'edit',
   EXCLAMATION_MARK = 'exclamation-mark',
+  EXCLAMATION_SIGN = 'exclamation-sign',
   EYE = 'eye',
   EYE_OFF = 'eye-off',
   FORUM = 'forum',
@@ -77,8 +84,10 @@ export enum VegaIconNames {
   INFO = 'info',
   KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
+  LOADING = 'loading',
   LOCK = 'lock',
   LONG = 'long',
+  MEDAL = 'medal',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -87,6 +96,7 @@ export enum VegaIconNames {
   QUESTION_MARK = 'question-mark',
   SEARCH = 'search',
   SHORT = 'short',
+  SLIM_TICK = 'slim-tick',
   STAR = 'star',
   STREAK = 'streak',
   SUN = 'sun',
@@ -123,12 +133,14 @@ export const VegaIconNameMap: Record<
   'chevron-up': IconChevronUp,
   'eye-off': IconEyeOff,
   'exclamation-mark': IconExclamationMark,
+  'exclamation-sign': IconExclamationSign,
   'open-external': IconOpenExternal,
   'question-mark': IconQuestionMark,
   'trend-down': IconTrendDown,
   'trend-up': IconTrendUp,
   breakdown: IconBreakdown,
   bullet: IconBullet,
+  clock: IconClock,
   cog: IconCog,
   copy: IconCopy,
   cross: IconCross,
@@ -140,13 +152,16 @@ export const VegaIconNameMap: Record<
   info: IconInfo,
   kebab: IconKebab,
   linkedin: IconLinkedIn,
+  loading: IconLoading,
   lock: IconLock,
   long: IconLong,
+  medal: IconMedal,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,
   plus: IconPlus,
   search: IconSearch,
+  'slim-tick': IconSlimTick,
   star: IconStar,
   sun: IconSun,
   swap: IconSwap,

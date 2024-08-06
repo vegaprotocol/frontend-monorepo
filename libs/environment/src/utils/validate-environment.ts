@@ -76,12 +76,10 @@ const COSMIC_ELEVATOR_FLAGS = {
   ICEBERG_ORDERS: z.optional(z.boolean()),
   PRODUCT_PERPETUALS: z.optional(z.boolean()),
   METAMASK_SNAPS: z.optional(z.boolean()),
-  REFERRALS: z.optional(z.boolean()),
   UPDATE_MARKET_STATE: z.optional(z.boolean()),
   GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
   VOLUME_DISCOUNTS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
-  TEAM_COMPETITION: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {

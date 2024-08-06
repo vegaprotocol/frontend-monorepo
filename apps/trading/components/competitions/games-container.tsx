@@ -1,13 +1,12 @@
 import { useT } from '../../lib/use-t';
-import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
+import {
+  areAllMarketsSettled,
+  type EnrichedRewardTransfer,
+} from '../../lib/hooks/use-rewards';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
-import {
-  ActiveRewardCard,
-  LinkToGame,
-  areAllMarketsSettled,
-} from '../rewards-container/reward-card';
+import { ActiveRewardCard, LinkToGame } from '../rewards-container/reward-card';
 import {
   VegaIcon,
   VegaIconNames,
