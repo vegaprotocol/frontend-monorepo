@@ -59,7 +59,7 @@ def test_fees_page_discount_program_my_trading_fees(
     page.goto("/#/fees")
     expect(page.get_by_test_id(ADJUSTED_FEES)).to_have_text("9.045%-9.045%")
     expect(page.get_by_test_id(TOTAL_FEE_BEFORE_DISCOUNT)).to_have_text(
-        "Total fee before discount10.05%-10.05%"
+        "Taker fee before discount10.05%-10.05%"
     )
     expect(page.get_by_test_id(INFRASTRUCTURE_FEES)).to_have_text("Infrastructure0.05%")
     expect(page.get_by_test_id(MAKER_FEES)).to_have_text("Maker10%")
