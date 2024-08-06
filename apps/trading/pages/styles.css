@@ -96,6 +96,9 @@ html.dark {
 
 /**
  * PENNANT
+ *
+ * NOTE: that pennant requires hex values for colors, as it will internally convert
+ * these to rgb, not using hex results in colors not being set as expected
  */
 
 html [data-theme='dark'],
@@ -123,14 +126,12 @@ html [data-theme='light'] {
 }
 
 html [data-theme='light'] {
-  --separator-border: theme(colors.gs.400);
-  --pennant-background-surface-color: theme(colors.gs.800);
+  --separator-border: #aaabae;
+  --pennant-background-surface-color: #f4f4f4;
   --pennant-hover-overlay: rgba(
-    244,
-    244,
-    244,
-    0.5
+    244 244 244 / 0.5
   ); /* theme(colors.gs.800) in rgba with opacity */
+  --pennant-background-label-color: #e9e9ea;
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
@@ -147,19 +148,15 @@ html [data-theme='light'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-
-  --pennant-background-label-color: theme(colors.gs.600);
 }
 
 html [data-theme='dark'] {
-  --separator-border: theme(colors.gs.400);
-  --pennant-background-surface-color: theme(colors.gs.800);
+  --separator-border: #44464b;
+  --pennant-background-surface-color: #17191e;
   --pennant-hover-overlay: rgba(
-    23,
-    25,
-    30,
-    0.5
+    23 25 30 / 0.5
   ); /* theme(colors.gs.800) in rgba with opacity */
+  --pennant-background-label-color: #292b30;
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
@@ -176,7 +173,6 @@ html [data-theme='dark'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-  --pennant-background-label-color: theme(colors.gs.600);
 }
 
 /**
