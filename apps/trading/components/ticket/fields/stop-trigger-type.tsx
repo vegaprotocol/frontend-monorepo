@@ -19,7 +19,15 @@ export const StopTriggerType = ({
         return (
           <MiniSelect
             value={field.value}
-            onValueChange={field.onChange}
+            onValueChange={(e) => {
+              field.onChange(e);
+
+              const isOco = name === 'ocoTriggerType';
+              const triggerPriceFieldName = isOco
+                ? 'ocoTriggerPrice'
+                : 'triggerPrice';
+              form.setValue(triggerPriceFieldName, undefined);
+            }}
             placeholder={t('Select')}
             data-testid="trigger-type"
           >

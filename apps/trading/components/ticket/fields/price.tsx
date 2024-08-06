@@ -14,9 +14,13 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
   const ticket = useTicketContext();
   const form = useForm();
 
+  const isOco = name === 'ocoPrice';
+  const sizeFieldName = isOco ? 'ocoSize' : 'size';
+  const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
+
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
-  const notional = form.watch('notional');
+  const size = form.watch(sizeFieldName);
+  const notional = form.watch(notionalFieldName);
 
   return (
     <FormField
@@ -36,7 +40,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
                     BigNumber(size),
                     BigNumber(e.target.value || 0)
                   );
-                  form.setValue('notional', notional.toNumber());
+                  form.setValue(notionalFieldName, notional.toNumber());
                   return;
                 }
 
@@ -46,7 +50,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
                     BigNumber(e.target.value || 0),
                     ticket.market.positionDecimalPlaces
                   );
-                  form.setValue('size', size.toNumber());
+                  form.setValue(sizeFieldName, size.toNumber());
                 }
               }}
               data-testid={`order-${name}`}
