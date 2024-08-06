@@ -22,7 +22,7 @@ export const RoundedWrapper = ({
     className={classNames(
       'rounded-xl pt-4 px-4 overflow-hidden',
       {
-        'border border-default': border,
+        'border border-gs-400': border,
         'pb-4': paddingBottom,
         'mb-10': marginBottomLarge,
         'mb-4': !marginBottomLarge,

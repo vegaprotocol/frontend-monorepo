@@ -49,7 +49,7 @@ export const OracleLink = ({
   const bgColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-100 hover:bg-yellow-200 border-yellow-200 dark:bg-yellow-200'
-      : 'bg-gs-700 hover:bg-gs-800 border-gs-900';
+      : 'bg-gs-700 hover:bg-gs-800 border-gs-500';
   const indicatorColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-300 hover:bg-yellow-500 dark:bg-yellow-500'
@@ -75,7 +75,7 @@ export const OracleLink = ({
   return (
     <Tooltip description={description}>
       <Link
-        className={`pl-2 pr-2 font-mono dark:text-black ${bgColour} rounded-sm border-solid border-2 relative`}
+        className={`pl-2 pr-2 font-mono ${bgColour} rounded-sm border-2 relative`}
         {...props}
         to={`/${Routes.ORACLES}/${id}`}
         data-status={getStatusString(status)}

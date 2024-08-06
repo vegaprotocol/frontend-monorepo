@@ -363,10 +363,7 @@ const ProposalDetails = ({
   }
 
   return (
-    <div
-      data-testid="proposal-details"
-      className="break-words mb-6 text-gs-100"
-    >
+    <div data-testid="proposal-details" className="break-words mb-6">
       {details}
     </div>
   );
@@ -720,7 +717,7 @@ export const CancelTransferSummary = ({
 };
 
 const Badge = ({ children }: { children: ReactNode }) => (
-  <div className="rounded px-1 py-[2px] font-alpha text-xs items-center gap-1 inline-flex bg-gs-200 text-gs-800">
+  <div className="rounded px-1 py-[2px] font-alpha text-xs items-center gap-1 inline-flex bg-gs-300 text-gs-50">
     {children}
   </div>
 );

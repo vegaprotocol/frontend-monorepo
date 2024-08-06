@@ -26,7 +26,7 @@ export interface TooltipProps {
 
 export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
   classNames({
-    'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed':
+    'underline underline-offset-2 decoration-gs-100 decoration-dashed':
       underline,
   });
 

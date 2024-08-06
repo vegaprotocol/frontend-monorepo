@@ -352,7 +352,7 @@ export const ProposalMarketData = ({
           dataTestId="market-json-dialog"
         >
           <CopyWithTooltip text={JSON.stringify(marketData)}>
-            <button className="bg-gs-100 rounded-sm py-2 px-3 mb-4 bg-gs-50">
+            <button className="bg-gs-800 rounded-sm py-2 px-3 mb-4">
               <span>
                 <Icon name="duplicate" />
               </span>

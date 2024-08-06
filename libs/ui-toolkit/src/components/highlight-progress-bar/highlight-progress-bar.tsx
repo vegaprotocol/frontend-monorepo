@@ -13,7 +13,7 @@ export const HighlightProgressBar = ({ value }: ProgressBarProps) => {
       aria-valuemin={0}
       aria-valuenow={percent == null ? undefined : Math.round(percent)}
       role="progressbar"
-      className="relative h-2 bg-neutral-600 rounded-full overflow-hidden"
+      className="relative h-2 bg-gs-500 rounded-full overflow-hidden"
     >
       <div
         className="rounded-full bg-gradient-to-r from-[#4e05cf] to-vega-pink h-full absolute transition-[width] ease-in-out"

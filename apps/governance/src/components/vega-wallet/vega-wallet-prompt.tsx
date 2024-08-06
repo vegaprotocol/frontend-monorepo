@@ -10,11 +10,8 @@ export const VegaWalletPrompt = () => {
     <>
       <h3 className="mt-4 mb-2">{t('getWallet')}</h3>
       <div className="flex flex-row gap-4">
-        <Link className="text-neutral-500" href={ExternalLinks.VEGA_WALLET_URL}>
-          {t('getWalletLink')}
-        </Link>
+        <Link href={ExternalLinks.VEGA_WALLET_URL}>{t('getWalletLink')}</Link>
         <ButtonLink
-          className="text-neutral-500"
           data-testid="view-as-user"
           onClick={() => connect('viewParty')}
         >

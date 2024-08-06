@@ -39,7 +39,7 @@ export const Tooltip = ({
       <Root open={open}>
         <Trigger
           asChild
-          className="underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed"
+          className="underline underline-offset-2 decoration-gs-100 decoration-dashed"
         >
           {children}
         </Trigger>

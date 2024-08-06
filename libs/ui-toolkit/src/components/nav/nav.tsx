@@ -25,7 +25,7 @@ export const getActiveNavLinkClassNames = (
     'text-gs-300 hover:text-gs-400': !isActive && navbarTheme !== 'yellow',
     'text-black dark:text-white md:dark:text-black':
       isActive && navbarTheme === 'yellow',
-    'text-black/60 dark:text-neutral-400 md:dark:text-black/60 hover:text-black':
+    'text-black/60 md:dark:text-black/60 hover:text-black':
       !isActive && navbarTheme === 'yellow',
     'flex-1': fullWidth,
   });

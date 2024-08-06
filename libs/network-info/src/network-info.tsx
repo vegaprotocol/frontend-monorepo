@@ -30,17 +30,12 @@ export const NetworkInfo = () => {
     <div data-testid="git-info">
       <p data-testid="git-network-data" className="mb-2">
         {t('Reading network data from')}{' '}
-        <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
-          {VEGA_URL}
-        </Lozenge>
-        . <Link onClick={() => setNodeSwitcher(true)}>{t('Edit')}</Link>
+        <Lozenge className="bg-gs-400">{VEGA_URL}</Lozenge>.{' '}
+        <Link onClick={() => setNodeSwitcher(true)}>{t('Edit')}</Link>
       </p>
       <p data-testid="git-eth-data" className="mb-2 break-all">
         {t('Reading Ethereum data from')}{' '}
-        <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
-          {ETHEREUM_PROVIDER_URL}
-        </Lozenge>
-        .{' '}
+        <Lozenge className="bg-gs-400">{ETHEREUM_PROVIDER_URL}</Lozenge>.{' '}
       </p>
       {GIT_COMMIT_HASH && (
         <p data-testid="git-commit-hash" className="mb-2">

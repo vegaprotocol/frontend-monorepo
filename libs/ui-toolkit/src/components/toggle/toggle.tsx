@@ -27,8 +27,7 @@ export const Toggle = ({
   size = 'lg',
   ...props
 }: ToggleProps) => {
-  const fieldsetClasses =
-    'flex rounded-full bg-neutral-100 dark:bg-neutral-700 text-sm';
+  const fieldsetClasses = 'flex rounded-full bg-gs-600 text-sm';
   const labelClasses = classnames(
     'group flex-1',
     '-ml-[1px] first-of-type:ml-0'
@@ -38,8 +37,7 @@ export const Toggle = ({
     'relative inline-flex w-full h-full text-center items-center justify-center',
     'peer-checked:rounded-full',
     {
-      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white peer-checked:text-white dark:peer-checked:text-black':
-        type === 'primary',
+      'peer-checked:bg-gs-0 peer-checked:text-gs-900': type === 'primary',
       'peer-checked:bg-market-green-550 peer-checked:text-white':
         type === 'buy',
       'peer-checked:bg-market-red peer-checked:text-white': type === 'sell',

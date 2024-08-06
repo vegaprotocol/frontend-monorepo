@@ -41,7 +41,7 @@ export function Dialog({
     // Dimensions
     'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
-    'bg-gs-900 text-gs-50',
+    'bg-white dark:bg-black text-gs-50',
     getIntentBorder(intent),
     {
       'w-[520px]': size === 'small',

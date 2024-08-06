@@ -26,9 +26,7 @@ interface WalletCardProps {
 
 export const WalletCard = ({ children }: WalletCardProps) => {
   return (
-    <div className="text-sm border border-neutral-700 p-4 bg-black text-white">
-      {children}
-    </div>
+    <div className="text-sm border border-gs-600 bg-black p-4">{children}</div>
   );
 };
 
@@ -205,7 +203,7 @@ export const WalletCardAsset = ({
           data-testid="currency-title"
         >
           <div className="mb-0 uppercase">{name}</div>
-          <div className="mb-0 uppercase text-neutral-400">
+          <div className="mb-0 uppercase">
             {subheading || symbol}{' '}
             {chainId && (
               <span className="text-xs">
@@ -311,7 +309,7 @@ const CurrencyValue = ({
           {integers}
           {separator}
         </span>
-        <span className="text-neutral-400">{decimalsPlaces}</span>
+        <span className="text-gs-100">{decimalsPlaces}</span>
       </div>
     </div>
   );

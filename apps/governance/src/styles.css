@@ -33,7 +33,7 @@
     @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-2 text-neutral-400;
+    @apply mb-2 text-gs-100;
   }
 }
 
@@ -66,10 +66,10 @@
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.gs.900);
+  --ag-background-color: theme(colors.black);
   --ag-border-color: theme(colors.gs.400);
-  --ag-header-background-color: theme(colors.gs.900);
-  --ag-odd-row-background-color: theme(colors.gs.900);
+  --ag-header-background-color: theme(colors.black);
+  --ag-odd-row-background-color: theme(colors.black);
   --ag-header-column-separator-color: theme(colors.gs.400);
   --ag-row-border-color: theme(colors.gs.900);
   --ag-row-hover-color: theme(colors.gs.700);

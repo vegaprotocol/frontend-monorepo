@@ -8,13 +8,10 @@ export const VoteProgress = ({
   progress: BigNumber;
 }) => {
   return (
-    <div
-      data-testid="vote-progress"
-      className="w-full h-1 relative bg-neutral-500"
-    >
+    <div data-testid="vote-progress" className="w-full h-1 relative bg-gs-500">
       <div
         data-testid="vote-progress-indicator"
-        className="absolute -top-1 w-[1px] h-3 bg-neutral-300 dark:bg-white z-1"
+        className="absolute -top-1 w-[1px] h-3 bg-gs-300 z-1"
         style={{ left: `${threshold}%` }}
       />
       <div className="w-full h-2">

@@ -199,9 +199,7 @@ export const TradingDropdownCopyItem = ({
       >
         <VegaIcon name={VegaIconNames.COPY} size={16} />
         {text}
-        {copied && (
-          <span className="text-xs text-neutral-500">{t('Copied')}</span>
-        )}
+        {copied && <span className="text-xs text-gs-100">{t('Copied')}</span>}
       </TradingDropdownItem>
     </CopyToClipboard>
   );

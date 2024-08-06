@@ -13,6 +13,7 @@ export const theme = {
   },
   colors: {
     gs: {
+      '0': 'rgb(var(--gs-0) / <alpha-value>)',
       '50': 'rgb(var(--gs-50) / <alpha-value>)',
       '100': 'rgb(var(--gs-100) / <alpha-value>)',
       '200': 'rgb(var(--gs-200) / <alpha-value>)',

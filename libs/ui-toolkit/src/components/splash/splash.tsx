@@ -8,7 +8,7 @@ export interface SplashProps {
 
 export const Splash = ({ children, className }: SplashProps) => {
   const splashClasses = classNames(
-    'w-full h-full text-xs text-center text-gray-800 dark:text-gray-200',
+    'w-full h-full text-xs text-center text-gs-50',
     'flex items-center justify-center',
     className
   );

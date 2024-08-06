@@ -21,8 +21,8 @@ export const getIntentBorder = (intent = Intent.None) => {
 
 export const getIntentBackground = (intent?: Intent) => {
   return {
-    'bg-neutral-200 dark:bg-neutral-800': intent === undefined,
-    'bg-black dark:bg-white': intent === Intent.None,
+    'bg-gs-800': intent === undefined,
+    'bg-gs-0': intent === Intent.None,
     'bg-vega-blue-300 dark:bg-vega-blue-650': intent === Intent.Primary,
     'bg-danger': intent === Intent.Danger,
     'bg-warning': intent === Intent.Warning,

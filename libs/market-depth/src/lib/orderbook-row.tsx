@@ -127,7 +127,7 @@ const OrderBookRowCell = ({
 }) => {
   return (
     <button
-      className="overflow-hidden text-ellipsis whitespace-nowrap text-right hover:bg-neutral-200 hover:dark:bg-neutral-800"
+      className="overflow-hidden text-ellipsis whitespace-nowrap text-right hover:bg-gs-50/10"
       onClick={onClick}
     >
       {children}

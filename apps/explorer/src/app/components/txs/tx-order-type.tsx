@@ -252,7 +252,7 @@ export function getLabelForChainEvent(
 export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
-  let colours = 'text-gs-50 bg-gs-500';
+  let colours = 'text-gs-900 bg-gs-50';
 
   // This will get unwieldy and should probably produce a different colour of tag
   // Note that colours are currently arbitrary
