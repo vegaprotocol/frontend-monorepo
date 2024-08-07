@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import 'jest-canvas-mock';
 
 // import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
+// import en from 'javascript-time-ago/locale/en';
 import ResizeObserver from 'resize-observer-polyfill';
 
 // console.log(TimeAgo, en);
@@ -54,3 +54,29 @@ class PointerEvent extends Event {
 
 // @ts-ignore
 window.PointerEvent = PointerEvent;
+
+class LocalStorageMock {
+  store: Record<string, string>;
+  constructor() {
+    this.store = {};
+  }
+
+  clear() {
+    this.store = {};
+  }
+
+  getItem(key: string) {
+    return this.store[key] || null;
+  }
+
+  setItem(key: string, value: string) {
+    this.store[key] = String(value);
+  }
+
+  removeItem(key: string) {
+    delete this.store[key];
+  }
+}
+
+//@ts-ignore
+global.localStorage = new LocalStorageMock();
