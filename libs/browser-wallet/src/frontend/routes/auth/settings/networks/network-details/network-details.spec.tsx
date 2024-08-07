@@ -15,7 +15,7 @@ import { locators, NetworkDetails } from './network-details';
 jest.mock('@/stores/networks-store');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: () => jest.fn(),
+  useParams: jest.fn(),
 }));
 
 const defaultNetworkStore = {
@@ -60,6 +60,8 @@ describe('NetworkDetails', () => {
     // 1143-NWDT-002 Renders the chain ID of a connection
     // 1143-NWDT-003 Renders the network ID of a connection
     // 1143-NWDT-004 Allows removing a connection
+    // @ts-ignore
+    useParams.mockReturnValue({ id: 'foo' });
     renderComponent();
     const sections = screen.getAllByTestId(vegaSectionLocators.vegaSection);
     const [
