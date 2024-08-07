@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import type { Network } from '@/types/backend';
 
+// @ts-ignore
 import { testingNetwork } from '../../../config/well-known-networks';
 import { NetworkContext } from './network-context';
 

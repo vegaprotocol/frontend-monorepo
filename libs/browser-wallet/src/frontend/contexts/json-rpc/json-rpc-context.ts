@@ -1,6 +1,8 @@
 import { createContext, useContext } from 'react';
 
+// @ts-ignore
 import type JSONRPCClient from '../../lib/json-rpc-client';
+// @ts-ignore
 import type JSONRPCServer from '../../lib/json-rpc-server';
 import type { SendMessage } from './json-rpc-provider';
 
