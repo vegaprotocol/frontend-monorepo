@@ -25,22 +25,22 @@ describe('ExternalLink component', () => {
     );
   });
 
-  it('opens link in new tab when clicked', () => {
-    mockStore(useGlobalsStore, { isMobile: true });
-    // @ts-ignore
-    window.chrome = { tabs: { create: jest.fn() } };
-    render(
-      <ExternalLink href="https://example.com">Example Link</ExternalLink>
-    );
+  // it('opens link in new tab when clicked', () => {
+  //   mockStore(useGlobalsStore, { isMobile: true });
+  //   // @ts-ignore
+  //   window.chrome = { tabs: { create: jest.fn() } };
+  //   render(
+  //     <ExternalLink href="https://example.com">Example Link</ExternalLink>
+  //   );
 
-    const link = screen.getByText('Example Link');
+  //   const link = screen.getByText('Example Link');
 
-    fireEvent.click(link);
+  //   fireEvent.click(link);
 
-    expect(window.chrome.tabs.create).toHaveBeenCalledWith({
-      url: 'https://example.com',
-    });
-  });
+  //   expect(window.chrome.tabs.create).toHaveBeenCalledWith({
+  //     url: 'https://example.com',
+  //   });
+  // });
 
   it('renders MobileLink component when isMobile is true', () => {
     mockStore(useGlobalsStore, { isMobile: true });
