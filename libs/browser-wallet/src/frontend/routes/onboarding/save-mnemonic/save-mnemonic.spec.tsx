@@ -36,10 +36,10 @@ describe('Save mnemonic', () => {
     mockClient();
     mockStorage();
   });
-  afterEach(() => {
-    // @ts-ignore
-    global.browser = null;
-  });
+  // afterEach(() => {
+  //   // @ts-ignore
+  //   global.browser = null;
+  // });
   it('renders tile and disclaimer', async () => {
     renderComponent();
     await screen.findByTestId(locators.mnemonicContainerHidden);
@@ -147,11 +147,9 @@ describe('Save mnemonic', () => {
     );
   });
 
-  it('loads an exisiting mnemonic if one is in memory', async () => {
+  it('loads an existing mnemonic if one is in memory', async () => {
     // @ts-ignore
-    global.browser.storage.session.get = jest.fn().mockResolvedValue({
-      [SUGGESTED_MNEMONIC_KEY]: 'foo',
-    });
+    localStorage.setItem(SUGGESTED_MNEMONIC_KEY, 'foo');
     renderComponent();
     await screen.findByTestId(locators.mnemonicContainerHidden);
     fireEvent.click(screen.getByTestId(locators.mnemonicContainerHidden));

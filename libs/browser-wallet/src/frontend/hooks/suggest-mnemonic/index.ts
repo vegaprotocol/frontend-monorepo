@@ -13,7 +13,7 @@ export const clearMnemonic = () => {
   const {
     storage: { session },
   } = getExtensionApi();
-  return session.remove(SUGGESTED_MNEMONIC_KEY);
+  return session.removeItem(SUGGESTED_MNEMONIC_KEY);
 };
 
 /**
@@ -30,15 +30,13 @@ export const useSuggestMnemonic = () => {
   const suggestMnemonic = useCallback(async () => {
     const response = await request(RpcMethods.GenerateRecoveryPhrase, null);
     const { recoveryPhrase } = response;
-    await session.set({
-      [SUGGESTED_MNEMONIC_KEY]: recoveryPhrase,
-    });
+    await session.setItem(SUGGESTED_MNEMONIC_KEY, recoveryPhrase);
     setMnemonic(recoveryPhrase);
   }, [request, session]);
 
   const getMnemonic = useCallback(async () => {
-    const response = await session.get(SUGGESTED_MNEMONIC_KEY);
-    const recoveryPhrase = response[SUGGESTED_MNEMONIC_KEY];
+    const recoveryPhrase = await session.getItem(SUGGESTED_MNEMONIC_KEY);
+    // const recoveryPhrase = response[SUGGESTED_MNEMONIC_KEY];
     // If one exists in memory then use it, otherwise generate a new one
     if (recoveryPhrase) {
       setMnemonic(recoveryPhrase);

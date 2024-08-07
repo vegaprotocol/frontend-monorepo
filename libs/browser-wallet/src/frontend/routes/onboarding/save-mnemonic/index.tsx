@@ -22,7 +22,6 @@ export const SaveMnemonic = () => {
   const navigate = useNavigate();
   const [mnemonicShown, setMnemonicShown] = useState<boolean>(false);
   const { mnemonic } = useSuggestMnemonic();
-
   const submit = async () => {
     try {
       setLoading(true);
