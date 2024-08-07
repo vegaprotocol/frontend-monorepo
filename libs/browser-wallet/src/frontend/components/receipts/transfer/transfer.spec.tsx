@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { AccountType } from '@vegaprotocol/protos/vega/AccountType';
-import { Transfer as TransferType } from '@vegaprotocol/protos/vega/commands/v1/Transfer';
+import { type Transfer as TransferType } from '@vegaprotocol/protos/vega/commands/v1/Transfer';
 import {
-  vegaAsset,
+  type vegaAsset,
   vegaAssetStatus,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 
@@ -10,7 +10,7 @@ import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { useAssetsStore } from '@/stores/assets-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
-import { Key } from '@/types/backend';
+import { type Key } from '@/types/backend';
 
 import { locators, Transfer } from './transfer';
 

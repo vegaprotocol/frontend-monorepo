@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { OrderType } from '@vegaprotocol/enums';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
-import { AssetsStore, useAssetsStore } from '@/stores/assets-store';
-import { MarketsStore, useMarketsStore } from '@/stores/markets-store';
-import { DeepPartial, mockStore } from '@/test-helpers/mock-store';
+import { type AssetsStore, useAssetsStore } from '@/stores/assets-store';
+import { type MarketsStore, useMarketsStore } from '@/stores/markets-store';
+import { type DeepPartial, mockStore } from '@/test-helpers/mock-store';
 
 import { locators as amountWithSymbolLocators } from '../string-amounts/amount-with-symbol';
 import { locators as priceWithTooltipLocators } from '../string-amounts/price-with-tooltip';

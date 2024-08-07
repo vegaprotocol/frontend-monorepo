@@ -27,7 +27,7 @@ describe('Store', () => {
   it('loads globals from backend', async () => {
     expect(useGlobalsStore.getState().loading).toBe(true);
     expect(useGlobalsStore.getState().globals).toBeNull();
-    await useGlobalsStore.getState().loadGlobals(request as unknown as any);
+    await useGlobalsStore.getState().loadGlobals(request as unknown as unknown);
     expect(useGlobalsStore.getState().loading).toBe(false);
     expect(useGlobalsStore.getState().globals).toStrictEqual(globalsMock);
   });
@@ -35,6 +35,7 @@ describe('Store', () => {
     const requestMock = jest.fn();
     const promise = useGlobalsStore
       .getState()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .saveSettings(requestMock as unknown as any, {
         setting: 'value',
       });

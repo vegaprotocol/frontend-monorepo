@@ -10,7 +10,7 @@ import { mockStore } from '@/test-helpers/mock-store';
 
 import {
   DeleteWalletWarning,
-  DeleteWalletWarningProperties,
+  type DeleteWalletWarningProperties,
   locators,
 } from './delete-wallet-warning';
 

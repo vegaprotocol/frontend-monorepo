@@ -11,7 +11,7 @@ import {
   fairground,
   testingNetwork,
 } from '../../../config/well-known-networks';
-import { NetworkListProperties } from '../networks-list';
+import { type NetworkListProperties } from '../networks-list';
 import { locators, NetworkDropdown } from './network-dropdown';
 
 jest.mock('@/stores/globals');

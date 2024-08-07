@@ -1,4 +1,4 @@
-import { TransactionMessage } from '@/lib/transactions';
+import { type TransactionMessage } from '@/lib/transactions';
 
 import { useInteractionStore } from './interaction-store';
 
@@ -56,6 +56,7 @@ describe('InteractionStore', () => {
     useInteractionStore.setState({
       transactionModalOpen: true,
       transactionPromise: null,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       currentTransactionDetails: {} as any,
     });
     useInteractionStore.getState().handleTransactionDecision(false);
@@ -105,6 +106,7 @@ describe('InteractionStore', () => {
     useInteractionStore.setState({
       connectionModalOpen: true,
       connectionPromise: null,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       currentConnectionDetails: {} as any,
     });
     useInteractionStore.getState().handleTransactionDecision(false);

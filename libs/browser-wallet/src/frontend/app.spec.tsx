@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { usePing } from '@/hooks/ping';
 import { usePreventWindowResize } from '@/hooks/prevent-window-resize';

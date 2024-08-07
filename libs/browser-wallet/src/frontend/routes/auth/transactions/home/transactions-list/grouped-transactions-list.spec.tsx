@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { TransactionState } from '@/types/backend';
 
 import { GroupedTransactionList, locators } from './grouped-transactions-list';
-import { TransactionsListProperties } from './transactions-list';
+import { type TransactionsListProperties } from './transactions-list';
 
 jest.mock('./transactions-list', () => ({
   TransactionsList: ({ transactions }: TransactionsListProperties) => (

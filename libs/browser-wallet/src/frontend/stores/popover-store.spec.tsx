@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { silenceErrors, silenceLogs } from '@/test-helpers/silence-errors';
 
 import { createStore } from './popover-store';
@@ -102,6 +103,7 @@ describe('usePopoverStore', () => {
     expect(windowStore.getState().popoverOpen).toBe(false);
     expect(windowStore.getState().popoverId).toBeNull();
     expect(windowStore.getState().isPopoverInstance).toBe(false);
+    // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledWith(
       'Setup nothing for popover store as windows could not be found'
     );
@@ -174,6 +176,7 @@ describe('usePopoverStore', () => {
     globalThis.chrome = {};
     const windowStore = createStore();
     windowStore.getState().teardown();
+    // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledWith(
       'Tore down nothing from popover store as windows could not be found'
     );

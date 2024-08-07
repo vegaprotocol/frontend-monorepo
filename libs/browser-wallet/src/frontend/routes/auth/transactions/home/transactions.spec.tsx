@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { useTransactionsStore } from '@/stores/transactions-store';
 import { mockStore } from '@/test-helpers/mock-store';
-import { StoredTransaction } from '@/types/backend';
+import { type StoredTransaction } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../config/well-known-networks';
 import { locators, Transactions } from './transactions';
