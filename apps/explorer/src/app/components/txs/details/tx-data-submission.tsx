@@ -17,7 +17,7 @@ interface TxDetailsDataSubmissionProps {
 }
 
 /**
- * Someone cancelled an order
+ * Oracle Data arriving
  */
 export const TxDetailsDataSubmission = ({
   txData,

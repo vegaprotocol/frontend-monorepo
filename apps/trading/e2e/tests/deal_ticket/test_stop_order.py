@@ -151,7 +151,7 @@ def test_submit_stop_limit_order_pending(
     expect(container.get_by_role("row").nth(0)).to_contain_text("Mark < 102.00Submit")
     expect(container.get_by_role("row").nth(0)).to_contain_text("-1LimitPending99.00IOC")
 
-
+@pytest.mark.skip("TODO: fix as preview 77 breaks")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 @pytest.mark.skip(reason="TODO: fix this flaky test")
 def test_submit_stop_limit_order_cancel(
@@ -181,6 +181,7 @@ def test_submit_stop_limit_order_cancel(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    page.pause()
     page.get_by_test_id(close_toast).first.click()
 
     container = page.locator('.ag-center-cols-container')

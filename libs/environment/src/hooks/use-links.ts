@@ -66,6 +66,7 @@ const Links: { [k in DApp]: DAppLinks } = {
 export const DocsLinks = VEGA_DOCS_URL
   ? {
       NEW_TO_VEGA: `${VEGA_DOCS_URL}/concepts/new-to-vega`,
+      AUCTION_TYPE_BLOCK_TIME: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-block-time`,
       AUCTION_TYPE_OPENING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-opening`,
       AUCTION_TYPE_LIQUIDITY_MONITORING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-liquidity-monitoring`,
       AUCTION_TYPE_PRICE_MONITORING: `${VEGA_DOCS_URL}/concepts/trading-on-vega/trading-modes#auction-type-price-monitoring`,

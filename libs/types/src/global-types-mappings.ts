@@ -95,6 +95,7 @@ export const AuctionTriggerMapping: {
   [T in AuctionTrigger]: string;
 } = {
   AUCTION_TRIGGER_BATCH: 'batch',
+  AUCTION_TRIGGER_LONG_BLOCK: 'long block',
   AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: 'liquidity (target not met)',
   AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS:
     'liquidity (unable to deploy liquidity provision orders)',
@@ -162,6 +163,7 @@ export const MarketTradingModeMapping: {
   [T in MarketTradingMode]: string;
 } = {
   TRADING_MODE_BATCH_AUCTION: 'Batch auction',
+  TRADING_MODE_LONG_BLOCK_AUCTION: 'Monitoring auction',
   TRADING_MODE_CONTINUOUS: 'Continuous',
   TRADING_MODE_MONITORING_AUCTION: 'Monitoring auction',
   TRADING_MODE_NO_TRADING: 'No trading',
@@ -258,6 +260,8 @@ export const OrderRejectionReasonMapping: {
   ORDER_ERROR_REDUCE_ONLY_ORDER_WOULD_NOT_REDUCE:
     'Reduce only order would not reduce',
   ORDER_ERROR_TOO_MANY_PEGGED_ORDERS: 'Too many pegged orders',
+  ORDER_ERROR_PRICE_MUST_BE_LESS_THAN_OR_EQUAL_TO_MAX_PRICE:
+    'Prices must be less than or equal to max price',
 };
 
 /**
@@ -578,6 +582,9 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_AMM_HIGH: 'AMM high',
+  TRANSFER_TYPE_AMM_LOW: 'AMM low',
+  TRANSFER_TYPE_AMM_RELEASE: 'AMM release',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -625,6 +632,9 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_AMM_HIGH: 'AMM high',
+  TRANSFER_TYPE_AMM_LOW: 'AMM low',
+  TRANSFER_TYPE_AMM_RELEASE: 'AMM release',
 };
 
 /**
@@ -781,6 +791,7 @@ export const IndividualScopeMapping: { [e in IndividualScope]: string } = {
   INDIVIDUAL_SCOPE_ALL: 'All',
   INDIVIDUAL_SCOPE_IN_TEAM: 'In team',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Not in team',
+  INDIVIDUAL_SCOPE_AMM: 'AMM',
 };
 
 export const IndividualScopeDescriptionMapping: {
@@ -789,13 +800,14 @@ export const IndividualScopeDescriptionMapping: {
   INDIVIDUAL_SCOPE_ALL: 'All parties are eligible',
   INDIVIDUAL_SCOPE_IN_TEAM: 'Parties in teams are eligible',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Only parties not in teams are eligible',
+  INDIVIDUAL_SCOPE_AMM: 'AMM',
 };
 
 export enum DistributionStrategyMapping {
   /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
   DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',
   /** Rewards funded using the rank strategy */
-  DISTRIBUTION_STRATEGY_RANK = 'Strategy rank',
+  DISTRIBUTION_STRATEGY_RANK = 'Rank',
 }
 
 export enum DistributionStrategyDescriptionMapping {

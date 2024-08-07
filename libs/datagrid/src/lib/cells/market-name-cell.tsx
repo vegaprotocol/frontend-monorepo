@@ -4,9 +4,9 @@ import get from 'lodash/get';
 import { Pill } from '@vegaprotocol/ui-toolkit';
 import {
   ProductTypeShortName,
+  ProductTypeMapping,
   type Market,
   type ProductType,
-  ProductTypeMapping,
 } from '@vegaprotocol/types';
 
 export const MarketProductPill = ({
@@ -38,6 +38,16 @@ interface MarketNameCellProps {
   productType?: ProductType;
 }
 
+const getProductType = (market: Market): ProductType | undefined => {
+  if (!market?.tradableInstrument?.instrument.product) {
+    return undefined;
+  }
+
+  const { product } = market.tradableInstrument.instrument;
+
+  return product.__typename;
+};
+
 export const MarketNameCell = ({
   value,
   data,
@@ -58,9 +68,9 @@ export const MarketNameCell = ({
   productType =
     productType ||
     (data as { productType?: ProductType }).productType ||
-    (data as Market)?.tradableInstrument?.instrument.product.__typename ||
-    (data as { market: Market })?.market?.tradableInstrument.instrument.product
-      .__typename;
+    ((data as { market: Market }) &&
+      getProductType((data as { market: Market }).market)) ||
+    ((data as Market) && getProductType(data as Market));
 
   if (!value) return null;
   const content = (

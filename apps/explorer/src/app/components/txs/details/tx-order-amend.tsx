@@ -13,7 +13,7 @@ interface TxDetailsOrderAmendProps {
 }
 
 /**
- * Someone cancelled an order
+ * Amending an existing order
  */
 export const TxDetailsOrderAmend = ({
   txData,

@@ -1,4 +1,4 @@
-import { useState, type ButtonHTMLAttributes, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import {
@@ -20,7 +20,6 @@ import {
   TransferStatus,
   type Asset,
 } from '@vegaprotocol/types';
-import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import {
@@ -61,6 +60,7 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { NotFoundSplash } from '../../components/not-found-splash';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
@@ -121,11 +121,6 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   );
 };
 
-enum Tab {
-  Results = 'Results',
-  Members = 'Members',
-}
-
 const TeamPage = ({
   team,
   partyTeam,
@@ -152,7 +147,6 @@ const TeamPage = ({
   refetch: () => void;
 }) => {
   const t = useT();
-  const [tab, setTab] = useState<Tab>(Tab.Results);
 
   const createdAt = new Date(team.createdAt);
 
@@ -232,38 +226,38 @@ const TeamPage = ({
       </header>
       <TeamStats stats={stats} members={members} games={games} />
       <section>
-        <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
-          <ToggleButton
-            active={tab === Tab.Results}
-            onClick={() => setTab(Tab.Results)}
-            data-testid="games-toggle"
-          >
-            {t('Results {{games}}', {
-              replace: {
-                games: gamesLoading ? '' : games ? `(${games.length})` : '(0)',
-              },
-            })}
-          </ToggleButton>
-          <ToggleButton
-            active={tab === Tab.Members}
-            onClick={() => setTab(Tab.Members)}
-            data-testid="members-toggle"
-          >
-            {t('Members ({{count}})', {
-              count: members ? members.length : 0,
-            })}
-          </ToggleButton>
-        </div>
-        {tab === Tab.Results && (
-          <Games
-            games={games}
-            gamesLoading={gamesLoading}
-            transfers={transfers}
-            transfersLoading={transfersLoading}
-            allMarkets={allMarkets}
-          />
-        )}
-        {tab === Tab.Members && <Members members={members} />}
+        <Tabs defaultValue="results">
+          <TabsList>
+            <TabsTrigger value="results">
+              {t('Results {{games}}', {
+                replace: {
+                  games: gamesLoading
+                    ? ''
+                    : games
+                    ? `(${games.length})`
+                    : '(0)',
+                },
+              })}
+            </TabsTrigger>
+            <TabsTrigger value="members">
+              {t('Members ({{count}})', {
+                count: members ? members.length : 0,
+              })}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="results">
+            <Games
+              games={games}
+              gamesLoading={gamesLoading}
+              transfers={transfers}
+              transfersLoading={transfersLoading}
+              allMarkets={allMarkets}
+            />
+          </TabsContent>
+          <TabsContent value="members">
+            <Members members={members} />
+          </TabsContent>
+        </Tabs>
       </section>
     </>
   );
@@ -505,21 +499,6 @@ const RefereeLink = ({
         </span>
       )}
     </div>
-  );
-};
-
-const ToggleButton = ({
-  active,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) => {
-  return (
-    <button
-      {...props}
-      className={classNames('relative top-px uppercase border-b-2 py-4', {
-        'text-muted border-transparent': !active,
-        'border-vega-yellow': active,
-      })}
-    />
   );
 };
 

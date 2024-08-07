@@ -8,4 +8,5 @@ export { MarketStateStat } from './market-state';
 export { MarketTradingModeStat } from './market-trading-mode';
 export { IndexPriceStat } from './index-price';
 export { FundingRateStat } from './funding-rate';
+export { PriceCapStat } from './price-cap';
 export { Oracle } from './oracle';

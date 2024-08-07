@@ -3,9 +3,9 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TeamEntityFragment = { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } };
+export type TeamEntityFragment = { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, rewardEarnedQuantum: string, totalRewardsEarnedQuantum: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } };
 
-export type GameFieldsFragment = { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, rewardAssetId: string, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } }> };
+export type GameFieldsFragment = { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, rewardAssetId: string, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, rewardEarnedQuantum: string, totalRewardsEarnedQuantum: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } }> };
 
 export type GamesQueryVariables = Types.Exact<{
   epochFrom?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -15,7 +15,7 @@ export type GamesQueryVariables = Types.Exact<{
 }>;
 
 
-export type GamesQuery = { __typename?: 'Query', games: { __typename?: 'GamesConnection', edges?: Array<{ __typename?: 'GameEdge', node: { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, rewardAssetId: string, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } }> } } | null> | null } };
+export type GamesQuery = { __typename?: 'Query', games: { __typename?: 'GamesConnection', edges?: Array<{ __typename?: 'GameEdge', node: { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, rewardAssetId: string, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, rewardEarnedQuantum: string, totalRewardsEarnedQuantum: string, team: { __typename?: 'TeamParticipation', teamId: string, membersParticipating: Array<{ __typename?: 'IndividualGameEntity', individual: string, rank: number }> } }> } } | null> | null } };
 
 export const TeamEntityFragmentDoc = gql`
     fragment TeamEntity on TeamGameEntity {
@@ -24,6 +24,8 @@ export const TeamEntityFragmentDoc = gql`
   rewardMetric
   rewardEarned
   totalRewardsEarned
+  rewardEarnedQuantum
+  totalRewardsEarnedQuantum
   team {
     teamId
     membersParticipating {

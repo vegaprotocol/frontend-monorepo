@@ -1,0 +1,57 @@
+fragment TeamScoreFields on GameTeamScore {
+  gameId
+  teamId
+  epochId
+  time
+  score
+}
+
+fragment PartyScoreFields on GamePartyScore {
+  gameId
+  teamId
+  epochId
+  partyId
+  time
+  score
+  stakingBalance
+  openVolume
+  totalFeesPaid
+  isEligible
+  rank
+}
+
+query Scores(
+  $gameId: ID!
+  $partyId: ID!
+  $epochFrom: Int
+  $epochTo: Int
+  $pagination: Pagination
+) {
+  gameTeamScores(
+    filter: { gameIds: [$gameId], epochFrom: $epochFrom, epochTo: $epochTo }
+    pagination: $pagination
+  ) {
+    edges {
+      cursor
+      node {
+        ...TeamScoreFields
+      }
+    }
+  }
+  gamePartyScores(
+    filter: {
+      gameIds: [$gameId]
+      partyIds: [$partyId]
+      epochFrom: $epochFrom
+      epochTo: $epochTo
+    }
+    pagination: $pagination
+  ) {
+    edges {
+      cursor
+      node {
+        ...PartyScoreFields
+      }
+    }
+  }
+}

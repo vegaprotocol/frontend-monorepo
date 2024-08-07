@@ -200,6 +200,7 @@ export const singleRow: Position = {
   marketId: 'string',
   marketCode: 'ETHBTC.QM21',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketFullyCollateralised: false,
   marketState: Schema.MarketState.STATE_ACTIVE,
   markPrice: '123',
   notional: '12300',

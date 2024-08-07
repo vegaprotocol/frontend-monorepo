@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
+import {
+  calcCandleVolume,
+  getAsset,
+  getProductType,
+} from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
@@ -73,7 +77,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
       : '0.00';
 
-  const productType = market.tradableInstrument.instrument.product.__typename;
+  const productType = getProductType(market);
   const symbol = getAsset(market).symbol || '';
 
   return (

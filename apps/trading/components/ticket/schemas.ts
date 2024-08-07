@@ -7,8 +7,16 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 import { isBefore } from 'date-fns';
-import { getProductType, type MarketInfo } from '@vegaprotocol/markets';
-import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
+import {
+  getProductType,
+  isFuture,
+  type MarketInfo,
+} from '@vegaprotocol/markets';
+import {
+  determinePriceStep,
+  determineSizeStep,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 import i18n from '../../lib/i18n';
 
@@ -63,6 +71,12 @@ export const createLimitSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
+  const product = market.tradableInstrument.instrument.product;
+  const priceCap =
+    isFuture(product) && product.cap
+      ? toBigNum(product.cap.maxPrice, market.decimalPlaces).toNumber()
+      : Number.POSITIVE_INFINITY;
+
   return z
     .object({
       ticketType: z.literal('limit'),
@@ -72,6 +86,7 @@ export const createLimitSchema = (market: MarketInfo) => {
       price: z.coerce
         .number({ message: i18n.t('Required') })
         .min(Number(priceStep))
+        .max(priceCap)
         .step(Number(priceStep)),
       size: z.coerce
         .number({ message: i18n.t('Required') })
@@ -143,6 +158,12 @@ export const createStopLimitSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
+  const product = market.tradableInstrument.instrument.product;
+  const priceCap =
+    isFuture(product) && product.cap
+      ? toBigNum(product.cap.maxPrice, market.decimalPlaces).toNumber()
+      : Number.POSITIVE_INFINITY;
+
   return z
     .object({
       ticketType: z.literal('stopLimit'),
@@ -155,6 +176,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       price: z.coerce
         .number({ message: i18n.t('Required') })
         .min(Number(priceStep))
+        .max(priceCap)
         .step(Number(priceStep)),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce
@@ -187,6 +209,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       ocoPrice: z.coerce
         .number()
         .min(Number(priceStep))
+        .max(priceCap)
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
