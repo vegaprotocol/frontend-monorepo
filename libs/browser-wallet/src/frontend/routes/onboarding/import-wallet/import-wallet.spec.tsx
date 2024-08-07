@@ -6,9 +6,12 @@ import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { mockClient } from '@/test-helpers/mock-client';
 import { mockStorage } from '@/test-helpers/mock-storage';
 
-import { validRecoveryPhrase } from '../../../../test/e2e/helpers/wallet/common-wallet-values';
 import { FULL_ROUTES } from '../../route-names';
 import { ImportWallet, locators } from '.';
+
+const validRecoveryPhrase =
+  'solid length discover gun swear nose artwork unfair vacuum canvas push hybrid owner wasp arrest mixed oak miss cage scatter tree harsh critic believe'
+
 
 const mockedUsedNavigate = jest.fn();
 
