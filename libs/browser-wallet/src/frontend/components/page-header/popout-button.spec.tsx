@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';

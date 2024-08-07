@@ -17,7 +17,7 @@ export function List<T>({
   className?: string;
 }>) {
   if (items.length === 0) {
-    return <>{empty}</>;
+    return empty;
   }
   return (
     <ul className={className} data-testid={locators.list}>

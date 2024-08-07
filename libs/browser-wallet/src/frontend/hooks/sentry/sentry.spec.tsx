@@ -6,7 +6,7 @@
 // import { useWalletStore } from '@/stores/wallets'
 // import { mockStore } from '@/test-helpers/mock-store'
 
-import { sanitizeEvent } from '../../../lib/sanitize-event';
+import { sanitizeEvent } from '../../lib/sanitize-event';
 // import { useSentry } from '.'
 
 jest.mock('@/stores/globals');
@@ -17,6 +17,7 @@ jest.mock('@/stores/wallets');
 //   sentryDsn: 'dsn',
 // }));
 
+// eslint-disable-next-line jest/no-disabled-tests
 describe.skip('useSentry', () => {
   let initMock: jest.Mock;
   let closeMock: jest.Mock;

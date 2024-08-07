@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 import { render, screen } from '@testing-library/react';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';

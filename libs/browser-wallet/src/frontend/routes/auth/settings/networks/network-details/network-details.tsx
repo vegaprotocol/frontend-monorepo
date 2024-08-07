@@ -19,8 +19,12 @@ export const locators = {
   arbitrumExplorerLink: 'arbitrum-explorer-link',
 };
 
+interface Params extends Record<string, string> {
+  id: string;
+}
+
 export const NetworkDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<Params>();
   const { getNetworkById } = useNetworksStore((state) => ({
     getNetworkById: state.getNetworkById,
   }));

@@ -17,6 +17,7 @@ describe('DropDown', () => {
     renderComponent();
     fireEvent.click(screen.getByTestId(locators.dropdownTrigger));
     await screen.findByTestId('content');
+    expect(screen.getByTestId('content')).toBeInTheDocument();
   });
 
   it('renders the trigger and does not open if enabled is true', async () => {

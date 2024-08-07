@@ -8,8 +8,12 @@ import { useTransactionsStore } from '@/stores/transactions-store';
 import { TransactionData } from './transaction-data';
 import { TransactionMetadata } from './transaction-metadata';
 
+interface Params extends Record<string, string> {
+  id: string;
+}
+
 export const TransactionDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<Params>();
   const { transactions } = useTransactionsStore((state) => ({
     transactions: state.transactions,
   }));

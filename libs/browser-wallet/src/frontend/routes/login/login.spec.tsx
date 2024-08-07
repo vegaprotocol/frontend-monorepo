@@ -41,7 +41,8 @@ describe('Login', () => {
       target: { value: 'incorrect-passphrase' },
     });
     fireEvent.click(screen.getByTestId(locators.loginButton));
-    await screen.findByText('Incorrect passphrase');
+    const el = await screen.findByText('Incorrect passphrase');
+    expect(el).toBeInTheDocument();
   });
   it('navigates to the wallets page if passphrase is correct', async () => {
     mockClient();
@@ -70,6 +71,7 @@ describe('Login', () => {
     expect(screen.getByTestId(locators.loginButton)).toBeDisabled();
   });
   it('renders error if unknown error occurs', async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     const listeners: Function[] = [];
     // @ts-ignore
     global.browser = {
@@ -101,6 +103,7 @@ describe('Login', () => {
       target: { value: 'incorrect-passphrase' },
     });
     fireEvent.click(screen.getByTestId(locators.loginButton));
-    await screen.findByText('Unknown error occurred: Some error');
+    const el = await screen.findByText('Unknown error occurred: Some error');
+    expect(el).toBeInTheDocument();
   });
 });

@@ -84,11 +84,12 @@ describe('Cancellation', () => {
   it('renders last updated field', async () => {
     // 1117-ORDC-003 I can see the time of when the order was fetched from the data node
     renderComponent();
-    await screen.findByText(
+    const el = await screen.findByText(
       `Last Updated: ${formatDateWithLocalTimezone(
         new Date(nanoSecondsToMilliseconds(mockLastUpdatedTimestamp))
       )}`
     );
+    expect(el).toBeInTheDocument();
   });
 
   it('renders additional API fields in order table if present', async () => {

@@ -21,8 +21,12 @@ const getTitle = (origin: string) => {
   }
 };
 
+interface Params extends Record<string, string> {
+  id: string;
+}
+
 export const ConnectionDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<Params>();
   if (!id) throw new Error('Id param not provided to connection details');
 
   const { connections, loading } = useConnectionStore((state) => ({

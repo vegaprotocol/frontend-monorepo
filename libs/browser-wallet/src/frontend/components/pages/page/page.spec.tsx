@@ -62,6 +62,7 @@ describe('Page', () => {
     await waitFor(() => expect(onBack).toHaveBeenCalled());
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it('does not require onBack to be provided', async () => {
     render(
       <MemoryRouter>
