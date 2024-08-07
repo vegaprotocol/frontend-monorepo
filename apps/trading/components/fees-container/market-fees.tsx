@@ -1,5 +1,8 @@
 import compact from 'lodash/compact';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import {
+  getProductType,
+  type MarketMaybeWithDataAndCandles,
+} from '@vegaprotocol/markets';
 import { AgGrid, MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import { formatPercentage, getAdjustedFee } from './utils';
 import BigNumber from 'bignumber.js';
@@ -120,7 +123,7 @@ export const MarketFees = ({
         id: m.id,
         code: m.tradableInstrument.instrument.code,
         name: m.tradableInstrument.instrument.name,
-        productType: m.tradableInstrument.instrument.product.__typename,
+        productType: getProductType(m),
         infraFee: formatPercentage(infraFee.toNumber()),
         makerFee: formatPercentage(makerFee.toNumber()),
         liquidityFee: formatPercentage(liquidityFee.toNumber()),

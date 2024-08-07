@@ -31,16 +31,26 @@ const getTradingModeLabel = (
   marketTradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  return (
-    (marketTradingMode ===
-      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    trigger &&
-    trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-      ? `${Schema.MarketTradingModeMapping[marketTradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`
-      : Schema.MarketTradingModeMapping[
-          marketTradingMode as Schema.MarketTradingMode
-        ]) || '-'
-  );
+  const hasTrigger =
+    trigger && trigger !== Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED;
+
+  const isAuction =
+    marketTradingMode ===
+      Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION ||
+    marketTradingMode ===
+      Schema.MarketTradingMode.TRADING_MODE_LONG_BLOCK_AUCTION;
+
+  if (!marketTradingMode) {
+    return '-';
+  }
+
+  if (isAuction && hasTrigger) {
+    return `${Schema.MarketTradingModeMapping[marketTradingMode]} - ${Schema.AuctionTriggerMapping[trigger]}`;
+  }
+
+  return Schema.MarketTradingModeMapping[
+    marketTradingMode as Schema.MarketTradingMode
+  ];
 };
 
 interface MarketTradingModeStatProps {
@@ -195,6 +205,7 @@ const TradingModeTooltip = ({
         </section>
       );
     }
+    case Schema.MarketTradingMode.TRADING_MODE_LONG_BLOCK_AUCTION:
     case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: {
@@ -251,6 +262,28 @@ const TradingModeTooltip = ({
                 {DocsLinks && (
                   <ExternalLink
                     href={DocsLinks.AUCTION_TYPE_PRICE_MONITORING}
+                    className="ml-1"
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
+              </p>
+              {compiledGrid && <SimpleGrid grid={compiledGrid} />}
+            </section>
+          );
+        }
+        case Schema.AuctionTrigger.AUCTION_TRIGGER_LONG_BLOCK: {
+          return (
+            <section data-testid="trading-mode-tooltip">
+              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
+                <span>
+                  {t(
+                    'This market is in auction due to slow block processing, potentially due to an upgrade or network downtime.'
+                  )}
+                </span>{' '}
+                {DocsLinks && (
+                  <ExternalLink
+                    href={DocsLinks.AUCTION_TYPE_BLOCK_TIME}
                     className="ml-1"
                   >
                     {t('Find out more')}

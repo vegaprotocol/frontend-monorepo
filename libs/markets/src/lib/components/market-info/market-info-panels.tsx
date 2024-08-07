@@ -5,6 +5,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { marketDataProvider } from '../../market-data-provider';
 import {
   getBaseAsset,
+  getProductType,
   getQuoteAsset,
   totalFeesFactorsPercentage,
 } from '../../market-utils';
@@ -91,7 +92,7 @@ import type {
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
-import { isPerpetual, isSpot } from '../../product';
+import { isFuture, isPerpetual, isSpot } from '../../product';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import groupBy from 'lodash/groupBy';
@@ -578,13 +579,32 @@ export const InstrumentInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const t = useT();
+  const productType = getProductType(market);
+  const instrument = market.tradableInstrument.instrument;
+  const product = instrument.product;
   return (
     <MarketInfoTable
       data={{
-        marketName: market.tradableInstrument.instrument.name,
-        code: market.tradableInstrument.instrument.code,
-        productType: market.tradableInstrument.instrument.product.__typename,
+        marketName: instrument.name,
+        code: instrument.code,
+        productType: productType,
         quoteName: getQuoteName(market),
+        priceCap:
+          isFuture(product) && product.cap?.maxPrice
+            ? addDecimalsFormatNumber(
+                product.cap.maxPrice,
+                market.decimalPlaces
+              )
+            : t('No'),
+        binarySettlement:
+          isFuture(product) && product.cap?.binarySettlement
+            ? t('Yes')
+            : t('No'),
+        fullyCollateralised:
+          isFuture(product) && product.cap?.fullyCollateralised
+            ? t('Yes')
+            : t('No'),
       }}
       parentData={
         parentMarket && {

@@ -47,7 +47,6 @@ import {
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
-import { RankPayoutTable } from './rank-table';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
@@ -288,40 +287,13 @@ const RewardCard = ({
               </h3>
 
               {/** DISTRIBUTION STRATEGY */}
-              <Tooltip
-                description={
-                  <div className="flex flex-col gap-4">
-                    <p>
-                      {t(
-                        DistributionStrategyDescriptionMapping[
-                          dispatchStrategy.distributionStrategy
-                        ]
-                      )}
-                      .
-                    </p>
-
-                    <p>
-                      {dispatchStrategy.rankTable &&
-                        t(
-                          'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
-                        )}
-                    </p>
-
-                    {dispatchStrategy.rankTable && (
-                      <RankPayoutTable rankTable={dispatchStrategy.rankTable} />
-                    )}
-                  </div>
+              <span className="text-xs" data-testid="distribution-strategy">
+                {
+                  DistributionStrategyMapping[
+                    dispatchStrategy.distributionStrategy
+                  ]
                 }
-                underline={true}
-              >
-                <span className="text-xs" data-testid="distribution-strategy">
-                  {
-                    DistributionStrategyMapping[
-                      dispatchStrategy.distributionStrategy
-                    ]
-                  }
-                </span>
-              </Tooltip>
+              </span>
             </div>
 
             {/** DISTRIBUTION DELAY */}

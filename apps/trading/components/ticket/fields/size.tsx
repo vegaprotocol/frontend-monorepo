@@ -40,11 +40,11 @@ export const Size = (props: { price?: BigNumber }) => {
               value={field.value || ''}
               data-testid="order-size"
               onChange={(e) => {
-                const size = BigNumber(e.target.value || 0);
-                field.onChange(size.toNumber());
+                field.onChange(e);
 
                 // if we have a price, we can calc and set notional and size pct
                 if (props.price) {
+                  const size = BigNumber(e.target.value || 0);
                   const notional = utils.toNotional(size, props.price);
                   const fields = form.getValues();
                   const pct = derivativeUtils.calcPctBySize({

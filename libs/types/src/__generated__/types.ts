@@ -14,6 +14,80 @@ export type Scalars = {
   Timestamp: any;
 };
 
+export type AMM = {
+  __typename?: 'AMM';
+  /** Party ID the AMM operates as */
+  ammPartyId: Scalars['String'];
+  /** Amount committed to the AMM */
+  commitment: Scalars['String'];
+  /** AMM ID */
+  id: Scalars['ID'];
+  /** Market ID of the AMM */
+  marketId: Scalars['ID'];
+  /** Parameters for the liquidity provision */
+  parameters: ConcentratedLiquidityParameters;
+  /** Party ID of the AMM creator */
+  partyId: Scalars['ID'];
+  /** Proposed fee */
+  proposedFee?: Maybe<Scalars['String']>;
+  /** Status of the AMM */
+  status: AMMStatus;
+  /** Reason for status if applicable */
+  statusReason: AMMStatusReason;
+};
+
+/** Connection type for retrieving AMM information */
+export type AMMConnection = {
+  __typename?: 'AMMConnection';
+  /** Page of AMMs for the connection */
+  edges?: Maybe<Array<Maybe<AMMEdge>>>;
+  /** Current page information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the AMM and cursor information returned by an AMMConnection */
+export type AMMEdge = {
+  __typename?: 'AMMEdge';
+  /** Cursor identifying the AMM */
+  cursor: Scalars['String'];
+  /** AMM information */
+  node: AMM;
+};
+
+export enum AMMStatus {
+  /** The AMM is active on the market and is posting tradable volume */
+  STATUS_ACTIVE = 'STATUS_ACTIVE',
+  /** The AMM has been cancelled by the owner and is no longer trading */
+  STATUS_CANCELLED = 'STATUS_CANCELLED',
+  /** AMM will only trade such that it will reduce its position */
+  STATUS_REDUCE_ONLY = 'STATUS_REDUCE_ONLY',
+  /** The AMM submission was rejected */
+  STATUS_REJECTED = 'STATUS_REJECTED',
+  /** The AMM has been stopped by the network and is no longer trading */
+  STATUS_STOPPED = 'STATUS_STOPPED',
+  /** Status has not been specified */
+  STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
+}
+
+export enum AMMStatusReason {
+  /** The AMM was cancelled by it's owner */
+  STATUS_REASON_CANCELLED_BY_PARTY = 'STATUS_REASON_CANCELLED_BY_PARTY',
+  /** The party does not have enough funds in their general account to meet the AMM's commitment */
+  STATUS_REASON_CANNOT_FILL_COMMITMENT = 'STATUS_REASON_CANNOT_FILL_COMMITMENT',
+  /** The AMM was unable to rebase its fair-price such that it does not cross with existing orders */
+  STATUS_REASON_CANNOT_REBASE = 'STATUS_REASON_CANNOT_REBASE',
+  /** Commitment amount was below the network wide minimum, or its price bounds are too wide that the volume is spread thinly creating zero-volume price-levels */
+  STATUS_REASON_COMMITMENT_TOO_LOW = 'STATUS_REASON_COMMITMENT_TOO_LOW',
+  /** The AMM was stopped by the network because the market it operated in was closed */
+  STATUS_REASON_MARKET_CLOSED = 'STATUS_REASON_MARKET_CLOSED',
+  /** The party already has an AMM operating on this market and cannot create another one */
+  STATUS_REASON_PARTY_ALREADY_OWNS_AMM_FOR_MARKET = 'STATUS_REASON_PARTY_ALREADY_OWNS_AMM_FOR_MARKET',
+  /** The AMM was liquidated and stopped by the network */
+  STATUS_REASON_PARTY_CLOSED_OUT = 'STATUS_REASON_PARTY_CLOSED_OUT',
+  /** Status has no reason specified */
+  STATUS_REASON_UNSPECIFIED = 'STATUS_REASON_UNSPECIFIED'
+}
+
 /** Margins for a hypothetical position not related to any existing party */
 export type AbstractMarginLevels = {
   __typename?: 'AbstractMarginLevels';
@@ -49,6 +123,8 @@ export type AccountBalance = {
   balance: Scalars['String'];
   /** Market (only relevant to margin accounts) */
   market?: Maybe<Market>;
+  /** Parent party ID of the account. Used in cases where the account is derived from another party's account. */
+  parentPartyId?: Maybe<Party>;
   /** Owner of the account */
   party?: Maybe<Party>;
   /** Account type (General, Margin, etc) */
@@ -377,6 +453,8 @@ export enum AuctionTrigger {
   AUCTION_TRIGGER_GOVERNANCE_SUSPENSION = 'AUCTION_TRIGGER_GOVERNANCE_SUSPENSION',
   /** Liquidity monitoring due to unmet target stake */
   AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET = 'AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET',
+  /** Auction triggered following a long block, e.g. due to protocol upgrade */
+  AUCTION_TRIGGER_LONG_BLOCK = 'AUCTION_TRIGGER_LONG_BLOCK',
   /** Opening auction */
   AUCTION_TRIGGER_OPENING = 'AUCTION_TRIGGER_OPENING',
   /** Price monitoring */
@@ -589,6 +667,20 @@ export enum CompositePriceType {
   /** Composite price is calculated as a weighted average of the underlying price sources */
   COMPOSITE_PRICE_TYPE_WEIGHTED = 'COMPOSITE_PRICE_TYPE_WEIGHTED'
 }
+
+export type ConcentratedLiquidityParameters = {
+  __typename?: 'ConcentratedLiquidityParameters';
+  /** Base amount */
+  base: Scalars['String'];
+  /** Margin ratio at the lower bound */
+  leverageAtLowerBound: Scalars['String'];
+  /** Margin ratio at the upper bound */
+  leverageAtUpperBound: Scalars['String'];
+  /** Lower bound */
+  lowerBound: Scalars['String'];
+  /** Upper bound */
+  upperBound: Scalars['String'];
+};
 
 /** Condition describes the condition that must be validated by the data source engine */
 export type Condition = {
@@ -1305,6 +1397,22 @@ export type Erc20WithdrawalDetails = {
   receiverAddress: Scalars['String'];
 };
 
+export type EstimatedAMMBounds = {
+  __typename?: 'EstimatedAMMBounds';
+  /** Estimated price below the lower bound at which the commitment will be lost. */
+  liquidationPriceAtLower?: Maybe<Scalars['String']>;
+  /** Estimated price above upper bound at which the commitment will be lost. */
+  liquidationPriceAtUpper?: Maybe<Scalars['String']>;
+  /** Loss of commitment at the lower bound. */
+  lossOnCommitmentAtLower?: Maybe<Scalars['String']>;
+  /** Loss of commitment at the upper bound. */
+  lossOnCommitmentAtUpper?: Maybe<Scalars['String']>;
+  /** Theoretical volume at the top of the lower bound. */
+  positionSizeAtLower?: Maybe<Scalars['String']>;
+  /** Theoretical volume at the top of the upper bound. */
+  positionSizeAtUpper?: Maybe<Scalars['String']>;
+};
+
 /** EstimatedTransferFee Results of estimation of transfer fee and the fee discount */
 export type EstimatedTransferFee = {
   __typename?: 'EstimatedTransferFee';
@@ -1630,6 +1738,8 @@ export type FundingPeriodEdge = {
 /** A Future product */
 export type Future = {
   __typename?: 'Future';
+  /** If set, the market is a capped future */
+  cap?: Maybe<FutureCap>;
   /** The binding between the data source specification and the settlement data */
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
   /** The data source specification that describes the data of interest for settlement. */
@@ -1642,8 +1752,21 @@ export type Future = {
   settlementAsset: Asset;
 };
 
+/** Capped future configuration */
+export type FutureCap = {
+  __typename?: 'FutureCap';
+  /** True for options market */
+  binarySettlement?: Maybe<Scalars['Boolean']>;
+  /** True if parties are fully collateralised on this market */
+  fullyCollateralised?: Maybe<Scalars['Boolean']>;
+  /** The max price cap for a future */
+  maxPrice: Scalars['String'];
+};
+
 export type FutureProduct = {
   __typename?: 'FutureProduct';
+  /** If set, the product belongs to a capped future */
+  cap?: Maybe<FutureCap>;
   /**
    * DataSourceSpecToFutureBinding tells on which property source data should be
    * used as settlement data.
@@ -1684,6 +1807,108 @@ export type GameEdge = {
 };
 
 export type GameEntity = IndividualGameEntity | TeamGameEntity;
+
+/** Game party score */
+export type GamePartyScore = {
+  __typename?: 'GamePartyScore';
+  /** The epoch for which this score is */
+  epochId: Scalars['Int'];
+  /** Game ID */
+  gameId: Scalars['ID'];
+  /** Is the party eligible for a reward in this game based on existing information */
+  isEligible: Scalars['Boolean'];
+  /** The open volume of the party in the game, will be populated only if the game has a requirement for it */
+  openVolume?: Maybe<Scalars['String']>;
+  /** The party ID */
+  partyId: Scalars['ID'];
+  /** If the party is a member of a team, this is their relative position in the sorting order of the team's scores */
+  rank?: Maybe<Scalars['Int']>;
+  /** The current score of the party in the game */
+  score: Scalars['String'];
+  /** The staking balance of the party in the game, will be populated only if the game has a requirement for it */
+  stakingBalance?: Maybe<Scalars['String']>;
+  /** Team ID (optional) */
+  teamId?: Maybe<Scalars['ID']>;
+  /** Time of the score in RFC3339Nano */
+  time: Scalars['Timestamp'];
+  /** The total fees paid by the party in the game during the relevant period */
+  totalFeesPaid: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated game party score information */
+export type GamePartyScoreConnection = {
+  __typename?: 'GamePartyScoreConnection';
+  /** The game party scores in this connection */
+  edges?: Maybe<Array<GamePartyScoreEdge>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the game party scores and cursor information returned by a GamePartyScoreConnection */
+export type GamePartyScoreEdge = {
+  __typename?: 'GamePartyScoreEdge';
+  /** The cursor for this game party score */
+  cursor?: Maybe<Scalars['String']>;
+  /** The game party score */
+  node?: Maybe<GamePartyScore>;
+};
+
+export type GamePartyScoreFilter = {
+  /** Optional 'from epoch' ID for scores epoch interval */
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  /** Optional 'to epoch' ID for scores epoch interval */
+  epochTo?: InputMaybe<Scalars['Int']>;
+  /** Zero or more game IDs to filter by */
+  gameIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** Zero or more party IDs to filter by */
+  partyIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** Zero or more team IDs to filter by */
+  teamIds?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+/** Game team score */
+export type GameTeamScore = {
+  __typename?: 'GameTeamScore';
+  /** The epoch for which this score is */
+  epochId: Scalars['Int'];
+  /** Game ID */
+  gameId: Scalars['ID'];
+  /** The score */
+  score: Scalars['String'];
+  /** Team ID */
+  teamId: Scalars['ID'];
+  /** Time of the score in RFC3339Nano */
+  time: Scalars['Timestamp'];
+};
+
+/** Connection type for retrieving cursor-based paginated game team score information */
+export type GameTeamScoreConnection = {
+  __typename?: 'GameTeamScoreConnection';
+  /** The game team scores in this connection */
+  edges?: Maybe<Array<GameTeamScoreEdge>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the game team scores and cursor information returned by a GameTeamScoreConnection */
+export type GameTeamScoreEdge = {
+  __typename?: 'GameTeamScoreEdge';
+  /** The cursor for this game team score */
+  cursor?: Maybe<Scalars['String']>;
+  /** The game team score */
+  node?: Maybe<GameTeamScore>;
+};
+
+export type GameTeamScoreFilter = {
+  /** Optional 'from epoch' ID for scores epoch interval */
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  /** Optional 'to epoch' ID for scores epoch interval */
+  epochTo?: InputMaybe<Scalars['Int']>;
+  /** Zero or more game IDs to filter by */
+  gameIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** Zero or more team IDs to filter by */
+  teamIds?: InputMaybe<Array<Scalars['ID']>>;
+};
 
 /** Connection type for retrieving cursor-based paginated game information */
 export type GamesConnection = {
@@ -1751,6 +1976,8 @@ export type IndividualGameEntity = {
 export enum IndividualScope {
   /** All parties on the network are within the scope of this reward */
   INDIVIDUAL_SCOPE_ALL = 'INDIVIDUAL_SCOPE_ALL',
+  /** All keys representing AMMs are within the scope of this reward */
+  INDIVIDUAL_SCOPE_AMM = 'INDIVIDUAL_SCOPE_AMM',
   /** All parties that are part of a team are within the scope of this reward */
   INDIVIDUAL_SCOPE_IN_TEAM = 'INDIVIDUAL_SCOPE_IN_TEAM',
   /** All parties that are not part of a team are within the scope of this reward */
@@ -2198,6 +2425,8 @@ export type LogNormalRiskModel = {
   params: LogNormalModelParams;
   /** Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1 */
   riskAversionParameter: Scalars['Float'];
+  /** An optional override for the risk factor calculated by the risk model. */
+  riskFactorOverride?: Maybe<RiskFactorOverride>;
   /** Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number */
   tau: Scalars['Float'];
 };
@@ -2223,6 +2452,8 @@ export type MakerFeesGenerated = {
 
 export type MarginCalculator = {
   __typename?: 'MarginCalculator';
+  /** If set to true on a capped future, all positions must be fully collateralised */
+  fullyCollateralised?: Maybe<Scalars['Boolean']>;
   /** The scaling factors that will be used for margin calculation */
   scalingFactors: ScalingFactors;
 };
@@ -2349,6 +2580,8 @@ export type Market = {
   decimalPlaces: Scalars['Int'];
   /** Current depth on the order book for this market */
   depth: MarketDepth;
+  /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+  enableTxReordering: Scalars['Boolean'];
   /** Fees related data */
   fees: Fees;
   /** Market ID */
@@ -2427,6 +2660,7 @@ export type Market = {
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type MarketaccountsConnectionArgs = {
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -2707,6 +2941,8 @@ export enum MarketTradingMode {
   TRADING_MODE_BATCH_AUCTION = 'TRADING_MODE_BATCH_AUCTION',
   /** Continuous trading where orders are processed and potentially matched on arrival */
   TRADING_MODE_CONTINUOUS = 'TRADING_MODE_CONTINUOUS',
+  /** Auction triggered by a long block */
+  TRADING_MODE_LONG_BLOCK_AUCTION = 'TRADING_MODE_LONG_BLOCK_AUCTION',
   /** Auction triggered by price/liquidity monitoring */
   TRADING_MODE_MONITORING_AUCTION = 'TRADING_MODE_MONITORING_AUCTION',
   /** No trading allowed */
@@ -2812,6 +3048,8 @@ export type NewMarket = {
   __typename?: 'NewMarket';
   /** Decimal places used for the new market, sets the smallest price increment on the book */
   decimalPlaces: Scalars['Int'];
+  /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+  enableTxReordering: Scalars['Boolean'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
   /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume */
@@ -2848,6 +3086,8 @@ export type NewMarket = {
 /** Configuration for a new spot market on Vega */
 export type NewSpotMarket = {
   __typename?: 'NewSpotMarket';
+  /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+  enableTxReordering: Scalars['Boolean'];
   /** New spot market instrument configuration */
   instrument: InstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */
@@ -3494,6 +3734,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE = 'ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE',
   /** A post-only order would produce an aggressive trade and thus it has been rejected */
   ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE = 'ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE',
+  /** Order price exceeds the max price of the capped future market */
+  ORDER_ERROR_PRICE_MUST_BE_LESS_THAN_OR_EQUAL_TO_MAX_PRICE = 'ORDER_ERROR_PRICE_MUST_BE_LESS_THAN_OR_EQUAL_TO_MAX_PRICE',
   /** A reduce-ony order would not reduce the party's position and thus it has been rejected */
   ORDER_ERROR_REDUCE_ONLY_ORDER_WOULD_NOT_REDUCE = 'ORDER_ERROR_REDUCE_ONLY_ORDER_WOULD_NOT_REDUCE',
   /** Unable to remove the order */
@@ -3762,6 +4004,7 @@ export type Party = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyaccountsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   type?: InputMaybe<AccountType>;
@@ -3838,6 +4081,7 @@ export type PartyproposalsConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartyrewardSummariesArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -3846,6 +4090,8 @@ export type PartyrewardsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
   gameId?: InputMaybe<Scalars['ID']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
+  marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   teamId?: InputMaybe<Scalars['ID']>;
   toEpoch?: InputMaybe<Scalars['Int']>;
@@ -4054,6 +4300,10 @@ export type PartyVestingStats = {
   quantumBalance: Scalars['String'];
   /** The reward bonus multiplier */
   rewardBonusMultiplier: Scalars['String'];
+  /** The balance of the party and derived keys, in quantum. */
+  summedQuantumBalance?: Maybe<Scalars['String']>;
+  /** Bonus multiplier applied on the reward, summed across all derived accounts. */
+  summedRewardBonusMultiplier?: Maybe<Scalars['String']>;
 };
 
 /** Create an order linked to an index rather than a price */
@@ -4303,6 +4553,8 @@ export type PriceLevel = {
 /** Range of valid prices and the associated price monitoring trigger */
 export type PriceMonitoringBounds = {
   __typename?: 'PriceMonitoringBounds';
+  /** Has this bound been triggered yet or is it still active */
+  active?: Maybe<Scalars['Boolean']>;
   /** Maximum price that isn't currently breaching the specified price monitoring trigger */
   maxValidPrice: Scalars['String'];
   /** Minimum price that isn't currently breaching the specified price monitoring trigger */
@@ -4814,6 +5066,7 @@ export type QuantumVolumesPerEpoch = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Query = {
   __typename?: 'Query';
+  amms: AMMConnection;
   /** An asset which is used in the vega network */
   asset?: Maybe<Asset>;
   /** The list of all assets in use in the Vega network or the specified asset if ID is provided */
@@ -4846,6 +5099,8 @@ export type Query = {
   erc20SetAssetLimitsBundle: ERC20SetAssetLimitsBundle;
   /** Find an erc20 withdrawal approval using its withdrawal ID */
   erc20WithdrawalApproval?: Maybe<Erc20WithdrawalApproval>;
+  /** Estimate bounds for an AMM pool. */
+  estimateAMMBounds?: Maybe<EstimatedAMMBounds>;
   /** Return an estimation of the potential cost for a new order */
   estimateFees: FeeEstimate;
   /**
@@ -4872,6 +5127,10 @@ export type Query = {
   fundingPeriodDataPoints: FundingPeriodDataPointConnection;
   /** Funding periods for perpetual markets */
   fundingPeriods: FundingPeriodConnection;
+  /** Get a list of current game party scores. If provided, the filter will be applied to the list of games/parties to restrict the results. */
+  gamePartyScores?: Maybe<GamePartyScoreConnection>;
+  /** Get a list of current game team scores. If provided, the filter will be applied to the list of games/teams to restrict the results. */
+  gameTeamScores?: Maybe<GameTeamScoreConnection>;
   /** Get a list of games and their metrics. */
   games: GamesConnection;
   /** Get market data history for a specific market. If no dates are given, the latest snapshot will be returned. If only the start date is provided all history from the given date will be provided, and if only the end date is provided, all history from the start up to and including the end date will be provided. */
@@ -5018,6 +5277,17 @@ export type Query = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryammsArgs = {
+  ammPartyId?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']>;
+  marketId?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+  status?: InputMaybe<AMMStatus>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryassetArgs = {
   id: Scalars['ID'];
 };
@@ -5116,6 +5386,18 @@ export type Queryerc20WithdrawalApprovalArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryestimateAMMBoundsArgs = {
+  basePrice: Scalars['String'];
+  commitmentAmount: Scalars['String'];
+  leverageAtLowerPrice?: InputMaybe<Scalars['String']>;
+  leverageAtUpperPrice?: InputMaybe<Scalars['String']>;
+  lowerPrice?: InputMaybe<Scalars['String']>;
+  marketId: Scalars['ID'];
+  upperPrice?: InputMaybe<Scalars['String']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryestimateFeesArgs = {
   expiration?: InputMaybe<Scalars['Timestamp']>;
   marketId: Scalars['ID'];
@@ -5177,6 +5459,8 @@ export type QueryethereumKeyRotationsArgs = {
 export type QueryfeesStatsArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   epoch?: InputMaybe<Scalars['Int']>;
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  epochTo?: InputMaybe<Scalars['Int']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -5212,6 +5496,20 @@ export type QueryfundingPeriodDataPointsArgs = {
 export type QueryfundingPeriodsArgs = {
   dateRange?: InputMaybe<DateRange>;
   marketId: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerygamePartyScoresArgs = {
+  filter?: InputMaybe<GamePartyScoreFilter>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerygameTeamScoresArgs = {
+  filter?: InputMaybe<GameTeamScoreFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -5354,6 +5652,9 @@ export type QueryorderVersionsConnectionArgs = {
 export type QuerypaidLiquidityFeesArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   epoch?: InputMaybe<Scalars['Int']>;
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  epochTo?: InputMaybe<Scalars['Int']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyIDs?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -5600,6 +5901,8 @@ export type RecurringGovernanceTransfer = {
   dispatchStrategy?: Maybe<DispatchStrategy>;
   /** An optional epoch at which this transfer will stop */
   endEpoch?: Maybe<Scalars['Int']>;
+  /** The factor of the initial amount to be distributed */
+  factor?: Maybe<Scalars['String']>;
   /** The epoch at which this recurring transfer will start */
   startEpoch: Scalars['Int'];
 };
@@ -5827,6 +6130,7 @@ export type RewardSummary = {
 
 export type RewardSummaryrewardsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -5873,6 +6177,15 @@ export type RiskFactor = {
   /** Market the risk factor was emitted for */
   market: Scalars['String'];
   /** Short factor */
+  short: Scalars['String'];
+};
+
+/** Risk factor override to control stable leverage */
+export type RiskFactorOverride = {
+  __typename?: 'RiskFactorOverride';
+  /** Long Risk factor value */
+  long: Scalars['String'];
+  /** Short Risk factor value */
   short: Scalars['String'];
 };
 
@@ -6319,6 +6632,7 @@ export type Subscription = {
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
 export type SubscriptionaccountsArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyId?: InputMaybe<Scalars['ID']>;
   type?: InputMaybe<AccountType>;
@@ -6381,6 +6695,7 @@ export type SubscriptionordersArgs = {
 
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
 export type SubscriptionpositionsArgs = {
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -6984,6 +7299,12 @@ export enum TransferStatus {
 
 /** Types that describe why a transfer has been made */
 export enum TransferType {
+  /** Transfer from an AMM's general account to their owner's general account. */
+  TRANSFER_TYPE_AMM_HIGH = 'TRANSFER_TYPE_AMM_HIGH',
+  /** Transfer from a party's general account to their AMM's general account. */
+  TRANSFER_TYPE_AMM_LOW = 'TRANSFER_TYPE_AMM_LOW',
+  /** Transfer releasing an AMM's general account upon closure. */
+  TRANSFER_TYPE_AMM_RELEASE = 'TRANSFER_TYPE_AMM_RELEASE',
   /** Bond returned to general account after liquidity commitment was reduced */
   TRANSFER_TYPE_BOND_HIGH = 'TRANSFER_TYPE_BOND_HIGH',
   /** Bond account funded from general account to meet required bond amount */
@@ -7125,6 +7446,8 @@ export type UpdateMarket = {
 
 export type UpdateMarketConfiguration = {
   __typename?: 'UpdateMarketConfiguration';
+  /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+  enableTxReordering: Scalars['Boolean'];
   /** Updated futures market instrument configuration. */
   instrument: UpdateInstrumentConfiguration;
   /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
@@ -7245,6 +7568,8 @@ export type UpdateSpotMarket = {
 
 export type UpdateSpotMarketConfiguration = {
   __typename?: 'UpdateSpotMarketConfiguration';
+  /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+  enableTxReordering: Scalars['Boolean'];
   /** Updated spot market instrument configuration. */
   instrument: UpdateSpotInstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */

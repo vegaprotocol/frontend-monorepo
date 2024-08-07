@@ -21,6 +21,8 @@ import {
   getAsset,
   marketInfoProvider,
   type MarketInfo,
+  getProductType,
+  isFuture,
 } from '@vegaprotocol/markets';
 import {
   PositionsDocument,
@@ -65,6 +67,7 @@ export interface Position {
   marketTradingMode?: MarketTradingMode;
   marketState?: MarketState;
   markPrice: string | undefined;
+  marketFullyCollateralised: boolean;
   notional: string | undefined;
   openVolume: string;
   partyId: string;
@@ -112,6 +115,9 @@ export const getMetrics = (
       );
     });
     const asset = getAsset(market);
+    const productType = getProductType(market);
+    const product = market.tradableInstrument.instrument.product;
+
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === asset.id &&
@@ -177,6 +183,9 @@ export const getMetrics = (
       marketDecimalPlaces,
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
+      marketFullyCollateralised: isFuture(product)
+        ? Boolean(product.cap?.fullyCollateralised)
+        : false,
       marketTradingMode: market.data?.marketTradingMode,
       marketState: market.data?.marketState,
       markPrice: marketData ? marketData.markPrice : undefined,
@@ -194,8 +203,7 @@ export const getMetrics = (
         .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: market?.tradableInstrument.instrument.product
-        .__typename as ProductType,
+      productType,
     });
   });
   return metrics;

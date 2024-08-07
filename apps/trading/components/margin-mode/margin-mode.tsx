@@ -7,11 +7,13 @@ import { IsolatedDialog } from './isolated-dialog';
 import { CrossDialog } from './cross-dialog';
 import { MarginMode } from '@vegaprotocol/types';
 import { useT } from '../../lib/use-t';
-import { isSpot, useMarket } from '@vegaprotocol/markets';
+import { isFuture, isSpot, useMarket } from '@vegaprotocol/markets';
+import { Pill } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_LEVERAGE = 10;
 
 export const MarginModeToggle = () => {
+  const t = useT();
   const params = useParams<{ marketId: string }>();
 
   const [dialog, setDialog] = useState<MarginMode>();
@@ -21,7 +23,16 @@ export const MarginModeToggle = () => {
   const create = useVegaTransactionStore((state) => state.create);
 
   if (!market) return null;
-  if (isSpot(market.tradableInstrument.instrument.product)) return null;
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (isSpot(product)) return null;
+
+  if (isFuture(product)) {
+    if (product.cap?.fullyCollateralised) {
+      return <Pill size="xs">{t('Fully collateralised')}</Pill>;
+    }
+  }
 
   const marginMode = margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
 

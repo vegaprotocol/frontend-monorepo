@@ -16,16 +16,19 @@ import { FilterLabel } from './tx-filter-label';
 
 // All possible transaction types. Should be generated.
 export type FilterOption =
+  | 'Amend AMM'
   | 'Amend Liquidity Provision Order'
   | 'Amend Order'
   | 'Apply Referral Code'
   | 'Batch Market Instructions'
   | 'Batch Proposal'
   | 'Cancel Liquidity Provision Order'
+  | 'Cancel AMM'
   | 'Cancel Order'
   | 'Cancel Transfer Funds'
   | 'Chain Event'
   | 'Create Referral Set'
+  | 'Delayed Transaction Wrapper'
   | 'Delegate'
   | 'Ethereum Key Rotate Submission'
   | 'Issue Signatures'
@@ -40,6 +43,7 @@ export type FilterOption =
   | 'State Variable Proposal'
   | 'Stop Orders Submission'
   | 'Stop Orders Cancellation'
+  | 'Submit AMM'
   | 'Submit Oracle Data'
   | 'Submit Order'
   | 'Transfer Funds'
@@ -55,13 +59,16 @@ export const filterOptions: Record<string, FilterOption[]> = {
   'Market Instructions': [
     'Amend Liquidity Provision Order',
     'Amend Order',
+    'Amend AMM',
     'Batch Market Instructions',
     'Cancel Liquidity Provision Order',
     'Cancel Order',
+    'Cancel AMM',
     'Liquidity Provision Order',
     'Stop Orders Submission',
     'Stop Orders Cancellation',
     'Submit Order',
+    'Submit AMM',
     'Update Margin Mode',
   ],
   'Transfers and Withdrawals': [
@@ -85,6 +92,7 @@ export const filterOptions: Record<string, FilterOption[]> = {
   ],
   'External Data': ['Chain Event', 'Submit Oracle Data'],
   Validators: [
+    'Delayed Transaction Wrapper',
     'Ethereum Key Rotate Submission',
     'Issue Signatures',
     'Key Rotate Submission',

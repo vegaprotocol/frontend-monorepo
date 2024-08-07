@@ -165,7 +165,7 @@ export const RewardDetailContainer = (props: {
           variant="cool"
           className="flex flex-col gap-4"
         >
-          <h2>{t('Eligibility criteria')}</h2>
+          <h2>{t('Entry conditions')}</h2>
           <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
             <div>
               <dd className={classNames(valueClasses, 'calt')}>

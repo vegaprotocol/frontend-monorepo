@@ -14,7 +14,7 @@ export const IconPause = ({ size = 16 }: { size?: number }) => {
         x2="9.5"
         y2="15.5"
         stroke="currentColor"
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
       <line
         x1="14.5"
@@ -22,7 +22,7 @@ export const IconPause = ({ size = 16 }: { size?: number }) => {
         x2="14.5"
         y2="15.5"
         stroke="currentColor"
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
     </svg>
   );

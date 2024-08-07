@@ -81,18 +81,14 @@ export const useRouterConfig = (): RouteObject[] => {
       path: AppRoutes.COMPETITIONS,
       element: <Outlet />,
       children: [
+        // with planet/stars
         {
           element: <LayoutCentered variant="sky" />,
           children: [
-            // with planet/stars
             { index: true, element: <CompetitionsHome /> },
             {
               path: AppRoutes.COMPETITIONS_TEAMS,
               element: <CompetitionsTeams />,
-            },
-            {
-              path: AppRoutes.COMPETITIONS_GAME,
-              element: <CompetitionsGame />,
             },
           ],
         },
@@ -111,6 +107,10 @@ export const useRouterConfig = (): RouteObject[] => {
             {
               path: AppRoutes.COMPETITIONS_TEAM,
               element: <CompetitionsTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_GAME,
+              element: <CompetitionsGame />,
             },
           ],
         },

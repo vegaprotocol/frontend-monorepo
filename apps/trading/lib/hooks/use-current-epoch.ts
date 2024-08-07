@@ -1,18 +1,22 @@
 import { useEpochInfoQuery } from './__generated__/Epoch';
 
 export const useCurrentEpoch = () => {
-  let currentEpoch;
-
-  const { data, loading, error } = useEpochInfoQuery({
+  const { data, ...queryResult } = useEpochInfoQuery({
     fetchPolicy: 'network-only',
   });
 
-  currentEpoch = Number(data?.epoch.id);
-  if (isNaN(currentEpoch)) currentEpoch = undefined;
+  const timestamps = data?.epoch.timestamps;
+  const id = data?.epoch.id;
 
   return {
-    data: currentEpoch,
-    loading,
-    error,
+    ...queryResult,
+    data: {
+      id: id ? Number(id) : undefined,
+      timestamps: {
+        start: timestamps?.start ? new Date(timestamps.start) : undefined,
+        end: timestamps?.end ? new Date(timestamps.end) : undefined,
+        expiry: timestamps?.expiry ? new Date(timestamps.expiry) : undefined,
+      },
+    },
   };
 };

@@ -162,6 +162,9 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     feeConstant: t(
       'The constant liquidity fee used when using the constant fee method .'
     ),
+    priceCap: t(
+      'The maximum price that this capped future can be traded at, given in market decimals.'
+    ),
     rateScalingFactor: t(
       'Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments.'
     ),

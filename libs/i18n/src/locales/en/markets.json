@@ -71,6 +71,7 @@
   "moreProofs_other": "And {{count}} more proofs",
   "moreProofs": "And {{count}} more proofs",
   "Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.": "Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.",
+  "No": "No",
   "No data": "No data",
   "No oracle proof for settlement data": "No oracle proof for settlement data",
   "No oracle proof for termination": "No oracle proof for termination",
@@ -175,5 +176,6 @@
   "{{probability}} of prices must be within the bounds for {{duration}}": "{{probability}} of prices must be within the bounds for {{duration}}",
   "No price monitoring bounds detected.": "No price monitoring bounds detected.",
   "triggers_one": "Trigger",
-  "triggers_other": "Chain of {{count}} triggers"
+  "triggers_other": "Chain of {{count}} triggers",
+  "Yes": "Yes"
 }

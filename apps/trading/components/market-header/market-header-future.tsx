@@ -42,6 +42,10 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
       />
       <Stats.Oracle marketId={market.id} />
       <Stats.ExpiryStat market={market} />
+      <Stats.PriceCapStat
+        marketId={market.id}
+        decimalPlaces={market.decimalPlaces}
+      />
     </>
   );
 };
