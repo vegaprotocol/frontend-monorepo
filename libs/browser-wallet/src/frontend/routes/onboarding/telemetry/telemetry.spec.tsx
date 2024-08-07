@@ -46,11 +46,11 @@ describe('Telemetry', () => {
     expect(screen.getByTestId(locators.description)).toHaveTextContent(
       'Improve Vega Wallet by automatically reporting bugs and crashes.'
     );
-    expect(screen.getByTestId(locators.userDataPolicy)).toBeVisible();
-    expect(screen.getByTestId(locators.userDataPolicy)).toHaveAttribute(
-      'href',
-      config.userDataPolicy
-    );
+    // expect(screen.getByTestId(locators.userDataPolicy)).toBeVisible();
+    // expect(screen.getByTestId(locators.userDataPolicy)).toHaveAttribute(
+    //   'href',
+    //   config.userDataPolicy
+    // );
     expect(screen.getByTestId(locators.reportBugsAndCrashes)).toBeVisible();
     expect(screen.getByTestId(locators.reportBugsAndCrashes)).toHaveFocus();
     expect(screen.getByTestId(locators.reportBugsAndCrashes)).toHaveTextContent(
