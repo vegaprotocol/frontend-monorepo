@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import { type DeepPartial } from 'react-hook-form';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useParams } from 'react-router-dom';
 
 import { locators as dataTableLocators } from '@/components/data-table';
 import { locators as vegaSubHeaderLocators } from '@/components/sub-header';
@@ -12,12 +12,10 @@ import { silenceErrors } from '@/test-helpers/silence-errors';
 import { testingNetwork } from '../../../../../../config/well-known-networks';
 import { locators, NetworkDetails } from './network-details';
 
-let useParameters: { id?: string } = { id: 'foo' };
-
 jest.mock('@/stores/networks-store');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: () => useParameters,
+  useParams: () => jest.fn(),
 }));
 
 const defaultNetworkStore = {
@@ -43,14 +41,16 @@ describe('NetworkDetails', () => {
   });
   it('should throw an error if id cannot be found', () => {
     silenceErrors();
-    useParameters = { id: undefined };
+    // @ts-ignore
+    useParams.mockReturnValue({ id: undefined });
     expect(() => renderComponent()).toThrow(
       'Id param not provided to network details'
     );
   });
   it('should throw an error if network cannot be found', () => {
     silenceErrors();
-    useParameters = { id: 'foo' };
+    // @ts-ignore
+    useParams.mockReturnValue({ id: 'foo' });
     expect(() => renderComponent({ getNetworkById: () => undefined })).toThrow(
       'Could not find network with id foo'
     );

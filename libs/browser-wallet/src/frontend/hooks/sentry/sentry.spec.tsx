@@ -17,24 +17,14 @@ jest.mock('@/stores/wallets');
 //   sentryDsn: 'dsn',
 // }));
 
+jest.mock('@sentry/react', () => ({
+  init: jest.fn(),
+  close: jest.fn(),
+  setTag: jest.fn(),
+}));
+
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('useSentry', () => {
-  let initMock: jest.Mock;
-  let closeMock: jest.Mock;
-  let setTagMock: jest.Mock;
-
-  beforeEach(() => {
-    initMock = jest.fn();
-    closeMock = jest.fn();
-    setTagMock = jest.fn();
-
-    // Mocking external dependencies
-    jest.mock('@sentry/react', () => ({
-      init: initMock,
-      close: closeMock,
-      setTag: setTagMock,
-    }));
-  });
 
   afterEach(() => {
     jest.resetAllMocks();

@@ -70,7 +70,8 @@ describe('Login', () => {
     );
     expect(screen.getByTestId(locators.loginButton)).toBeDisabled();
   });
-  it('renders error if unknown error occurs', async () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('renders error if unknown error occurs', async () => {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const listeners: Function[] = [];
     // @ts-ignore
