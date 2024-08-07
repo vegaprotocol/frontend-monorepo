@@ -1,6 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { AccountType } from '@vegaprotocol/protos/vega/AccountType';
-import { type Transfer as TransferType } from '@vegaprotocol/protos/vega/commands/v1/Transfer';
 import {
   type vegaAsset,
   vegaAssetStatus,
@@ -13,6 +11,7 @@ import { mockStore } from '@/test-helpers/mock-store';
 import { type Key } from '@/types/backend';
 
 import { locators, Transfer } from './transfer';
+import { AccountType } from '@vegaprotocol/enums';
 
 jest.mock('./basic-transfer-view', () => ({
   BasicTransferView: () => <div data-testid="basic-transfer-view" />,
@@ -36,7 +35,7 @@ jest.mock('@/stores/wallets', () => ({
   useWalletStore: jest.fn(),
 }));
 
-const baseTransfer: TransferType = {
+const baseTransfer = {
   amount: '1',
   asset: '0'.repeat(64),
   to: '1'.repeat(64),

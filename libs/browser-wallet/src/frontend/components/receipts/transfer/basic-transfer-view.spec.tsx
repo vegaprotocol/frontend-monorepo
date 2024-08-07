@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
 import { render, screen } from '@testing-library/react';
-import { AccountType } from '@vegaprotocol/protos/vega/AccountType';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 
@@ -10,6 +9,7 @@ import {
   BasicTransferView,
   locators as basicLocators,
 } from './basic-transfer-view';
+import { AccountType } from '@vegaprotocol/enums';
 
 const mockTransaction = {
   transfer: {

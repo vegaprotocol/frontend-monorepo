@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { AccountType } from '@vegaprotocol/protos/vega/AccountType';
 import {
   type vegaAsset,
   vegaAssetStatus,
@@ -15,6 +14,7 @@ import {
   EnrichedTransferView,
   locators as enrichedLocators,
 } from './enriched-transfer-view';
+import { AccountType } from '@vegaprotocol/enums';
 
 jest.mock('@/stores/wallets', () => ({
   useWalletStore: jest.fn(),
