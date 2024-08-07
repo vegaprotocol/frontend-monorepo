@@ -26,8 +26,8 @@ export const useGetRedirectPath = () => {
     const {
       storage: { session },
     } = getExtensionApi();
-    const savedMnemonic = await session.get(SUGGESTED_MNEMONIC_KEY);
-    const hasSavedMnemonic = savedMnemonic[SUGGESTED_MNEMONIC_KEY];
+    const savedMnemonic = await session.getItem(SUGGESTED_MNEMONIC_KEY);
+    const hasSavedMnemonic = !!savedMnemonic
     // If loading then we do not know where to redirect to yet
     if (loading || !globals) {
       setResult({

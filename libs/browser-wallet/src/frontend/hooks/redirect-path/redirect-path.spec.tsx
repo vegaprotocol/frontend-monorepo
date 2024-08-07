@@ -76,9 +76,7 @@ describe('RedirectPath', () => {
 
   it('returns save mnemonic if no wallets exist and there is a mnemonic in memory', async () => {
     // @ts-ignore
-    global.browser.storage.session.get = jest.fn().mockResolvedValue({
-      [SUGGESTED_MNEMONIC_KEY]: 'foo',
-    });
+    localStorage.setItem(SUGGESTED_MNEMONIC_KEY, 'foo');
     const view = renderRedirectHook({
       passphrase: true,
       locked: false,
