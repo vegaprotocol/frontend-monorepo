@@ -7,7 +7,9 @@ import type {
   ConnectionReply,
 } from '@/stores/interaction-store';
 
+// @ts-ignore
 import JSONRPCServer from '../../../lib/json-rpc-server';
+// @ts-ignore
 import { PortServer } from '../../../lib/port-server';
 
 const maybeCloseWindow = () => {
