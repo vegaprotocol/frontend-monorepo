@@ -5,6 +5,7 @@ import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { fairground } from '../../../../../config/well-known-networks';
 import { AmountWithTooltip, locators } from './amount-with-tooltip';
 import { locators as decimalTooltipLocators } from './decimal-tooltip';
+import exp from 'constants';
 
 const renderComponent = ({
   assetId,
@@ -51,5 +52,6 @@ describe('AmountWithTooltip', () => {
     });
     fireEvent.pointerMove(screen.getByTestId(locators.amount));
     await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
+    expect(screen.getByTestId(decimalTooltipLocators.decimalTooltip)).toBeInTheDocument();
   });
 });

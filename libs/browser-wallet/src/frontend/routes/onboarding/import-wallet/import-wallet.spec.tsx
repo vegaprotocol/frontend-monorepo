@@ -132,6 +132,7 @@ describe('ImportWallet', () => {
 
   it('renders error message if recovery phrase is invalid', async () => {
     // 1101-ONBD-030 If I submit a recovery phrase I am given feedback if the words are invalid i.e. no wallet found with that recovery phrase (and I can try again)
+    // eslint-disable-next-line @typescript-eslint/ban-types
     const listeners: Function[] = [];
     // @ts-ignore
     global.browser = {

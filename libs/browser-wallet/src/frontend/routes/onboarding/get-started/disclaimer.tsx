@@ -62,7 +62,7 @@ export const DisclaimerText = () => {
           data-testid={locators.dataPolicyLink}
           href="https://vega.xyz/vega-wallet-user-data-policy/"
         >
-          <>https://vega.xyz/vega-wallet-user-data-policy/</>
+          https://vega.xyz/vega-wallet-user-data-policy/
         </ExternalLink>
       </p>
       <p className="mb-2">
@@ -72,7 +72,7 @@ export const DisclaimerText = () => {
           data-testid={locators.feedbackLink}
           href="https://github.com/vegaprotocol/feedback/discussions"
         >
-          <>https://github.com/vegaprotocol/feedback/discussions</>
+          https://github.com/vegaprotocol/feedback/discussions
         </ExternalLink>
       </p>
     </section>

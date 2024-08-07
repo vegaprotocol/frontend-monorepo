@@ -177,5 +177,6 @@ describe('CreatePassword', () => {
       target: { value: 'te$t1234' },
     });
     await screen.findByTestId(passwordFeedbackLocators.passwordFeedback);
+    expect(screen.getByTestId(passwordFeedbackLocators.passwordFeedback)).toBeVisible();
   });
 });

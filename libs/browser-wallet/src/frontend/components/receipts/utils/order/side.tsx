@@ -6,12 +6,12 @@ import { useMarketsStore } from '@/stores/markets-store';
 
 export const DerivativeSide = ({ side }: { side: vegaSide }) => {
   const sideValue = processSide(side);
-  return <>{DERIVATIVE_SIDE_MAP[sideValue]}</>;
+  return DERIVATIVE_SIDE_MAP[sideValue];
 };
 
 export const SpotSide = ({ side }: { side: vegaSide }) => {
   const sideValue = processSide(side);
-  return <>{SPOT_SIDE_MAP[sideValue]}</>;
+  return SPOT_SIDE_MAP[sideValue];
 };
 
 export const OrderSide = ({
@@ -29,6 +29,6 @@ export const OrderSide = ({
   const market = getMarketById(marketId);
   const isSpot = isSpotMarket(market);
   return (
-    <>{isSpot ? <SpotSide side={side} /> : <DerivativeSide side={side} />}</>
+    isSpot ? <SpotSide side={side} /> : <DerivativeSide side={side} />
   );
 };

@@ -47,7 +47,7 @@ const SubmissionDetails = ({
       prop: 'expiryStrategy',
       render: (expiryStrategy) => [
         'Expiry strategy',
-        <>{EXPIRY_STRATEGY_MAP[processExpiryStrategy(expiryStrategy)]}</>,
+        EXPIRY_STRATEGY_MAP[processExpiryStrategy(expiryStrategy)],
       ],
     },
     {

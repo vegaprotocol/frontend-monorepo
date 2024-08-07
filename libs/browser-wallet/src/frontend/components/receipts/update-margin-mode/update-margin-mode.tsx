@@ -23,7 +23,7 @@ export const UpdateMarginMode = ({
       prop: 'mode',
       render: (mode) => [
         'Mode',
-        <>{MARGIN_MODE_MAP[processMarginMode(mode)]}</>,
+        MARGIN_MODE_MAP[processMarginMode(mode)],
       ],
     },
     {

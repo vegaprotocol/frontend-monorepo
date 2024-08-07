@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 // import config from '!/config';
-import { ExternalLink } from '@/components/external-link';
+// import { ExternalLink } from '@/components/external-link';
 import { Frame } from '@/components/frame';
 import { Tick } from '@/components/icons/tick';
 import { OnboardingPage } from '@/components/pages/onboarding-page';
@@ -41,7 +41,7 @@ export const Telemetry = () => {
 
   if (
     globals?.settings &&
-    globals.settings.hasOwnProperty('telemetry') &&
+    Object.prototype.hasOwnProperty.call(globals.settings, 'telemetry') &&
     typeof globals.settings.telemetry === 'boolean'
   ) {
     return <Navigate to={FULL_ROUTES.wallets} />;

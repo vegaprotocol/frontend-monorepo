@@ -7,11 +7,13 @@ import { FULL_ROUTES } from '../../routes/route-names';
 import { LOCATION_KEY } from '../persist-location';
 import { SUGGESTED_MNEMONIC_KEY } from '../suggest-mnemonic';
 
+interface State {
+  loading: boolean;
+  path: string | null;
+}
+
 export const useGetRedirectPath = () => {
-  const [result, setResult] = useState<{
-    loading: boolean;
-    path: string | null;
-  }>({
+  const [result, setResult] = useState<State>({
     loading: true,
     path: null,
   });

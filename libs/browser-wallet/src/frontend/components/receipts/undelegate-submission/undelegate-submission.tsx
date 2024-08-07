@@ -31,7 +31,7 @@ export const UndelegateSubmission = ({
       prop: 'method',
       render: (method) => [
         'Method',
-        <>{UNDELEGATE_METHOD_MAP[processUndelegateMethod(method)]}</>,
+        UNDELEGATE_METHOD_MAP[processUndelegateMethod(method)],
       ],
     },
   ];
