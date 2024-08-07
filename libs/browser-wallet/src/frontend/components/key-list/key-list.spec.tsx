@@ -10,12 +10,10 @@ import { locators as vegaKeyLocators } from '../keys/vega-key';
 import componentLocators from '../locators';
 import { KeyList, type KeyListProperties } from './key-list';
 
-const storeMock = {
-  createKey: jest.fn(),
-};
-
 jest.mock('@/stores/wallets', () => ({
-  useWalletStore: (function_: any) => function_(storeMock),
+  useWalletStore: (function_: any) => function_({
+    createKey: jest.fn(),
+  }),
 }));
 
 const renderComponent = (properties: KeyListProperties) =>

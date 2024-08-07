@@ -8,10 +8,10 @@ import { mockStore } from '@/test-helpers/mock-store';
 import { silenceErrors } from '@/test-helpers/silence-errors';
 
 import { AutomaticConsentSection } from './automatic-consent';
+import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 
-const request = jest.fn();
 jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
-  useJsonRpcClient: () => ({ request }),
+  useJsonRpcClient: jest.fn().mockReturnValue({ request: jest.fn() }),
 }));
 jest.mock('@/hooks/async-action');
 jest.mock('@/stores/connections');
@@ -58,6 +58,7 @@ describe('AutomaticConsent', () => {
     mockStore(useConnectionStore, {
       loadConnections,
     });
+    const { request } = useJsonRpcClient();
     // 1109-VCON-009 - I am able to toggle auto consent in the connection details screen
     (useAsyncAction as jest.Mock).mockImplementation((function_: any) => ({
       error: null,

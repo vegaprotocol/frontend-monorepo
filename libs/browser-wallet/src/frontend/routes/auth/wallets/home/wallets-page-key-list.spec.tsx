@@ -11,14 +11,15 @@ import {
   type WalletPageKeyListProperties,
   WalletsPageKeyList,
 } from './wallets-page-key-list';
+import { useWalletStore } from '@/stores/wallets';
 
-const storeMock = {
-  createKey: jest.fn(),
-};
-
-jest.mock('@/stores/wallets', () => ({
-  useWalletStore: (function_: any) => function_(storeMock),
-}));
+jest.mock('@/stores/wallets', () => {
+  const createKey = jest.fn();
+  return {
+  useWalletStore: (function_: any) => function_({
+    createKey: createKey,
+  })}
+});
 
 const renderComponent = (properties: WalletPageKeyListProperties) =>
   render(
@@ -79,9 +80,11 @@ describe('WalletsPageKeyList', () => {
       keys: [],
     };
 
+    const { createKey } = useWalletStore((state) => ({
+      createKey: state.createKey,
+    }))
     renderComponent({ wallet, onSignMessage: jest.fn() });
-
     fireEvent.click(screen.getByTestId(locators.walletsCreateKey));
-    await waitFor(() => expect(storeMock.createKey).toHaveBeenCalled());
+    await waitFor(() => expect(createKey).toHaveBeenCalled());
   });
 });
