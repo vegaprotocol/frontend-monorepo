@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { locators as dropDownLocators } from '@/components/dropdown/dropdown';
-import { type KeyListProperties } from '@/components/key-list';
+import { KeyListProperties } from '@/components/key-list';
 
 import { KeySelector, locators } from './key-selector';
 

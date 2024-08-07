@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import {
-  type vegaAccount,
+  vegaAccount,
   vegaAccountType,
-  type vegaAsset,
+  vegaAsset,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 
 import { locators as dataTableLocators } from '@/components/data-table';

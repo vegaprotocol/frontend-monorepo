@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { locators as vegaSubHeaderLocators } from '@/components/sub-header';
 import { locators as vegaSectionLocators } from '@/components/vega-section';
-import { type Connection } from '@/types/backend';
+import { Connection } from '@/types/backend';
 
 import { DetailsSection, locators } from './details-list';
 const renderComponent = (connection: Connection) => {

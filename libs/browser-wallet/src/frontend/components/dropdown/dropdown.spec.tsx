@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-import { Dropdown, type DropdownProperties, locators } from './dropdown';
+import { Dropdown, DropdownProperties, locators } from './dropdown';
 
 const defaultProps: DropdownProperties = {
   trigger: <div data-testid="trigger" />,

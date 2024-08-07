@@ -23,14 +23,14 @@ export const TransactionNotAutoApproved = ({
   }));
   const connection = connections.find((c) => c.origin === details.origin);
   if (!connection)
-    {throw new Error(`Could not find connection with origin ${details.origin}`);}
+    throw new Error(`Could not find connection with origin ${details.origin}`);
   if (!connection.autoConsent) return null;
   if (
     !AUTO_CONSENT_TRANSACTION_TYPES.includes(
       getTransactionType(details.transaction)
     )
   )
-    {return null;}
+    return null;
   return (
     <Notification
       message={

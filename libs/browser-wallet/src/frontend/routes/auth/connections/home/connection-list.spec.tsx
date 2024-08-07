@@ -5,7 +5,7 @@ import { locators as hostImageLocators } from '@/components/host-image';
 
 import {
   ConnectionsList,
-  type ConnectionsListProperties,
+  ConnectionsListProperties,
   locators,
 } from './connection-list';
 

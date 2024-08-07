@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { type ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
 
 import { LOCATION_KEY, usePersistLocation } from '.';

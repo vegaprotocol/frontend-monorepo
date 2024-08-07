@@ -18,7 +18,7 @@ const IGNORED_PATHS = new Set([
 ]);
 
 export const usePersistLocation = () => {
-  const location = useLocation();
+  let location = useLocation();
 
   useEffect(() => {
     // Ignore the home route as we do not want to persist this

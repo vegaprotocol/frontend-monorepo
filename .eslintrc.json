@@ -18,6 +18,19 @@
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "extends": ["plugin:jsx-a11y/strict"],
       "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ],
         "unicorn/filename-case": [
           "error",
           {

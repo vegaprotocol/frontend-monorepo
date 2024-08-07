@@ -50,14 +50,14 @@ export const ImportWallet = () => {
   };
   const mnemonic = useWatch({ control, name: 'mnemonic' });
   if (showSuccess)
-    {return (
+    return (
       <WalletImported
         onClose={() => {
           navigate(FULL_ROUTES.wallets);
           setShowSuccess(false);
         }}
       />
-    );}
+    );
   return (
     <OnboardingPage
       name="Import wallet"
@@ -82,7 +82,7 @@ export const ImportWallet = () => {
                       value.toString().split(' ').length
                     )
                   )
-                    {return 'Recovery phrase must be 12, 15, 18, 21 or 24 words';}
+                    return 'Recovery phrase must be 12, 15, 18, 21 or 24 words';
                   return true;
                 },
               })}

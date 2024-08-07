@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // const getTabs = () => globalThis.browser?.tabs ?? globalThis.chrome?.tabs;
 

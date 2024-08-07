@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { testingNetwork } from '../../../config/well-known-networks';
-import { locators, type NetworkListProperties, NetworksList } from './networks-list';
+import { locators, NetworkListProperties, NetworksList } from './networks-list';
 
 const renderComponent = (properties: NetworkListProperties) => {
   return render(<NetworksList {...properties} />);

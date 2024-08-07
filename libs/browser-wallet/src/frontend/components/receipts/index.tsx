@@ -10,10 +10,10 @@ export const TransactionSwitch = ({
   const type = Object.keys(transaction)[0] as TransactionKeys;
   const Component = TransactionMap[type];
   if (Component)
-    {return (
+    return (
       <ReceiptViewErrorBoundary>
         <Component transaction={transaction} />
       </ReceiptViewErrorBoundary>
-    );}
+    );
   return null;
 };

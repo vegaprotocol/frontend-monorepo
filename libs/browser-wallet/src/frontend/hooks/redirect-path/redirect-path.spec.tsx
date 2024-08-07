@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 
-import { type AppGlobals, useGlobalsStore } from '@/stores/globals';
+import { AppGlobals, useGlobalsStore } from '@/stores/globals';
 import { mockStorage } from '@/test-helpers/mock-storage';
 import { mockStore } from '@/test-helpers/mock-store';
 

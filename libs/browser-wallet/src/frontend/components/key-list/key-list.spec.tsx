@@ -8,7 +8,7 @@ import { mockClient } from '@/test-helpers/mock-client';
 import { fairground } from '../../../config/well-known-networks';
 import { locators as vegaKeyLocators } from '../keys/vega-key';
 import componentLocators from '../locators';
-import { KeyList, type KeyListProperties } from './key-list';
+import { KeyList, KeyListProperties } from './key-list';
 
 const storeMock = {
   createKey: jest.fn(),

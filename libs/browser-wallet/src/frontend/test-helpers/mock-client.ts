@@ -31,10 +31,8 @@ export const mockClient = (
   keys: Key[] = defaultKeys,
   globals?: Partial<AppGlobals>
 ) => {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const listeners: Function[] = [];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pushMessage = (message: any) => {
     // Set timeout to simulate async
     setTimeout(() => {
@@ -42,15 +40,12 @@ export const mockClient = (
       listeners[0](message);
     }, 50);
   };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   global.browser = {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ...global.browser,
     runtime: {
       connect: () => ({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         postMessage: (message: any) => {
           switch (message.method) {
             case RpcMethods.ListWallets: {
@@ -216,19 +211,15 @@ export const mockClient = (
             }
           }
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onmessage: (...arguments_: any[]) => {
-          // eslint-disable-next-line no-console
           console.log('om', arguments_);
         },
         onMessage: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           addListener: (function_: any) => {
             listeners.push(function_);
           },
         },
         onDisconnect: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           addListener: (function_: any) => {},
         },
       }),

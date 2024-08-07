@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { AccountType } from '@vegaprotocol/protos/vega/AccountType';
 import {
-  type vegaAsset,
+  vegaAsset,
   vegaAssetStatus,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 
 import { useAssetsStore } from '@/stores/assets-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
-import { type Key } from '@/types/backend';
+import { Key } from '@/types/backend';
 
 import { locators as priceWithSymbolLocators } from '../utils/string-amounts/amount-with-symbol';
 import {

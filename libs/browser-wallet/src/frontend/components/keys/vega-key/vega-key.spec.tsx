@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 
 import { fairground } from '../../../../config/well-known-networks';
-import { locators, VegaKey, type VegaKeyProperties } from '.';
+import { locators, VegaKey, VegaKeyProperties } from '.';
 
 const mockPublicKey =
   '07248acbd899061ba9c5f3ab47791df2045c8e249f1805a04c2a943160533673';

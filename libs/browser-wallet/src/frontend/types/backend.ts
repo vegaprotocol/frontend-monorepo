@@ -1,7 +1,6 @@
 import type { Transaction } from '@/lib/transactions';
 
 export interface AllowList {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   publicKeys: any[];
   wallets: string[];
 }

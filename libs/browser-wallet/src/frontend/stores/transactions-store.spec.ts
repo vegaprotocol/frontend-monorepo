@@ -25,9 +25,7 @@ describe('TransactionStore', () => {
     const mockRequest = jest.fn().mockRejectedValue(new Error('test error'));
     try {
       await state.loadTransactions(mockRequest);
-    } catch (e) {
-      // NOOP
-    }
+    } catch {}
     expect(useTransactionsStore.getState().loading).toBe(false);
   });
 });

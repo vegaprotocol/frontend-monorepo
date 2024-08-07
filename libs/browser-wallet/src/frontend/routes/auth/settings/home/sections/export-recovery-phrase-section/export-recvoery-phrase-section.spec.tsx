@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { type ExportRecoveryPhraseFromProperties } from './export-recovery-phrase-form';
+import { ExportRecoveryPhraseFromProperties } from './export-recovery-phrase-form';
 import {
   ExportRecoveryPhraseSection,
   locators,
 } from './export-recovery-phrase-section';
-import { type ViewRecoveryPhraseProperties } from './view-recovery-phrase';
+import { ViewRecoveryPhraseProperties } from './view-recovery-phrase';
 
 jest.mock('./export-recovery-phrase-form', () => ({
   ExportRecoveryPhraseForm: (

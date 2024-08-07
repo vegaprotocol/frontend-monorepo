@@ -1,11 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
-import { type DeepPartial } from 'react-hook-form';
+import { DeepPartial } from 'react-hook-form';
 import { MemoryRouter } from 'react-router-dom';
 
 import { locators as dataTableLocators } from '@/components/data-table';
 import { locators as vegaSubHeaderLocators } from '@/components/sub-header';
 import { locators as vegaSectionLocators } from '@/components/vega-section';
-import { type NetworksStore, useNetworksStore } from '@/stores/networks-store';
+import { NetworksStore, useNetworksStore } from '@/stores/networks-store';
 import { mockStore } from '@/test-helpers/mock-store';
 import { silenceErrors } from '@/test-helpers/silence-errors';
 

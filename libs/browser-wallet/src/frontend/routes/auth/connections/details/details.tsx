@@ -34,9 +34,9 @@ export const ConnectionDetails = () => {
 
   const connection = connections.find((c) => c.origin === connectionOrigin);
   if (!connection)
-    {throw new Error(
+    throw new Error(
       `Could not find connection with origin ${connectionOrigin}`
-    );}
+    );
 
   return (
     <BasePage

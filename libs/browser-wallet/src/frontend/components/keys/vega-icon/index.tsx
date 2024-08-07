@@ -5,7 +5,7 @@ export const locators = {
 };
 
 function getBitsFromByte(byte: number) {
-  const bits = [];
+  let bits = [];
   for (let index = 0; index < 8; index++) {
     bits.push(byte & (1 << index));
   }
@@ -16,10 +16,10 @@ const getColorList = (publicKey: string) => {
   return Array.from({ length: 4 })
     .fill(null)
     .flatMap((_, index) => {
-      const color1 = '#' + publicKey.slice(index * 16, index * 16 + 6);
-      const color2 = '#' + publicKey.slice(index * 16 + 6, index * 16 + 12);
-      const pattern = publicKey.slice(index * 16 + 12, index * 16 + 14); // each bit represents a pixel in the 3x3 grid except the center pixel
-      const centerColor = publicKey.slice(index * 16 + 14, index * 16 + 16);
+      let color1 = '#' + publicKey.slice(index * 16, index * 16 + 6);
+      let color2 = '#' + publicKey.slice(index * 16 + 6, index * 16 + 12);
+      let pattern = publicKey.slice(index * 16 + 12, index * 16 + 14); // each bit represents a pixel in the 3x3 grid except the center pixel
+      let centerColor = publicKey.slice(index * 16 + 14, index * 16 + 16);
 
       const bits = getBitsFromByte(Number.parseInt(pattern, 16));
 

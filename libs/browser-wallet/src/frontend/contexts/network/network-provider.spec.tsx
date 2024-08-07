@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { type GlobalsStore, useGlobalsStore } from '@/stores/globals';
+import { GlobalsStore, useGlobalsStore } from '@/stores/globals';
 import {
-  type InteractionStore,
+  InteractionStore,
   useInteractionStore,
 } from '@/stores/interaction-store';
-import { type NetworksStore, useNetworksStore } from '@/stores/networks-store';
-import { type DeepPartial, mockStore } from '@/test-helpers/mock-store';
+import { NetworksStore, useNetworksStore } from '@/stores/networks-store';
+import { DeepPartial, mockStore } from '@/test-helpers/mock-store';
 import { silenceErrors } from '@/test-helpers/silence-errors';
 
 import {

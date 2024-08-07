@@ -6,7 +6,7 @@ import { mockClient } from '@/test-helpers/mock-client';
 import { locators as signMessageLocators } from './sign-message';
 import {
   SignMessageDialog,
-  type SignMessageDialogProperties,
+  SignMessageDialogProperties,
 } from './sign-message-dialog';
 import { locators as signedMessageLocators } from './signed-message';
 

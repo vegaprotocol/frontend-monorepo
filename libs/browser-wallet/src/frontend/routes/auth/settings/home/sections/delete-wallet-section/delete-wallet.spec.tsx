@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { DeleteWallet, locators } from './delete-wallet';
-import { type DeleteWalletWarningProperties } from './delete-wallet-warning';
+import { DeleteWalletWarningProperties } from './delete-wallet-warning';
 
 jest.mock('./delete-wallet-warning', () => ({
   DeleteWalletWarning: (properties: DeleteWalletWarningProperties) => (

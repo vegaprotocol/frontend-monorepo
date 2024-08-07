@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RpcMethods } from '@/lib/client-rpc-methods';
 
 import { useWalletStore } from './wallets';
