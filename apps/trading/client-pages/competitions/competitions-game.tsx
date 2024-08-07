@@ -320,8 +320,11 @@ const GameDetails = ({
   );
   const userCap =
     partyScore?.node && feeCap
-      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
+      ? BigNumber(partyScore.node.totalFeesPaid)
+          .times(asset.quantum)
+          .times(feeCap)
       : null;
+
   const labelClasses = 'text-sm text-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
@@ -351,22 +354,32 @@ const GameDetails = ({
               <dt className={labelClasses}>{t('Fee cap')}</dt>
             </div>
             <div>
-              <dd className="text-3xl lg:text-4xl">
-                {userCap ? userCap.toString() : t('No cap')}
+              <dd className={valueClasses}>
+                {userCap ? userCap.toString() : '0'}
               </dd>
-              <dt className="text-sm text-muted">
-                {t('Your cap')}
-                <Tooltip
-                  description={t(
-                    'Your fees paid for this epoch are currently {{paid}} so your rewards will be capped at {{cap}} times this amount',
-                    {
-                      paid: partyScore?.node?.totalFeesPaid || '0',
-                      cap: feeCap,
+              <dt className={labelClasses}>
+                <span className="flex gap-1 items-center">
+                  <span>{t('Your cap')}</span>
+                  <Tooltip
+                    description={
+                      userCap
+                        ? t(
+                            'Your fees paid for this epoch are currently {{paid}} so your rewards will be capped at {{cap}} times this amount',
+                            {
+                              paid: partyScore?.node?.totalFeesPaid || '0',
+                              cap: feeCap,
+                            }
+                          )
+                        : t(
+                            'Your fees paid for this epoch are currently 0 so you cannot earn rewards.'
+                          )
                     }
-                  )}
-                >
-                  <VegaIcon name={VegaIconNames.INFO} />
-                </Tooltip>
+                  >
+                    <span className="inline-block">
+                      <VegaIcon name={VegaIconNames.INFO} />
+                    </span>
+                  </Tooltip>
+                </span>
               </dt>
             </div>
           </>
@@ -708,7 +721,12 @@ const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
   }
 
   if (metric === DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY) {
-    return 'σ2';
+    return (
+      <>
+        {'σ'}
+        <sup>2</sup>
+      </>
+    );
   }
 
   return null;
