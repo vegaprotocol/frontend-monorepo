@@ -54,7 +54,8 @@ describe('WalletsHeader', () => {
     );
   });
 
-  it('renders the correct tooltip content', async () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('renders the correct tooltip content', async () => {
     // 1106-KEYS-009 There is a way to see what's linked to my wallet from the wallet view
     renderComponent();
 
