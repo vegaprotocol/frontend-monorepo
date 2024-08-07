@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
-import { useTabStore } from '@/stores/tab-store';
+// import { useTabStore } from '@/stores/tab-store';
 
 export function useListenForActiveTab() {
   // const { setup, teardown } = useTabStore((state) => ({

@@ -2,6 +2,7 @@ import type JSONRPCClient from '@/lib/json-rpc-client';
 import type JSONRPCServer from '@/lib/json-rpc-server';
 
 interface EventTracker {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   listener: Function;
   result: any[];
   callCounter: number;

@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 
-import { useGetRedirectPath } from '@/hooks/redirect-path';
+// import { useGetRedirectPath } from '@/hooks/redirect-path';
 import { FULL_ROUTES } from '../route-names';
 // import { useSentry } from '@/hooks/sentry'
 

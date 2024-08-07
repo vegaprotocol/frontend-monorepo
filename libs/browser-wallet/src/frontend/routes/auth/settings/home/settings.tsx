@@ -1,5 +1,5 @@
 // import config from '!/config';
-import { ExternalLink } from '@/components/external-link';
+// import { ExternalLink } from '@/components/external-link';
 import { BasePage } from '@/components/pages/page';
 import { useGlobalsStore } from '@/stores/globals';
 

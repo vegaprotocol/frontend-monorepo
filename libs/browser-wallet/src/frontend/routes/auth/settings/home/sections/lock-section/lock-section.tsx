@@ -2,7 +2,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { ExternalLink } from '@/components/external-link';
+// import { ExternalLink } from '@/components/external-link';
 import { VegaSection } from '@/components/vega-section';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';

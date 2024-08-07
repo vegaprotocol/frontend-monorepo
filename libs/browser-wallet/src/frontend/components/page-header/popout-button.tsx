@@ -1,27 +1,27 @@
 // import config from '!/config';
-import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
-import { RpcMethods } from '@/lib/client-rpc-methods';
-import { useGlobalsStore } from '@/stores/globals';
-import { usePopoverStore } from '@/stores/popover-store';
+// import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
+// import { useNetwork } from '@/contexts/network/network-context';
+// import { RpcMethods } from '@/lib/client-rpc-methods';
+// import { useGlobalsStore } from '@/stores/globals';
+// import { usePopoverStore } from '@/stores/popover-store';
 
-import { Cross } from '../icons/cross';
-import { ExpandIcon } from '../icons/expand';
+// import { Cross } from '../icons/cross';
+// import { ExpandIcon } from '../icons/expand';
 
 export const locators = {
   openPopoutButton: 'open-popout-button',
 };
 
-const useOpenInNewWindow = () => {
-  const { request } = useJsonRpcClient();
+// const useOpenInNewWindow = () => {
+//   const { request } = useJsonRpcClient();
 
-  return async () => {
-    await request(RpcMethods.OpenPopout, null);
-    // if (config.closeWindowOnPopupOpen) {
-    //   window.close();
-    // }
-  };
-};
+//   return async () => {
+//     await request(RpcMethods.OpenPopout, null);
+//     // if (config.closeWindowOnPopupOpen) {
+//     //   window.close();
+//     // }
+//   };
+// };
 
 // export const PopoutButton = () => {
 //   const { isMobile } = useGlobalsStore((state) => ({

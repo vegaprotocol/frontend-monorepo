@@ -3,8 +3,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import locators from '../locators';
 import { CopyWithCheckmark } from './copy-with-check';
 
-// eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
 jest.mock('react-copy-to-clipboard', () => ({ children, onCopy }: any) => (
+  // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
   <div onClick={onCopy}>{children}</div>
 ));
 

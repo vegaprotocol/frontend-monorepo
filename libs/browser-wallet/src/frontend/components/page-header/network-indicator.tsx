@@ -1,55 +1,55 @@
-import { getIntentBackground, type Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+// import { getIntentBackground, type Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
+// import classNames from 'classnames';
 
-import { useNetwork } from '@/contexts/network/network-context';
-import { useConnectionStore } from '@/stores/connections';
-import { useNetworksStore } from '@/stores/networks-store';
-import { useTabStore } from '@/stores/tab-store';
+// import { useNetwork } from '@/contexts/network/network-context';
+// import { useConnectionStore } from '@/stores/connections';
+// import { useNetworksStore } from '@/stores/networks-store';
+// import { useTabStore } from '@/stores/tab-store';
 
-import { CONSTANTS } from '../../lib/constants';
+// import { CONSTANTS } from '../../lib/constants';
 
 export const locators = {
   indicator: 'indicator',
   networkIndicatorTooltip: 'network-indicator-tooltip',
 };
 
-const Indicator = ({ intent }: { intent: Intent }) => {
-  const background = getIntentBackground(intent);
-  return (
-    <div
-      data-testid={locators.indicator}
-      className={classNames(
-        'border-1 border-vega-dark-200 border inline-block w-3 h-3 mt-1 mr-2 rounded-full text-black',
-        background
-      )}
-    />
-  );
-};
+// const Indicator = ({ intent }: { intent: Intent }) => {
+//   const background = getIntentBackground(intent);
+//   return (
+//     <div
+//       data-testid={locators.indicator}
+//       className={classNames(
+//         'border-1 border-vega-dark-200 border inline-block w-3 h-3 mt-1 mr-2 rounded-full text-black',
+//         background
+//       )}
+//     />
+//   );
+// };
 
-const IndicatorWithTooltip = ({
-  intent,
-  description,
-}: {
-  description: string;
-  intent: Intent;
-}) => {
-  return (
-    <Tooltip
-      description={
-        <div
-          data-testid={locators.networkIndicatorTooltip}
-          style={{ maxWidth: CONSTANTS.width - 60 }}
-        >
-          {description}
-        </div>
-      }
-    >
-      <div>
-        <Indicator intent={intent} />
-      </div>
-    </Tooltip>
-  );
-};
+// const IndicatorWithTooltip = ({
+//   intent,
+//   description,
+// }: {
+//   description: string;
+//   intent: Intent;
+// }) => {
+//   return (
+//     <Tooltip
+//       description={
+//         <div
+//           data-testid={locators.networkIndicatorTooltip}
+//           style={{ maxWidth: CONSTANTS.width - 60 }}
+//         >
+//           {description}
+//         </div>
+//       }
+//     >
+//       <div>
+//         <Indicator intent={intent} />
+//       </div>
+//     </Tooltip>
+//   );
+// };
 
 // export const NetworkIndicator = () => {
 //   const { network } = useNetwork();

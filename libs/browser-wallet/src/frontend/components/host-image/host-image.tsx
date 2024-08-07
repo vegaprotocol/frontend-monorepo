@@ -42,7 +42,9 @@ const FallbackImage = ({ hostname, size }: HostImageProperties) => {
     const host = new URL(hostname).host;
     const parseResult = parse(host);
     letter = parseResult.domain?.charAt(0) || '?';
-  } catch {}
+  } catch {
+    //NOOP
+  }
 
   return (
     <div

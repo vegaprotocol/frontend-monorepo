@@ -60,6 +60,7 @@ export class PortServer {
    * @returns {void}
    */
   listen(port) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
     const origin =

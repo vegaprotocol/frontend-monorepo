@@ -3,7 +3,7 @@ import { MemoryRouter as Router } from 'react-router-dom';
 
 import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
-import { NetworkProvider } from '@/contexts/network/network-provider';
+// import { NetworkProvider } from '@/contexts/network/network-provider';
 // import { useListenForActiveTab } from '@/hooks/listen-for-active-tab';
 // import { useListenForPopups } from '@/hooks/listen-for-popups';
 // import { usePing } from '@/hooks/ping';

@@ -10,6 +10,7 @@ import JSONRPCClient from '../../../lib/json-rpc-client';
 import { RpcMethods } from '../../../lib/client-rpc-methods';
 import type { JsonRpcNotification } from '../json-rpc-provider';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 const createClient = (notificationHandler: Function) => {
   const { runtime } = getExtensionApi();
   const backgroundPort = runtime.connect({ name: 'popup' });

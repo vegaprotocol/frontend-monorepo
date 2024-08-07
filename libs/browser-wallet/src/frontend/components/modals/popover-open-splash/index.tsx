@@ -1,10 +1,10 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+// import { Button } from '@vegaprotocol/ui-toolkit';
 
-import { usePopoverStore } from '@/stores/popover-store';
+// import { usePopoverStore } from '@/stores/popover-store';
 
-import { Frame } from '../../frame';
-import { ExpandIcon } from '../../icons/expand';
-import { Splash } from '../../splash';
+// import { Frame } from '../../frame';
+// import { ExpandIcon } from '../../icons/expand';
+// import { Splash } from '../../splash';
 
 export const locators = {
   popoverSplash: 'popover-modal',

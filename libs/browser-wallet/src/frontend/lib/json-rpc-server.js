@@ -37,7 +37,9 @@ export default class JSONRPCServer {
     for (const listener of this._notificationListeners) {
       try {
         listener(msg);
-      } catch (_) {}
+      } catch (_) {
+        // NOOP
+      }
     }
   }
 
