@@ -5,13 +5,11 @@
 import '@testing-library/jest-dom';
 import 'jest-canvas-mock';
 
-// import TimeAgo from 'javascript-time-ago';
-// import en from 'javascript-time-ago/locale/en';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import ResizeObserver from 'resize-observer-polyfill';
 
-// console.log(TimeAgo, en);
-
-// TimeAgo.addDefaultLocale(en);
+TimeAgo.addDefaultLocale(en);
 
 // Required by radix-ui/react-tooltip
 global.ResizeObserver = ResizeObserver;
