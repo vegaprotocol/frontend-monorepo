@@ -49,6 +49,7 @@
     "@tanstack/react-query": "^5.45.0",
     "@types/object-hash": "^3.0.6",
     "@vegaprotocol/enums": "^0.0.2",
+    "@vegaprotocol/protos": "^0.21.0",
     "@vegaprotocol/rest-clients": "^0.77.0",
     "@wagmi/connectors": "^5.0.17",
     "@wagmi/core": "^2.11.5",

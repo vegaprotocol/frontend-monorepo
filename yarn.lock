@@ -8802,6 +8802,14 @@
   resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.2.tgz#8382e0b0e359f3e5045f26e22a607910cfb06684"
   integrity sha512-XRS82UW0tVeVlvjD39uPp9MoFPuo+DYoxtpVjlif0mQNn74vfuhQus8UniGRCCCj7CyvXQx3hnM3xyzGwxqPaw==
 
+"@vegaprotocol/protos@^0.21.0":
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/protos/-/protos-0.21.0.tgz#cfc3588ad3716f69654b235356bc2e16d044b0cf"
+  integrity sha512-e+7UvWUqM0pUCnjZR6pHTd5pL2iDpmfGEsLtFhwcdx58gWrOXcLeRZVpKpPljhDyaOPkLIIJ4Ok2IJ9Fohc7qQ==
+  dependencies:
+    protobuf-codec "^2.0.1"
+    type-fest "^3.6.0"
+
 "@vegaprotocol/rest-clients@^0.77.0":
   version "0.77.0"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/rest-clients/-/rest-clients-0.77.0.tgz#b2f2c6ce7ee39b41f7e5939eba0b9bc783469ec7"
@@ -21494,6 +21502,13 @@ property-information@^6.0.0:
   resolved "https://registry.yarnpkg.com/property-information/-/property-information-6.5.0.tgz#6212fbb52ba757e92ef4fb9d657563b933b7ffec"
   integrity sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==
 
+protobuf-codec@^2.0.1:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/protobuf-codec/-/protobuf-codec-2.0.5.tgz#c0f2ffd2a18e06456f629f1e0f4e88b5c2448245"
+  integrity sha512-yyUBW1gldEP3PFMZlpBwfBtMRDL1UgRNskkbddwbAU+DNNtJ5suB+NRxmaBjumJpX/cXwf77vZTsgRM1zEdE3w==
+  dependencies:
+    nanoassert "^2.0.0"
+
 protobufjs@7.2.5:
   version "7.2.5"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.2.5.tgz#45d5c57387a6d29a17aab6846dcc283f9b8e7f2d"
@@ -24651,7 +24666,7 @@ type-fest@^2.19.0, type-fest@~2.19:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-2.19.0.tgz#88068015bb33036a598b952e55e9311a60fd3a9b"
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
-type-fest@^3.8.0:
+type-fest@^3.6.0, type-fest@^3.8.0:
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-3.13.1.tgz#bb744c1f0678bea7543a2d1ec24e83e68e8c8706"
   integrity sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==
