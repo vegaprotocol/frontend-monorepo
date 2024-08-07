@@ -11,9 +11,10 @@ import componentLocators from '../locators';
 import { KeyList, type KeyListProperties } from './key-list';
 
 jest.mock('@/stores/wallets', () => ({
-  useWalletStore: (function_: any) => function_({
-    createKey: jest.fn(),
-  }),
+  useWalletStore: (function_: any) =>
+    function_({
+      createKey: jest.fn(),
+    }),
 }));
 
 const renderComponent = (properties: KeyListProperties) =>

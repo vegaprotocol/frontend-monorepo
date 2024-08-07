@@ -50,9 +50,9 @@ describe('AmountWithTooltip', () => {
       amount,
     });
     fireEvent.pointerMove(screen.getByTestId(locators.amount));
-    const [tooltip] = await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
-    expect(
-      tooltip
-    ).toBeInTheDocument();
+    const [tooltip] = await screen.findAllByTestId(
+      decimalTooltipLocators.decimalTooltip
+    );
+    expect(tooltip).toBeInTheDocument();
   });
 });

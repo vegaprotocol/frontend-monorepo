@@ -39,9 +39,9 @@ describe('PriceWithTooltip', () => {
       price: amount,
     });
     fireEvent.pointerMove(screen.getByTestId(locators.price));
-    const [tooltip] = await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
-    expect(
-      tooltip
-    ).toBeInTheDocument();
+    const [tooltip] = await screen.findAllByTestId(
+      decimalTooltipLocators.decimalTooltip
+    );
+    expect(tooltip).toBeInTheDocument();
   });
 });

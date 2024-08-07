@@ -58,7 +58,7 @@ describe('DeleteConnectionSection', () => {
       loading: false,
       removeConnection,
     });
-    const { request } = useJsonRpcClient()
+    const { request } = useJsonRpcClient();
     renderComponent();
     const removeButton = screen.getByTestId(locators.removeConnection);
     fireEvent.click(removeButton);

@@ -25,7 +25,6 @@ jest.mock('@sentry/react', () => ({
 
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('useSentry', () => {
-
   afterEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();

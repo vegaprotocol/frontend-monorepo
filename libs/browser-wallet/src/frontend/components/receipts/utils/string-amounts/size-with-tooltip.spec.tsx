@@ -39,9 +39,9 @@ describe('SizeWithTooltip', () => {
       size: amount,
     });
     fireEvent.pointerMove(screen.getByTestId(locators.size));
-    const [tooltip]= await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
-    expect(
-      tooltip
-    ).toBeInTheDocument();
+    const [tooltip] = await screen.findAllByTestId(
+      decimalTooltipLocators.decimalTooltip
+    );
+    expect(tooltip).toBeInTheDocument();
   });
 });

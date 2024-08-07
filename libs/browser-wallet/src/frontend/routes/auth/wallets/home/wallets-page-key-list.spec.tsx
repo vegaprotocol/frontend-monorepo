@@ -16,9 +16,11 @@ import { useWalletStore } from '@/stores/wallets';
 jest.mock('@/stores/wallets', () => {
   const createKey = jest.fn();
   return {
-  useWalletStore: (function_: any) => function_({
-    createKey: createKey,
-  })}
+    useWalletStore: (function_: any) =>
+      function_({
+        createKey: createKey,
+      }),
+  };
 });
 
 const renderComponent = (properties: WalletPageKeyListProperties) =>
@@ -82,7 +84,7 @@ describe('WalletsPageKeyList', () => {
 
     const { createKey } = useWalletStore((state) => ({
       createKey: state.createKey,
-    }))
+    }));
     renderComponent({ wallet, onSignMessage: jest.fn() });
     fireEvent.click(screen.getByTestId(locators.walletsCreateKey));
     await waitFor(() => expect(createKey).toHaveBeenCalled());
