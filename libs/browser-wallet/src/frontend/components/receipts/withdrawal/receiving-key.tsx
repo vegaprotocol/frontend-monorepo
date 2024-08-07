@@ -15,12 +15,12 @@ export const ReceivingKey = ({
 }) => {
   const { network } = useNetwork();
   const asset = useAsset(assetId);
-  let chainId = get(asset, 'details.erc20.chainId');
+  const chainId = get(asset, 'details.erc20.chainId');
   if (!asset || !chainId) return <UnknownNetworkKey address={address} />;
 
   if (network.ethereumChainId === chainId)
-    return <EthereumKey address={address} />;
+    {return <EthereumKey address={address} />;}
   if (network.arbitrumChainId === chainId)
-    return <ArbitrumKey address={address} />;
+    {return <ArbitrumKey address={address} />;}
   return <UnknownNetworkKey address={address} />;
 };

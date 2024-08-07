@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { TransactionMessage } from '@/lib/transactions';
+import { type TransactionMessage } from '@/lib/transactions';
 import { useConnectionStore } from '@/stores/connections';
 import { mockStore } from '@/test-helpers/mock-store';
 import { silenceErrors } from '@/test-helpers/silence-errors';

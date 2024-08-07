@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { StoredTransaction, TransactionState } from '@/types/backend';
+import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../../config/well-known-networks';
 import { locators, TransactionsList } from './transactions-list';

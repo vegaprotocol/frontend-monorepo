@@ -8,7 +8,7 @@ import { mockClient } from '@/test-helpers/mock-client';
 
 import {
   locators,
-  WalletPageKeyListProperties,
+  type WalletPageKeyListProperties,
   WalletsPageKeyList,
 } from './wallets-page-key-list';
 

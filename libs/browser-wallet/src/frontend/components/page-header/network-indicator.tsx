@@ -1,4 +1,4 @@
-import { getIntentBackground, Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { getIntentBackground, type Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 
 import { useNetwork } from '@/contexts/network/network-context';

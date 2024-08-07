@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { ConditionalDataTable, RowConfig } from './conditional-data-table';
+import { ConditionalDataTable, type RowConfig } from './conditional-data-table';
 
 describe('ConditionalDataTable', () => {
   it('should render components where data is defined', () => {

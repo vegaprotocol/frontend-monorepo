@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { locators as subHeaderLocators } from '@/components/sub-header';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { FULL_ROUTES } from '@/routes/route-names';
-import { StoredTransaction, TransactionState } from '@/types/backend';
+import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../config/well-known-networks';
 import { locators, TransactionMetadata } from './transaction-metadata';

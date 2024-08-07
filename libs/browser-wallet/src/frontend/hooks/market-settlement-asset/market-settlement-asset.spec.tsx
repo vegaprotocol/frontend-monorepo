@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react';
 
-import { AssetsStore, useAssetsStore } from '@/stores/assets-store';
-import { MarketsStore, useMarketsStore } from '@/stores/markets-store';
-import { DeepPartial, mockStore } from '@/test-helpers/mock-store';
+import { type AssetsStore, useAssetsStore } from '@/stores/assets-store';
+import { type MarketsStore, useMarketsStore } from '@/stores/markets-store';
+import { type DeepPartial, mockStore } from '@/test-helpers/mock-store';
 import { silenceErrors } from '@/test-helpers/silence-errors';
 
 import { useMarketPriceAsset } from './market-settlement-asset';

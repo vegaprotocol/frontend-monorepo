@@ -15,7 +15,7 @@ import { generateMarket } from '@/test-helpers/generate-market';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { locators as dataTableLocators } from '../../data-table';
-import { OrderTable, OrderTableProperties } from './order-table';
+import { OrderTable, type OrderTableProperties } from './order-table';
 
 jest.mock('@/stores/markets-store', () => ({
   ...jest.requireActual('@/stores/markets-store'),

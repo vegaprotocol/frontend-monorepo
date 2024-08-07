@@ -62,6 +62,7 @@ describe('NetworksStore', () => {
   });
   it('sets selected network to be the first network if selected network cannot be found', async () => {
     const net = globalsMock.settings.selectedNetwork;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     globalsMock.settings.selectedNetwork = undefined;
     await useNetworksStore.getState().loadNetworks(request);

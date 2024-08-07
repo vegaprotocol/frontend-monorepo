@@ -29,7 +29,7 @@ const CheckTransactionResult = ({
   error: Error | null;
 }) => {
   if (error)
-    return (
+    {return (
       <Notification
         intent={Intent.Danger}
         message={
@@ -50,9 +50,9 @@ const CheckTransactionResult = ({
           </Tooltip>
         }
       />
-    );
+    );}
   if (loading || !data)
-    return (
+    {return (
       <Notification
         testId={locators.checkTransactionLoading}
         intent={Intent.None}
@@ -63,9 +63,9 @@ const CheckTransactionResult = ({
           </div>
         }
       />
-    );
+    );}
   if (data.valid)
-    return (
+    {return (
       <Notification
         intent={Intent.Success}
         message={
@@ -86,7 +86,7 @@ const CheckTransactionResult = ({
           </Tooltip>
         }
       />
-    );
+    );}
   return (
     <Notification
       intent={Intent.Danger}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { create } from 'zustand';
 
 import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
@@ -51,6 +52,7 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
       transactionModalOpen: false,
     });
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTransaction: async (parameters: any) => {
     set({
       transactionModalOpen: true,

@@ -1,4 +1,4 @@
-import type { v2ListTeamsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { v2ListTeamsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import { useEffect, useMemo } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';

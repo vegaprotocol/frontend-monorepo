@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RpcMethods } from '@/lib/client-rpc-methods';
-import { generateMarket } from '@/test-helpers/generate-market.ts';
+import { generateMarket } from '@/test-helpers/generate-market';
 
 import { testingNetwork } from '../../config/well-known-networks';
 import { useMarketsStore } from './markets-store';
@@ -126,8 +127,9 @@ describe('MarketsStore', () => {
       markets: [
         {
           id: '1',
-          // @ts-ignore
           tradableInstrument: {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             instrument: { someOtherProductType: { settlementAsset: 'foo' } },
           },
         },

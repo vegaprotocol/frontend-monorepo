@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { vegaMarket } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { type vegaMarket } from '@vegaprotocol/rest-clients/dist/trading-data';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { useMarketsStore } from '@/stores/markets-store.ts';

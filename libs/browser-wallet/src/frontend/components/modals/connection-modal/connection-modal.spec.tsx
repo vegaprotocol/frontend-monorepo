@@ -10,7 +10,7 @@ import { testingNetwork } from '../../../../config/well-known-networks';
 import locators from '../../locators';
 import { locators as pageHeaderLocators } from '../../page-header';
 import { ConnectionModal } from './connection-modal';
-import { ConnectionSuccessProperties } from './connection-success';
+import { type ConnectionSuccessProperties } from './connection-success';
 
 jest.mock('@/stores/interaction-store');
 jest.mock('@/stores/networks-store');

@@ -31,7 +31,7 @@ export const TransactionModalFooter = ({
   }));
   const connection = connections.find((c) => c.origin === details.origin);
   if (!connection)
-    throw new Error(`Could not find connection with origin ${details.origin}`);
+    {throw new Error(`Could not find connection with origin ${details.origin}`);}
   const [autoConsent, setAutoConsent] = useState(connection.autoConsent);
 
   const handleDecision = async (decision: boolean) => {
