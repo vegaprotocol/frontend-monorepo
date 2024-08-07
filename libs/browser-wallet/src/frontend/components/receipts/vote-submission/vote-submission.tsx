@@ -17,10 +17,7 @@ export const VoteSubmission = ({ transaction }: ReceiptComponentProperties) => {
     },
     {
       prop: 'value',
-      render: (value) => [
-        'Value',
-        VOTE_VALUE_MAP[processVoteValue(value)],
-      ],
+      render: (value) => ['Value', VOTE_VALUE_MAP[processVoteValue(value)]],
     },
   ];
 

@@ -40,6 +40,8 @@ describe('PriceWithTooltip', () => {
     });
     fireEvent.pointerMove(screen.getByTestId(locators.price));
     await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
-    expect(screen.getByTestId(decimalTooltipLocators.decimalTooltip)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(decimalTooltipLocators.decimalTooltip)
+    ).toBeInTheDocument();
   });
 });

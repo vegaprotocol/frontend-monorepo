@@ -28,7 +28,5 @@ export const OrderSide = ({
   if (loading || !marketId) return <DerivativeSide side={side} />;
   const market = getMarketById(marketId);
   const isSpot = isSpotMarket(market);
-  return (
-    isSpot ? <SpotSide side={side} /> : <DerivativeSide side={side} />
-  );
+  return isSpot ? <SpotSide side={side} /> : <DerivativeSide side={side} />;
 };

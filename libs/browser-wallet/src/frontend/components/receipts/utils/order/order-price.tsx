@@ -23,8 +23,9 @@ export const OrderPrice = ({
   const asset = useMarketPriceAsset(marketId);
   const symbol = get(asset, 'details.symbol');
   const formattedPrice = useFormatMarketPrice(marketId, price);
-  if (type === vegaOrderType.TYPE_MARKET)
-    {return <div data-testid="order-details-market-price">Market price</div>;}
+  if (type === vegaOrderType.TYPE_MARKET) {
+    return <div data-testid="order-details-market-price">Market price</div>;
+  }
 
   if (!formattedPrice || !symbol) {
     return <PriceWithTooltip marketId={marketId} price={price} />;

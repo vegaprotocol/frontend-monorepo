@@ -2,7 +2,10 @@ import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
-import { type ConnectionsStore, useConnectionStore } from '@/stores/connections';
+import {
+  type ConnectionsStore,
+  useConnectionStore,
+} from '@/stores/connections';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { fairground } from '../../../../../config/well-known-networks';

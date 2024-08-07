@@ -74,8 +74,9 @@ export const AssetCard = ({
   const name = get(asset, 'details.name');
   const decimals = get(asset, 'details.decimals');
 
-  if (!decimals || !symbol || !name)
-    {throw new Error('Asset details not populated');}
+  if (!decimals || !symbol || !name) {
+    throw new Error('Asset details not populated');
+  }
   const filteredAccounts = accounts
     .filter(
       (a) =>

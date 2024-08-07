@@ -18,9 +18,11 @@ export const ReceivingKey = ({
   const chainId = get(asset, 'details.erc20.chainId');
   if (!asset || !chainId) return <UnknownNetworkKey address={address} />;
 
-  if (network.ethereumChainId === chainId)
-    {return <EthereumKey address={address} />;}
-  if (network.arbitrumChainId === chainId)
-    {return <ArbitrumKey address={address} />;}
+  if (network.ethereumChainId === chainId) {
+    return <EthereumKey address={address} />;
+  }
+  if (network.arbitrumChainId === chainId) {
+    return <ArbitrumKey address={address} />;
+  }
   return <UnknownNetworkKey address={address} />;
 };

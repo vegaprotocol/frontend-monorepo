@@ -85,14 +85,15 @@ export const BatchMarketInstructions = ({
       ...stopOrdersSubmissions, // For some reason this is not plural in the command
       ...stopOrdersCancellations,
     ].length === 0
-  )
-    {return (
+  ) {
+    return (
       <Notification
         testId={locators.noTransactionsNotification}
         message="Batch market instructions did not contain any transactions. Please view the raw transaction and check this is the transaction you wish to send."
         intent={Intent.Warning}
       />
-    );}
+    );
+  }
   return (
     <ReceiptWrapper>
       <CommandSection

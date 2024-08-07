@@ -15,7 +15,8 @@ export const useFormatSizeAmount = (marketId?: string, size?: string) => {
   const positionDecimals = Number(get(market, 'positionDecimalPlaces'));
   const noPositionDecimals = !positionDecimals && positionDecimals !== 0;
 
-  if (!market || noPositionDecimals)
-    {throw new Error('Could not find market or positionDecimals');}
+  if (!market || noPositionDecimals) {
+    throw new Error('Could not find market or positionDecimals');
+  }
   return formatNumber(toBigNum(size, positionDecimals), positionDecimals);
 };

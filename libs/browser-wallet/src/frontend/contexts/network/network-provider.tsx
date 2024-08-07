@@ -61,13 +61,14 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
     loadNetworks(request);
   }, [loadGlobals, loadNetworks, request]);
 
-  if (loadingNetworks || loadingGlobals)
-    {return (
+  if (loadingNetworks || loadingGlobals) {
+    return (
       <div
         data-testid={locators.networkProviderLoading}
         className="h-full w-full bg-black"
       />
-    );}
+    );
+  }
 
   const interactionMode = transactionModalOpen || connectionModalOpen;
   const value = interactionMode ? networkFromChainId : selectedNetwork;

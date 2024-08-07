@@ -34,15 +34,16 @@ export const SaveMnemonic = () => {
   };
   // While loading, render nothing
   if (!mnemonic) return null;
-  if (showSuccess)
-    {return (
+  if (showSuccess) {
+    return (
       <WalletCreated
         onClose={() => {
           navigate(FULL_ROUTES.wallets);
           setShowSuccess(false);
         }}
       />
-    );}
+    );
+  }
   return (
     <OnboardingPage
       name="Secure your wallet"

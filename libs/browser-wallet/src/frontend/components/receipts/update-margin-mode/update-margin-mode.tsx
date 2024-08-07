@@ -21,10 +21,7 @@ export const UpdateMarginMode = ({
     },
     {
       prop: 'mode',
-      render: (mode) => [
-        'Mode',
-        MARGIN_MODE_MAP[processMarginMode(mode)],
-      ],
+      render: (mode) => ['Mode', MARGIN_MODE_MAP[processMarginMode(mode)]],
     },
     {
       prop: 'marginFactor',

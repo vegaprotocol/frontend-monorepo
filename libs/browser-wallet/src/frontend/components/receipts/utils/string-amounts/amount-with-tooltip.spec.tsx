@@ -51,6 +51,8 @@ describe('AmountWithTooltip', () => {
     });
     fireEvent.pointerMove(screen.getByTestId(locators.amount));
     await screen.findAllByTestId(decimalTooltipLocators.decimalTooltip);
-    expect(screen.getByTestId(decimalTooltipLocators.decimalTooltip)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(decimalTooltipLocators.decimalTooltip)
+    ).toBeInTheDocument();
   });
 });
