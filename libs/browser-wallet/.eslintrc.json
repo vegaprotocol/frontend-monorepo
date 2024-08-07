@@ -8,7 +8,12 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "jsx-a11y/no-autofocus": "off",
+        "no-console": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
