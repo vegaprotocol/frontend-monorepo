@@ -1,4 +1,4 @@
-import { vegaMarket } from '@vegaprotocol/rest-clients/dist/trading-data';
+import type { vegaMarket } from '@vegaprotocol/rest-clients/dist/trading-data';
 import { create } from 'zustand';
 
 import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
