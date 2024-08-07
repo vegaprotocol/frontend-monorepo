@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { createStore } from './tab-store';
+// import { createStore } from './tab-store';
 
 // const mockBrowser = () => {
 //   // @ts-ignore

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { type ReactNode } from 'react';
 
-import { usePing } from '@/hooks/ping';
+// import { usePing } from '@/hooks/ping';
 import { usePreventWindowResize } from '@/hooks/prevent-window-resize';
 import { useGlobalsStore } from '@/stores/globals';
 import { mockStore } from '@/test-helpers/mock-store';
