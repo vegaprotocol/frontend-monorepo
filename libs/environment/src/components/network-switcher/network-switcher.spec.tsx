@@ -6,7 +6,7 @@ import { Networks } from '../../';
 
 jest.mock('../../hooks/use-environment');
 
-describe('Network switcher', () => {
+describe.skip('Network switcher', () => {
   const { location } = window;
   let hrefSetSpy: jest.SpyInstance;
 

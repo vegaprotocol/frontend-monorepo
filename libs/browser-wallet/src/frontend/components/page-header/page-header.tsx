@@ -1,7 +1,7 @@
 import { useNetwork } from '@/contexts/network/network-context';
 
 import { VegaIcon } from '../icons/vega-icon';
-import { NetworkSwitcher } from './network-switcher';
+// import { NetworkSwitcher } from './network-switcher';
 // import { PopoutButton } from './popout-button';
 
 export const locators = {
@@ -23,7 +23,7 @@ export const PageHeader = () => {
         color={network.secondaryColor}
       />
       <div className="flex justify-between items center">
-        <NetworkSwitcher />
+        {/* <NetworkSwitcher /> */}
         {/* <PopoutButton /> */}
       </div>
     </div>
