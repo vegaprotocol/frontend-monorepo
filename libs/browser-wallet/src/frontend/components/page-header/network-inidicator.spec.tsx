@@ -24,7 +24,7 @@ jest.mock('@/stores/connections');
 
 describe('NetworkIndicator', () => {
   it('should render nothing while connections are loading', async () => {
-    expect(true).toBeTruthy()
+    expect(true).toBeTruthy();
     // mockStore(useNetworksStore, {
     //   networks: [
     //     {

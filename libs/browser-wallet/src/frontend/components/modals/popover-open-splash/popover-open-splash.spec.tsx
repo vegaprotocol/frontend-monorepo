@@ -13,7 +13,7 @@ describe('PopoverOpenSplash', () => {
   });
 
   it('renders correctly when popoverOpen is false', () => {
-    expect(true).toBeTruthy()
+    expect(true).toBeTruthy();
     // mockStore(usePopoverStore, {
     //   popoverOpen: false,
     //   focusPopover: jest.fn(),

@@ -58,7 +58,7 @@ describe('usePopoverStore', () => {
   //   delete globalThis.chrome;
   // });
   it('uses browser if chrome is not defined', () => {
-    expect(true).toBeTruthy()
+    expect(true).toBeTruthy();
     // mockBrowser();
     // const windowStore = createStore();
     // windowStore.getState().setup();

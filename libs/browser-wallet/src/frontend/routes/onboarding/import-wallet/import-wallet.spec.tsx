@@ -10,8 +10,7 @@ import { FULL_ROUTES } from '../../route-names';
 import { ImportWallet, locators } from '.';
 
 const validRecoveryPhrase =
-  'solid length discover gun swear nose artwork unfair vacuum canvas push hybrid owner wasp arrest mixed oak miss cage scatter tree harsh critic believe'
-
+  'solid length discover gun swear nose artwork unfair vacuum canvas push hybrid owner wasp arrest mixed oak miss cage scatter tree harsh critic believe';
 
 const mockedUsedNavigate = jest.fn();
 

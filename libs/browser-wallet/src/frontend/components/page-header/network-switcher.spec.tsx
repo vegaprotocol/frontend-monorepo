@@ -51,7 +51,7 @@
 
 describe('NetworkSwitcher', () => {
   it('renders network indicator and network dropdown', async () => {
-    expect(true).toBeTruthy()
+    expect(true).toBeTruthy();
     // mockStores();
     // renderComponent();
     // expect(screen.getByTestId('network-indicator')).toBeInTheDocument();
