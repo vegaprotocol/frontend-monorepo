@@ -1,7 +1,7 @@
 import JSONRPCClient from '../../../frontend/lib/json-rpc-client.js';
 import mutex from 'mutexify/promise.js';
 
-const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
+const runtime = global.browser?.runtime ?? global.chrome?.runtime;
 
 const U64_MAX = 2n ** 64n - 1n;
 
@@ -13,10 +13,7 @@ const BUCKET_SIZE = 14n;
 const PARTITION_DIVISOR = U64_MAX >> BUCKET_SIZE;
 
 export default async function initWorkers() {
-  if (
-    globalThis?.Worker == null ||
-    globalThis?.navigator?.hardwareConcurrency == null
-  )
+  if (global?.Worker == null || global?.navigator?.hardwareConcurrency == null)
     return false;
 
   const WORKER_SCRIPT_URL = runtime.getURL('pow-worker.js');

@@ -17,8 +17,8 @@ import initAdmin from './src/admin-ns.js';
 import initClient from './src/client-ns.js';
 import config from '../config/beta.js';
 
-const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
-const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
+// const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
+// const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
 
 const interactor = new PopupClient({
   onbeforerequest: setPending,
@@ -152,7 +152,6 @@ wallets.on('rename_key', async () => {
 });
 
 setupListeners(
-  runtime,
   networks,
   settings,
   clientPorts,
@@ -164,14 +163,12 @@ setupListeners(
 );
 
 async function setPending() {
-  const pending = interactor.totalPending();
-
+  // const pending = interactor.totalPending();
   // Early return as there is not much else to do
-  if (pending === 0) {
-    action.setBadgeText({ text: '' });
-    return;
-  }
-
+  // if (pending === 0) {
+  //   action.setBadgeText({ text: '' });
+  //   return;
+  // }
   // try {
   //   if (
   //     pending > 0 &&
@@ -183,8 +180,7 @@ async function setPending() {
   // } catch (_) {
   //   // NOOP
   // }
-
-  action.setBadgeText({
-    text: pending.toString(),
-  });
+  // action.setBadgeText({
+  //   text: pending.toString(),
+  // });
 }

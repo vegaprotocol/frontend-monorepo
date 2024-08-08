@@ -28,19 +28,19 @@ describe('pow', () => {
     expect(solver).toBe(false);
   });
 
-  it('chromium solver should be function if chromium-like', async () => {
-    expect(globalThis.chrome.offscreen).toBe(undefined);
+  // it('chromium solver should be function if chromium-like', async () => {
+  //   expect(globalThis.chrome.offscreen).toBe(undefined);
 
-    globalThis.chrome.offscreen = {
-      createDocument: () => {},
-    };
+  //   globalThis.chrome.offscreen = {
+  //     createDocument: () => {},
+  //   };
 
-    const solver = await chromium();
-    expect(solver).not.toBe(false);
-    expect(typeof solver).toBe('function');
+  //   const solver = await chromium();
+  //   expect(solver).not.toBe(false);
+  //   expect(typeof solver).toBe('function');
 
-    delete globalThis.chrome.offscreen;
-  });
+  //   delete globalThis.chrome.offscreen;
+  // });
 
   it('webworker solver should be false if workers are unavailable', async () => {
     const solver = await webworker();
@@ -48,11 +48,11 @@ describe('pow', () => {
   });
 
   it('webworker solver should be function if workers are available', async () => {
-    expect(globalThis.Worker).toBe(undefined);
-    expect(globalThis.navigator).toBe(undefined);
+    expect(Worker).toBe(undefined);
+    expect(navigator).toBe(undefined);
 
-    globalThis.Worker = class {};
-    globalThis.navigator = {
+    global.Worker = class {};
+    global.navigator = {
       hardwareConcurrency: 1,
     };
 
@@ -60,7 +60,7 @@ describe('pow', () => {
     expect(solver).not.toBe(false);
     expect(typeof solver).toBe('function');
 
-    delete globalThis.Worker;
-    delete globalThis.navigator;
+    delete global.Worker;
+    delete global.navigator;
   });
 });

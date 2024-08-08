@@ -1,4 +1,4 @@
-const extensionStorage = (globalThis?.browser ?? globalThis?.chrome)?.storage;
+const extensionStorage = localStorage;
 
 function abstractStorage(storage) {
   // Based on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -71,7 +71,5 @@ function abstractStorage(storage) {
   };
 }
 
-export class StorageLocalMap extends abstractStorage(extensionStorage?.local) {}
-export class StorageSessionMap extends abstractStorage(
-  extensionStorage?.session
-) {}
+export class StorageLocalMap extends abstractStorage(extensionStorage) {}
+export class StorageSessionMap extends abstractStorage(extensionStorage) {}

@@ -6,7 +6,7 @@ import { toBase64, string as fromString } from '@vegaprotocol/crypto/buf';
 // import createKeepAlive from '../../lib/mv3-keep-alive.js';
 import * as txHelpers from './tx-helpers.js';
 
-const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
+// const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
 
 function doValidate(validator, params) {
   if (!validator(params)) {
@@ -17,6 +17,14 @@ function doValidate(validator, params) {
     );
   }
 }
+
+const Errors = {
+  UNKNOWN_PUBLIC_KEY: [
+    'Unknown public key',
+    -1,
+    'The public key is not known to the wallet',
+  ],
+};
 
 /**
  * Initialise the admin namespace server. The stores passed should be low-level Map-like
@@ -58,14 +66,14 @@ export default function init({
     });
   });
 
-  let handle = null;
-  if (windows) {
-    windows.onRemoved.addListener((windowId) => {
-      if (windowId === handle?.id) {
-        handle = null;
-      }
-    });
-  }
+  // let handle = null;
+  // if (windows) {
+  //   windows.onRemoved.addListener((windowId) => {
+  //     if (windowId === handle?.id) {
+  //       handle = null;
+  //     }
+  //   });
+  // }
   // This could potentially take a settings timeout for how long to keep the
   // extension alive
   // For now we keep the extension alive for 8 hours and ping every 20 seconds

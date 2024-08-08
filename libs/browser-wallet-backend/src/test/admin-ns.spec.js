@@ -402,7 +402,7 @@ describe('admin-ns', () => {
       {}
     );
 
-    expect(globalThis.chrome.windows.create).toBeCalledWith({
+    expect(global.chrome.windows.create).toBeCalledWith({
       url: 'moz-extension://8b413e68-1e0d-4cad-b98e-1eb000799783/index.html',
       type: 'popup',
       width: CONSTANTS.width,
@@ -411,11 +411,11 @@ describe('admin-ns', () => {
       left: undefined,
       top: undefined,
     });
-    expect(globalThis.chrome.windows.create).toBeCalledTimes(1);
+    expect(global.chrome.windows.create).toBeCalledTimes(1);
   });
 
   it('should not open pop out if one is already open', async () => {
-    globalThis.chrome.windows.create.mockResolvedValue({
+    global.chrome.windows.create.mockResolvedValue({
       id: 1,
     });
     const { admin } = await createAdmin();
@@ -423,12 +423,12 @@ describe('admin-ns', () => {
       { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
       {}
     );
-    expect(globalThis.chrome.windows.create).toBeCalled();
+    expect(global.chrome.windows.create).toBeCalled();
     await admin.onrequest(
       { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
       {}
     );
-    expect(globalThis.chrome.windows.create).toBeCalledTimes(1);
+    expect(global.chrome.windows.create).toBeCalledTimes(1);
   });
 
   it('should sign message with given public key', async () => {

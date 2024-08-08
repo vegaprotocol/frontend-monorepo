@@ -3,9 +3,9 @@ import * as txHelpers from './tx-helpers.js';
 import * as clientValidation from '../validation/client/index.js';
 import NodeRPC from './node-rpc.js';
 import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../frontend/lib/constants.js';
-import { isIos } from '../lib/utils.js';
+// import { isIos } from '../lib/utils.js';
 
-const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
+// const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
 
 const Errors = {
   NOT_CONNECTED: [
@@ -113,9 +113,9 @@ export default function init({
           if (network.hidden && hiddenNetworksEnabled !== true) {
             throw new JSONRPCServer.Error(...Errors.DEVELOPMENT_CHAIN_ID);
           }
-          if (action.openPopup && isIos()) {
-            action.openPopup();
-          }
+          // if (action.openPopup && isIos()) {
+          //   action.openPopup();
+          // }
           const reply = await interactor.reviewConnection({
             origin: context.origin,
             chainId: params.chainId,
@@ -191,9 +191,9 @@ export default function init({
           !isLocked;
         let approved = canBeAutoApproved;
         if (!canBeAutoApproved) {
-          if (action.openPopup && isIos()) {
-            action.openPopup();
-          }
+          // if (action.openPopup && isIos()) {
+          //   action.openPopup();
+          // }
           approved = await interactor.reviewTransaction({
             transaction: params.transaction,
             publicKey: params.publicKey,

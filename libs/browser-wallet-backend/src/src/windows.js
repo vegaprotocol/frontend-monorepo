@@ -1,6 +1,6 @@
-import { CONSTANTS } from '../../frontend/lib/constants';
+// import { CONSTANTS } from '../../frontend/lib/constants';
 
-const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
+// const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
 // const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
 
 // const BUFFER_HEIGHT = 30;
@@ -24,16 +24,16 @@ const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
 //   });
 // };
 
-export const createNotificationWindow = async () => {
-  let left = 0;
-  let top = 0;
-  try {
-    const lastFocused = await windows.getLastFocused();
-    top = lastFocused.top;
-    left = lastFocused.left + (lastFocused.width - CONSTANTS.width);
-  } catch (_) {
-    // NOOP
-  }
+// export const createNotificationWindow = async () => {
+//   let left = 0;
+//   let top = 0;
+//   try {
+//     const lastFocused = await windows.getLastFocused();
+//     top = lastFocused.top;
+//     left = lastFocused.left + (lastFocused.width - CONSTANTS.width);
+//   } catch (_) {
+//     // NOOP
+//   }
 
-  return createWindow(top, left, true);
-};
+//   return createWindow(top, left, true);
+// };

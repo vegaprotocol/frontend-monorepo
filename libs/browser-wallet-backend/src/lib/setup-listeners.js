@@ -151,7 +151,6 @@ export async function update(stores) {
 }
 
 export const setupListeners = (
-  runtime,
   networks,
   settings,
   clientPorts,
@@ -161,19 +160,27 @@ export const setupListeners = (
   keySortIndex,
   wallets
 ) => {
-  const installListener = createOnInstalledListener(
-    networks,
-    settings,
-    connections,
-    keySortIndex,
-    wallets
-  );
-  runtime.onInstalled.addListener(installListener);
-
-  const connectionListener = createConnectionHandler(
-    clientPorts,
-    popupPorts,
-    interactor
-  );
-  runtime.onConnect.addListener(connectionListener);
+  // const installListener = createOnInstalledListener(
+  //   networks,
+  //   settings,
+  //   connections,
+  //   keySortIndex,
+  //   wallets
+  // );
+  // runtime.onInstalled.addListener(installListener);
+  // Replace with:
+  // await Promise.allSettled([
+  //   ...config.networks.map((network) => networks.set(network.id, network)),
+  //   settings.set('selectedNetwork', config.defaultNetworkId),
+  //   settings.set('autoOpen', true),
+  //   settings.set('showHiddenNetworks', false),
+  //   settings.set('version', migrations.length),
+  // ]);
+  // Replace with wiring logic
+  // const connectionListener = createConnectionHandler(
+  //   clientPorts,
+  //   popupPorts,
+  //   interactor
+  // );
+  // runtime.onConnect.addListener(connectionListener);
 };
