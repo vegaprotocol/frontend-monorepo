@@ -1,1 +1,1 @@
-export const BrowserWalletBackend = {};
+import './background';
