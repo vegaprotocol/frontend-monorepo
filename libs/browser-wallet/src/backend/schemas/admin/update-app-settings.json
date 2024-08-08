@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "telemetry": {
+      "type": "boolean"
+    },
+    "autoOpen": {
+      "type": "boolean"
+    },
+    "selectedNetwork": {
+      "type": "string"
+    },
+    "showHiddenNetworks": {
+      "type": "boolean"
+    }
+  }
+}

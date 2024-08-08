@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "passphrase",
+    "newPassphrase"
+  ],
+  "properties": {
+    "passphrase": {
+      "type": "string"
+    },
+    "newPassphrase": {
+      "type": "string"
+    }
+  }
+}

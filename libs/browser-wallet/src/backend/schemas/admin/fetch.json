@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "path",
+    "networkId"
+  ],
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "networkId": {
+      "type": "string"
+    }
+  }
+}

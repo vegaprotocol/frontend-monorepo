@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "passphrase",
+    "publicKey"
+  ],
+  "properties": {
+    "passphrase": {
+      "type": "string"
+    },
+    "publicKey": {
+      "type": "string"
+    }
+  }
+}

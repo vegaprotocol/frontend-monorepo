@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "publicKey",
+    "message"
+  ],
+  "properties": {
+    "publicKey": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  }
+}
