@@ -8797,6 +8797,14 @@
     "@typescript-eslint/types" "6.21.0"
     eslint-visitor-keys "^3.4.1"
 
+"@vegaprotocol/crypto@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/crypto/-/crypto-0.12.0.tgz#857599b71ea76dfaa67980d2286fab6aa67057d5"
+  integrity sha512-xmVyJeOXqX6Db3STVw9Q83ngauww6zyxhMWQvjvRNAo7amB+LdbQlAOuCNdSoNTw0c6WnynjJ4vlRxd0aiFWBQ==
+  dependencies:
+    compare "^2.0.0"
+    nanoassert "^2.0.0"
+
 "@vegaprotocol/enums@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.2.tgz#8382e0b0e359f3e5045f26e22a607910cfb06684"
@@ -12210,6 +12218,11 @@ compare-func@^2.0.0:
   dependencies:
     array-ify "^1.0.0"
     dot-prop "^5.1.0"
+
+compare@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/compare/-/compare-2.0.0.tgz#8090b34dcb288f629e905972da69ea7a6d5922a0"
+  integrity sha512-FXeLLVm09Uh7Updmmx2NCCRG2nMq+mdY3DR9PqhVeOrie3IFU+occFQoqziFkHlTUDw8mDgmdblIZ+J9tsSAUA==
 
 compressible@~2.0.16:
   version "2.0.18"
@@ -19629,6 +19642,13 @@ mute-stream@0.0.8:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
+mutexify@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/mutexify/-/mutexify-1.4.0.tgz#b7f4ac0273c81824b840887c6a6e0bfab14bbe94"
+  integrity sha512-pbYSsOrSB/AKN5h/WzzLRMFgZhClWccf2XIB4RSMC8JbquiB0e0/SH5AIfdQMdyHmYtv4seU7yV/TvAwPLJ1Yg==
+  dependencies:
+    queue-tick "^1.0.0"
+
 mv@2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/mv/-/mv-2.1.1.tgz#ae6ce0d6f6d5e0a4f7d893798d03c1ea9559b6a2"
@@ -21772,7 +21792,7 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-queue-tick@^1.0.1:
+queue-tick@^1.0.0, queue-tick@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/queue-tick/-/queue-tick-1.0.1.tgz#f6f07ac82c1fd60f82e098b417a80e52f1f4c142"
   integrity sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==
@@ -22141,6 +22161,11 @@ read-pkg@^5.2.0:
     normalize-package-data "^2.5.0"
     parse-json "^5.0.0"
     type-fest "^0.6.0"
+
+read-write-mutexify@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/read-write-mutexify/-/read-write-mutexify-2.1.0.tgz#d8915be88863070d44a069163ef69007acd7c622"
+  integrity sha512-fDw/p5/acI1ytVY1UbxEDma/ej1yJH/n9NcjS9YNzcE6sPBPWdlru3ydRa/UBowUg4zqOvNMD5SOGYJrlQ6MzQ==
 
 readable-stream@3, readable-stream@^3.0.0, readable-stream@^3.0.6, readable-stream@^3.1.1, readable-stream@^3.4.0, readable-stream@^3.6.0, readable-stream@^3.6.2:
   version "3.6.2"
