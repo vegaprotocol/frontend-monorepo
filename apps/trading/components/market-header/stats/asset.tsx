@@ -1,4 +1,4 @@
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { HeaderStat } from '../../header';
 import {
   type AssetFieldsFragment,
@@ -21,13 +21,13 @@ export const AssetStat = ({ heading, asset, ...props }: AssetStatProps) => {
   return (
     <HeaderStat heading={heading} {...props}>
       <div>
-        <AnchorButton
+        <ButtonLink
           onClick={(e) => {
             openAssetDetailsDialog(asset.id, e.target as HTMLElement);
           }}
         >
           <AssetSymbol asset={asset} />
-        </AnchorButton>
+        </ButtonLink>
       </div>
     </HeaderStat>
   );

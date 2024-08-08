@@ -866,7 +866,7 @@ const CardIcon = ({
 }) => {
   return (
     <Tooltip description={<span>{tooltip}</span>}>
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon name={iconName} size={size} />
       </span>
     </Tooltip>
@@ -896,7 +896,7 @@ const EntityIcon = ({
         entityScope ? <span>{EntityScopeMapping[entityScope]}</span> : undefined
       }
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon
           name={EntityScopeIconMap[entityScope] || VegaIconNames.QUESTION_MARK}
           size={size}
@@ -923,7 +923,7 @@ const DistributionStrategyIcon = ({
       }
       underline={true}
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
       </span>
     </Tooltip>
