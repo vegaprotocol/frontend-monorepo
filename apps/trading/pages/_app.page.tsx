@@ -3,7 +3,6 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
   useEnvTriggerMapping,
-  Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
@@ -57,7 +56,6 @@ const Title = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
-  const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
@@ -72,7 +70,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
+        <Navbar />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}

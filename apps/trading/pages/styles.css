@@ -57,6 +57,9 @@
     --intent-success-outline: 0 247 128;
     --intent-success-foreground: 255 255 255;
 
+    /* Logo */
+    --logo-bg: rgb(var(--intent-primary));
+
     /* Buttons */
     --button-border-radius-xs: theme(borderRadius.DEFAULT);
     --button-border-radius-sm: theme(borderRadius.DEFAULT);
@@ -79,6 +82,10 @@
     --gs-800: 23 25 30;
     --gs-800-hex: #17191e;
     --gs-900: 5 6 12;
+
+    --intent-none: 50 51 57;
+    --intent-none-outline: 50 51 57;
+    --intent-none-foreground: 220 222 227;
   }
 }
 

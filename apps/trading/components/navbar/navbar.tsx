@@ -13,7 +13,6 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
   VegaIconNames,
   VegaIcon,
-  VLogo,
   LanguageSelector,
   ThemeSwitcher,
 } from '@vegaprotocol/ui-toolkit';
@@ -34,9 +33,8 @@ import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 
 type MenuState = 'wallet' | 'nav' | null;
-type Theme = 'system' | 'yellow';
 
-export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
+export const Navbar = () => {
   const i18n = useI18n();
   const t = useT();
   // menu state for small screens
@@ -57,15 +55,11 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
     <N.Root className={rootClasses}>
       <NavLink
         to="/"
-        className={classNames('flex items-center px-3', {
-          'bg-vega-yellow text-black': theme === 'yellow',
-          'text-default': theme === 'system',
-        })}
-        style={{
-          background: theme === 'yellow' ? 'url(/testnet-logo-bg.png' : 'none',
-        }}
+        className={classNames(
+          'flex items-center px-3 bg-[color:var(--logo-bg)]'
+        )}
       >
-        <VLogo className="w-4" />
+        <img alt="Logo" src="/logo.svg" className="block w-4" />
       </NavLink>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
@@ -316,7 +310,7 @@ const NavbarLink = ({
           const borderClasses = {
             'border-b-2': true,
             'border-transparent': !isActive,
-            'border-vega-yellow lg:group-[.navbar-content]:border-transparent':
+            'border-intent-secondary lg:group-[.navbar-content]:border-transparent':
               isActive,
           };
           return (
