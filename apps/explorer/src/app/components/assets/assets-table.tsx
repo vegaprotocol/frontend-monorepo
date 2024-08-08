@@ -5,7 +5,7 @@ import {
   type AssetFieldsFragment,
 } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { type AgGridReact } from 'ag-grid-react';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { type VegaICellRendererParams } from '@vegaprotocol/datagrid';
@@ -90,13 +90,13 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
           value,
         }: VegaICellRendererParams<AssetFieldsFragment, 'id'>) =>
           value ? (
-            <AnchorButton
+            <ButtonLink
               onClick={() => {
                 navigate(value);
               }}
             >
               {t('View details')}
-            </AnchorButton>
+            </ButtonLink>
           ) : (
             ''
           ),

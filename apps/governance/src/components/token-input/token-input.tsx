@@ -5,7 +5,7 @@ import {
   Intent,
   FormGroup,
   Lozenge,
-  AnchorButton,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import React from 'react';
@@ -61,12 +61,12 @@ export const AmountInput = ({
         />
       </div>
       {maximum && (
-        <AnchorButton
+        <ButtonLink
           onClick={() => setAmount(maximum.toString())}
           data-testid="token-amount-use-maximum"
         >
           {t('Use maximum')}
-        </AnchorButton>
+        </ButtonLink>
       )}
     </div>
   );

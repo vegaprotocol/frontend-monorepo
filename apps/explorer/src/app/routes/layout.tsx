@@ -8,7 +8,7 @@ import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import {
   BackgroundVideo,
   BreadcrumbsContainer,
-  AnchorButton,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import {
@@ -122,9 +122,9 @@ export const ErrorBoundary = () => {
           {errorMessage}
         </div>
         <div>
-          <AnchorButton onClick={() => window.location.reload()}>
+          <ButtonLink onClick={() => window.location.reload()}>
             {t('Try refreshing')}
-          </AnchorButton>{' '}
+          </ButtonLink>{' '}
           {t('or go back to')}{' '}
           <Link className="underline" to="/">
             {t('Home')}

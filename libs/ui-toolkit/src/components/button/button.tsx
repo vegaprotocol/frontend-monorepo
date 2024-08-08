@@ -94,3 +94,11 @@ export const AnchorButton = ({
     {icon}
   </Link>
 );
+
+export const ButtonLink = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement>
+>(({ type = 'button', className, ...props }, ref) => {
+  const style = classNames('inline underline underline-offset-4', className);
+  return <button ref={ref} className={style} type={type} {...props} />;
+});

@@ -5,8 +5,9 @@ import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   AsyncRenderer,
   Button,
-  AnchorButton,
+  ButtonLink,
   ExternalLink,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
@@ -182,9 +183,9 @@ export const VoteButtons = ({
     if (!pubKey) {
       return (
         <div data-testid="connect-wallet">
-          <AnchorButton onClick={openVegaWalletDialog}>
+          <ButtonLink onClick={openVegaWalletDialog}>
             {t('connectVegaWallet')}
-          </AnchorButton>{' '}
+          </ButtonLink>{' '}
           {t('toVote')}
         </div>
       );
@@ -255,7 +256,7 @@ export const VoteButtons = ({
             <Button
               data-testid="vote-for"
               onClick={() => submitVote(VoteValue.VALUE_YES)}
-              variant="primary"
+              intent={Intent.Primary}
               disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteFor')}
@@ -263,7 +264,7 @@ export const VoteButtons = ({
             <Button
               data-testid="vote-against"
               onClick={() => submitVote(VoteValue.VALUE_NO)}
-              variant="primary"
+              intent={Intent.Primary}
               disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteAgainst')}
@@ -281,7 +282,7 @@ export const VoteButtons = ({
               <span>on {format(voteDatetime, DATE_FORMAT_LONG)}. </span>
             ) : null}
             {proposalVotable ? (
-              <AnchorButton
+              <ButtonLink
                 className="text-white"
                 data-testid="change-vote-button"
                 onClick={() => {
@@ -290,7 +291,7 @@ export const VoteButtons = ({
                 }}
               >
                 {t('changeVote')}
-              </AnchorButton>
+              </ButtonLink>
             ) : null}
           </p>
         )

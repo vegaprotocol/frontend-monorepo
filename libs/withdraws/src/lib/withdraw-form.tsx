@@ -21,7 +21,7 @@ import {
   truncateMiddle,
   VegaIcon,
   VegaIconNames,
-  AnchorButton,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
@@ -430,7 +430,7 @@ const DisconnectEthereumButton = ({
   const disconnect = useWeb3Disconnect(connector);
 
   return (
-    <AnchorButton
+    <ButtonLink
       onClick={() => {
         disconnect();
         removeEagerConnector();
@@ -439,6 +439,6 @@ const DisconnectEthereumButton = ({
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </AnchorButton>
+    </ButtonLink>
   );
 };

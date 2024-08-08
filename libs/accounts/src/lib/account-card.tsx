@@ -47,7 +47,7 @@ type ButtonProps = {
   icon: VegaIconNames;
 } & ComponentProps<typeof Button>;
 
-const Button = forwardRef<
+const ActionButton = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ onClick, label, icon, ...props }, ref) => (
@@ -190,7 +190,10 @@ export const AccountCard = ({
           <TradingDropdown
             trigger={
               <TradingDropdownTrigger asChild>
-                <Button label={t('Deposit')} icon={VegaIconNames.DEPOSIT} />
+                <ActionButton
+                  label={t('Deposit')}
+                  icon={VegaIconNames.DEPOSIT}
+                />
               </TradingDropdownTrigger>
             }
           >
@@ -214,19 +217,19 @@ export const AccountCard = ({
               </TradingDropdownItem>
             </TradingDropdownContent>
           </TradingDropdown>
-          <Button
+          <ActionButton
             data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}
             label={t('Swap')}
             icon={VegaIconNames.SWAP}
           />
-          <Button
+          <ActionButton
             data-testid="account-action-transfer"
             onClick={() => actions.onClickTransfer?.(asset.id)}
             label={t('Transfer')}
             icon={VegaIconNames.TRANSFER}
           />
-          <Button
+          <ActionButton
             data-testid="account-action-withdraw"
             onClick={() => actions.onClickWithdraw?.(asset.id)}
             label={t('Withdraw')}

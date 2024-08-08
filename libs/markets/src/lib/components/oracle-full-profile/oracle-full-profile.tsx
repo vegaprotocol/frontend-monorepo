@@ -1,6 +1,6 @@
 import type { Provider } from '../../oracle-schema';
 import {
-  AnchorButton,
+  ButtonLink,
   ExternalLink,
   Icon,
   Intent,
@@ -129,9 +129,9 @@ export const OracleFullProfile = ({
             ? provider.description_markdown
             : provider.description_markdown.slice(0, 100) + '...'}
         </ReactMarkdown>
-        <AnchorButton onClick={() => setShowMore(!showMore)}>
+        <ButtonLink onClick={() => setShowMore(!showMore)}>
           {!showMore ? t('Read more') : t('Show less')}
-        </AnchorButton>
+        </ButtonLink>
       </div>
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-1">

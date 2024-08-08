@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { getAsset, type MarketMaybeWithData } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { type AgGridReact } from 'ag-grid-react';
 import { type ColDef } from 'ag-grid-community';
 import { AgGrid } from '@vegaprotocol/datagrid';
@@ -87,13 +87,13 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         >) => {
           const value = data && getAsset(data);
           return value ? (
-            <AnchorButton
+            <ButtonLink
               onClick={(e) => {
                 openAssetDetailsDialog(value.id, e.target as HTMLElement);
               }}
             >
               {value.symbol}
-            </AnchorButton>
+            </ButtonLink>
           ) : (
             ''
           );

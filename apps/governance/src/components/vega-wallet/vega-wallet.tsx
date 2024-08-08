@@ -26,7 +26,7 @@ import {
 import { VegaWalletPrompt } from './vega-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
-import { Button, AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/utils';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
 import { StakingEventType } from '../../hooks/use-get-association-breakdown';
@@ -179,7 +179,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
 
   const footer = (
     <div className="flex justify-end">
-      <AnchorButton
+      <ButtonLink
         data-testid="manage-vega-wallet"
         onClick={() =>
           appDispatch({
@@ -189,7 +189,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         }
       >
         Manage
-      </AnchorButton>
+      </ButtonLink>
     </div>
   );
 

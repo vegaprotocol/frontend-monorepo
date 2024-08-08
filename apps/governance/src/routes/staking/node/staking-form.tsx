@@ -10,7 +10,7 @@ import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
 import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
-  AnchorButton,
+  ButtonLink,
   FormGroup,
   Intent,
   Notification,
@@ -212,7 +212,7 @@ export const StakingForm = ({
                   text: t('associateVegaNow'),
                   action: () => navigate(Routes.ASSOCIATE),
                   className: 'py-1',
-                  size: 'small',
+                  size: 'sm',
                 }}
               />
             )}
@@ -300,20 +300,20 @@ export const StakingForm = ({
               {removeType === RemoveType.Now ? (
                 <>
                   <p>{t('Want to remove your stake before the epoch ends?')}</p>
-                  <AnchorButton
+                  <ButtonLink
                     onClick={() => setRemoveType(RemoveType.EndOfEpoch)}
                   >
                     {t('Switch to form for removal at end of epoch')}
-                  </AnchorButton>
+                  </ButtonLink>
                 </>
               ) : (
                 <>
                   <p>
                     {t('Want to remove your stake at the end of the epoch?')}
                   </p>
-                  <AnchorButton onClick={() => setRemoveType(RemoveType.Now)}>
+                  <ButtonLink onClick={() => setRemoveType(RemoveType.Now)}>
                     {t('Switch to form for immediate removal')}
-                  </AnchorButton>
+                  </ButtonLink>
                 </>
               )}
             </>
