@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/libs/browser-wallet-backend',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

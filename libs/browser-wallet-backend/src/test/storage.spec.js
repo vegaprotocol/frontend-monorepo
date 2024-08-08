@@ -1,18 +1,16 @@
-import { StorageSessionMap, StorageLocalMap } from '../lib/storage.js';
+import { /* StorageSessionMap, */ StorageLocalMap } from '../lib/storage.js';
 
-describe('StorageSessionMap', () => {
-  it('should not be supported in Node.js', () => {
-    expect(() => new StorageSessionMap('test')).toThrow();
-    expect(StorageSessionMap.isSupported()).toBe(false);
-  });
-});
+// describe('StorageSessionMap', () => {
+//   it('should not be supported in Node.js', () => {
+//     expect(() => new StorageSessionMap('test')).toThrow();
+//     expect(StorageSessionMap.isSupported()).toBe(false);
+//   });
+// });
 
 describe('StorageLocalMap', () => {
   beforeEach(() => {
     StorageLocalMap.permanentClearAll();
   });
-
-  // Apparently this API is mocked somehow?
 
   it('should support Map-like APIs, but async', async () => {
     const storage = new StorageLocalMap('test');

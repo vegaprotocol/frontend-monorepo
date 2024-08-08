@@ -20,7 +20,8 @@ function abstractStorage(storage) {
     }
 
     async _load() {
-      return (await storage.getItem(this._prefix))?.[this._prefix] ?? {};
+      const json = (await storage.getItem(this._prefix)) ?? '{}';
+      return JSON.parse(json);
     }
 
     async has(key) {
@@ -35,7 +36,7 @@ function abstractStorage(storage) {
     async set(key, value) {
       const val = await this._load();
       val[key] = value;
-      await storage.setItem(this._prefix, val);
+      await storage.setItem(this._prefix, JSON.stringify(val, null, '\t'));
       return this;
     }
 
@@ -44,9 +45,7 @@ function abstractStorage(storage) {
       const hadKey = val[key] != null;
       if (hadKey) {
         delete val[key];
-        await storage.set({
-          [this._prefix]: val,
-        });
+        await storage.setItem(this._prefix, JSON.stringify(val, null, '\t'));
       }
       return hadKey;
     }
