@@ -1,4 +1,4 @@
-import { createWindow } from '../src/windows.js';
+// import { createWindow } from '../src/windows.js';
 import config from '../../config/beta.js';
 
 export const createConnectionHandler =
@@ -17,9 +17,9 @@ export const createOnInstalledListener =
     if (reason === 'install') {
       await install({ networks, settings });
 
-      if (config.autoOpenOnInstall) {
-        createWindow();
-      }
+      // if (config.autoOpenOnInstall) {
+      //   createWindow();
+      // }
     }
 
     if (reason === 'update') {

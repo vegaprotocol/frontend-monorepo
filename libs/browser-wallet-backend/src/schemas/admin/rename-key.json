@@ -1,10 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "name",
-    "publicKey"
-  ],
+  "required": ["name", "publicKey"],
   "properties": {
     "name": {
       "type": "string"

@@ -1,23 +1,25 @@
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
 
 export class TransactionsCollection {
   constructor({ store, connections }) {
-    this.transactionStore = store
-    this.connections = connections
+    this.transactionStore = store;
+    this.connections = connections;
   }
 
   async addTx(transaction, wallet, publicKey) {
-    const existingTransactions = (await this.transactionStore.get(wallet)) ?? {}
-    const existingTransactionByPublicKey = existingTransactions[publicKey] ?? []
+    const existingTransactions =
+      (await this.transactionStore.get(wallet)) ?? {};
+    const existingTransactionByPublicKey =
+      existingTransactions[publicKey] ?? [];
     await this.transactionStore.set(wallet, {
       ...existingTransactions,
-      [publicKey]: [transaction, ...existingTransactionByPublicKey]
-    })
+      [publicKey]: [transaction, ...existingTransactionByPublicKey],
+    });
   }
 
   async listTxs(wallet) {
-    const transactions = (await this.transactionStore.get(wallet)) ?? {}
-    return { transactions }
+    const transactions = (await this.transactionStore.get(wallet)) ?? {};
+    return { transactions };
   }
 
   async generateStoreTx({
@@ -30,10 +32,10 @@ export class TransactionsCollection {
     receivedAt,
     state,
     autoApproved,
-    node
+    node,
   }) {
-    const networkId = await this.connections.getNetworkId(origin)
-    const chainId = await this.connections.getChainId(origin)
+    const networkId = await this.connections.getNetworkId(origin);
+    const chainId = await this.connections.getChainId(origin);
     return {
       // Cannot use tx hash as an id as rejected transactions do not have a hash
       id: uuidv4(),
@@ -52,7 +54,7 @@ export class TransactionsCollection {
       node,
       error: null,
       hash: null,
-      code: null
-    }
+      code: null,
+    };
   }
 }

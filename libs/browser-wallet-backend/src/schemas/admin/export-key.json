@@ -1,10 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "passphrase",
-    "publicKey"
-  ],
+  "required": ["passphrase", "publicKey"],
   "properties": {
     "passphrase": {
       "type": "string"

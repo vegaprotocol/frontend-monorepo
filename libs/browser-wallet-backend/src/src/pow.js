@@ -1,15 +1,15 @@
-import inprocess from './pow/in-process.js'
-import chromium from './pow/chromium.js'
-import webworker from './pow/web-worker.js'
+import inprocess from './pow/in-process.js';
+import chromium from './pow/chromium.js';
+import webworker from './pow/web-worker.js';
 
 const solver = (async () => {
-  const pow = await webworker() || await chromium() || inprocess()
+  const pow = (await webworker()) || (await chromium()) || inprocess();
 
-  return pow
-})()
+  return pow;
+})();
 
 export default async function solve(args) {
-  const pow = await solver
+  const pow = await solver;
 
-  return pow(args)
+  return pow(args);
 }

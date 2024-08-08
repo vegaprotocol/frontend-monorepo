@@ -1,10 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "publicKey",
-    "message"
-  ],
+  "required": ["publicKey", "message"],
   "properties": {
     "publicKey": {
       "type": "string"

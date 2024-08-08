@@ -12,17 +12,17 @@ export class KeyedSet extends Map {
    * @param {V} value
    * @returns {this}
    */
-  add (key, value) {
-    const s = this.get(key)
+  add(key, value) {
+    const s = this.get(key);
 
     if (s == null) {
-      this.set(key, new Set([value]))
-      return this
+      this.set(key, new Set([value]));
+      return this;
     }
 
-    s.add(value)
+    s.add(value);
 
-    return this
+    return this;
   }
 
   /**
@@ -33,23 +33,23 @@ export class KeyedSet extends Map {
    * @param {V} [value]
    * @returns {boolean}
    */
-  delete (key, value) {
-    if (value == null) return super.delete(key)
+  delete(key, value) {
+    if (value == null) return super.delete(key);
 
-    const s = super.get(key)
-    if (s == null) return false
+    const s = super.get(key);
+    if (s == null) return false;
 
-    const res = s.delete(value)
+    const res = s.delete(value);
     if (s.size === 0) {
-      this.delete(key)
+      this.delete(key);
     }
 
-    return res
+    return res;
   }
 
-  values (key) {
-    if (key == null) return super.values()
+  values(key) {
+    if (key == null) return super.values();
 
-    return super.get(key) ?? new Set()
+    return super.get(key) ?? new Set();
   }
 }

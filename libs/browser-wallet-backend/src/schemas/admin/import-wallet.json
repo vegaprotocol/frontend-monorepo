@@ -1,10 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "name",
-    "recoveryPhrase"
-  ],
+  "required": ["name", "recoveryPhrase"],
   "properties": {
     "name": {
       "type": "string"

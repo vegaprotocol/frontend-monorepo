@@ -4,7 +4,7 @@ import { TransactionsCollection } from './src/transactions.js';
 import { ConnectionsCollection } from './src/connections.js';
 import { PortServer } from '../frontend/lib/port-server.js';
 import { PopupClient } from './src/popup-client.js';
-import { createNotificationWindow } from './src/windows.js';
+// import { createNotificationWindow } from './src/windows.js';
 import { setupListeners } from './lib/setup-listeners.js';
 
 import { StorageLocalMap, StorageSessionMap } from './lib/storage.js';
@@ -172,17 +172,17 @@ async function setPending() {
     return;
   }
 
-  try {
-    if (
-      pending > 0 &&
-      popupPorts.ports.size < 1 &&
-      (await settings.get('autoOpen'))
-    ) {
-      await createNotificationWindow();
-    }
-  } catch (_) {
-    // NOOP
-  }
+  // try {
+  //   if (
+  //     pending > 0 &&
+  //     popupPorts.ports.size < 1 &&
+  //     (await settings.get('autoOpen'))
+  //   ) {
+  //     // await createNotificationWindow();
+  //   }
+  // } catch (_) {
+  //   // NOOP
+  // }
 
   action.setBadgeText({
     text: pending.toString(),

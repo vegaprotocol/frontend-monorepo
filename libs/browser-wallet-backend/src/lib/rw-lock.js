@@ -1,4 +1,4 @@
-import RW from 'read-write-mutexify'
+import RW from 'read-write-mutexify';
 
 /**
  * A simple read-write lock, wrapping the `read-write-lock` module.
@@ -6,7 +6,7 @@ import RW from 'read-write-mutexify'
  */
 export class RWLock {
   constructor() {
-    this._lock = new RW()
+    this._lock = new RW();
   }
 
   /**
@@ -16,7 +16,7 @@ export class RWLock {
    * @async
    */
   /* async */ destroy(err) {
-    return this._lock.destroy(err)
+    return this._lock.destroy(err);
   }
 
   /**
@@ -27,10 +27,10 @@ export class RWLock {
    */
   async write(fn) {
     try {
-      await this._lock.write.lock()
-      return await fn()
+      await this._lock.write.lock();
+      return await fn();
     } finally {
-      this._lock.write.unlock()
+      this._lock.write.unlock();
     }
   }
 
@@ -42,10 +42,10 @@ export class RWLock {
    */
   async read(fn) {
     try {
-      await this._lock.read.lock()
-      return await fn()
+      await this._lock.read.lock();
+      return await fn();
     } finally {
-      this._lock.read.unlock()
+      this._lock.read.unlock();
     }
   }
 }

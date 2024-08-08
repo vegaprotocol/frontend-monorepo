@@ -1,9 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "origin"
-  ],
+  "required": ["origin"],
   "properties": {
     "origin": {
       "type": "string"

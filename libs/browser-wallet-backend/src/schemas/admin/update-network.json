@@ -1,10 +1,6 @@
 {
   "type": "object",
-  "required": [
-    "name",
-    "api",
-    "apps"
-  ],
+  "required": ["name", "api", "apps"],
   "additionalProperties": false,
   "errorMessage": "`admin.update_network` must only be given `name`, `metadata`, `api`, `apps`",
   "properties": {
@@ -16,10 +12,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "key",
-          "value"
-        ],
+        "required": ["key", "value"],
         "additionalProperties": false,
         "properties": {
           "key": {

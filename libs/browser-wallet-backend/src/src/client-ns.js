@@ -1,4 +1,4 @@
-import JSONRPCServer from '../../frontend/lib/json-rpc-server.js';
+import JSONRPCServer from '../lib/json-rpc-server.js';
 import * as txHelpers from './tx-helpers.js';
 import * as clientValidation from '../validation/client/index.js';
 import NodeRPC from './node-rpc.js';

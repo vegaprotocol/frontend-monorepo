@@ -1,4 +1,4 @@
-import 'jest-webextension-mock'
+import 'jest-webextension-mock';
 
 const window = {
   alwaysOnTop: false,
@@ -10,8 +10,8 @@ const window = {
   state: 'normal',
   top: 25,
   type: 'normal',
-  width: 742
-}
+  width: 742,
+};
 
 const popout = {
   alwaysOnTop: false,
@@ -23,8 +23,8 @@ const popout = {
   state: 'normal',
   top: 25,
   type: 'popout',
-  width: 742
-}
+  width: 742,
+};
 
 const windows = {
   create: jest.fn().mockResolvedValue(() => popout),
@@ -36,27 +36,27 @@ const windows = {
   update: jest.fn(),
   onBoundsChanged: {
     addListener: jest.fn(),
-    removeListener: jest.fn()
+    removeListener: jest.fn(),
   },
   onCreated: {
     addListener: jest.fn(),
-    removeListener: jest.fn()
+    removeListener: jest.fn(),
   },
   onFocusChanged: {
     addListener: jest.fn(),
-    removeListener: jest.fn()
+    removeListener: jest.fn(),
   },
   onRemoved: {
     addListener: jest.fn(),
-    removeListener: jest.fn()
-  }
-}
+    removeListener: jest.fn(),
+  },
+};
 
 global.chrome = {
   ...global.chrome,
-  windows
-}
+  windows,
+};
 global.browser = {
   ...global.browser,
-  windows
-}
+  windows,
+};

@@ -1,4 +1,4 @@
-import mutexifyPromise from 'mutexify/promise'
+import mutexifyPromise from 'mutexify/promise';
 
 /**
  * Storage proxy that wraps all methods in a mutex to prevent concurrent access
@@ -10,64 +10,65 @@ import mutexifyPromise from 'mutexify/promise'
  */
 export default class ConcurrentStorage {
   constructor(storage) {
-    this._storage = storage
-    this._lock = mutexifyPromise()
+    this._storage = storage;
+    this._lock = mutexifyPromise();
 
     /**
      * @param {string} key
      * @returns {Promise<boolean>}
      */
-    this.has = wrapMutexify(this._storage.has.bind(this._storage))
+    this.has = wrapMutexify(this._storage.has.bind(this._storage));
 
     /**
      * @param {string} key
      * @returns {Promise<any>}
      */
-    this.get = wrapMutexify(this._storage.get.bind(this._storage))
+    this.get = wrapMutexify(this._storage.get.bind(this._storage));
 
     /**
      * @param {string} key
      * @param {any} value
      * @returns {Promise<this>}
      */
-    this.set = wrapMutexify(this._storage.set.bind(this._storage))
+    this.set = wrapMutexify(this._storage.set.bind(this._storage));
 
     /**
      * @param {string} key
      * @returns {Promise<boolean>}
      */
-    this.delete = wrapMutexify(this._storage.delete.bind(this._storage))
+    this.delete = wrapMutexify(this._storage.delete.bind(this._storage));
 
     /**
      * @returns {Promise<void>}
      */
-    this.clear = wrapMutexify(this._storage.clear.bind(this._storage))
+    this.clear = wrapMutexify(this._storage.clear.bind(this._storage));
 
     /**
      * @returns {Promise<IterableIterator<string>}
      */
-    this.keys = wrapMutexify(this._storage.keys.bind(this._storage))
+    this.keys = wrapMutexify(this._storage.keys.bind(this._storage));
 
     /**
      * @returns {Promise<IterableIterator<any>}
      */
-    this.values = wrapMutexify(this._storage.values.bind(this._storage))
+    this.values = wrapMutexify(this._storage.values.bind(this._storage));
 
     /**
      * @returns {Promise<IterableIterator<[string, any]>}
      */
-    this.entries = wrapMutexify(this._storage.entries.bind(this._storage))
+    this.entries = wrapMutexify(this._storage.entries.bind(this._storage));
 
-    const self = this
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
     function wrapMutexify(fn) {
       return async (...args) => {
-        const release = await self._lock()
+        const release = await self._lock();
         try {
-          return await fn(...args)
+          return await fn(...args);
         } finally {
-          release()
+          release();
         }
-      }
+      };
     }
   }
 
@@ -78,11 +79,11 @@ export default class ConcurrentStorage {
    * @throws {Error} if lock is already acquired
    */
   async transaction(fn) {
-    const release = await this._lock()
+    const release = await this._lock();
     try {
-      return await fn(this._storage)
+      return await fn(this._storage);
     } finally {
-      release()
+      release();
     }
   }
 }

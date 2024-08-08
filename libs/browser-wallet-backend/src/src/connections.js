@@ -1,20 +1,20 @@
-import { TinyEventemitter } from '../lib/tiny-eventemitter.js'
+import { TinyEventemitter } from '../lib/tiny-eventemitter.js';
 
 export class ConnectionsCollection {
   constructor({ connectionsStore, publicKeyIndexStore, keySortIndex }) {
-    this.store = connectionsStore
-    this.index = publicKeyIndexStore
-    this.sortIndex = keySortIndex
+    this.store = connectionsStore;
+    this.index = publicKeyIndexStore;
+    this.sortIndex = keySortIndex;
 
-    this._emitter = new TinyEventemitter()
+    this._emitter = new TinyEventemitter();
   }
 
   on(event, listener) {
-    return this._emitter.on(event, listener)
+    return this._emitter.on(event, listener);
   }
 
   off(event, listener) {
-    return this._emitter.off(event, listener)
+    return this._emitter.off(event, listener);
   }
 
   /**
@@ -28,21 +28,30 @@ export class ConnectionsCollection {
    * @param {string} [params.networkId] - Preferred networkId that was approved for the connection
    * @returns {Promise<void>}
    */
-  async set(origin, { allowList, chainId = null, networkId = null, accessedAt, autoConsent = false }) {
+  async set(
+    origin,
+    {
+      allowList,
+      chainId = null,
+      networkId = null,
+      accessedAt,
+      autoConsent = false,
+    }
+  ) {
     const value = {
       origin,
       allowList,
       chainId,
       networkId,
       accessedAt: accessedAt ?? Date.now(),
-      autoConsent
-    }
+      autoConsent,
+    };
 
-    const res = await this.store.set(origin, value)
+    const res = await this.store.set(origin, value);
 
-    this._emitter.emit('set', value)
+    this._emitter.emit('set', value);
 
-    return res
+    return res;
   }
 
   /**
@@ -54,95 +63,96 @@ export class ConnectionsCollection {
    */
   async touch(origin) {
     return await this.store.transaction(async (store) => {
-      const conn = await store.get(origin)
-      if (conn == null) return
+      const conn = await store.get(origin);
+      if (conn == null) return;
 
-      conn.accessedAt = Date.now()
+      conn.accessedAt = Date.now();
 
-      await store.set(origin, conn)
-      this._emitter.emit('set', conn)
-    })
+      await store.set(origin, conn);
+      this._emitter.emit('set', conn);
+    });
   }
 
   async has(origin) {
-    return await this.store.has(origin)
+    return await this.store.has(origin);
   }
 
   async list() {
     return Array.from(await this.store.values()).sort((a, b) => {
-      return b.accessedAt - a.accessedAt
-    })
+      return b.accessedAt - a.accessedAt;
+    });
   }
 
   async clearConnections() {
-    const origins = await this.list()
+    const origins = await this.list();
     for (const { origin } of origins) {
-      this._emitter.emit('delete', { origin })
+      this._emitter.emit('delete', { origin });
     }
-    await this.store.clear()
-    await this.index.clear()
+    await this.store.clear();
+    await this.index.clear();
   }
 
   async delete(origin) {
-    const res = await this.store.delete(origin)
+    const res = await this.store.delete(origin);
 
-    this._emitter.emit('delete', { origin })
+    this._emitter.emit('delete', { origin });
 
-    return res
+    return res;
   }
 
   async get(origin) {
-    return await this.store.get(origin)
+    return await this.store.get(origin);
   }
 
   async update(origin, newProperties) {
-    const connections = await this.store.get(origin)
-    if (connections == null) throw new Error(`Could not find connections with origin ${origin}`)
-    await this.store.set(origin, { ...connections, ...newProperties })
+    const connections = await this.store.get(origin);
+    if (connections == null)
+      throw new Error(`Could not find connections with origin ${origin}`);
+    await this.store.set(origin, { ...connections, ...newProperties });
   }
 
   async isAllowed(origin, publicKey) {
-    const conn = await this.store.get(origin)
-    if (conn?.allowList == null) return false
-    const { allowList } = conn
+    const conn = await this.store.get(origin);
+    if (conn?.allowList == null) return false;
+    const { allowList } = conn;
 
-    const explicitKey = allowList.publicKeys.includes(publicKey)
-    if (explicitKey) return true
+    const explicitKey = allowList.publicKeys.includes(publicKey);
+    if (explicitKey) return true;
 
-    const pkFromIndex = await this.index.get(publicKey)
-    if (pkFromIndex == null) return false
+    const pkFromIndex = await this.index.get(publicKey);
+    if (pkFromIndex == null) return false;
 
-    return allowList.wallets.includes(pkFromIndex.wallet)
+    return allowList.wallets.includes(pkFromIndex.wallet);
   }
 
   async listAllowedKeys(origin) {
-    const conn = await this.store.get(origin)
-    if (conn?.allowList == null) return []
+    const conn = await this.store.get(origin);
+    if (conn?.allowList == null) return [];
 
-    const { allowList } = conn
+    const { allowList } = conn;
 
-    const keysFromIndex = await this.index.values()
-    const keys = []
+    const keysFromIndex = await this.index.values();
+    const keys = [];
     for (const { publicKey, name, wallet } of keysFromIndex) {
       if (allowList.wallets.includes(wallet)) {
-        keys.push({ publicKey, name })
+        keys.push({ publicKey, name });
       }
 
       if (allowList.publicKeys.includes(publicKey)) {
-        keys.push({ publicKey, name })
+        keys.push({ publicKey, name });
       }
     }
     const enrichedKeys = await Promise.all(
       keys.map(async (key) => {
-        const order = await this.sortIndex.get(key.publicKey)
+        const order = await this.sortIndex.get(key.publicKey);
         return {
           order,
-          ...key
-        }
+          ...key,
+        };
       })
-    )
-    const sortedKeys = enrichedKeys.sort((a, b) => a.order - b.order)
-    return sortedKeys
+    );
+    const sortedKeys = enrichedKeys.sort((a, b) => a.order - b.order);
+    return sortedKeys;
   }
 
   /**
@@ -153,10 +163,10 @@ export class ConnectionsCollection {
    * @returns {string | null} The chainId
    */
   async getChainId(origin) {
-    const conn = await this.store.get(origin)
-    if (conn == null) return null
+    const conn = await this.store.get(origin);
+    if (conn == null) return null;
 
-    return conn.chainId ?? null
+    return conn.chainId ?? null;
   }
 
   /**
@@ -168,9 +178,9 @@ export class ConnectionsCollection {
    * @returns {string | null} The networkId
    */
   async getNetworkId(origin) {
-    const conn = await this.store.get(origin)
-    if (conn == null) return null
+    const conn = await this.store.get(origin);
+    if (conn == null) return null;
 
-    return conn.networkId ?? null
+    return conn.networkId ?? null;
   }
 }

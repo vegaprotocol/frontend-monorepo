@@ -1,9 +1,9 @@
-import JSONRPCServer from '../../frontend/lib/json-rpc-server.js';
+import JSONRPCServer from '../lib/json-rpc-server.js';
 import * as adminValidation from '../validation/admin/index.js';
 import pkg from '../../package.json';
 import { toBase64, string as fromString } from '@vegaprotocol/crypto/buf';
-import { createWindow } from './windows.js';
-import createKeepAlive from '../../lib/mv3-keep-alive.js';
+// import { createWindow } from './windows.js';
+// import createKeepAlive from '../../lib/mv3-keep-alive.js';
 import * as txHelpers from './tx-helpers.js';
 
 const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
@@ -71,25 +71,25 @@ export default function init({
   // For now we keep the extension alive for 8 hours and ping every 20 seconds
   // 8 hours as normal workday (putting the machine to sleep will delay timers and probably sleep anyway)
   // 20 seconds as per chrome recommendation for something less than 30 seconds (sleep timeout)
-  const keepAlive = createKeepAlive(1000 * 60 * 60 * 8, 1000 * 20);
-  function keepAliveFn() {
-    const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
-    runtime.getPlatformInfo();
-  }
+  // const keepAlive = createKeepAlive(1000 * 60 * 60 * 8, 1000 * 20);
+  // function keepAliveFn() {
+  //   const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
+  //   runtime.getPlatformInfo();
+  // }
 
   var server = new JSONRPCServer({
     onerror,
     methods: {
-      async 'admin.open_popout'(params) {
-        doValidate(adminValidation.openPopout, params);
-        if (handle == null) {
-          const popout = await createWindow();
+      // async 'admin.open_popout'(params) {
+      //   doValidate(adminValidation.openPopout, params);
+      //   if (handle == null) {
+      //     const popout = await createWindow();
 
-          handle = await popout;
-        }
+      //     handle = await popout;
+      //   }
 
-        return null;
-      },
+      //   return null;
+      // },
       async 'admin.app_globals'(params) {
         doValidate(adminValidation.appGlobals, params);
 
@@ -98,7 +98,7 @@ export default function init({
 
         if (isLocked === false) {
           // kick keepalive loop
-          keepAlive(keepAliveFn);
+          // keepAlive(keepAliveFn);
         }
 
         // TODO this is kinda indeterminate, as we don't know if the storage is empty
@@ -142,7 +142,7 @@ export default function init({
         try {
           await encryptedStore.unlock(params.passphrase);
           // start keepalive loop
-          keepAlive(keepAliveFn);
+          // keepAlive(keepAliveFn);
         } catch (e) {
           if (e.message === 'Invalid passphrase or corrupted storage') {
             throw new JSONRPCServer.Error(
@@ -161,7 +161,7 @@ export default function init({
         await encryptedStore.lock();
 
         // stop keepalive loop
-        keepAlive(null);
+        // keepAlive(null);
 
         return null;
       },

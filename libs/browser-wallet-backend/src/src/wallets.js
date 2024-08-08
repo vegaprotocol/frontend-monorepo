@@ -1,183 +1,208 @@
-import { VegaWallet, HARDENED } from '@vegaprotocol/crypto'
-import { generate as generateMnemonic, validate, VALID_WORD_COUNTS } from '@vegaprotocol/crypto/bip-0039/mnemonic'
-import ConcurrentStorage from '../lib/concurrent-storage.js'
-import { TinyEventemitter } from '../lib/tiny-eventemitter.js'
+import { VegaWallet, HARDENED } from '@vegaprotocol/crypto';
+import {
+  generate as generateMnemonic,
+  validate,
+  VALID_WORD_COUNTS,
+} from '@vegaprotocol/crypto/bip-0039/mnemonic';
+import ConcurrentStorage from '../lib/concurrent-storage.js';
+import { TinyEventemitter } from '../lib/tiny-eventemitter.js';
 
 export class WalletCollection {
   constructor({ walletsStore, publicKeyIndexStore, keySortIndex }) {
-    this.store = new ConcurrentStorage(walletsStore)
-    this.index = new ConcurrentStorage(publicKeyIndexStore)
-    this.sortIndex = new ConcurrentStorage(keySortIndex)
+    this.store = new ConcurrentStorage(walletsStore);
+    this.index = new ConcurrentStorage(publicKeyIndexStore);
+    this.sortIndex = new ConcurrentStorage(keySortIndex);
 
-    this._emitter = new TinyEventemitter()
+    this._emitter = new TinyEventemitter();
   }
 
   on(event, listener) {
-    return this._emitter.on(event, listener)
+    return this._emitter.on(event, listener);
   }
 
   off(event, listener) {
-    return this._emitter.off(event, listener)
+    return this._emitter.off(event, listener);
   }
 
   async get({ name }) {
-    return this.store.get(name)
+    return this.store.get(name);
   }
 
   async getKeyInfo({ publicKey }) {
-    return this.index.get(publicKey)
+    return this.index.get(publicKey);
   }
 
   async getKeypair({ publicKey }) {
     return this.store.transaction(async (store) => {
-      const { wallet } = (await this.index.get(publicKey)) ?? {}
-      if (wallet == null) return
+      const { wallet } = (await this.index.get(publicKey)) ?? {};
+      if (wallet == null) return;
 
-      const walletConfig = await store.get(wallet)
-      if (walletConfig == null) return
+      const walletConfig = await store.get(wallet);
+      if (walletConfig == null) return;
 
-      const keyConfig = walletConfig.keys.find((k) => k.publicKey === publicKey)
-      if (keyConfig == null) return
+      const keyConfig = walletConfig.keys.find(
+        (k) => k.publicKey === publicKey
+      );
+      if (keyConfig == null) return;
 
-      const walletInst = await VegaWallet.fromSeed(new Uint8Array(walletConfig.seed))
-      const keyPair = await walletInst.keyPair(keyConfig.index)
+      const walletInst = await VegaWallet.fromSeed(
+        new Uint8Array(walletConfig.seed)
+      );
+      const keyPair = await walletInst.keyPair(keyConfig.index);
       return {
         keyPair,
         wallet,
-        ...keyConfig
-      }
-    })
+        ...keyConfig,
+      };
+    });
   }
 
   async list() {
-    return Array.from(await this.store.keys())
+    return Array.from(await this.store.keys());
   }
 
   async listKeys({ wallet }) {
-    const walletConfig = await this.get({ name: wallet })
+    const walletConfig = await this.get({ name: wallet });
 
     if (walletConfig == null) {
-      throw new Error(`Cannot find wallet with name "${wallet}".`)
+      throw new Error(`Cannot find wallet with name "${wallet}".`);
     }
-    return walletConfig.keys
+    return walletConfig.keys;
   }
 
   async exportKey({ publicKey }) {
-    const key = await this.getKeypair({ publicKey })
+    const key = await this.getKeypair({ publicKey });
 
     if (key == null) {
-      throw new Error(`Cannot find key with public key "${publicKey}".`)
+      throw new Error(`Cannot find key with public key "${publicKey}".`);
     }
 
     return {
       publicKey: key.keyPair.publicKey.toString(),
-      secretKey: key.keyPair.secretKey.toString()
-    }
+      secretKey: key.keyPair.secretKey.toString(),
+    };
   }
 
   async exportRecoveryPhrase({ walletName }) {
-    const wallet = await this.store.get(walletName)
+    const wallet = await this.store.get(walletName);
 
     if (wallet == null) {
-      throw new Error(`Cannot find wallet "${walletName}".`)
+      throw new Error(`Cannot find wallet "${walletName}".`);
     }
 
-    return { recoveryPhrase: wallet.recoveryPhrase }
+    return { recoveryPhrase: wallet.recoveryPhrase };
   }
 
   async generateRecoveryPhrase() {
-    const bitStrength = 256 // 24 words
-    return (await generateMnemonic(bitStrength)).join(' ')
+    const bitStrength = 256; // 24 words
+    return (await generateMnemonic(bitStrength)).join(' ');
   }
 
   async import({ name, recoveryPhrase, skipValidation = false }) {
     if (skipValidation !== true) {
       try {
-        await validate(recoveryPhrase)
+        await validate(recoveryPhrase);
 
-        const words = recoveryPhrase.split(/\s+/)
+        const words = recoveryPhrase.split(/\s+/);
         if (!VALID_WORD_COUNTS.includes(words.length))
-          throw new Error('Recovery phrase must be 12, 15, 18, 21 or 24 words')
+          throw new Error('Recovery phrase must be 12, 15, 18, 21 or 24 words');
       } catch (err) {
-        throw new Error(err.message)
+        throw new Error(err.message);
       }
     }
 
     return await this.store.transaction(async (store) => {
-      if (await store.has(name)) throw new Error(`Wallet with name "${name}" already exists.`)
+      if (await store.has(name))
+        throw new Error(`Wallet with name "${name}" already exists.`);
 
-      const seed = await VegaWallet.deriveSeed(recoveryPhrase)
+      const seed = await VegaWallet.deriveSeed(recoveryPhrase);
 
       await store.set(name, {
         seed: Array.from(seed),
         recoveryPhrase,
-        keys: []
-      })
-      this._emitter.emit('create_wallet', { name })
+        keys: [],
+      });
+      this._emitter.emit('create_wallet', { name });
 
-      return null
-    })
+      return null;
+    });
   }
 
   async _generateKey({ walletInstance, index, name, metadata, options }) {
-    const keyPair = await walletInstance.keyPair(index)
-    const publicKey = keyPair.publicKey.toString()
+    const keyPair = await walletInstance.keyPair(index);
+    const publicKey = keyPair.publicKey.toString();
 
-    if (name == null) name = `Key ${keyPair.index - HARDENED}`
+    if (name == null) name = `Key ${keyPair.index - HARDENED}`;
 
-    return { name, publicKey, index: keyPair.index, metadata, options }
+    return { name, publicKey, index: keyPair.index, metadata, options };
   }
 
   async generateKey({ wallet: walletName, name, metadata, options }) {
     return await this.store.transaction(async (store) => {
-      const walletConfig = await store.get(walletName)
+      const walletConfig = await store.get(walletName);
 
       if (walletConfig == null) {
-        throw new Error(`Cannot find wallet with name "${walletName}".`)
+        throw new Error(`Cannot find wallet with name "${walletName}".`);
       }
 
-      const wallet = await VegaWallet.fromSeed(new Uint8Array(walletConfig.seed))
+      const wallet = await VegaWallet.fromSeed(
+        new Uint8Array(walletConfig.seed)
+      );
 
-      const lastKey = walletConfig.keys.at(-1) ?? {}
-      const lastKeyIndex = lastKey.index ? lastKey.index + 1 : HARDENED
-      const key = await this._generateKey({ walletInstance: wallet, name, metadata, options, index: lastKeyIndex })
+      const lastKey = walletConfig.keys.at(-1) ?? {};
+      const lastKeyIndex = lastKey.index ? lastKey.index + 1 : HARDENED;
+      const key = await this._generateKey({
+        walletInstance: wallet,
+        name,
+        metadata,
+        options,
+        index: lastKeyIndex,
+      });
 
-      walletConfig.keys.push(key)
-      await store.set(walletName, walletConfig)
+      walletConfig.keys.push(key);
+      await store.set(walletName, walletConfig);
 
       await this.index.set(key.publicKey, {
         name: key.name,
         wallet: walletName,
-        publicKey: key.publicKey
-      })
-      const sortIndex = Array.from(await this.sortIndex.keys()).length
-      await this.sortIndex.set(key.publicKey, sortIndex)
-      this._emitter.emit('create_key', { publicKey: key.publicKey, name: key.name })
+        publicKey: key.publicKey,
+      });
+      const sortIndex = Array.from(await this.sortIndex.keys()).length;
+      await this.sortIndex.set(key.publicKey, sortIndex);
+      this._emitter.emit('create_key', {
+        publicKey: key.publicKey,
+        name: key.name,
+      });
 
-      return key
-    })
+      return key;
+    });
   }
 
   async renameKey({ publicKey, name }) {
     return await this.store.transaction(async (store) => {
-      const indexEntry = await this.index.get(publicKey)
-      const { wallet } = indexEntry ?? {}
-      if (indexEntry == null) throw new Error(`Cannot find key with public key "${publicKey}".`)
+      const indexEntry = await this.index.get(publicKey);
+      const { wallet } = indexEntry ?? {};
+      if (indexEntry == null)
+        throw new Error(`Cannot find key with public key "${publicKey}".`);
 
-      const walletConfig = await store.get(wallet)
-      if (walletConfig == null) throw new Error(`Cannot find wallet with name "${wallet}".`)
+      const walletConfig = await store.get(wallet);
+      if (walletConfig == null)
+        throw new Error(`Cannot find wallet with name "${wallet}".`);
 
-      const keyConfig = walletConfig.keys.find((k) => k.publicKey === publicKey)
-      if (keyConfig == null) throw new Error(`Cannot find key with public key "${publicKey}".`)
+      const keyConfig = walletConfig.keys.find(
+        (k) => k.publicKey === publicKey
+      );
+      if (keyConfig == null)
+        throw new Error(`Cannot find key with public key "${publicKey}".`);
 
-      keyConfig.name = name
-      indexEntry.name = name
+      keyConfig.name = name;
+      indexEntry.name = name;
 
-      await store.set(wallet, walletConfig)
-      await this.index.set(publicKey, indexEntry)
-      this._emitter.emit('rename_key', { publicKey, name })
+      await store.set(wallet, walletConfig);
+      await this.index.set(publicKey, indexEntry);
+      this._emitter.emit('rename_key', { publicKey, name });
 
-      return keyConfig
-    })
+      return keyConfig;
+    });
   }
 }

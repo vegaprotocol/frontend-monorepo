@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'node:fs';
 import path from 'node:path';
+// @ts-ignore Javascript
 import * as txHelpers from '../src/tx-helpers.js';
 
 import type { Account } from '@vegaprotocol/protos/vega/Account';
@@ -314,7 +316,7 @@ class NodeRPCMock {
   url = 'http://localhost:9933';
 }
 
-export const KeyPairMock = {
+const KeyPairMock = {
   algorithm: {
     name: 'vega/ed25519',
     version: 1,
@@ -327,8 +329,6 @@ export const KeyPairMock = {
     return '0x650c9f2e6701e3fe73d3054904a9a4bbdb96733f1c4c743ef573ad6ac14c5a3bf8a4731f6e6276faea5247303677fb8dbdf24ff78e53c25052cdca87eecfee85476bcb8a05cb9a1efef7cb87dd68223e117ce800ac46177172544757a487be32f5ab8fe0879fa8add78be465ea8f8d5acf977e9f1ae36d4d47816ea6ed41372b';
   }),
 };
-
-export default NodeRPCMock;
 
 const transactionList: { transaction: any; transactionType: string }[] = [
   {
@@ -373,6 +373,7 @@ describe('encoding and decoding', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  // eslint-disable-next-line jest/expect-expect
   it('write transfer request to file', async () => {
     for (const { transaction, transactionType } of transactionList) {
       const fileName = `./request-files/${transactionType}.txt`;
@@ -397,6 +398,7 @@ const writeTransactionToFile = async (transaction: any, filePath: string) => {
     }
 
     fs.writeFileSync(filePath, tx.base64Tx);
+    // eslint-disable-next-line no-console
     console.log(`JSON data has been written to ${filePath}`);
   } catch (err) {
     console.error('Error writing JSON data to file:', err);

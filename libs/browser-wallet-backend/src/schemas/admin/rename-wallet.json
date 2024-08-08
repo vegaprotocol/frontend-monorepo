@@ -1,10 +1,7 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "name",
-    "newName"
-  ],
+  "required": ["name", "newName"],
   "properties": {
     "name": {
       "type": "string"
