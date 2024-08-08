@@ -580,6 +580,10 @@ export type SubmitAMM = {
   proposedFee: string;
 };
 
+export type SubmitAMMBody = {
+  submitAmm: SubmitAMM;
+};
+
 /** Command to amend an existing automated market maker on a market. */
 export type AmendAMM = {
   /** Market ID for the AMM to be amended. */
@@ -592,6 +596,10 @@ export type AmendAMM = {
   concentratedLiquidityParameters?: ConcentratedLiquidityParameters;
   /** Concentrated liquidity parameters defining the shape of the AMM's volume curves. If not supplied the parameters will remain unchanged. */
   proposedFee?: string;
+};
+
+export type AmendAMMBody = {
+  amendAmm: AmendAMM;
 };
 
 export enum CancelAMMMethod {
@@ -609,12 +617,17 @@ export type CancelAMM = {
   /** Method to use to cancel the AMM. */
   method: CancelAMMMethod;
 };
+
+export type CancelAMMBody = {
+  cancelAmm: CancelAMM;
+};
+
 export type Transaction =
-  | AmendAMM
+  | AmendAMMBody
   | ApplyReferralCode
   | BatchMarketInstructionSubmissionBody
   | BatchProposalSubmissionBody
-  | CancelAMM
+  | CancelAMMBody
   | CreateReferralSet
   | DelegateSubmissionBody
   | JoinTeam
@@ -625,7 +638,7 @@ export type Transaction =
   | ProposalSubmissionBody
   | StopOrdersCancellationBody
   | StopOrdersSubmissionBody
-  | SubmitAMM
+  | SubmitAMMBody
   | TransferBody
   | UndelegateSubmissionBody
   | UpdateMarginModeBody
