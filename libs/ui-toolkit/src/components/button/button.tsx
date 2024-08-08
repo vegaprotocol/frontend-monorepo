@@ -21,24 +21,31 @@ const getClassName = (
   className?: string
 ) =>
   classNames(
-    'inline-flex gap-2 items-center justify-center disabled:opacity-40',
+    'inline-flex gap-2 items-center justify-center border disabled:opacity-40',
     // size
     {
-      'h-12 px-6 rounded-lg': size === 'lg',
-      'h-10 px-4 rounded': size === 'md',
-      'h-8 px-3 rounded text-sm': size === 'sm',
-      'h-6 px-2 rounded text-xs': size === 'xs',
+      'h-12 px-6 rounded-button-lg text-base': size === 'lg',
+      'h-10 px-4 rounded-button-md text-sm': size === 'md',
+      'h-8 px-3 rounded-button-sm text-sm': size === 'sm',
+      'h-6 px-2 rounded-button-xs text-xs': size === 'xs',
     },
     // colours
-    'enabled:hover:brightness-125',
+    'enabled:hover:brightness-110',
     {
-      'bg-intent-none text-gs-50': intent === Intent.None,
-      'bg-intent-primary': intent === Intent.Primary,
-      'bg-intent-secondary': intent === Intent.Secondary,
-      'bg-intent-danger': intent === Intent.Danger,
-      'bg-intent-info': intent === Intent.Info,
-      'bg-intent-warning': intent === Intent.Warning,
-      'bg-intent-success': intent === Intent.Success,
+      'bg-intent-none text-intent-none-foreground border-intent-none-outline text-gs-50':
+        intent === Intent.None,
+      'bg-intent-primary text-intent-primary-foreground border-intent-primary-outline':
+        intent === Intent.Primary,
+      'bg-intent-secondary text-intent-secondary-foreground border-intent-secondary-outline':
+        intent === Intent.Secondary,
+      'bg-intent-danger text-intent-danger-foreground border-intent-danger-outline':
+        intent === Intent.Danger,
+      'bg-intent-info text-intent-info-foreground border-intent-info-outline':
+        intent === Intent.Info,
+      'bg-intent-warning text-intent-warning-foreground border-intent-warning-outline':
+        intent === Intent.Warning,
+      'bg-intent-success text-intent-success-foreground border-intent-success-outline':
+        intent === Intent.Success,
     },
     { 'w-full': fill },
     className

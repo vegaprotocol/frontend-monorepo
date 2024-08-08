@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -82,7 +83,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-gs-300">
+  <span className="text-gs-100">
     {useLabelText({ isCurrent, isAvailable })}
   </span>
 );
@@ -131,10 +132,10 @@ export const NetworkSwitcher = ({
             className
           )}
         >
-          <span className="flex justify-between items-center gap-2">
+          <Button size="sm">
             <span>{envTriggerMapping[current]}</span>
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </span>
+          </Button>
         </DropdownMenuTrigger>
       }
     >

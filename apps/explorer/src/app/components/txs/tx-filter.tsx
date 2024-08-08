@@ -11,6 +11,7 @@ import {
   DropdownMenuSubContent,
   VegaIcon,
   VegaIconNames,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
@@ -129,7 +130,9 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
       modal={false}
       trigger={
         <DropdownMenuTrigger>
-          <FilterLabel filters={filters} />
+          <Button size="sm">
+            <FilterLabel filters={filters} />
+          </Button>
         </DropdownMenuTrigger>
       }
     >

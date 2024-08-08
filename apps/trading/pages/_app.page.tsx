@@ -80,23 +80,6 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeInProgressNotification />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
-          {/* <div className="flex flex-col gap-2 items-start p-10">
-            <Button size="xs">Trading xs</Button>
-            <Button size="sm">Trading sm</Button>
-            <Button size="md">Trading md</Button>
-            <Button size="lg">Trading lg</Button>
-            <Button intent={Intent.Primary}>Trading primary</Button>
-            <Button intent={Intent.Secondary}>Traidng secondary</Button>
-            <Button intent={Intent.Info}>Trading info</Button>
-            <Button intent={Intent.Danger}>Trading danger</Button>
-            <Button intent={Intent.Success}>Trading success</Button>
-            <Button intent={Intent.Warning}>Trading warning</Button>
-
-            <Button>Button Empty</Button>
-            <Button variant="default">Button default</Button>
-            <Button variant="primary">Button primary</Button>
-            <Button variant="secondary">Button secondary</Button>
-          </div> */}
           <Component />
         </div>
       </div>

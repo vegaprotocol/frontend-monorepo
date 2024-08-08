@@ -202,7 +202,7 @@ export const SearchForm = () => {
         <Button
           intent={Intent.Primary}
           type="submit"
-          size="xs"
+          size="sm"
           data-testid="search-button"
           className="[nav_&]:hidden"
         >
