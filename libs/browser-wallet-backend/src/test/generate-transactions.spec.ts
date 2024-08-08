@@ -47,15 +47,13 @@ import { type StopOrderSetup } from '@vegaprotocol/protos/vega/commands/v1/StopO
 import { TimeInForce } from '@vegaprotocol/protos/vega/Order/TimeInForce';
 import { Value } from '@vegaprotocol/protos/vega/Vote/Value';
 
-const solvePoWMock = jest.fn(async () => {
-  return 'mocked-pow';
-});
-
-jest.mock('../backend/tx-helpers.js', () => {
-  const originalModule = jest.requireActual('../backend/tx-helpers.js');
+jest.mock('../src/tx-helpers.js', () => {
+  const originalModule = jest.requireActual('../src/tx-helpers.js');
   return {
     ...originalModule,
-    solvePoW: solvePoWMock,
+    solvePoW: jest.fn(async () => {
+      return 'mocked-pow';
+    }),
   };
 });
 

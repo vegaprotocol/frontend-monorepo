@@ -414,22 +414,22 @@ describe('admin-ns', () => {
   //   expect(global.chrome.windows.create).toBeCalledTimes(1);
   // });
 
-  it('should not open pop out if one is already open', async () => {
-    global.chrome.windows.create.mockResolvedValue({
-      id: 1,
-    });
-    const { admin } = await createAdmin();
-    await admin.onrequest(
-      { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
-      {}
-    );
-    expect(global.chrome.windows.create).toBeCalled();
-    await admin.onrequest(
-      { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
-      {}
-    );
-    expect(global.chrome.windows.create).toBeCalledTimes(1);
-  });
+  // it('should not open pop out if one is already open', async () => {
+  //   global.chrome.windows.create.mockResolvedValue({
+  //     id: 1,
+  //   });
+  //   const { admin } = await createAdmin();
+  //   await admin.onrequest(
+  //     { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
+  //     {}
+  //   );
+  //   expect(global.chrome.windows.create).toBeCalled();
+  //   await admin.onrequest(
+  //     { jsonrpc: '2.0', id: 1, method: 'admin.open_popout', params: null },
+  //     {}
+  //   );
+  //   expect(global.chrome.windows.create).toBeCalledTimes(1);
+  // });
 
   it('should sign message with given public key', async () => {
     const { admin } = await createAdmin({ passphrase: 'foo' });

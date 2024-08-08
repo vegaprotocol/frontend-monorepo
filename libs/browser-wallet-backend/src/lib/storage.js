@@ -1,4 +1,4 @@
-const extensionStorage = localStorage;
+const extensionStorage = global.localStorage;
 
 function abstractStorage(storage) {
   // Based on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -20,7 +20,7 @@ function abstractStorage(storage) {
     }
 
     async _load() {
-      return (await storage.get(this._prefix))?.[this._prefix] ?? {};
+      return (await storage.getItem(this._prefix))?.[this._prefix] ?? {};
     }
 
     async has(key) {
@@ -35,9 +35,7 @@ function abstractStorage(storage) {
     async set(key, value) {
       const val = await this._load();
       val[key] = value;
-      await storage.set({
-        [this._prefix]: val,
-      });
+      await storage.setItem(this._prefix, val);
       return this;
     }
 
@@ -54,7 +52,7 @@ function abstractStorage(storage) {
     }
 
     async clear() {
-      await storage.remove(this._prefix);
+      await storage.removeItem(this._prefix);
     }
 
     async keys() {
