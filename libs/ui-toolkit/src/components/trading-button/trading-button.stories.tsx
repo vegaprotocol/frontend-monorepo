@@ -75,12 +75,5 @@ export const MultiLine = {
   args: {
     intend: Intent.Success,
     children: 'Place order',
-    subLabel: (
-      <>
-        50 ETH
-        <br />
-        Total 75,800 USDT
-      </>
-    ),
   },
 };

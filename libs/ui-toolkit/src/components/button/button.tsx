@@ -36,7 +36,7 @@ const secondary = [
   'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
   'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
 ];
-const ternary = [
+const tertiary = [
   'text-black',
   'border-vega-green',
   'dark:bg-vega-green bg-vega-green-550',
@@ -59,7 +59,7 @@ const getClassname = ({
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
-    [ternary.join(' ')]: variant === 'ternary',
+    [tertiary.join(' ')]: variant === 'ternary',
 
     [lg]: size === 'lg',
     [md]: size === 'md',

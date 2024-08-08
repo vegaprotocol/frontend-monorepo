@@ -13,7 +13,6 @@ type TradingButtonProps = {
   intent?: Intent | null;
   children?: ReactNode;
   icon?: ReactNode;
-  subLabel?: ReactNode;
   fill?: boolean;
   minimal?: boolean;
   testId?: string;
@@ -22,32 +21,23 @@ type TradingButtonProps = {
 const getClassName = (
   {
     size,
-    subLabel,
     intent,
     fill,
     minimal,
-  }: Pick<
-    TradingButtonProps,
-    'size' | 'subLabel' | 'intent' | 'fill' | 'minimal'
-  >,
+  }: Pick<TradingButtonProps, 'size' | 'intent' | 'fill' | 'minimal'>,
   className?: string
 ) =>
   classNames(
     'flex gap-2 items-center justify-center rounded disabled:opacity-40',
     // size
     {
-      'h-12 rounded-lg': !subLabel && size === 'large',
-      'h-10': !subLabel && (!size || size === 'medium'),
-      'h-8': !subLabel && size === 'small',
-      'px-3 text-sm': !subLabel && size === 'small',
-      'h-6 px-2 text-xs': !subLabel && size === 'extra-small',
-      'text-base': !subLabel && size !== 'small' && size !== 'custom',
-      'px-4':
-        !subLabel &&
-        size !== 'small' &&
-        size !== 'extra-small' &&
-        size !== 'custom',
-      'flex-col items-center justify-center px-3 pt-2.5 pb-2': subLabel,
+      'h-12 rounded-lg': size === 'large',
+      'h-10': !size || size === 'medium',
+      'h-8': size === 'small',
+      'px-3 text-sm': size === 'small',
+      'h-6 px-2 text-xs': size === 'extra-small',
+      'text-base': size !== 'small' && size !== 'custom',
+      'px-4': size !== 'small' && size !== 'extra-small' && size !== 'custom',
     },
     // colours
     {
@@ -101,23 +91,13 @@ const getClassName = (
 
 const Content = ({
   icon,
-  subLabel,
   children,
-}: Pick<TradingButtonProps, 'icon' | 'subLabel' | 'children'>) => (
+}: Pick<TradingButtonProps, 'icon' | 'children'>) => (
   <>
     <span data-label className="font-alpha leading-none" key="children">
       {children}
     </span>
     {icon}
-    {subLabel && (
-      <span
-        data-sub-label
-        className="mt-0.5 font-mono text-xs leading-tight [word-break:break-word]"
-        key="trading-button-sub-label"
-      >
-        {subLabel}
-      </span>
-    )}
   </>
 );
 
@@ -134,7 +114,6 @@ export const TradingButton = forwardRef<
       icon,
       children,
       className,
-      subLabel,
       fill,
       testId,
       ...props
@@ -145,14 +124,11 @@ export const TradingButton = forwardRef<
       ref={ref}
       type={type}
       data-trading-button
-      className={getClassName(
-        { size, subLabel, intent, fill, minimal },
-        className
-      )}
+      className={getClassName({ size, intent, fill, minimal }, className)}
       data-testid={testId}
       {...props}
     >
-      <Content icon={icon} subLabel={subLabel} children={children} />
+      <Content icon={icon} children={children} />
     </button>
   )
 );
@@ -165,15 +141,14 @@ export const TradingAnchorButton = ({
   href,
   children,
   className,
-  subLabel,
   ...props
 }: AnchorHTMLAttributes<HTMLAnchorElement> &
   TradingButtonProps & { href: string }) => (
   <Link
     to={href}
-    className={getClassName({ size, subLabel, intent, minimal }, className)}
+    className={getClassName({ size, intent, minimal }, className)}
     {...props}
   >
-    <Content icon={icon} subLabel={subLabel} children={children} />
+    <Content icon={icon} children={children} />
   </Link>
 );
