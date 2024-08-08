@@ -55,6 +55,7 @@ export class PopupClient {
       port.postMessage(msg);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     function _onmessage(message) {
       if (isResponse(message)) {

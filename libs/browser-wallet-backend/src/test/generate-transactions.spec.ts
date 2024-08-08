@@ -41,13 +41,14 @@ import { IndividualScope } from '@vegaprotocol/protos/vega/IndividualScope';
 import { Method } from '@vegaprotocol/protos/vega/commands/v1/UndelegateSubmission/Method';
 import { NodeSignatureKind } from '@vegaprotocol/protos/vega/commands/v1/NodeSignatureKind';
 import { PeggedReference } from '@vegaprotocol/protos/vega/PeggedReference';
-import { StopOrderSetup } from '@vegaprotocol/protos/vega/commands/v1/StopOrderSetup';
+import { type StopOrderSetup } from '@vegaprotocol/protos/vega/commands/v1/StopOrderSetup';
 import { TimeInForce } from '@vegaprotocol/protos/vega/Order/TimeInForce';
 import { Value } from '@vegaprotocol/protos/vega/Vote/Value';
 
-export const solvePoWMock = jest.fn(async () => {
+const solvePoWMock = jest.fn(async () => {
   return 'mocked-pow';
 });
+
 jest.mock('../backend/tx-helpers.js', () => {
   const originalModule = jest.requireActual('../backend/tx-helpers.js');
   return {

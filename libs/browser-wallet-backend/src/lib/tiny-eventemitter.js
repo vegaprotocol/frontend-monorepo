@@ -1,8 +1,8 @@
-import { KeyedSet } from './keyed-set.js'
+import { KeyedSet } from './keyed-set.js';
 
 export class TinyEventemitter {
   constructor() {
-    this._listeners = new KeyedSet()
+    this._listeners = new KeyedSet();
   }
 
   /**
@@ -13,11 +13,11 @@ export class TinyEventemitter {
    * @returns {function} A function that removes the listener.
    */
   on(name, listener) {
-    this._listeners.add(name, listener)
+    this._listeners.add(name, listener);
 
     return () => {
-      this.off(name, listener)
-    }
+      this.off(name, listener);
+    };
   }
 
   /**
@@ -29,7 +29,7 @@ export class TinyEventemitter {
    * @returns {boolean} Whether a listener was removed.
    */
   off(name, listener) {
-    return this._listeners.delete(name, listener)
+    return this._listeners.delete(name, listener);
   }
 
   /**
@@ -39,11 +39,13 @@ export class TinyEventemitter {
    * @param {...any} args
    */
   emit(name, ...args) {
-    const listeners = this._listeners.get(name) || []
+    const listeners = this._listeners.get(name) || [];
     for (const listener of listeners) {
       try {
-        listener(...args)
-      } catch (err) {}
+        listener(...args);
+      } catch (err) {
+        // NOOP
+      }
     }
   }
 }

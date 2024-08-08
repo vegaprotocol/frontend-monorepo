@@ -17,9 +17,6 @@ import initAdmin from './src/admin-ns.js';
 import initClient from './src/client-ns.js';
 import config from '../config/beta.js';
 
-// import { captureException } from '@sentry/browser'
-// import { setupSentry } from './lib/sentry.js'
-
 const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
 const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
 
@@ -64,11 +61,9 @@ const transactions = new TransactionsCollection({
   store: transactionsStore,
   connections,
 });
-// setupSentry(settings, wallets)
 
 const onerror = (...args) => {
   console.error(args);
-  // captureException(args[0])
 };
 
 const clientServer = initClient({

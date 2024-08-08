@@ -137,7 +137,7 @@ describe('wallets', () => {
       recoveryPhrase: await wallets.generateRecoveryPhrase(),
     });
 
-    const k = await wallets.generateKey({ wallet: 'wallet 1' });
+    await wallets.generateKey({ wallet: 'wallet 1' });
     expect(cb).toBeCalledTimes(1);
     expect(cb).toBeCalledWith({ name: 'wallet 1' });
   });
@@ -154,7 +154,7 @@ describe('wallets', () => {
       recoveryPhrase: await wallets.generateRecoveryPhrase(),
     });
 
-    const k = await wallets.generateKey({ wallet: 'wallet 1' });
+    await wallets.generateKey({ wallet: 'wallet 1' });
     expect(cb).toBeCalledTimes(1);
     expect(cb).toBeCalledWith({
       publicKey: expect.any(String),

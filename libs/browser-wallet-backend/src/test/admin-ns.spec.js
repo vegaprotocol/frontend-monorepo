@@ -1,4 +1,3 @@
-/* globals expect, it, describe, jest, beforeEach, afterEach */
 import initAdminServer from '../src/admin-ns.js';
 import { WalletCollection } from '../src/wallets.js';
 import { NetworkCollection, Network } from '../src/network.js';
@@ -668,7 +667,7 @@ describe('admin-ns', () => {
 });
 
 const setupWallet = async (passphrase) => {
-  const { admin, wallets } = await createAdmin({ passphrase });
+  const { admin } = await createAdmin({ passphrase });
 
   const generateRecoveryPhrase = await admin.onrequest(
     REQ_GENERATE_RECOVERY_PHRASE(1)

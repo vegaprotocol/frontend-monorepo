@@ -7,7 +7,7 @@ import {
   migrations,
 } from '../lib/setup-listeners.js';
 import ConcurrentStorage from '../lib/concurrent-storage.js';
-import config from '!/config';
+import config from '../../config/beta.js';
 import { NetworkCollection } from '../src/network.js';
 import {
   fairground,

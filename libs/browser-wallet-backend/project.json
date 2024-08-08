@@ -1,0 +1,36 @@
+{
+  "name": "browser-wallet-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/browser-wallet-backend/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/browser-wallet-backend",
+        "main": "libs/browser-wallet-backend/src/index.ts",
+        "tsConfig": "libs/browser-wallet-backend/tsconfig.lib.json",
+        "assets": ["libs/browser-wallet-backend/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/browser-wallet-backend/**/*.ts",
+          "libs/browser-wallet-backend/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/browser-wallet-backend/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

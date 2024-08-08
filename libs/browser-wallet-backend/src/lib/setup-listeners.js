@@ -1,5 +1,5 @@
 import { createWindow } from '../src/windows.js';
-import config from '!/config';
+import config from '../../config/beta.js';
 
 export const createConnectionHandler =
   (clientPorts, popupPorts, interactor) => async (port) => {
