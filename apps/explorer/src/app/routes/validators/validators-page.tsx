@@ -57,10 +57,10 @@ const Rate = ({
   return (
     <div
       className={classNames(
-        'overflow-hidden rounded h-[9px] flex w-full bg-vega-light-100 dark:bg-vega-dark-150',
+        'overflow-hidden rounded h-[9px] flex w-full bg-gs-100',
         { 'pl-[9px]': asPoint },
         {
-          'bg-gradient-to-l to-vega-orange-500 dark:to-vega-orange-550 from-vega-light-100 dark:from-vega-dark-150':
+          'bg-gradient-to-l to-vega-orange-500 dark:to-vega-orange-550 from-gs-100':
             asPoint && colour === 'orange',
         }
       )}
@@ -190,7 +190,7 @@ export const ValidatorsPage = () => {
                   <div
                     data-testid="validator-tile"
                     validator-id={v.id}
-                    className="border border-vega-light-200 dark:border-vega-dark-200 rounded p-2 overflow-hidden"
+                    className="border border-gs-200  rounded p-2 overflow-hidden"
                   >
                     <div className="w-full">
                       <h2 className="font-alpha text-2xl leading-[60px]">

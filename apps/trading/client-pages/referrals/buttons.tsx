@@ -6,8 +6,8 @@ import { NavLink } from 'react-router-dom';
 
 const RAINBOW_TAB_STYLE = classNames(
   'inline-block',
-  'bg-vega-clight-500 dark:bg-vega-cdark-500',
-  'hover:bg-vega-clight-400 dark:hover:bg-vega-cdark-400',
+  'bg-gs-500 ',
+  'hover:bg-gs-400 ',
   'data-[state="active"]:text-white data-[state="active"]:bg-rainbow',
   'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
   '[&.active]:text-white [&.active]:bg-rainbow',
@@ -18,7 +18,7 @@ const RAINBOW_TAB_STYLE = classNames(
 
 const DISABLED_RAINBOW_TAB_STYLE = classNames(
   'pointer-events-none',
-  'text-vega-clight-100 dark:text-vega-cdark-100',
+  'text-gs-100 ',
   'data-[state="active"]:text-white',
   '[&.active]:text-white'
 );
@@ -26,8 +26,8 @@ const DISABLED_RAINBOW_TAB_STYLE = classNames(
 const TAB_STYLE = classNames(
   'inline-block',
   'bg-transparent',
-  'text-vega-clight-200 dark:text-vega-cdark-200',
-  'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100',
+  'text-gs-200 ',
+  'hover:text-gs-100 ',
   'data-[state="active"]:text-black dark:data-[state="active"]:text-white',
   'data-[state="active"]:border-b-2 data-[state="active"]:border-b-black dark:data-[state="active"]:border-b-white',
   '[&.active]:text-black dark:[&.active]:text-white',

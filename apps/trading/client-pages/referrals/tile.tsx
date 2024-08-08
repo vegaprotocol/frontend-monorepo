@@ -23,7 +23,7 @@ export const Tile = ({
         'overflow-hidden relative',
         'p-3 md:p-6',
         'rounded-lg',
-        'bg-vega-clight-800 dark:bg-vega-cdark-800',
+        'bg-gs-800 ',
         className
       )}
     >
@@ -51,10 +51,7 @@ export const StatTile = ({
   }
   return (
     <Tile>
-      <h3
-        data-testid={testId}
-        className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt"
-      >
+      <h3 data-testid={testId} className="mb-1 text-sm text-gs-100  calt">
         {title}
       </h3>
       <div
@@ -64,9 +61,7 @@ export const StatTile = ({
         {children}
       </div>
       {description && (
-        <div className="text-sm text-left text-vega-clight-100 dark:text-vega-cdark-100">
-          {description}
-        </div>
+        <div className="text-sm text-left text-gs-100 ">{description}</div>
       )}
     </Tile>
   );
@@ -76,10 +71,8 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   const t = useT();
   return (
     <Tile>
-      <h3 className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt">
-        {title}
-      </h3>
-      <div className="text-xs text-vega-clight-300 dark:text-vega-cdark-300 leading-[3rem]">
+      <h3 className="mb-1 text-sm text-gs-100  calt">{title}</h3>
+      <div className="text-xs text-gs-300  leading-[3rem]">
         {t('No active program')}
       </div>
     </Tile>
@@ -88,7 +81,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
 
 const FADE_OUT_STYLE = classNames(
   'after:w-5 after:h-full after:absolute after:top-0 after:right-0',
-  'after:bg-gradient-to-l after:from-vega-clight-800 after:dark:from-vega-cdark-800 after:to-transparent'
+  'after:bg-gradient-to-l after:from-gs-800 after:to-transparent'
 );
 
 export const CodeTile = ({

@@ -11,7 +11,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800'
+            'bg-black dark:bg-white text-gs-800 '
           )}
         >
           <VLogo className="w-4 h-4" />
@@ -23,7 +23,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
+            'bg-black dark:bg-white text-gs-800  text-xs'
           )}
         >
           <span className="relative -top-0.5">{'>_'}</span>
@@ -35,7 +35,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'border bg-white dark:bg-vega-clight-600'
+            'border bg-white dark:bg-gs-600'
           )}
         >
           <VegaIcon name={VegaIconNames.METAMASK} size={24} />
@@ -47,7 +47,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'bg-vega-blue-500 text-vega-clight-800'
+            'bg-vega-blue-500 text-gs-800'
           )}
         >
           <VegaIcon name={VegaIconNames.EYE} size={20} />
@@ -59,7 +59,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
+            'bg-gs-600 text-gs-800  text-xs'
           )}
         />
       );

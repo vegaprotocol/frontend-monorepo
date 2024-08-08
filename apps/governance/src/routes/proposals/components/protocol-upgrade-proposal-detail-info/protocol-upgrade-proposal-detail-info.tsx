@@ -43,7 +43,7 @@ export const ProtocolUpgradeProposalDetailInfo = ({
             <span data-testid="protocol-upgrade-block-height">
               {proposal.upgradeBlockHeight}{' '}
               {lastBlockHeight && (
-                <span className="text-vega-light-300 dark:text-vega-dark-300">
+                <span className="text-gs-300">
                   ({t('currently')} {lastBlockHeight})
                 </span>
               )}

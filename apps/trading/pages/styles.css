@@ -11,6 +11,41 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --gs-0: 0 0 0;
+    --gs-50: 4 4 5;
+    --gs-100: 76 78 81;
+    --gs-200: 101 103 107;
+    --gs-300: 129 131 136;
+    --gs-400: 170 171 174;
+    --gs-400-hex: #aaabae;
+    --gs-500: 209 210 211;
+    --gs-600: 233 233 234;
+    --gs-600-hex: #e9e9ea;
+    --gs-700: 238 238 239;
+    --gs-800: 244 244 244;
+    --gs-800-hex: #f4f4f4;
+    --gs-900: 249 250 250;
+  }
+  .dark {
+    --gs-0: 255 255 255;
+    --gs-50: 220 222 227;
+    --gs-100: 148 150 155;
+    --gs-200: 124 126 131;
+    --gs-300: 98 100 105;
+    --gs-400: 68 70 75;
+    --gs-400-hex: #44464b;
+    --gs-500: 50 51 57;
+    --gs-600: 41 43 48;
+    --gs-600-hex: #292b30;
+    --gs-700: 32 34 39;
+    --gs-800: 23 25 30;
+    --gs-800-hex: #17191e;
+    --gs-900: 5 6 12;
+  }
+}
+
 /**
  * TAILWIND HELPERS
  */
@@ -26,19 +61,19 @@ body,
 }
 
 .text-default {
-  @apply text-vega-clight-50 dark:text-vega-cdark-50;
+  @apply text-gs-50;
 }
 
 .text-secondary {
-  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+  @apply text-gs-100;
 }
 
 .text-muted {
-  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+  @apply text-gs-100;
 }
 
 .border-default {
-  @apply border-vega-clight-600 dark:border-vega-cdark-600;
+  @apply border-gs-600;
 }
 
 /**
@@ -66,6 +101,9 @@ html.dark {
 
 /**
  * PENNANT
+ *
+ * NOTE: that pennant requires hex values for colors, as it will internally convert
+ * these to rgb, not using hex results in colors not being set as expected
  */
 
 html [data-theme='dark'],
@@ -73,6 +111,10 @@ html [data-theme='light'] {
   /* fonts */
   --pennant-font-family-base: theme(fontFamily.alpha);
   --pennant-font-family-monospace: theme(fontFamily.mono);
+  --pennant-background-surface-color: var(--gs-800-hex);
+  --pennant-hover-overlay: rgb(var(--gs-800) / 0.5);
+  --separator-border: var(--gs-400-hex);
+  --pennant-background-label-color: var(--gs-600-hex);
 
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
@@ -93,15 +135,6 @@ html [data-theme='light'] {
 }
 
 html [data-theme='light'] {
-  --separator-border: theme(colors.vega.clight.400);
-  --pennant-background-surface-color: theme(colors.vega.clight.800);
-  --pennant-hover-overlay: rgba(
-    244,
-    244,
-    244,
-    0.5
-  ); /* theme(colors.vega.clight.800) in rgba with opacity */
-
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
   --pennant-color-buy-stroke: theme(colors.market.green.600);
@@ -117,20 +150,9 @@ html [data-theme='light'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-
-  --pennant-background-label-color: theme(colors.vega.clight.600);
 }
 
 html [data-theme='dark'] {
-  --separator-border: theme(colors.vega.cdark.400);
-  --pennant-background-surface-color: theme(colors.vega.cdark.800);
-  --pennant-hover-overlay: rgba(
-    23,
-    25,
-    30,
-    0.5
-  ); /* theme(colors.vega.cdark.800) in rgba with opacity */
-
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
   --pennant-color-buy-stroke: theme(colors.market.green.DEFAULT);
@@ -146,7 +168,6 @@ html [data-theme='dark'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-  --pennant-background-label-color: theme(colors.vega.cdark.600);
 }
 
 /**
@@ -198,26 +219,26 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.vega.clight.900);
-  --ag-border-color: theme(colors.vega.clight.600);
-  --ag-header-background-color: theme(colors.vega.clight.700);
+  --ag-background-color: theme(colors.gs.900);
+  --ag-border-color: theme(colors.gs.600);
+  --ag-header-background-color: theme(colors.gs.700);
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.vega.clight.500);
-  --ag-row-border-color: theme(colors.vega.clight.600);
-  --ag-row-hover-color: theme(colors.vega.clight.800);
-  --ag-modal-overlay-background-color: rgb(244 244 244 / 50%);
+  --ag-header-column-separator-color: theme(colors.gs.500);
+  --ag-row-border-color: theme(colors.gs.600);
+  --ag-row-hover-color: theme(colors.gs.800);
+  --ag-modal-overlay-background-color: rgb(var(--gs-800) / 50%);
 }
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.vega.cdark.900);
-  --ag-border-color: theme(colors.vega.cdark.600);
-  --ag-header-background-color: theme(colors.vega.cdark.700);
+  --ag-background-color: theme(colors.gs.900);
+  --ag-border-color: theme(colors.gs.600);
+  --ag-header-background-color: theme(colors.gs.700);
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.vega.cdark.500);
-  --ag-row-border-color: theme(colors.vega.cdark.600);
-  --ag-row-hover-color: theme(colors.vega.cdark.800);
-  --ag-modal-overlay-background-color: rgb(9 11 16 / 50%);
+  --ag-header-column-separator-color: theme(colors.gs.500);
+  --ag-row-border-color: theme(colors.gs.600);
+  --ag-row-hover-color: theme(colors.gs.800);
+  --ag-modal-overlay-background-color: rgb(var(--gs-800) / 50%);
 }
 
 .ag-theme-balham-dark .ag-row.no-hover,

@@ -55,7 +55,7 @@ export const Search = () => {
   const searchTrigger = (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="text-vega-light-300 dark:text-vega-dark-300 data-open:text-black dark:data-open:text-white flex items-center">
+        <button className="text-gs-300 data-open:text-black dark:data-open:text-white flex items-center">
           <MagnifyingGlass />
         </button>
       </DropdownMenu.Trigger>
@@ -64,9 +64,9 @@ export const Search = () => {
           className={classNames(
             'search-dropdown',
             'p-2 min-w-[290px] z-20',
-            'text-vega-light-300 dark:text-vega-dark-300',
-            'bg-white dark:bg-black',
-            'border rounded border-vega-light-200 dark:border-vega-dark-200',
+            'text-gs-300',
+            'bg-gs-900',
+            'border rounded border-gs-200 ',
             'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]'
           )}
           align="end"
@@ -134,7 +134,7 @@ export const SearchForm = () => {
           <button
             className={classNames(
               'absolute top-[50%] translate-y-[-50%] left-2',
-              'text-vega-light-300 dark:text-vega-dark-300'
+              'text-gs-300'
             )}
           >
             <MagnifyingGlass />
@@ -148,7 +148,7 @@ export const SearchForm = () => {
             className={classNames(
               { hidden: searchQuery.length === 0 },
               'absolute top-[50%] translate-y-[-50%] right-2',
-              'text-vega-light-300 dark:text-vega-dark-300'
+              'text-gs-300'
             )}
           >
             <Clear />
@@ -167,7 +167,7 @@ export const SearchForm = () => {
             className={classNames(
               'pl-8 py-2 text-xs',
               { 'pr-8': searchQuery.length > 1 },
-              'border rounded border-vega-light-200 dark:border-vega-dark-200',
+              'border rounded border-gs-200 ',
               {
                 'border-vega-pink dark:border-vega-pink': Boolean(
                   formState.errors.search
@@ -184,9 +184,9 @@ export const SearchForm = () => {
         {formState.errors.search && (
           <div
             className={classNames(
-              '[nav_&]:border [nav_&]:rounded [nav_&]:border-vega-light-300 [nav_&]:dark:border-vega-light-300',
-              '[.search-dropdown_&]:border [.search-dropdown_&]:rounded [.search-dropdown_&]:border-vega-light-300 [.search-dropdown_&]:dark:border-vega-light-300',
-              'bg-white dark:bg-black',
+              '[nav_&]:border [nav_&]:rounded [nav_&]:border-gs-300 [nav_&]:dark:border-gs-300',
+              '[.search-dropdown_&]:border [.search-dropdown_&]:rounded [.search-dropdown_&]:border-gs-300 [.search-dropdown_&]:dark:border-gs-300',
+              'bg-gs-900',
               'absolute top-[100%] flex-1 w-full pb-2 px-2 text-black dark:text-white'
             )}
           >

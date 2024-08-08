@@ -382,12 +382,12 @@ const EpochInput = ({
 }) => {
   return (
     <span className="flex gap-0.5" data-testid={id}>
-      <span className="bg-vega-clight-600 dark:bg-vega-cdark-600 relative rounded-l-sm">
+      <span className="bg-gs-600  relative rounded-l-sm">
         <span className="px-2 opacity-0">{value}</span>
         <input
           onChange={(e) => onChange(Number(e.target.value))}
           value={value}
-          className="dark:focus:bg-vega-cdark-700 absolute left-0 top-0 h-full w-full appearance-none bg-transparent px-2 focus:outline-none"
+          className="absolute left-0 top-0 h-full w-full appearance-none bg-transparent px-2 focus:outline-none"
           type="number"
           step={step}
           min={min}
@@ -399,13 +399,13 @@ const EpochInput = ({
       <span className="flex flex-col gap-0.5 overflow-hidden rounded-r-sm">
         <button
           onClick={onIncrement}
-          className="bg-vega-clight-600 dark:bg-vega-cdark-600 flex flex-1 items-center px-1"
+          className="bg-gs-600  flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_UP} size={12} />
         </button>
         <button
           onClick={onDecrement}
-          className="bg-vega-clight-600 dark:bg-vega-cdark-600 flex flex-1 items-center px-1"
+          className="bg-gs-600  flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
         </button>

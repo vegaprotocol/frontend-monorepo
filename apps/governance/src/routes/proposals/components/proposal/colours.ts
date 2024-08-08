@@ -30,8 +30,7 @@ export const getStyle = (indicator: number, max = COLOURS.length) =>
       'orange' === getColour(indicator, max),
     'bg-vega-red-400 before:bg-vega-red-400':
       'red' === getColour(indicator, max),
-    'bg-vega-clight-600 before:bg-vega-clight-600':
-      'none' === getColour(indicator, max),
+    'bg-gs-600 before:bg-gs-600': 'none' === getColour(indicator, max),
   });
 
 export const getIndicatorStyle = (indicator: number) =>

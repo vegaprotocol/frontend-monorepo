@@ -478,7 +478,7 @@ const SuccessionLineItem = ({
     <div
       data-testid="succession-line-item"
       className={classNames(
-        'bg-vega-clight-700 dark:bg-vega-cdark-700 rounded p-2',
+        'bg-gs-700  rounded p-2',
         'font-alpha',
         'flex flex-col '
       )}
@@ -494,12 +494,12 @@ const SuccessionLineItem = ({
               marketData.tradableInstrument.instrument.code
             )
           ) : (
-            <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 mb-1 block h-4 w-20 animate-pulse"></span>
+            <span className="bg-gs-500  mb-1 block h-4 w-20 animate-pulse"></span>
           )}
         </div>
         {isCurrent && (
           <Tooltip description={t('This market')}>
-            <div className="text-vega-clight-200 dark:text-vega-cdark-200 cursor-help">
+            <div className="text-gs-200  cursor-help">
               <VegaIcon name={VegaIconNames.BULLET} size={16} />
             </div>
           </Tooltip>
@@ -509,7 +509,7 @@ const SuccessionLineItem = ({
         {marketData ? (
           marketData.tradableInstrument.instrument.name
         ) : (
-          <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 block h-4 w-28 animate-pulse"></span>
+          <span className="bg-gs-500  block h-4 w-28 animate-pulse"></span>
         )}
       </div>
       <div
@@ -990,9 +990,9 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
   const price = (price: string, direction: 'min' | 'max') => (
     <div
       className={classNames(
-        'rounded px-1 py-[1px] bg-vega-clight-500 dark:bg-vega-cdark-500 relative',
+        'rounded px-1 py-[1px] bg-gs-500  relative',
         'after:absolute after:content-[" "] after:z-10',
-        'after:block after:w-3 after:h-3 after:bg-vega-clight-500 dark:after:bg-vega-cdark-500 after:rotate-45 after:-translate-y-1/2',
+        'after:block after:w-3 after:h-3 after:bg-gs-500 after:rotate-45 after:-translate-y-1/2',
         {
           'after:top-1/2 after:right-[-6px]': direction === 'min',
           'after:top-1/2 after:left-[-6px]': direction === 'max',
@@ -1019,7 +1019,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
     );
     const within = compactDuration(trigger.horizonSecs * 1000);
     return (
-      <div key={index} className="mb-2 border-b border-b-vega-clight-500">
+      <div key={index} className="mb-2 border-b border-b-gs-500">
         <div className="font-mono text-xs flex">
           {/** MIN PRICE */}
           <Tooltip
@@ -1043,7 +1043,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
             <div aria-hidden className="w-full text-center text-[10px]">
               <div
                 data-testid="bounds-percent-price"
-                className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]"
+                className="border-b-[2px] border-dashed border-gs-500 w-full h-1/2 translate-y-[1px]"
               >
                 {probability}
               </div>
@@ -1653,7 +1653,7 @@ export const OracleInfoPanel = ({
           parentDataSourceSpec &&
           parentDataSourceSpecId &&
           parentProduct && (
-            <div className="text-vega-dark-300 flex flex-col gap-2 line-through">
+            <div className="text-gs-300 flex flex-col gap-2 line-through">
               <DataSourceProof
                 data-testid="oracle-proof-links"
                 data={parentDataSourceSpec}

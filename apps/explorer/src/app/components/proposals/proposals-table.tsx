@@ -128,7 +128,10 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
           };
           return (
             <div className="pb-1">
-              <button className="underline max-md:hidden" onClick={openDialog}>
+              <button
+                className="underline underline-offset-4 max-md:hidden"
+                onClick={openDialog}
+              >
                 {t('View terms')}
               </button>{' '}
               <ExternalLink className="max-md:hidden" href={proposalPage}>

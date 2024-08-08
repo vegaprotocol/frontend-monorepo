@@ -46,8 +46,7 @@ const VoteProgress = ({
 }: VoteProgressProps) => {
   const containerClasses = classNames(
     'relative h-2 rounded-md overflow-hidden',
-    // 'border border-vega-dark-300',
-    colourfulBg ? 'bg-vega-red' : 'bg-vega-dark-200'
+    colourfulBg ? 'bg-vega-red' : 'bg-gs-200'
   );
 
   const progressClasses = classNames(
@@ -414,7 +413,7 @@ const VoteBreakdownBatchSubProposal = ({
           {t(terms.change.__typename)} {marketName}
         </h4>
       </div>
-      <div className="rounded-sm bg-vega-dark-100 p-3">
+      <div className="rounded-sm bg-gs-100 p-3">
         <VoteBreakDownUI
           voteInfo={voteInfo}
           isProposalOpen={isProposalOpen}

@@ -102,7 +102,7 @@ export function OraclesTable({ data }: OraclesTableProps) {
                   className={
                     hoveredOracle.length > 0 &&
                     oracleList.indexOf(hoveredOracle) > -1
-                      ? 'bg-gray-100 dark:bg-gray-800'
+                      ? 'bg-gs-700'
                       : ''
                   }
                   data-testid="oracle-details"

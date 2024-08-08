@@ -8,7 +8,7 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 const wrapperClasses =
-  'flex-1 max-w-xs items-center border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
+  'flex-1 max-w-xs items-center border border-gs-200  rounded-md pv-2 ph-5 mb-5';
 
 export type StopOrderType = 'RisesAbove' | 'FallsBelow' | 'OCO';
 type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
@@ -105,7 +105,7 @@ export const StopOrderSetup = ({
   return (
     <div className={wrapperClasses}>
       <div className="mb-12 lg:mb-0">
-        <div className="bg-slate-100 text-slate-900 px-6 py-2 md:px-6 flex">
+        <div className="bg-gs-900 text-gs-50 px-6 py-2 md:px-6 flex">
           <div className="flex-1">
             <strong className="font-bold mb-1">{TypeLabel[type]} </strong>
             <p className=" font-xs mb-0">

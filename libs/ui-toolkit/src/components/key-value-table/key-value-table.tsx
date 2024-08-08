@@ -68,17 +68,13 @@ export const KeyValueTableRow = ({
   const dlClassName = classNames(
     'flex gap-1 flex-wrap justify-between py-1 text-sm items-start',
     {
-      'border-b border-neutral-300 dark:border-neutral-700': !noBorder,
+      'border-b border-gs-600': !noBorder,
     },
     { 'flex-col': !inline },
     { 'flex-row': inline },
     className
   );
-  const dtClassNames = classNames(
-    'break-words',
-    dtClassName,
-    'text-neutral-500 dark:text-neutral-300'
-  );
+  const dtClassNames = classNames('break-words', dtClassName, 'text-gs-100');
   const ddClassNames = classNames(
     'break-words',
     {

@@ -283,7 +283,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-xs text-black dark:text-white"
+      className="bg-gs-100 border-gs-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-xs text-gs-0"
     >
       {marketState && (
         <p className="mb-1 italic">
@@ -379,7 +379,7 @@ export const FeesDiscountBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-discount-breakdown-tooltip"
-      className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-sm text-black dark:text-white"
+      className="bg-gs-100 border-gs-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-sm text-gs-0"
     >
       <dl className="grid grid-cols-6 gap-x-1 text-xs">
         {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||

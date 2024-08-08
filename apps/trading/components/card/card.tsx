@@ -30,7 +30,7 @@ export const Card = ({
         {
           'p-4': size === 'md',
           'p-7': size === 'lg',
-          'bg-vega-clight-800 dark:bg-vega-cdark-800': !minimal,
+          'bg-gs-800 ': !minimal,
         },
         className
       )}
@@ -59,8 +59,8 @@ export const Card = ({
 export const CardLoader = () => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="bg-vega-clight-600 dark:bg-vega-cdark-600 h-5 w-full" />
-      <div className="bg-vega-clight-600 dark:bg-vega-cdark-600 h-6 w-3/4" />
+      <div className="bg-gs-600  h-5 w-full" />
+      <div className="bg-gs-600  h-6 w-3/4" />
     </div>
   );
 };

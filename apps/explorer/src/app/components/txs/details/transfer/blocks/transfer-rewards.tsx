@@ -13,7 +13,7 @@ export type Strategy = components['schemas']['vegaDispatchStrategy'];
 
 export const wrapperClasses = 'border pv-2 w-full flex-auto basis-full';
 export const headerClasses =
-  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 text-center text-xl py-2 font-alpha calt';
+  'bg-solid bg-gs-700 text-center text-xl py-2 font-alpha calt';
 
 const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
@@ -154,13 +154,13 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
       </ul>
       <div className="px-6 pt-1 pb-5">
         {rankTable && rankTable.length > 0 ? (
-          <table className="border-collapse border border-gray-400 ">
+          <table className="border-collapse border border-gs-600 ">
             <thead>
               <tr>
-                <th className="border border-gray-300 bg-gray-300 px-3">
+                <th className="border border-gs-700 bg-gs-700 px-3">
                   <strong>{t('Start rank')}</strong>
                 </th>
-                <th className="border border-gray-300 bg-gray-300 px-3">
+                <th className="border border-gs-700 bg-gs-700 px-3">
                   <strong>{t('Share of reward pool')}</strong>
                 </th>
               </tr>
@@ -169,10 +169,10 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
               {rankTable.map((row, i) => {
                 return (
                   <tr key={`rank-${i}`}>
-                    <td className="border border-slate-300 text-center">
+                    <td className="border border-gs-600 text-center">
                       {row.startRank}
                     </td>
-                    <td className="border border-slate-300 text-center">
+                    <td className="border border-gs-600 text-center">
                       {row.shareRatio}
                     </td>
                   </tr>

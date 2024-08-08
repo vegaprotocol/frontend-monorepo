@@ -291,7 +291,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 'The number of found proposals matching the below criteria.'
               )}
             >
-              <span className="text-vega-cdark-200">({count})</span>
+              <span className="text-gs-200">({count})</span>
             </Tooltip>
           )}
           <VegaIcon name={VegaIconNames.KEBAB} size={24} />
@@ -325,7 +325,7 @@ export const Filters = ({ count }: { count?: number }) => {
                   <li
                     key={i + 'pt'}
                     className={classNames(
-                      'bg-vega-cdark-600 text-xs px-1 py-[2px] rounded',
+                      'bg-gs-600 text-xs px-1 py-[2px] rounded',
                       'flex items-center gap-1'
                     )}
                   >
@@ -384,7 +384,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 {t('Include proposal states')}
               </span>
               <button
-                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                className="text-xs text-gs-200 hover:text-gs-50"
                 onClick={() => {
                   proposalStates.forEach((ps) => filter.addState(ps));
                 }}
@@ -392,7 +392,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 select all
               </button>
               <button
-                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                className="text-xs text-gs-200 hover:text-gs-50"
                 onClick={() => {
                   filter.clearStates();
                 }}
@@ -430,7 +430,7 @@ export const Filters = ({ count }: { count?: number }) => {
                     >
                       <span
                         className={classNames({
-                          ' text-vega-cdark-100 cursor-help':
+                          ' text-gs-100 cursor-help':
                             !filter.states.includes(ps) &&
                             !BASE_FILTER.states.includes(ps),
                         })}
@@ -451,7 +451,7 @@ export const Filters = ({ count }: { count?: number }) => {
               </span>
 
               <button
-                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                className="text-xs text-gs-200 hover:text-gs-50"
                 onClick={() => {
                   proposalTypes.forEach((pt) => filter.addType(pt));
                 }}
@@ -459,7 +459,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 select all
               </button>
               <button
-                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                className="text-xs text-gs-200 hover:text-gs-50"
                 onClick={() => {
                   filter.clearTypes();
                 }}
@@ -523,7 +523,7 @@ export const Filters = ({ count }: { count?: number }) => {
                     <VegaIcon
                       name={VegaIconNames.CROSS}
                       size={12}
-                      className="text-vega-light-200 absolute top-0 right-0"
+                      className="text-gs-100 absolute top-0 right-0"
                     />
                   </button>
                 )}

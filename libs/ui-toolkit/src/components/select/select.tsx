@@ -75,8 +75,8 @@ export const RichSelect = forwardRef<
             className={classNames(
               'relative',
               'z-20',
-              'bg-white dark:bg-black',
-              'border border-neutral-500 focus:border-black dark:focus:border-white rounded',
+              'bg-gs-900',
+              'border border-gs-600 focus:border-gs-0 rounded',
               'overflow-hidden',
               'shadow-lg'
             )}
@@ -84,11 +84,11 @@ export const RichSelect = forwardRef<
             side={'bottom'}
             align={'center'}
           >
-            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-gs-100">
               <Icon name="chevron-up" />
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-gs-100">
               <Icon name="chevron-down" />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>
@@ -108,8 +108,7 @@ export const Option = forwardRef<
       'relative',
       'text-black dark:text-white',
       'cursor-pointer outline-none',
-      'hover:bg-neutral-100 dark:hover:bg-neutral-800',
-      'focus:bg-neutral-100 dark:focus:bg-neutral-800',
+      'hover:bg-gs-800 focus:bg-gs-800',
       'pl-2 py-2',
       'pr-12',
       'w-full',

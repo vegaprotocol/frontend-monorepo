@@ -53,7 +53,7 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 );
 
 const marketDataHeaderStyles =
-  'font-alpha calt text-base border-b border-vega-dark-200 mt-2 py-2';
+  'font-alpha calt text-gs-50 border-b border-gs-200 mt-2 py-2';
 
 export const ProposalMarketData = ({
   marketId,
@@ -282,7 +282,7 @@ export const ProposalMarketData = ({
               <h2 className={marketDataHeaderStyles}>
                 {t('Parent price monitoring bounds')}
               </h2>
-              <div className="text-vega-dark-300 line-through">
+              <div className="text-gs-300 line-through">
                 <PriceMonitoringBoundsInfoPanel market={parentMarketData} />
               </div>
             </>
@@ -352,7 +352,7 @@ export const ProposalMarketData = ({
           dataTestId="market-json-dialog"
         >
           <CopyWithTooltip text={JSON.stringify(marketData)}>
-            <button className="bg-vega-dark-100 rounded-sm py-2 px-3 mb-4 text-white">
+            <button className="bg-gs-800 rounded-sm py-2 px-3 mb-4">
               <span>
                 <Icon name="duplicate" />
               </span>

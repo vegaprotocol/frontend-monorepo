@@ -10,8 +10,8 @@ import { useT } from '../../use-t';
 const itemClass = classNames(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-vega-dark-200',
-  'focus:bg-white dark:focus:bg-vega-dark-200',
+  'hover:bg-gs-900',
+  'focus:bg-gs-900',
   'select-none',
   'whitespace-nowrap'
 );
@@ -45,8 +45,8 @@ export const DropdownMenuTrigger = forwardRef<
 >(({ className, children, ...props }, forwardedRef) => {
   const triggerClasses = classNames(
     'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
-    'border-vega-light-200 dark:border-vega-dark-200',
-    'hover:border-vega-light-300 dark:hover:border-vega-dark-300',
+    'border-gs-200',
+    'hover:border-gs-300',
     className
   );
 
@@ -76,7 +76,7 @@ export const DropdownMenuContent = forwardRef<
 >(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
     ref={forwardedRef}
-    className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 z-20 min-w-[290px] rounded border p-2 text-black dark:text-white"
+    className="bg-gs-800 border-gs-400 z-20 min-w-[290px] rounded border p-2 text-gs-0"
     align="start"
     sideOffset={sideOffset}
     {...contentProps}
@@ -154,10 +154,7 @@ export const DropdownMenuSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames(
-      'bg-vega-light-150 dark:bg-vega-dark-150 mx-2 my-1 h-px',
-      className
-    )}
+    className={classNames('bg-gs-500 mx-2 my-1 h-px', className)}
   />
 ));
 
@@ -177,7 +174,10 @@ export const DropdownMenuSubContent = forwardRef<
 >(({ className, ...subContentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.SubContent
     ref={forwardedRef}
-    className={classNames('bg-vega-light-150 dark:bg-vega-dark-150', className)}
+    className={classNames(
+      'p-2 bg-gs-800 rounded border border-gs-400',
+      className
+    )}
     {...subContentProps}
   />
 ));
@@ -228,9 +228,7 @@ export const DropdownMenuCopyItem = ({
       >
         <VegaIcon name={VegaIconNames.COPY} size={16} />
         {text}
-        {copied && (
-          <span className="text-xs text-neutral-500">{t('Copied')}</span>
-        )}
+        {copied && <span className="text-xs text-gs-100">{t('Copied')}</span>}
       </DropdownMenuItem>
     </CopyToClipboard>
   );

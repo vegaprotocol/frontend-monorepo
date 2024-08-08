@@ -46,19 +46,19 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
 
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
-  const navTextClasses = 'text-vega-clight-200 dark:text-vega-cdark-200';
+  const navTextClasses = 'text-gs-200 ';
   const rootClasses = classNames(
     navTextClasses,
     'flex gap-3 h-10 pr-1',
     'border-b border-default',
-    'bg-vega-clight-800 dark:bg-vega-cdark-800'
+    'bg-gs-800 '
   );
   return (
     <N.Root className={rootClasses}>
       <NavLink
         to="/"
         className={classNames('flex items-center px-3', {
-          'bg-vega-yellow text-vega-clight-50': theme === 'yellow',
+          'bg-vega-yellow text-black': theme === 'yellow',
           'text-default': theme === 'system',
         })}
         style={{
@@ -117,13 +117,13 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 z-20 bg-black/50 dark:bg-black/80 lg:hidden"
+            className="fixed inset-0 z-20 bg-gs-900/50 lg:hidden"
             data-testid="navbar-menu-overlay"
           />
           <D.Content
             className={classNames(
               'lg:hidden',
-              'border-default bg-vega-clight-700 dark:bg-vega-cdark-700 fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
+              'border-default bg-gs-700  fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
               navTextClasses
             )}
             data-testid="navbar-menu-content"
@@ -277,7 +277,7 @@ const NavbarTrigger = ({
         'w-full lg:h-full lg:w-auto',
         'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
         'text-lg lg:text-sm',
-        'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
+        'hover:text-gs-100 '
       )}
     >
       {children}
@@ -308,7 +308,7 @@ const NavbarLink = ({
         className={classNames(
           'block flex-col justify-center lg:flex lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
+          'hover:text-gs-100 '
         )}
         onClick={onClick}
       >
@@ -326,7 +326,7 @@ const NavbarLink = ({
                   'inline-flex gap-1 items-center lg:border-0',
                   borderClasses,
                   {
-                    'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
+                    'text-gs-50 ': isActive,
                   }
                 )}
               >
@@ -368,8 +368,8 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       className={classNames(
         'navbar-content group',
         'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
-        'lg:bg-vega-clight-700 lg:dark:bg-vega-cdark-700',
-        'border-vega-clight-500 dark:border-vega-cdark-500 lg:rounded lg:border'
+        'lg:bg-gs-700 lg:',
+        'border-gs-500  lg:rounded lg:border'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
@@ -396,7 +396,7 @@ const NavbarLinkExternal = ({
         className={classNames(
           'flex items-center gap-2 lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
+          'hover:text-gs-100 '
         )}
         onClick={onClick}
         target="_blank"
@@ -423,7 +423,7 @@ const BurgerIcon = () => (
 const NavbarListDivider = () => {
   return (
     <div className="px-6 py-2 lg:px-0" role="separator">
-      <div className="bg-vega-clight-500 dark:bg-vega-cdark-500 h-px w-full lg:h-full lg:w-px" />
+      <div className="bg-gs-500  h-px w-full lg:h-full lg:w-px" />
     </div>
   );
 };
@@ -437,8 +437,8 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       {...props}
       className={classNames(
         'flex h-8 w-8 items-center rounded p-1 lg:hidden ',
-        'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500',
-        'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+        'hover:bg-gs-500 ',
+        'hover:text-gs-50 '
       )}
     />
   );

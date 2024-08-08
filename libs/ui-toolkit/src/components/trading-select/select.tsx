@@ -63,16 +63,16 @@ export const TradingRichSelect = forwardRef<
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-white dark:bg-black border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
           position="item-aligned"
           align="start"
           side="bottom"
         >
-          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-gs-100">
             <VegaIcon name={VegaIconNames.CHEVRON_UP} />
           </SelectPrimitive.ScrollUpButton>
           <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
+          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-gs-100">
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
           </SelectPrimitive.ScrollDownButton>
         </SelectPrimitive.Content>
@@ -90,8 +90,7 @@ export const TradingRichSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2 h-14 overflow-hidden',
       'cursor-pointer outline-none',
-      'hover:bg-neutral-100 dark:hover:bg-neutral-800',
-      'focus:bg-neutral-100 dark:focus:bg-neutral-800',
+      'hover:bg-gs-800 focus:bg-gs-800',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
       className,
     ].join(' ')}
@@ -136,17 +135,17 @@ export const MiniSelect = ({
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-white dark:bg-black border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
           position="popper"
           align="start"
           side="bottom"
           data-testid="mini-select-content"
         >
-          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-gs-100">
             <VegaIcon name={VegaIconNames.CHEVRON_UP} />
           </SelectPrimitive.ScrollUpButton>
           <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
+          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-gs-100">
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
           </SelectPrimitive.ScrollDownButton>
         </SelectPrimitive.Content>
@@ -164,8 +163,7 @@ export const MiniSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2',
       'cursor-pointer outline-none ',
-      'hover:bg-neutral-100 dark:hover:bg-neutral-800',
-      'focus:bg-neutral-100 dark:focus:bg-neutral-800',
+      'hover:bg-gs-800 focus:bg-gs-800',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
       className,
     ].join(' ')}

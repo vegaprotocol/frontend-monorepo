@@ -209,7 +209,7 @@ const Step = ({
   return (
     <li
       className={classNames('flex', {
-        'text-vega-clight-200 dark:text-vega-cdark-200': complete,
+        'text-gs-200 ': complete,
       })}
     >
       <div className="flex justify-center w-5">

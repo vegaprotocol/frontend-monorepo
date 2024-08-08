@@ -45,6 +45,6 @@ describe('Vote TX icon', () => {
     expect(monochromeNo.container.children[0]).not.toHaveClass(
       'bg-vega-pink-550'
     );
-    expect(monochromeNo.container.children[0]).toHaveClass('bg-vega-dark-200');
+    expect(monochromeNo.container.children[0]).toHaveClass('bg-gs-200');
   });
 });

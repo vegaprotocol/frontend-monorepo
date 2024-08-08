@@ -62,7 +62,7 @@ export const RefereesTable = ({
               collapsed && [
                 'relative max-h-96 overflow-hidden',
                 'after:w-full after:h-20 after:absolute after:bottom-0 after:left-0',
-                'after:bg-gradient-to-t after:from-white after:dark:from-vega-cdark-900 after:to-transparent',
+                'after:bg-gradient-to-t after:from-white after:to-transparent',
               ]
             )}
           >

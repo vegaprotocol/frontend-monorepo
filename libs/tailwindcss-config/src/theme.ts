@@ -12,6 +12,20 @@ export const theme = {
     xxxl: '1800px',
   },
   colors: {
+    gs: {
+      '0': 'rgb(var(--gs-0) / <alpha-value>)',
+      '50': 'rgb(var(--gs-50) / <alpha-value>)',
+      '100': 'rgb(var(--gs-100) / <alpha-value>)',
+      '200': 'rgb(var(--gs-200) / <alpha-value>)',
+      '300': 'rgb(var(--gs-300) / <alpha-value>)',
+      '400': 'rgb(var(--gs-400) / <alpha-value>)',
+      DEFAULT: 'rgb(var(--gs-500) / <alpha-value>)',
+      '500': 'rgb(var(--gs-500) / <alpha-value>)',
+      '600': 'rgb(var(--gs-600) / <alpha-value>)',
+      '700': 'rgb(var(--gs-700) / <alpha-value>)',
+      '800': 'rgb(var(--gs-800) / <alpha-value>)',
+      '900': 'rgb(var(--gs-900) / <alpha-value>)',
+    },
     transparent: 'transparent',
     current: 'currentColor',
     black: '#000000',
@@ -147,32 +161,6 @@ export const theme = {
         200: '#D2D2D2',
         300: '#939393',
         400: '#626262',
-      },
-
-      cdark: {
-        50: '#DCDEE3', // text-primary-light
-        100: '#94969B', // text-secondary
-        200: '#7C7E83',
-        300: '#626469',
-        400: '#44464B',
-        500: '#323339', // surface-container-highest, outline-surface-default
-        600: '#292B30',
-        700: '#202227',
-        800: '#17191E', // surface-container
-        900: '#05060C',
-      },
-
-      clight: {
-        50: '#040405',
-        100: '#4C4E51',
-        200: '#65676B',
-        300: '#818388',
-        400: '#AAABAE',
-        500: '#D1D2D3',
-        600: '#E9E9EA',
-        700: '#EEEEEF',
-        800: '#F4F4F4',
-        900: '#F9FAFA',
       },
     },
     danger: '#EC003C',

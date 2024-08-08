@@ -43,6 +43,5 @@ export const getTierGradient = (tier: number, max = TIER_COLORS.length) =>
       'orange' === getTierColor(tier, max),
     'from-vega-red-400 dark:from-vega-red-600 to-20%  bg-highlight':
       'red' === getTierColor(tier, max),
-    'from-vega-clight-600 dark:from-vega-cdark-600 to-20%  bg-highlight':
-      'none' === getTierColor(tier, max),
+    'from-gs-600 to-20%  bg-highlight': 'none' === getTierColor(tier, max),
   });

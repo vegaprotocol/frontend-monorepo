@@ -22,7 +22,7 @@ export const OracleVerifiedStatusIcon = ({
     <div
       className={classNames(
         {
-          'text-gray-700 dark:text-gray-300': intent === Intent.None,
+          'text-gs-700': intent === Intent.None,
           'text-vega-blue': intent === Intent.Primary,
           'text-vega-green dark:text-vega-green': intent === Intent.Success,
           'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
@@ -32,9 +32,7 @@ export const OracleVerifiedStatusIcon = ({
       )}
     >
       <Icon size={5} name={icon as IconName} />
-      <p className="ml-1 text-sm dark:text-vega-light-100 text-vega-dark-100 align-text-middle">
-        {message}
-      </p>
+      <p className="ml-1 text-sm text-gs-100 align-text-middle">{message}</p>
     </div>
   );
 };

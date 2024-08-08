@@ -49,7 +49,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
-        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default shrink-0">
+        <div className="flex items-center justify-end gap-1 p-1 bg-gs-800  border-b border-default shrink-0">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
             <Popover
@@ -184,7 +184,7 @@ const ViewButton = ({
   const className = classNames(
     'py-2 px-4 capitalize text-sm whitespace-nowrap',
     {
-      'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
+      'bg-gs-500 ': isActive,
     }
   );
 

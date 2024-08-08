@@ -8,7 +8,7 @@ export const SizeModeButton = (
   const flip = useNotionalSizeFlip();
   return (
     <button
-      className="flex justify-center items-center bg-vega-clight-500 dark:bg-vega-cdark-500 p-2 rounded"
+      className="flex justify-center items-center bg-gs-500  p-2 rounded"
       type="button"
       onClick={flip}
       {...props}

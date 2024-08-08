@@ -9,7 +9,7 @@ import Routes from '../../routes/routes';
 export const RiskMessage = () => {
   return (
     <>
-      <div className="bg-vega-light-100 dark:bg-vega-dark-100 p-6">
+      <div className="bg-gs-800 p-6">
         <ul className="list-[square] ml-4">
           <li>
             {t(

@@ -63,13 +63,12 @@ export const Radio = ({ id, value, label, disabled }: RadioProps) => {
   const itemClasses = classNames(
     'flex justify-center items-center',
     'w-[15px] h-[15px] rounded-full border',
-    'border-neutral-300 dark:border-neutral-700',
-    'bg-neutral-200 dark:bg-neutral-800'
+    'border-gs-600 bg-gs-200'
   );
   const indicatorClasses = classNames(
     'block w-[13px] h-[13px] border-4 rounded-full',
-    'bg-white dark:bg-black',
-    'border-black dark:border-white'
+    'bg-gs-900',
+    'border-gs-0'
   );
   return (
     <label className={wrapperClasses} htmlFor={id}>

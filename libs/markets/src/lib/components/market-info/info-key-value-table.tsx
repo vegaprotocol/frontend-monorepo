@@ -102,7 +102,7 @@ export const Row = ({
       <div style={{ wordBreak: 'break-word' }}>
         {valueDiffersFromParentMarket ? (
           <div className="flex items-center gap-3">
-            <span className="line-through dark:text-vega-dark-300">
+            <span className="line-through text-light-300">
               {getFormattedValue(parentValue)}
             </span>
             <span>{formattedValue}</span>

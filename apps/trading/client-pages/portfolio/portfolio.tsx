@@ -127,7 +127,7 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="flex justify-between bg-vega-clight-700 dark:bg-vega-cdark-700">
+      <div className="flex justify-between bg-gs-700 ">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
           className={classNames('transition-all w-1/3 p-1 relative', {
@@ -143,12 +143,9 @@ const PortfolioAssets = () => {
             type="text"
             placeholder={t('Search')}
             data-testid="search-term"
-            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-vega-clight-800 dark:bg-vega-cdark-800"
+            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-gs-800 "
             prependElement={
-              <VegaIcon
-                className="fill-vega-clight-300 dark:fill-vega-cdark-300"
-                name={VegaIconNames.SEARCH}
-              />
+              <VegaIcon className="fill-gs-300 " name={VegaIconNames.SEARCH} />
             }
           />
           <button
@@ -160,7 +157,7 @@ const PortfolioAssets = () => {
             hidden={searchTerm.length === 0}
           >
             <VegaIcon
-              className="block p-0 m-0 !align-top fill-vega-clight-300 dark:fill-vega-cdark-300"
+              className="block p-0 m-0 !align-top fill-gs-300 "
               name={VegaIconNames.CROSS}
               size={16}
             />

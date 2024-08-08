@@ -75,15 +75,15 @@ export const TradingRadio = ({
   const itemClasses = classNames(
     'flex justify-center items-center',
     'w-3 h-3 rounded-full border',
-    'border-vega-clight-500 dark:border-vega-cdark-500',
-    'aria-checked:border-vega-clight-400 dark:aria-checked:border-vega-cdark-400',
-    'disabled:border-vega-clight-600 dark:disabled:border-vega-cdark-600',
-    'bg-vega-clight-700 dark:bg-vega-cdark-700'
+    'border-gs-500 ',
+    'aria-checked:border-gs-400',
+    'disabled:border-gs-600',
+    'bg-gs-700 '
   );
   const indicatorClasses = classNames(
     'block w-2.5 h-2.5 border-2 rounded-full',
-    'bg-vega-clight-50 dark:bg-vega-cdark-50',
-    'border-vega-clight-700 dark:border-vega-cdark-700'
+    'bg-gs-50',
+    'border-gs-700 '
   );
   return (
     <label className={wrapperClasses} htmlFor={id}>
@@ -96,13 +96,7 @@ export const TradingRadio = ({
       >
         <RadioGroupPrimitive.Indicator className={indicatorClasses} />
       </RadioGroupPrimitive.Item>
-      <span
-        className={
-          disabled
-            ? 'text-vega-clight-200 dark:text-vega-cdark-200'
-            : 'cursor-pointer'
-        }
-      >
+      <span className={disabled ? 'text-gs-200 ' : 'cursor-pointer'}>
         {label}
       </span>
     </label>

@@ -45,12 +45,12 @@ const BottomDrawerContent = forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-20 mt-24 flex h-auto flex-col bg-white dark:bg-black',
+        'fixed inset-x-0 bottom-0 z-20 mt-24 flex h-auto flex-col bg-gs-900',
         className
       )}
       {...props}
     >
-      <div className="mx-auto my-2 h-2 w-[100px] rounded-full bg-vega-clight-200 dark:bg-vega-cdark:200" />
+      <div className="mx-auto my-2 h-2 w-[100px] rounded-full bg-gs-200" />
       <div className="max-h-[85vh] overflow-y-auto">{children}</div>
     </DrawerPrimitive.Content>
   </BottomDrawerPortal>

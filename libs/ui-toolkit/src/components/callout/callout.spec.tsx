@@ -37,7 +37,5 @@ it(`Applies class for primary intent`, () => {
 
 it(`Applies class for none intent`, () => {
   render(<Callout />);
-  expect(screen.getByTestId('callout')).toHaveClass(
-    'border-vega-clight-500 dark:border-vega-cdark-500'
-  );
+  expect(screen.getByTestId('callout')).toHaveClass('border-gs-500 ');
 });

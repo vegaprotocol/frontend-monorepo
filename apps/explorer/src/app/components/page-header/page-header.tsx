@@ -38,7 +38,7 @@ export const PageHeader = ({
         </h2>
         {copy && (
           <CopyWithTooltip data-testid="copy-to-clipboard" text={title}>
-            <button className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-sm py-2 px-3">
+            <button className="bg-gs-100 rounded-sm py-2 px-3">
               <Icon name="duplicate" className="" />
             </button>
           </CopyWithTooltip>

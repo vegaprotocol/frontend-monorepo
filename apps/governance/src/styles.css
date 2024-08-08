@@ -6,6 +6,20 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --gs-0: 255 255 255;
+    --gs-50: 220 222 227;
+    --gs-100: 148 150 155;
+    --gs-200: 124 126 131;
+    --gs-300: 98 100 105;
+    --gs-400: 68 70 75;
+    --gs-500: 50 51 57;
+    --gs-600: 41 43 48;
+    --gs-700: 32 34 39;
+    --gs-800: 23 25 30;
+    --gs-900: 5 6 12;
+  }
+
   *,
   *::before,
   *::after {
@@ -19,13 +33,13 @@
     @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-2 text-neutral-400;
+    @apply mb-2 text-gs-100;
   }
 }
 
 @layer components {
   .border-default {
-    @apply border-vega-dark-200;
+    @apply border-gs-400;
   }
 }
 
@@ -53,12 +67,12 @@
 /* Dark variables */
 .ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.neutral[700]);
+  --ag-border-color: theme(colors.gs.400);
   --ag-header-background-color: theme(colors.black);
   --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.neutral[600]);
-  --ag-row-border-color: theme(colors.black);
-  --ag-row-hover-color: theme(colors.neutral[800]);
+  --ag-header-column-separator-color: theme(colors.gs.400);
+  --ag-row-border-color: theme(colors.gs.900);
+  --ag-row-hover-color: theme(colors.gs.700);
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {

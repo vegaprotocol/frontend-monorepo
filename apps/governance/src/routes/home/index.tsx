@@ -113,12 +113,10 @@ const HomeNodes = ({
               <RoundedWrapper paddingBottom={true}>
                 <div
                   data-testid="node-information"
-                  className="flex flex-col items-center m-[-1rem] px-4 py-6 hover:bg-neutral-800"
+                  className="flex flex-col items-center m-[-1rem] px-4 py-6 hover:bg-gs-800"
                 >
                   <span className="text-5xl">{length}</span>
-                  <span className="text-sm uppercase text-neutral-400">
-                    {title}
-                  </span>
+                  <span className="text-sm uppercase text-gs-100">{title}</span>
                 </div>
               </RoundedWrapper>
             </Link>
@@ -157,7 +155,7 @@ export const ValidatorDetailsLink = ({
   return (
     <Link to={`${Routes.VALIDATORS}/${id}`}>
       <RoundedWrapper paddingBottom={true} border={false}>
-        <div className="flex items-center justify-center m-[-1rem] p-3 bg-neutral-900 hover:bg-neutral-800">
+        <div className="flex items-center justify-center m-[-1rem] p-3 bg-gs-700 hover:bg-gs-600">
           {avatarUrl && (
             <img
               className="h-6 w-6 rounded-full mr-2"

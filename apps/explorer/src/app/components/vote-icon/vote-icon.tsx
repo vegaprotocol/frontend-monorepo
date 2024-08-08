@@ -14,7 +14,7 @@ export interface VoteIconProps {
 
 function getBgColour(useVoteColour: boolean, vote: boolean) {
   if (useVoteColour === false) {
-    return 'bg-vega-dark-200';
+    return 'bg-gs-200';
   }
 
   return vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';

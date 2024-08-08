@@ -131,7 +131,7 @@ export const TeamCard = ({
           />
         </div>
 
-        <dl className="w-full pt-4 border-t border-vega-clight-700 dark:border-vega-cdark-700">
+        <dl className="w-full pt-4 border-t border-gs-700 ">
           <dt className="mb-1 text-sm text-muted">
             {t('Last {{games}} games result', {
               replace: { games: lastGames.length || '' },
@@ -141,7 +141,7 @@ export const TeamCard = ({
             {lastGames.length === 0 && t('None available')}
             {lastGames.map((game, i) => (
               <Tooltip key={i} description={DispatchMetricLabels[game.metric]}>
-                <button className="cursor-help text-sm bg-vega-clight-700 dark:bg-vega-cdark-700 px-2 py-1 rounded-full">
+                <button className="cursor-help text-sm bg-gs-700  px-2 py-1 rounded-full">
                   <RankLabel rank={game.rank} />
                 </button>
               </Tooltip>

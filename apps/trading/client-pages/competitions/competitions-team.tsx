@@ -151,12 +151,12 @@ const TeamPage = ({
   const createdAt = new Date(team.createdAt);
 
   const closedIndicator = team.closed ? (
-    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.LOCK} size={10} />
       <span>{t('Private')}</span>
     </div>
   ) : (
-    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.GLOBE} size={10} />
       <span>{t('Public')}</span>
     </div>
@@ -203,15 +203,13 @@ const TeamPage = ({
             {closedIndicator}
             <div className="">
               {t('Created at')}:{' '}
-              <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
-                {formatDate(createdAt)}
-              </span>{' '}
-              ({t('epoch')}: {team.createdAtEpoch})
+              <span className="text-gs-600 ">{formatDate(createdAt)}</span> (
+              {t('epoch')}: {team.createdAtEpoch})
             </div>
             <div>
               <span>
                 {t('ID')}:{' '}
-                <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
+                <span className="text-gs-600 ">
                   {truncateMiddle(team.teamId)}
                 </span>{' '}
               </span>
@@ -494,7 +492,7 @@ const RefereeLink = ({
         <span className="text-muted text-xs">{truncateMiddle(pubkey)}</span>
       )}
       {isCreator && (
-        <span className="text-muted text-xs border border-vega-clight-300 dark:border-vega-cdark-300  rounded px-1 py-[1px]">
+        <span className="text-muted text-xs border border-gs-300   rounded px-1 py-[1px]">
           {t('Owner')}
         </span>
       )}
@@ -528,7 +526,7 @@ const RewardAssetCell = ({ asset }: { asset: Asset }) => {
         e.preventDefault();
         open(asset.id, ref.current);
       }}
-      className="border-b border-dashed border-vega-clight-200 dark:border-vega-cdark-200 text-left text-nowrap whitespace-nowrap"
+      className="border-b border-dashed border-gs-200  text-left text-nowrap whitespace-nowrap"
     >
       {asset.symbol}
     </button>
@@ -560,7 +558,7 @@ const GameTypeCell = ({
           setOpen(true);
         }}
         ref={ref}
-        className="border-b border-dashed border-vega-clight-200 dark:border-vega-cdark-200 text-left md:truncate md:max-w-[25vw]"
+        className="border-b border-dashed border-gs-200  text-left md:truncate md:max-w-[25vw]"
       >
         <DispatchMetricInfo reward={transfer} />
       </button>

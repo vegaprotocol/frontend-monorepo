@@ -30,7 +30,7 @@ export const BundleExists = ({
   // Note if this is wrong, the wrong decoder will be used which will give incorrect data
 
   return (
-    <div className="w-auto h-10 max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
+    <div className="w-auto h-10 max-w-lg border-2 border-solid border-gs-100  p-5 mt-5">
       <IconForBundleStatus status={status} />
       <h1 className="text-xl pb-1">
         {status === 'STATUS_ENABLED'
@@ -45,7 +45,7 @@ export const BundleExists = ({
           <h2 className="text-lg mt-2 mb-2">{t('Signatures')}</h2>
           <p>
             <textarea
-              className="font-mono bg-neutral-300 text-[11px] leading-3 text-gray-900 w-full p-2 max-w-[615px]"
+              className="font-mono bg-gs-300 text-[11px] leading-3 w-full p-2 max-w-[615px]"
               readOnly={true}
               rows={12}
               cols={120}
@@ -57,7 +57,7 @@ export const BundleExists = ({
 
           <p>
             <textarea
-              className="font-mono bg-neutral-300 text-[11px] leading-3 text-gray-900 w-full p-2 max-w-[615px]"
+              className="font-mono bg-gs-300 text-[11px] leading-3 w-full p-2 max-w-[615px]"
               readOnly={true}
               rows={2}
               cols={120}

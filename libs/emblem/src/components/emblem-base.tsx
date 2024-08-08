@@ -26,10 +26,7 @@ export function EmblemBase({ size = 30, ...p }: ImgProps) {
       alt={p.alt ? p.alt : 'Emblem'}
       width={size}
       height={size}
-      className={className(
-        'rounded-full bg-vega-light-600 border-vega-light-600 dark:bg-white dark:border-white',
-        p.className
-      )}
+      className={className('rounded-full bg-gs-600 border-gs-600', p.className)}
     />
   );
 }

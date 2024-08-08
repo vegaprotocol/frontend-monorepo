@@ -103,7 +103,7 @@ const NestedDataListItem = ({
               onClick={toggleVisible}
             >
               <span className="">{title}</span>
-              <small className="px-1 text-sm rounded bg-vega-light-200 dark:bg-vega-dark-200">
+              <small className="px-1 text-sm rounded bg-gs-200">
                 {isArr ? 'array' : typeof value}
               </small>
               <Icon
@@ -117,7 +117,7 @@ const NestedDataListItem = ({
           )}
         </h4>
         {!hasChildren && (
-          <code className="text-vega-light-100 mb-2 last:mb-0 dark:text-vega-dark-100 break-all">
+          <code className="text-gs-100 mb-2 last:mb-0 break-all">
             {JSON.stringify(value, null, '  ')}
           </code>
         )}

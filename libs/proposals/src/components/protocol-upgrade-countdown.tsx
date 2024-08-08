@@ -1,13 +1,8 @@
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { convertToCountdownString } from '@vegaprotocol/utils';
 import classNames from 'classnames';
-import {
-  NavigationContext,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
-import { useContext } from 'react';
 import { useT } from '../use-t';
 import { Trans } from 'react-i18next';
 
@@ -23,7 +18,6 @@ export const ProtocolUpgradeCountdown = ({
   mode = ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING,
 }: ProtocolUpgradeCountdownProps) => {
   const t = useT();
-  const { theme } = useContext(NavigationContext);
   const { data, lastBlockHeight } = useNextProtocolUpgradeProposal();
 
   const time = useTimeToUpgrade(
@@ -36,12 +30,7 @@ export const ProtocolUpgradeCountdown = ({
 
   if (!data) return null;
 
-  const emphasis = classNames(
-    'text-vega-orange-500 dark:text-vega-orange-500',
-    {
-      '!text-black': theme === 'yellow',
-    }
-  );
+  const emphasis = 'text-vega-orange-500 dark:text-vega-orange-500';
 
   let countdown;
   switch (mode) {
@@ -64,11 +53,7 @@ export const ProtocolUpgradeCountdown = ({
             {convertToCountdownString(time, '0:00:00:00')}
           </span>
         ) : (
-          <span
-            className={classNames('text-vega-orange-600 lowercase italic', {
-              '!text-black': theme === 'yellow',
-            })}
-          >
+          <span className="text-vega-orange-600 lowercase italic">
             {t('estimating...')}
           </span>
         );
@@ -88,10 +73,7 @@ export const ProtocolUpgradeCountdown = ({
           'rounded border',
           'border-vega-orange-500 dark:border-vega-orange-500',
           'bg-vega-orange-300 dark:bg-vega-orange-700',
-          'text-default',
-          {
-            '!border-black !bg-transparent': theme === 'yellow',
-          }
+          'text-default'
         )}
       >
         <VegaIcon name={VegaIconNames.EXCLAMATION_MARK} size={12} />{' '}

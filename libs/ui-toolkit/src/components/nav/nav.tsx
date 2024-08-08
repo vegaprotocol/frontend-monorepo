@@ -21,12 +21,11 @@ export const getActiveNavLinkClassNames = (
     'my-4 md:my-0 md:py-3': !subNav,
     'py-2 px-4': subNav,
     'cursor-default': isActive,
-    'text-black dark:text-white': isActive && navbarTheme !== 'yellow',
-    'text-vega-light-300 dark:text-vega-dark-300 hover:text-vega-light-400 dark:hover:text-vega-dark-400':
-      !isActive && navbarTheme !== 'yellow',
+    'text-gs-0': isActive && navbarTheme !== 'yellow',
+    'text-gs-300 hover:text-gs-400': !isActive && navbarTheme !== 'yellow',
     'text-black dark:text-white md:dark:text-black':
       isActive && navbarTheme === 'yellow',
-    'text-black/60 dark:text-neutral-400 md:dark:text-black/60 hover:text-black':
+    'text-black/60 md:dark:text-black/60 hover:text-black':
       !isActive && navbarTheme === 'yellow',
     'flex-1': fullWidth,
   });

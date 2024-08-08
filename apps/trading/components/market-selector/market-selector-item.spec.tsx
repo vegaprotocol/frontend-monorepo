@@ -176,7 +176,7 @@ describe('MarketSelectorItem', () => {
     // link renders and is styled
     expect(link).toHaveAttribute('href', '/markets/' + market.id);
 
-    expect(link).toHaveClass('bg-vega-clight-500');
+    expect(link).toHaveClass('bg-gs-500');
 
     expect(screen.getByTitle('24h vol')).toHaveTextContent('0.00');
     expect(screen.getByTitle(symbol)).toHaveTextContent('-');

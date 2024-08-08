@@ -8,7 +8,7 @@ import type { TendermintBlocksResponse } from '../../routes/blocks/tendermint-bl
 
 export function getClassName(showTxData: ShowTxDataType) {
   const baseClasses =
-    'font-mono bg-neutral-300 text-[11px] leading-3 text-gray-900 w-full p-2 max-w-[615px]';
+    'font-mono bg-gs-300 text-[11px] leading-3 w-full p-2 max-w-[615px]';
   if (showTxData === 'JSON') {
     return `${baseClasses} whitespace-pre overflow-x-scroll`;
   } else {

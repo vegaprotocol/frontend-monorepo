@@ -58,9 +58,7 @@ export const AssetCard = ({
       <div className="flex justify-between">
         {!showAllocation ? null : (
           <dl>
-            <dt className="text-xs text-vega-clight-200 dark:text-vega-cdark-200">
-              {t('Deployed')}
-            </dt>
+            <dt className="text-xs text-gs-200 ">{t('Deployed')}</dt>
             <dd className="text-base">
               {addDecimalsFormatNumberQuantum(
                 account?.used || '0',
@@ -73,9 +71,7 @@ export const AssetCard = ({
           </dl>
         )}
         <dl className={showAllocation ? 'text-right' : undefined}>
-          <dt className="text-xs text-vega-clight-200 dark:text-vega-cdark-200">
-            {t('Available')}
-          </dt>
+          <dt className="text-xs text-gs-200 ">{t('Available')}</dt>
           <dd className="text-base">
             {addDecimalsFormatNumberQuantum(
               account?.available || '0',

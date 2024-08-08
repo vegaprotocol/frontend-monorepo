@@ -10,8 +10,7 @@ import type { IconProps } from '@vegaprotocol/ui-toolkit';
 import isPast from 'date-fns/isPast';
 import { EpochSymbol } from '../links/block-link/block-link';
 
-const borderClass =
-  'border-solid border-2 border-vega-dark-200 border-collapse';
+const borderClass = 'border-solid border-2 border-gs-200 border-collapse';
 
 export type EpochOverviewProps = {
   id?: string;

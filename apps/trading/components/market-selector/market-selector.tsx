@@ -219,7 +219,7 @@ const MarketList = ({
       <div
         className={classNames(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
-          'bg-vega-clight-700 dark:bg-vega-cdark-700',
+          'bg-gs-700 ',
           'p-2 mx-2 border-b border-default text-xs text-secondary'
         )}
       >
@@ -342,9 +342,9 @@ const List = ({
 const Skeleton = () => {
   return (
     <div className="px-2 mb-2">
-      <div className="p-4 rounded-lg bg-vega-light-100 dark:bg-vega-dark-100">
-        <div className="w-full h-3 mb-2 bg-vega-light-200 dark:bg-vega-dark-200" />
-        <div className="w-2/3 h-3 bg-vega-light-200 dark:bg-vega-dark-200" />
+      <div className="p-4 rounded-lg bg-gs-100">
+        <div className="w-full h-3 mb-2 bg-gs-200" />
+        <div className="w-2/3 h-3 bg-gs-200" />
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export interface DeterministicOrderDetailsProps {
 }
 
 export const wrapperClasses =
-  'grid lg:grid-cols-1 flex items-center max-w-xl border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
+  'grid lg:grid-cols-1 flex items-center max-w-xl border border-gs-200  rounded-md pv-2 ph-5 mb-5';
 
 /**
  * This component renders the *current* details for an order
@@ -44,7 +44,7 @@ const DeterministicOrderDetails = ({
             <h2 className="text-3xl font-bold mb-4 display-5">
               {t('Order not found')}
             </h2>
-            <p className="text-vega-light-400 mb-12">
+            <p className="text-gs-400 mb-12">
               {t('No order created from this transaction')}
             </p>
           </div>
@@ -70,11 +70,11 @@ const DeterministicOrderDetails = ({
             <span className="mx-5 text-base">@</span>
             <PriceInMarket price={o.price} marketId={o.market.id} />
           </h2>
-          <p className="text-gray-400 dark:text-gray-600">
+          <p className="text-gs-100">
             In <MarketLink id={o.market.id} /> at <Time date={o.createdAt} />.
           </p>
           {o.peggedOrder ? (
-            <p className="text-gray-200">
+            <p className="text-gs-100">
               {t('Price peg')}:{' '}
               <TxOrderPeggedReference
                 side={o.side}
@@ -85,7 +85,7 @@ const DeterministicOrderDetails = ({
             </p>
           ) : null}
           {o.reference ? (
-            <p className="text-gray-500 mt-4">
+            <p className="text-gs-100 mt-4">
               <span>{t('Reference')}</span>: {o.reference}
             </p>
           ) : null}
@@ -94,7 +94,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Status')}
               </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
+              <h5 className="text-lg font-medium text-gs-100 mb-0 capitalize">
                 {statusText[o.status]}
               </h5>
             </div>
@@ -103,7 +103,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Size')}
               </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0">
+              <h5 className="text-lg font-medium text-gs-100 mb-0">
                 <SizeInMarket size={o.size} marketId={o.market.id} />
               </h5>
             </div>
@@ -112,7 +112,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Version')}
               </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0">
+              <h5 className="text-lg font-medium text-gs-100 mb-0">
                 {o.version}
               </h5>
             </div>
@@ -121,7 +121,7 @@ const DeterministicOrderDetails = ({
                 <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                   {t('Type')}
                 </h2>
-                <h5 className="text-lg font-medium text-gray-500 mb-0">
+                <h5 className="text-lg font-medium text-gs-100 mb-0">
                   {OrderTypeMapping[o.type]}
                 </h5>
               </div>

@@ -164,11 +164,11 @@ export const ActivityStreak = ({
             return (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 shadow-card rounded-[100px] grow"
+                className="bg-gs-0 shadow-card rounded-[100px] grow"
               >
                 <div
                   className={classNames(
-                    'relative w-full rounded-[100px] bg-gray-200 dark:bg-gray-800',
+                    'relative w-full rounded-[100px] bg-gs-200',
                     progressBarHeight
                   )}
                 >
@@ -176,7 +176,7 @@ export const ActivityStreak = ({
                     className={classNames(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
-                        'from-vega-dark-400 to-vega-dark-200':
+                        'from-gs-400 to-gs-200':
                           userTierIndex === 0 || streak?.isActive === false,
                         'from-vega-pink-600 to-vega-pink-500':
                           userTierIndex % 6 === 1,

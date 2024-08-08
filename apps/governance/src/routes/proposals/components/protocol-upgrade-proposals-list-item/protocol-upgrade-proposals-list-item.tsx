@@ -23,7 +23,7 @@ export const ProtocolUpgradeProposalsListItem = ({
 
   const timestamp =
     'timestamp' in proposal ? (
-      <span className="text-vega-cdark-300">
+      <span className="text-gs-300">
         ({formatDateWithLocalTimezone(new Date(proposal.timestamp as string))})
       </span>
     ) : null;
@@ -54,7 +54,7 @@ export const ProtocolUpgradeProposalsListItem = ({
           <SubHeading title={`Vega release ${proposal.vegaReleaseTag}`} />
         </div>
 
-        <div className="flex items-center gap-4 text-vega-light-200">
+        <div className="flex items-center gap-4 text-gs-200">
           <div
             data-testid="protocol-upgrade-proposal-release-tag"
             className="mb-2"
@@ -73,7 +73,7 @@ export const ProtocolUpgradeProposalsListItem = ({
         </div>
 
         <div
-          className="text-sm text-vega-light-300 mb-4"
+          className="text-sm text-gs-300 mb-4"
           data-testid="protocol-upgrade-proposal-status"
         >
           {t(`${proposal.status}`)}

@@ -24,10 +24,7 @@ export const Td = ({ children, ...props }: { children?: ReactNode }) => {
 
 export const Tr = ({ children, ...props }: { children?: ReactNode }) => {
   return (
-    <tr
-      className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700"
-      {...props}
-    >
+    <tr className="hover:bg-gs-600 " {...props}>
       {children}
     </tr>
   );
@@ -35,7 +32,7 @@ export const Tr = ({ children, ...props }: { children?: ReactNode }) => {
 
 export const Table = ({ children }: { children: ReactNode }) => {
   return (
-    <table className="w-full border border-separate rounded-sm border-spacing-0 border-vega-clight-600 dark:border-vega-cdark-600">
+    <table className="w-full border border-separate rounded-sm border-spacing-0 border-gs-600 ">
       {children}
     </table>
   );
@@ -43,8 +40,6 @@ export const Table = ({ children }: { children: ReactNode }) => {
 
 export const THead = ({ children }: { children: ReactNode }) => {
   return (
-    <thead className="border-b bg-vega-clight-700 dark:bg-vega-cdark-700 border-vega-clight-600 dark:border-vega-cdark-600">
-      {children}
-    </thead>
+    <thead className="border-b bg-gs-700  border-gs-600 ">{children}</thead>
   );
 };

@@ -472,7 +472,7 @@ const StopOrder = ({
   const t = useT();
   return (
     <div
-      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5"
+      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5  bg-gs-800 mb-0.5"
       data-testid="stop-order"
     >
       <span>
@@ -667,16 +667,12 @@ export const TakeProfitStopLoss = ({
 
   return (
     <>
-      <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-vega-clight-50 dark:text-vega-cdark-50">
-        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Symbol')}
-        </dt>
+      <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-gs-50">
+        <dt className="text-gs-100 ">{t('Symbol')}</dt>
         <dd className="text-right" data-testid="instrument-code">
           {market?.tradableInstrument.instrument.code}
         </dd>
-        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Position')}
-        </dt>
+        <dt className="text-gs-100 ">{t('Position')}</dt>
         <dd
           data-testid="open-volume"
           className={classNames(
@@ -694,9 +690,7 @@ export const TakeProfitStopLoss = ({
               )
             : '-'}
         </dd>
-        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Entry price')}
-        </dt>
+        <dt className="text-gs-100 ">{t('Entry price')}</dt>
         <dd className="text-right" data-testid="average-entry-price">
           {openVolume?.averageEntryPrice &&
             market &&
@@ -705,9 +699,7 @@ export const TakeProfitStopLoss = ({
               market?.decimalPlaces
             )} ${quoteName}`}
         </dd>
-        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Mark price')}
-        </dt>
+        <dt className="text-gs-100 ">{t('Mark price')}</dt>
         <dd className="text-right" data-testid="mark-price">
           {markPrice &&
             market &&
@@ -717,7 +709,7 @@ export const TakeProfitStopLoss = ({
             )} ${quoteName}`}
         </dd>
       </dl>
-      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
+      <hr className="border-gs-500 mb-6" />
       <div className="mb-1 float-left">{t('Take profit')}</div>
       <div className="mb-6" data-testid="take-profit">
         {market && (
@@ -755,7 +747,7 @@ export const TakeProfitStopLoss = ({
           )
         )}
       </div>
-      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
+      <hr className="border-gs-500 mb-6" />
       <div className="mb-1">{t('Stop loss')}</div>
       <div className="mb-6" data-testid="stop-loss">
         {market && (
