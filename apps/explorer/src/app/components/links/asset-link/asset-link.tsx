@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import Hash from '../hash';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import {
   useAssetDataProvider,
   useAssetDetailsDialogStore,
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../../routes/route-names';
 import { EmblemWithChain } from '../../emblem-with-chain/emblem-with-chain';
 
-export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
+export type AssetLinkProps = Partial<ComponentProps<typeof AnchorButton>> & {
   assetId: string;
   asDialog?: boolean;
   showAssetSymbol?: boolean;
@@ -39,7 +39,7 @@ export const AssetLink = ({
     : assetId;
 
   return (
-    <ButtonLink
+    <AnchorButton
       data-testid="asset-link"
       disabled={!asset}
       onClick={(e) => {
@@ -57,6 +57,6 @@ export const AssetLink = ({
           <Hash text={label} />
         </div>
       )}
-    </ButtonLink>
+    </AnchorButton>
   );
 };

@@ -5,7 +5,7 @@ import {
   useOracleStatuses,
   type useMaliciousOracle,
 } from '@vegaprotocol/markets';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 
 export type Oracle = ReturnType<typeof useMaliciousOracle>['data'];
 
@@ -27,13 +27,13 @@ export const MarketOracleBanner = ({
             <span key="oracle-status" data-testid="oracle-banner-status">
               status
             </span>,
-            <ButtonLink
+            <AnchorButton
               key="oracle-button"
               onClick={() => setOpen((x) => !x)}
               data-testid="oracle-banner-dialog-trigger"
             >
               Show more
-            </ButtonLink>,
+            </AnchorButton>,
           ]}
           values={{
             status: oracle.provider.oracle.status,

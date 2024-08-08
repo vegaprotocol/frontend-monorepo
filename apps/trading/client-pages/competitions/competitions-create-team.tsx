@@ -3,7 +3,7 @@ import {
   CopyWithTooltip,
   Intent,
   TradingAnchorButton,
-  TradingButton,
+  Button,
   TradingDialog,
   VegaIcon,
   VegaIconNames,
@@ -224,12 +224,12 @@ const CreateTeamFormContainer = ({
                   <span className="truncate">{teamCode}</span>
 
                   <CopyWithTooltip text={teamCode}>
-                    <TradingButton
+                    <Button
                       size="xs"
                       icon={<VegaIcon name={VegaIconNames.COPY} />}
                     >
                       <span>{t('Copy')}</span>
-                    </TradingButton>
+                    </Button>
                   </CopyWithTooltip>
                 </div>
               </div>

@@ -31,7 +31,6 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
-import { TradingButton, Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 const Title = () => {
   const t = useT();
@@ -65,24 +64,6 @@ function AppBody({ Component }: AppProps) {
   );
 
   return (
-    <div className="flex flex-col gap-2 items-start">
-      <TradingButton>Trading empty</TradingButton>
-      <TradingButton intent={Intent.None}>Trading none</TradingButton>
-      <TradingButton intent={Intent.Primary}>Trading primary</TradingButton>
-      <TradingButton intent={Intent.Secondary}>Traidng secondary</TradingButton>
-      <TradingButton intent={Intent.Info}>Trading info</TradingButton>
-      <TradingButton intent={Intent.Danger}>Trading danger</TradingButton>
-      <TradingButton intent={Intent.Success}>Trading success</TradingButton>
-      <TradingButton intent={Intent.Warning}>Trading warning</TradingButton>
-
-      <Button>Button Empty</Button>
-      <Button variant="default">Button default</Button>
-      <Button variant="primary">Button primary</Button>
-      <Button variant="secondary">Button secondary</Button>
-    </div>
-  );
-
-  return (
     <div className="h-full overflow-hidden">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
@@ -99,6 +80,23 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeInProgressNotification />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
+          {/* <div className="flex flex-col gap-2 items-start p-10">
+            <Button size="xs">Trading xs</Button>
+            <Button size="sm">Trading sm</Button>
+            <Button size="md">Trading md</Button>
+            <Button size="lg">Trading lg</Button>
+            <Button intent={Intent.Primary}>Trading primary</Button>
+            <Button intent={Intent.Secondary}>Traidng secondary</Button>
+            <Button intent={Intent.Info}>Trading info</Button>
+            <Button intent={Intent.Danger}>Trading danger</Button>
+            <Button intent={Intent.Success}>Trading success</Button>
+            <Button intent={Intent.Warning}>Trading warning</Button>
+
+            <Button>Button Empty</Button>
+            <Button variant="default">Button default</Button>
+            <Button variant="primary">Button primary</Button>
+            <Button variant="secondary">Button secondary</Button>
+          </div> */}
           <Component />
         </div>
       </div>

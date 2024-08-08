@@ -1,6 +1,6 @@
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -39,7 +39,7 @@ export const TelemetryApproval = ({
           </div>
         </div>
         <div className="flex flex-col items-center justify-around gap-2">
-          <TradingButton
+          <Button
             onClick={() => setTelemetryValue('true')}
             intent={Intent.Info}
             data-testid="share-data-button"
@@ -49,9 +49,9 @@ export const TelemetryApproval = ({
             {telemetryValue === 'true'
               ? t('Continue sharing data')
               : t('Share data')}
-          </TradingButton>
+          </Button>
 
-          <TradingButton
+          <Button
             onClick={() => setTelemetryValue('false')}
             size="sm"
             intent={Intent.None}
@@ -59,7 +59,7 @@ export const TelemetryApproval = ({
             fill
           >
             {t('No thanks')}
-          </TradingButton>
+          </Button>
         </div>
       </div>
     </div>

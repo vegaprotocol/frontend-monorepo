@@ -23,7 +23,7 @@ import {
 } from '../../lib/hooks/__generated__/Rewards';
 import {
   Tooltip,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -441,7 +441,7 @@ export const RewardPot = ({
                     'Click to move all vested rewards for this key into its general account'
                   )}
                 >
-                  <TradingButton
+                  <Button
                     onClick={() => {
                       if (!rewardAsset) return;
                       const transfer = normalizeTransfer(
@@ -460,7 +460,7 @@ export const RewardPot = ({
                     data-testid="redeem-rewards-button"
                   >
                     {t('Redeem rewards')}
-                  </TradingButton>
+                  </Button>
                 </Tooltip>
               </div>
             )}

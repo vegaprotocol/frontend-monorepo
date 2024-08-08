@@ -1,4 +1,4 @@
-import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { VegaSection } from '@/components/vega-section';
@@ -27,12 +27,12 @@ export const ExportPrivateKeysDialog = ({
   return (
     <>
       <VegaSection>
-        <ButtonLink
+        <AnchorButton
           onClick={() => setOpen(true)}
           data-testid={locators.privateKeyTrigger}
         >
           Export private key
-        </ButtonLink>
+        </AnchorButton>
       </VegaSection>
       <Dialog
         open={open}

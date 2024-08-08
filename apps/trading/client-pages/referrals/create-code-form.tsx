@@ -7,7 +7,7 @@ import {
   Intent,
   Tooltip,
   TradingAnchorButton,
-  TradingButton,
+  Button,
   TradingDialog,
   VegaIcon,
   VegaIconNames,
@@ -187,12 +187,12 @@ export const CreateCodeForm = () => {
                   <span className="truncate">{code}</span>
 
                   <CopyWithTooltip text={code}>
-                    <TradingButton
+                    <Button
                       size="xs"
                       icon={<VegaIcon name={VegaIconNames.COPY} />}
                     >
                       <span>{t('Copy')}</span>
-                    </TradingButton>
+                    </Button>
                   </CopyWithTooltip>
                 </div>
               </div>
@@ -226,9 +226,9 @@ const CreateCodeDialog = ({
     return (
       <div className="flex flex-col gap-6">
         <p>{t('You must be connected to the Vega wallet.')}</p>
-        <TradingButton intent={Intent.Primary} onClick={onCancel}>
+        <Button intent={Intent.Primary} onClick={onCancel}>
           {t('Close')}
-        </TradingButton>
+        </Button>
       </div>
     );
   }
@@ -260,7 +260,7 @@ const CreateCodeDialog = ({
 
   const YES_OR_NO = (
     <>
-      <TradingButton
+      <Button
         fill={true}
         intent={Intent.Primary}
         onClick={() => {
@@ -268,9 +268,9 @@ const CreateCodeDialog = ({
         }}
       >
         {t('Yes')}
-      </TradingButton>
+      </Button>
 
-      <TradingButton
+      <Button
         fill={true}
         intent={Intent.Primary}
         onClick={() => {
@@ -279,12 +279,12 @@ const CreateCodeDialog = ({
         }}
       >
         {t('No')}
-      </TradingButton>
+      </Button>
     </>
   );
 
   const GENERATE = (
-    <TradingButton
+    <Button
       fill={true}
       intent={Intent.Primary}
       onClick={() => {
@@ -292,7 +292,7 @@ const CreateCodeDialog = ({
       }}
     >
       {t('Generate code')}
-    </TradingButton>
+    </Button>
   );
 
   return (

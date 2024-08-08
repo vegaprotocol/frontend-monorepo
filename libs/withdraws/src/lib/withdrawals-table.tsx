@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/utils';
 import {
   ActionsDropdown,
-  ButtonLink,
+  AnchorButton,
   TradingDropdownItem,
   VegaIcon,
   VegaIconNames,
@@ -196,12 +196,12 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
     '-'
   ) : (
     <div className="flex justify-end gap-1">
-      <ButtonLink
+      <AnchorButton
         data-testid="complete-withdrawal"
         onClick={() => complete(data)}
       >
         {t('Complete withdrawal')}
-      </ButtonLink>
+      </AnchorButton>
 
       <ActionsDropdown>
         <TradingDropdownItem

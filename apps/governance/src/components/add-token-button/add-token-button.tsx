@@ -1,9 +1,9 @@
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { useAddAssetToWallet } from '../../hooks/use-add-asset-to-wallet';
 
-export const AddTokenButtonLink = ({
+export const AddTokenAnchorButton = ({
   address,
   symbol,
   decimals,
@@ -24,7 +24,7 @@ export const AddTokenButtonLink = ({
   if (!addSupported) {
     return null;
   }
-  return <ButtonLink onClick={add}>{t('addTokenToWallet')}</ButtonLink>;
+  return <AnchorButton onClick={add}>{t('addTokenToWallet')}</AnchorButton>;
 };
 
 export const AddTokenButton = ({
@@ -52,13 +52,13 @@ export const AddTokenButton = ({
     return null;
   }
   return (
-    <ButtonLink onClick={add}>
+    <AnchorButton onClick={add}>
       <img
         className={className}
         style={{ width: size, height: size }}
         alt="token-logo"
         src={image}
       />
-    </ButtonLink>
+    </AnchorButton>
   );
 };

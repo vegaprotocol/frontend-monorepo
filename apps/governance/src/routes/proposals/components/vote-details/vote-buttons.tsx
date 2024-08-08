@@ -5,7 +5,7 @@ import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   AsyncRenderer,
   Button,
-  ButtonLink,
+  AnchorButton,
   ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
@@ -182,9 +182,9 @@ export const VoteButtons = ({
     if (!pubKey) {
       return (
         <div data-testid="connect-wallet">
-          <ButtonLink onClick={openVegaWalletDialog}>
+          <AnchorButton onClick={openVegaWalletDialog}>
             {t('connectVegaWallet')}
-          </ButtonLink>{' '}
+          </AnchorButton>{' '}
           {t('toVote')}
         </div>
       );
@@ -281,7 +281,7 @@ export const VoteButtons = ({
               <span>on {format(voteDatetime, DATE_FORMAT_LONG)}. </span>
             ) : null}
             {proposalVotable ? (
-              <ButtonLink
+              <AnchorButton
                 className="text-white"
                 data-testid="change-vote-button"
                 onClick={() => {
@@ -290,7 +290,7 @@ export const VoteButtons = ({
                 }}
               >
                 {t('changeVote')}
-              </ButtonLink>
+              </AnchorButton>
             ) : null}
           </p>
         )

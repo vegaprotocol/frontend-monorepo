@@ -16,7 +16,7 @@ import {
   zeroClassNames,
 } from '@vegaprotocol/datagrid';
 import {
-  ButtonLink,
+  AnchorButton,
   TooltipCellComponent,
   ExternalLink,
   VegaIcon,
@@ -558,7 +558,7 @@ export const PositionsTable = ({
                   {data?.openVolume &&
                   data?.openVolume !== '0' &&
                   data.partyId === pubKey ? (
-                    <ButtonLink
+                    <AnchorButton
                       data-testid="edit-tpsl"
                       onClick={() => onEditTPSL(data.marketId)}
                       title={
@@ -568,7 +568,7 @@ export const PositionsTable = ({
                       }
                     >
                       {data.stopOrders?.length ? t('Edit') : t('Add')}
-                    </ButtonLink>
+                    </AnchorButton>
                   ) : null}
                 </div>
               );
@@ -585,7 +585,7 @@ export const PositionsTable = ({
                   {data?.openVolume &&
                   data?.openVolume !== '0' &&
                   data.partyId === pubKey ? (
-                    <ButtonLink
+                    <AnchorButton
                       data-testid="close-position"
                       onClick={() => data && onClose(data)}
                       title={t(
@@ -593,7 +593,7 @@ export const PositionsTable = ({
                       )}
                     >
                       <VegaIcon name={VegaIconNames.CROSS} size={16} />
-                    </ButtonLink>
+                    </AnchorButton>
                   ) : null}
                   {data?.assetId && (
                     <PositionActionsDropdown assetId={data?.assetId} />

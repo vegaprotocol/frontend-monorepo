@@ -1,5 +1,5 @@
 import {
-  TradingButton as Button,
+  Button,
   TradingDialog,
   Intent,
   Tooltip,

@@ -4,7 +4,7 @@ import {
   Popover,
   Switch,
   ToastPositionSetter,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -62,7 +62,7 @@ export const Settings = () => {
         <ToastPositionSetter />
       </SettingsGroup>
       <SettingsGroup label={t('Reset to default')}>
-        <TradingButton
+        <Button
           name="reset-to-defaults"
           size="sm"
           intent={Intent.None}
@@ -71,7 +71,7 @@ export const Settings = () => {
           }}
         >
           {t('Reset')}
-        </TradingButton>
+        </Button>
         <Dialog open={open} title={t('Reset')}>
           <div className="mb-4">
             <p>
@@ -85,7 +85,7 @@ export const Settings = () => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <TradingButton
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.Primary}
               onClick={() => {
@@ -95,8 +95,8 @@ export const Settings = () => {
               }}
             >
               {t('Yes, clear cache and refresh')}
-            </TradingButton>
-            <TradingButton
+            </Button>
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.None}
               onClick={() => {
@@ -104,7 +104,7 @@ export const Settings = () => {
               }}
             >
               {t('No, keep settings')}
-            </TradingButton>
+            </Button>
           </div>
         </Dialog>
       </SettingsGroup>

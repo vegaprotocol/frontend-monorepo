@@ -2,7 +2,7 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   ProgressBar,
@@ -45,18 +45,18 @@ type ButtonProps = {
   onClick?: () => void;
   label: string;
   icon: VegaIconNames;
-} & ComponentProps<typeof TradingButton>;
+} & ComponentProps<typeof Button>;
 
 const Button = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ onClick, label, icon, ...props }, ref) => (
-  <TradingButton onClick={onClick} {...props} ref={ref}>
+  <Button onClick={onClick} {...props} ref={ref}>
     <div className="flex flex-col items-center p">
       <VegaIcon name={icon} size={16} className="mb-1" />
       <span className="text-xs">{label}</span>
     </div>
-  </TradingButton>
+  </Button>
 ));
 
 const BreakdownItem = ({ data }: { data: AccountFields }) => {

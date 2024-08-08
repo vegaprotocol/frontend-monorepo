@@ -1,4 +1,4 @@
-import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 
 export const Pagination = ({

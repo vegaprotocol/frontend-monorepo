@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { isValidUrl } from '@vegaprotocol/utils';
 import {
   Button,
-  ButtonLink,
+  AnchorButton,
   TradingInput,
   Loader,
   TradingRadio,
@@ -184,7 +184,7 @@ const CustomRowWrapper = ({
                 setInputText(e.target.value);
               }}
             />
-            <ButtonLink
+            <AnchorButton
               onClick={() => {
                 if (!isValidUrl(inputText)) {
                   setError('Invalid url');
@@ -195,7 +195,7 @@ const CustomRowWrapper = ({
               }}
             >
               {t('Check')}
-            </ButtonLink>
+            </AnchorButton>
           </div>
         )}
       </div>

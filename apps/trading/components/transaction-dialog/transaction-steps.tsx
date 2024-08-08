@@ -7,11 +7,7 @@ import {
   PendingBadge,
 } from './transaction-badge';
 import { type ReactNode } from 'react';
-import {
-  TradingButton,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 
 type TransactionStepsProps = {
@@ -146,9 +142,9 @@ export const TransactionSteps = ({
         </li>
       </ul>
       {isFinal(status) && (
-        <TradingButton size="lg" onClick={reset}>
+        <Button size="lg" onClick={reset}>
           {resetButtonLabel}
-        </TradingButton>
+        </Button>
       )}
     </div>
   );

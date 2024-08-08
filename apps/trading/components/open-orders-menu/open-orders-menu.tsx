@@ -1,4 +1,4 @@
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useHasAmendableOrder } from '@vegaprotocol/orders';
@@ -35,8 +35,8 @@ export const OpenOrdersMenu = ({ marketId }: { marketId: string }) => {
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => {
   const t = useT();
   return (
-    <TradingButton size="xs" onClick={onClick} data-testid="cancelAll">
+    <Button size="xs" onClick={onClick} data-testid="cancelAll">
       {t('Cancel all')}
-    </TradingButton>
+    </Button>
   );
 };

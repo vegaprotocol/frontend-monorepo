@@ -1,4 +1,4 @@
-import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { VegaSection } from '@/components/vega-section';
@@ -23,12 +23,12 @@ export const ExportRecoveryPhraseSection = () => {
   return (
     <>
       <VegaSection>
-        <ButtonLink
+        <AnchorButton
           onClick={() => setOpen(true)}
           data-testid={locators.exportRecoveryPhraseTrigger}
         >
           Export recovery phrase
-        </ButtonLink>
+        </AnchorButton>
       </VegaSection>
       <Dialog
         open={open}

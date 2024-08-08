@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAddAssetSupported } from '../../hooks/use-add-asset-to-wallet';
 import vegaVesting from '../../images/vega_vesting.png';
-import { AddTokenButtonLink } from '../add-token-button/add-token-button';
+import { AddTokenAnchorButton } from '../add-token-button/add-token-button';
 import { Callout } from '@vegaprotocol/ui-toolkit';
 import { ENV } from '../../config/env';
 
@@ -18,7 +18,7 @@ export const AddLockedTokenAddress = () => {
       {addSupported ? (
         <>
           <p className="flex justify-center">
-            <AddTokenButtonLink
+            <AddTokenAnchorButton
               address={ENV.addresses.lockedAddress}
               symbol="VEGA🔒"
               decimals={18}

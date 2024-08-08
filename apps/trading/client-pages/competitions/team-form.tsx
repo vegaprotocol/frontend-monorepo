@@ -4,7 +4,7 @@ import {
   TradingInputError,
   TradingCheckbox,
   TextArea,
-  TradingButton,
+  Button,
   Intent,
   VegaIcon,
   VegaIconNames,
@@ -315,14 +315,14 @@ const SubmitButton = ({
 
   return (
     <div className="flex gap-2 items-baseline">
-      <TradingButton
+      <Button
         type="submit"
         intent={Intent.Info}
         disabled={disabled}
         data-testid="team-form-submit-button"
       >
         {text}
-      </TradingButton>
+      </Button>
       {status === TxStatus.Confirmed && confirmed}
     </div>
   );

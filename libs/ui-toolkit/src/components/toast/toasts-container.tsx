@@ -2,7 +2,7 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 import { Toast } from './toast';
 import type { Toasts } from './use-toasts';
 import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
@@ -102,7 +102,7 @@ export const ToastsContainer = ({
             }
           )}
         >
-          <TradingButton
+          <Button
             title={t('Dismiss all toasts')}
             size="sm"
             fill={true}
@@ -111,7 +111,7 @@ export const ToastsContainer = ({
             }}
           >
             {t('Dismiss all')}
-          </TradingButton>
+          </Button>
         </div>
       </ul>
     </Portal>

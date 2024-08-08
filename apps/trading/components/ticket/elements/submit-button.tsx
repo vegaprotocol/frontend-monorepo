@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 
@@ -38,8 +38,8 @@ export const SubmitButton = ({ text }: { text: string }) => {
   }
 
   return (
-    <TradingButton size="lg" intent={Intent.Secondary} onClick={openDialog}>
+    <Button size="lg" intent={Intent.Secondary} onClick={openDialog}>
       {t('Connect')}
-    </TradingButton>
+    </Button>
   );
 };

@@ -2,7 +2,7 @@ import { type FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   Notification,
@@ -271,7 +271,7 @@ export const SwapForm = ({
         data-testid="price-impact-input"
         disabled={!market}
       />
-      <TradingButton
+      <Button
         type="submit"
         intent={Intent.Secondary}
         data-testid="swap-now-button"
@@ -281,7 +281,7 @@ export const SwapForm = ({
         }
       >
         {t('Swap')}
-      </TradingButton>
+      </Button>
       <GetStarted lead={t('Connect wallet')} />
       {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
         <Notification

@@ -1,157 +1,96 @@
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode,
+import classNames from 'classnames';
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type ReactNode,
+  type ButtonHTMLAttributes,
 } from 'react';
-import { forwardRef } from 'react';
-import classnames from 'classnames';
+import { Intent } from '../../utils/intent';
+import { Link } from 'react-router-dom';
 
-export type ButtonVariant = 'default' | 'primary' | 'secondary';
-export type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
-
-const base =
-  'inline-block uppercase border rounded-md disabled:opacity-60 text-base text-center';
-const xs = 'px-2 py-0 text-sm';
-const sm = 'px-2 py-1 text-sm';
-const md = 'px-10 py-2 text-base';
-const lg = 'px-14 py-4';
-const fillClasses = 'block w-full';
-const defaultClasses = [
-  'border-gs-100',
-  'bg-transparent',
-  'enabled:hover:bg-gs-400/20',
-  'enabled:active:bg-gs-400/20',
-];
-const primary = [
-  'text-black',
-  'border-vega-yellow',
-  'bg-vega-yellow',
-  'enabled:hover:bg-vega-yellow-550 enabled:hover:border-vega-yellow-550',
-  'enabled:active:bg-vega-yellow-550 enabled:active:border-vega-yellow-550',
-];
-const secondary = [
-  'text-white',
-  'border-vega-pink',
-  'dark:bg-vega-pink bg-vega-pink-550',
-  'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
-  'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
-];
-
-const getClassname = ({
-  variant,
-  size,
-  fill,
-  className,
-}: {
-  variant: ButtonVariant;
-  size: ButtonSize;
-  fill: boolean;
-  className?: string;
-}) => {
-  return classnames(base, className, {
-    [defaultClasses.join(' ')]: variant === 'default',
-    [primary.join(' ')]: variant === 'primary',
-    [secondary.join(' ')]: variant === 'secondary',
-
-    [lg]: size === 'lg',
-    [md]: size === 'md',
-    [sm]: size === 'sm',
-    [xs]: size === 'xs',
-    [fillClasses]: fill,
-  });
+type ButtonProps = {
+  size?: 'lg' | 'md' | 'sm' | 'xs';
+  intent?: Intent | null;
+  children?: ReactNode;
+  icon?: ReactNode;
+  fill?: boolean;
 };
 
-interface CommonProps {
-  children?: ReactNode;
-  variant?: ButtonVariant;
-  disabled?: boolean;
-  fill?: boolean;
-  size?: ButtonSize;
-  icon?: ReactNode;
-  rightIcon?: ReactNode;
-}
-export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    CommonProps {}
+const getClassName = (
+  { size, intent, fill }: Pick<ButtonProps, 'size' | 'intent' | 'fill'>,
+  className?: string
+) =>
+  classNames(
+    'inline-flex gap-2 items-center justify-center disabled:opacity-40',
+    // size
+    {
+      'h-12 px-6 rounded-lg': size === 'lg',
+      'h-10 px-4 rounded': size === 'md',
+      'h-8 px-3 rounded text-sm': size === 'sm',
+      'h-6 px-2 rounded text-xs': size === 'xs',
+    },
+    // colours
+    'enabled:hover:brightness-125',
+    {
+      'bg-intent-none text-gs-50': intent === Intent.None,
+      'bg-intent-primary': intent === Intent.Primary,
+      'bg-intent-secondary': intent === Intent.Secondary,
+      'bg-intent-danger': intent === Intent.Danger,
+      'bg-intent-info': intent === Intent.Info,
+      'bg-intent-warning': intent === Intent.Warning,
+      'bg-intent-success': intent === Intent.Success,
+    },
+    { 'w-full': fill },
+    className
+  );
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
+>(
   (
     {
-      variant = 'default',
       size = 'md',
-      fill = false,
+      intent = Intent.None,
       type = 'button',
       icon,
-      rightIcon,
       children,
       className,
+      fill,
       ...props
     },
     ref
-  ) => {
-    const buttonClasses = getClassname({ variant, size, fill, className });
-    return (
-      <button ref={ref} type={type} className={buttonClasses} {...props}>
-        <ButtonContent icon={icon} rightIcon={rightIcon}>
-          {children}
-        </ButtonContent>
-      </button>
-    );
-  }
-);
-
-export interface AnchorButtonProps
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    CommonProps {}
-
-export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
-  (
-    {
-      variant = 'default',
-      size = 'md',
-      fill = false,
-      icon,
-      rightIcon,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const className = getClassname({ variant, size, fill });
-    return (
-      <a ref={ref} className={className} {...props}>
-        <ButtonContent icon={icon} rightIcon={rightIcon}>
-          {children}
-        </ButtonContent>
-      </a>
-    );
-  }
-);
-
-type ButtonLinkProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
-
-export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
-  ({ type = 'button', className, ...props }, ref) => {
-    const style = classnames('inline underline underline-offset-4', className);
-    return <button ref={ref} className={style} type={type} {...props} />;
-  }
-);
-
-interface ButtonContentProps {
-  children: ReactNode;
-  icon?: ReactNode;
-  rightIcon?: ReactNode;
-}
-
-const ButtonContent = ({ children, icon, rightIcon }: ButtonContentProps) => {
-  const iconEl = icon ? icon : null;
-  const rightIconEl = rightIcon ? rightIcon : null;
-
-  return (
-    <>
-      {iconEl}
+  ) => (
+    <button
+      ref={ref}
+      type={type}
+      data-trading-button
+      className={getClassName({ size, intent, fill }, className)}
+      {...props}
+    >
       {children}
-      {rightIconEl}
-    </>
-  );
-};
+      {icon}
+    </button>
+  )
+);
+
+export const AnchorButton = ({
+  size = 'md',
+  intent = Intent.None,
+  icon,
+  href,
+  children,
+  className,
+  fill,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> &
+  ButtonProps & { href: string }) => (
+  <Link
+    to={href}
+    className={getClassName({ size, intent, fill }, className)}
+    {...props}
+  >
+    {children}
+    {icon}
+  </Link>
+);

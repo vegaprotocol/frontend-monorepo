@@ -5,7 +5,7 @@ import { truncateByChars } from '@vegaprotocol/utils';
 import {
   VegaIcon,
   VegaIconNames,
-  TradingButton as Button,
+  Button,
   Intent,
   TradingDropdown,
   TradingDropdownTrigger,
@@ -64,7 +64,7 @@ export const VegaWalletConnectButton = ({
             }}
           >
             <Button
-              size="small"
+              size="sm"
               icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />}
             >
               {activeKey ? (
@@ -126,7 +126,7 @@ export const VegaWalletConnectButton = ({
         onClick?.();
         openVegaWalletDialog();
       }}
-      size="small"
+      size="sm"
       intent={intent}
       icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
     >

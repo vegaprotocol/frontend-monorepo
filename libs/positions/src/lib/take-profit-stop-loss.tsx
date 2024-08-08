@@ -1,7 +1,7 @@
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingButton as Button,
-  ButtonLink,
+  Button,
+  AnchorButton,
   FormGroup,
   TradingInput as Input,
   InputError,
@@ -498,7 +498,7 @@ const StopOrder = ({
           ]}
         />
       </span>
-      <ButtonLink
+      <AnchorButton
         data-testid="cancel-stop-order"
         onClick={() =>
           create({
@@ -511,7 +511,7 @@ const StopOrder = ({
         title={t('Cancel stop order')}
       >
         <VegaIcon name={VegaIconNames.CROSS} size={16} />
-      </ButtonLink>
+      </AnchorButton>
     </div>
   );
 };
@@ -536,7 +536,7 @@ const StopOrdersList = ({
   let openVolumeLeft = toBigNum(openVolume ?? '0', 0);
   return (
     <div className="mb-3" data-testid="stop-orders-list">
-      <ButtonLink
+      <AnchorButton
         data-testid="cancel-all"
         className="text-xs float-right mt-1"
         onClick={() =>
@@ -563,7 +563,7 @@ const StopOrdersList = ({
         title={t('Cancel all')}
       >
         {t('Cancel all')}
-      </ButtonLink>
+      </AnchorButton>
       <div className="clear-both">
         {stopOrders?.map((stopOrder) => {
           const element = (

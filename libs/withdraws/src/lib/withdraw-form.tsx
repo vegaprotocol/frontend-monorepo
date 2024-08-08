@@ -17,11 +17,11 @@ import {
   TradingRichSelect,
   ExternalLink,
   Intent,
-  TradingButton,
+  Button,
   truncateMiddle,
   VegaIcon,
   VegaIconNames,
-  ButtonLink,
+  AnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
@@ -259,7 +259,7 @@ export const WithdrawForm = ({
                 );
               }
               return (
-                <TradingButton
+                <Button
                   onClick={() => {
                     const desiredChainId = selectedAsset?.chainId || 1;
                     openDialog(desiredChainId);
@@ -269,7 +269,7 @@ export const WithdrawForm = ({
                   data-testid="connect-eth-wallet-btn"
                 >
                   {t('Connect')}
-                </TradingButton>
+                </Button>
               );
             }}
           />
@@ -399,13 +399,9 @@ export const WithdrawForm = ({
           )}
         </TradingFormGroup>
 
-        <TradingButton
-          data-testid="submit-withdrawal"
-          type="submit"
-          fill={true}
-        >
+        <Button data-testid="submit-withdrawal" type="submit" fill={true}>
           {t('Release funds')}
-        </TradingButton>
+        </Button>
       </form>
     </>
   );
@@ -434,7 +430,7 @@ const DisconnectEthereumButton = ({
   const disconnect = useWeb3Disconnect(connector);
 
   return (
-    <ButtonLink
+    <AnchorButton
       onClick={() => {
         disconnect();
         removeEagerConnector();
@@ -443,6 +439,6 @@ const DisconnectEthereumButton = ({
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </ButtonLink>
+    </AnchorButton>
   );
 };

@@ -1,6 +1,6 @@
 import { useT } from '../../lib/use-t';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
-import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const GridSettings = ({
   updateGridStore,

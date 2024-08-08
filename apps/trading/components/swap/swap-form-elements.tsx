@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Intent,
-  TradingButton,
+  Button,
   TradingInput,
   VegaIcon,
   VegaIconNames,
@@ -147,7 +147,7 @@ export const PriceImpactInput = ({
         </div>
         <div className="flex justify-end">
           {autoValues.map((val) => (
-            <TradingButton
+            <Button
               intent={Intent.None}
               disabled={disabled}
               size="sm"
@@ -163,7 +163,7 @@ export const PriceImpactInput = ({
               data-testid={`auto-value-${val}`}
             >
               {val}%
-            </TradingButton>
+            </Button>
           ))}
         </div>
         {Number(value) >= 100 && (

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ButtonLink,
+  AnchorButton,
   FormGroup,
   Input,
   InputError,
@@ -77,7 +77,7 @@ const ValidationForm = ({
           </span>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <ButtonLink
+          <AnchorButton
             data-testid="min-validation"
             onClick={() => {
               onValidationMinMax &&
@@ -86,8 +86,8 @@ const ValidationForm = ({
             }}
           >
             {t('UseMin')}
-          </ButtonLink>
-          <ButtonLink
+          </AnchorButton>
+          <AnchorButton
             data-testid="max-validation"
             onClick={() => {
               onValidationMinMax &&
@@ -99,7 +99,7 @@ const ValidationForm = ({
             }}
           >
             {t('UseMax')}
-          </ButtonLink>
+          </AnchorButton>
         </div>
       </div>
       {validationErrorMessage && (
@@ -180,7 +180,7 @@ const EnactmentForm = ({
           </span>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <ButtonLink
+          <AnchorButton
             data-testid="min-enactment"
             onClick={() => {
               onEnactMinMax &&
@@ -192,8 +192,8 @@ const EnactmentForm = ({
             }}
           >
             {t('UseMin')}
-          </ButtonLink>
-          <ButtonLink
+          </AnchorButton>
+          <AnchorButton
             data-testid="max-enactment"
             onClick={() => {
               onEnactMinMax &&
@@ -205,7 +205,7 @@ const EnactmentForm = ({
             }}
           >
             {t('UseMax')}
-          </ButtonLink>
+          </AnchorButton>
         </div>
       </div>
       {enactmentErrorMessage && (
@@ -488,7 +488,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
             </span>
           </div>
           <div className="flex items-center gap-4 text-sm">
-            <ButtonLink
+            <AnchorButton
               data-testid="min-vote"
               onClick={() => {
                 onVoteMinMax('proposalVoteDeadline', minVoteHours.toString());
@@ -496,8 +496,8 @@ export function ProposalFormVoteAndEnactmentDeadline({
               }}
             >
               {t('UseMin')}
-            </ButtonLink>
-            <ButtonLink
+            </AnchorButton>
+            <AnchorButton
               data-testid="max-vote"
               onClick={() => {
                 onVoteMinMax('proposalVoteDeadline', maxVoteHours.toString());
@@ -505,7 +505,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
               }}
             >
               {t('UseMax')}
-            </ButtonLink>
+            </AnchorButton>
           </div>
         </div>
         {voteErrorMessage && (

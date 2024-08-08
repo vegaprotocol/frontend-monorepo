@@ -1,7 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { TrancheItem } from '../redemption/tranche-item';
 import { TrancheLabel } from './tranche-label';
@@ -50,7 +50,7 @@ export const Tranches = () => {
       )}
 
       <section className="text-center mt-4">
-        <ButtonLink
+        <AnchorButton
           data-testid="show-all-tranches"
           onClick={() => setShowAll(!showAll)}
         >
@@ -63,7 +63,7 @@ export const Tranches = () => {
                 'Not showing tranches with <{{trancheMinimum}} VEGA, click to show all tranches',
                 { trancheMinimum }
               )}
-        </ButtonLink>
+        </AnchorButton>
       </section>
     </section>
   );

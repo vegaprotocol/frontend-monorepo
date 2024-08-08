@@ -17,10 +17,10 @@ import {
   TradingRichSelect,
   Notification,
   Intent,
-  ButtonLink,
+  AnchorButton,
   TradingSelect,
   truncateMiddle,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   Loader,
@@ -254,7 +254,7 @@ export const DepositForm = ({
               );
             }
             return (
-              <TradingButton
+              <Button
                 onClick={() => {
                   const desiredChainId =
                     selectedAsset && selectedAsset.source.__typename === 'ERC20'
@@ -267,7 +267,7 @@ export const DepositForm = ({
                 data-testid="connect-eth-wallet-btn"
               >
                 {t('Connect')}
-              </TradingButton>
+              </Button>
             );
           }}
         />
@@ -525,14 +525,14 @@ const FormButton = ({ approved, selectedAsset, isActive }: FormButtonProps) => {
   const t = useT();
 
   return (
-    <TradingButton
+    <Button
       type="submit"
       data-testid="deposit-submit"
       fill
       disabled={!isActive}
     >
       {t('Deposit')}
-    </TradingButton>
+    </Button>
   );
 };
 
@@ -559,7 +559,7 @@ const DisconnectEthereumButton = ({
   const disconnect = useWeb3Disconnect(connector);
 
   return (
-    <ButtonLink
+    <AnchorButton
       onClick={() => {
         disconnect();
         removeEagerConnector();
@@ -568,7 +568,7 @@ const DisconnectEthereumButton = ({
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </ButtonLink>
+    </AnchorButton>
   );
 };
 

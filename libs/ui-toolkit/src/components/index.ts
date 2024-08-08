@@ -59,9 +59,6 @@ export * from './progress-bar';
 export * from './highlight-progress-bar';
 export * from './epoch-countdown';
 
-// Trading specific components
-export * from './trading-button';
-export * from './trading-checkbox';
 export * from './trading-dialog';
 export * from './trading-dropdown';
 export * from './trading-form-group';

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import type { ComponentProps, ReactNode } from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 
 type NotificationProps = {
   intent: Intent;
@@ -16,7 +16,7 @@ type NotificationProps = {
     action: () => void;
     className?: string;
     dataTestId?: string;
-    size?: ComponentProps<typeof TradingButton>['size'];
+    size?: ComponentProps<typeof Button>['size'];
     disabled?: boolean;
   };
   testId?: string;
@@ -117,7 +117,7 @@ export const Notification = ({
           {message}
         </div>
         {buttonProps && (
-          <TradingButton
+          <Button
             intent={intent}
             size={buttonProps.size || 'sm'}
             onClick={buttonProps.action}
@@ -127,7 +127,7 @@ export const Notification = ({
             disabled={buttonProps.disabled || false}
           >
             {buttonProps.text}
-          </TradingButton>
+          </Button>
         )}
       </div>
     </div>

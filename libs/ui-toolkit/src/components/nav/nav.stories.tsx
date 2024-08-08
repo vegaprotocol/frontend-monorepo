@@ -1,5 +1,5 @@
 import type { Meta, Story } from '@storybook/react';
-import { ButtonLink } from '../button';
+import { AnchorButton } from '../button';
 
 import { VegaLogo } from '../vega-logo';
 import { Nav } from './nav';
@@ -13,10 +13,10 @@ const Template: Story = ({ icon, title, titleContent }) => (
   <div className="flex w-full">
     <Nav icon={icon} title={title} titleContent={titleContent}>
       <div className="mx-4">
-        <ButtonLink>Some link</ButtonLink>{' '}
+        <AnchorButton>Some link</AnchorButton>{' '}
       </div>
       <div className="mx-4">
-        <ButtonLink>Some other link</ButtonLink>
+        <AnchorButton>Some other link</AnchorButton>
       </div>
     </Nav>
   </div>

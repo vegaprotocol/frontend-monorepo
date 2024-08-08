@@ -1,4 +1,4 @@
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ComponentProps, ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
@@ -97,17 +97,17 @@ export const TabLink = ({
 
 export const Button = forwardRef<
   HTMLButtonElement,
-  ComponentProps<typeof TradingButton>
+  ComponentProps<typeof Button>
 >(({ children, intent, type, ...props }, ref) => {
   return (
-    <TradingButton
+    <Button
       ref={ref}
       intent={intent || type === 'submit' ? Intent.Primary : Intent.None}
       type={type}
       {...props}
     >
       {children}
-    </TradingButton>
+    </Button>
   );
 });
-Button.displayName = 'TradingButton';
+Button.displayName = 'Button';

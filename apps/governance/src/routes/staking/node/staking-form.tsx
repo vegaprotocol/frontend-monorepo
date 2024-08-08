@@ -10,7 +10,7 @@ import { useSearchParams } from '../../../hooks/use-search-params';
 import { BigNumber } from '../../../lib/bignumber';
 import { StakingFormTxStatuses } from './staking-form-tx-statuses';
 import {
-  ButtonLink,
+  AnchorButton,
   FormGroup,
   Intent,
   Notification,
@@ -300,20 +300,20 @@ export const StakingForm = ({
               {removeType === RemoveType.Now ? (
                 <>
                   <p>{t('Want to remove your stake before the epoch ends?')}</p>
-                  <ButtonLink
+                  <AnchorButton
                     onClick={() => setRemoveType(RemoveType.EndOfEpoch)}
                   >
                     {t('Switch to form for removal at end of epoch')}
-                  </ButtonLink>
+                  </AnchorButton>
                 </>
               ) : (
                 <>
                   <p>
                     {t('Want to remove your stake at the end of the epoch?')}
                   </p>
-                  <ButtonLink onClick={() => setRemoveType(RemoveType.Now)}>
+                  <AnchorButton onClick={() => setRemoveType(RemoveType.Now)}>
                     {t('Switch to form for immediate removal')}
-                  </ButtonLink>
+                  </AnchorButton>
                 </>
               )}
             </>

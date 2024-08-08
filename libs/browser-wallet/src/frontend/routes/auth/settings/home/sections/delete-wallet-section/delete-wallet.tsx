@@ -1,4 +1,4 @@
-import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { VegaSection } from '@/components/vega-section';
@@ -25,12 +25,12 @@ export const DeleteWallet = () => {
   return (
     <>
       <VegaSection>
-        <ButtonLink
+        <AnchorButton
           onClick={() => setOpen(true)}
           data-testid={locators.deleteWalletTrigger}
         >
           Delete wallet
-        </ButtonLink>
+        </AnchorButton>
       </VegaSection>
       <Dialog
         open={open}

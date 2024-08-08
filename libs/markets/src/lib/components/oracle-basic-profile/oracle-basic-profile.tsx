@@ -1,6 +1,6 @@
 import type { Provider } from '../../oracle-schema';
 import {
-  ButtonLink,
+  AnchorButton,
   ExternalLink,
   Icon,
   Intent,
@@ -85,12 +85,12 @@ export const OracleBasicProfile = ({
       <span className="flex gap-1">
         {provider.url && (
           <span className="flex align-items-bottom text-md gap-1">
-            <ButtonLink
+            <AnchorButton
               onClick={() => onClick && onClick(true)}
               data-testid="provider-name"
             >
               {provider.name}
-            </ButtonLink>
+            </AnchorButton>
             <span className="text-gs-300" data-testid="verified-proofs">
               ({verifiedProofs.length})
             </span>

@@ -27,6 +27,15 @@
     --gs-800: 244 244 244;
     --gs-800-hex: #f4f4f4;
     --gs-900: 249 250 250;
+
+    /* Intent Variants */
+    --intent-none: 209 210 211;
+    --intent-primary: 0 117 255;
+    --intent-secondary: 0 117 255;
+    --intent-danger: 236 0 60;
+    --intent-info: 0 117 255;
+    --intent-warning: 255 135 0;
+    --intent-success: 0 247 128;
   }
   .dark {
     --gs-0: 255 255 255;

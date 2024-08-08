@@ -3,7 +3,7 @@ import {
   ExternalLink,
   Intent,
   TradingAnchorButton,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -39,7 +39,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton
+      <Button
         {...buttonProps}
         onClick={() => {
           if (VEGA_ENV === Networks.MAINNET && risk !== 'accepted') {
@@ -50,7 +50,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         }}
       >
         {t('Connect')}
-      </TradingButton>
+      </Button>
     );
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
     return (
@@ -78,9 +78,9 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => setDialog('connect')}>
+    <Button {...buttonProps} onClick={() => setDialog('connect')}>
       {t('Get started')}
-    </TradingButton>
+    </Button>
   );
 };
 
@@ -182,14 +182,14 @@ export const GetStarted = ({ lead }: Props) => {
             ]}
           />
         </p>
-        <TradingButton
+        <Button
           onClick={openVegaWalletDialog}
           size="sm"
           data-testid="order-connect-wallet"
           intent={Intent.Info}
         >
           {t('Connect wallet')}
-        </TradingButton>
+        </Button>
       </div>
     );
   }

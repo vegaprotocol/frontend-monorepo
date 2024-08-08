@@ -2,7 +2,7 @@ import {
   BottomDrawer,
   BottomDrawerContent,
   Intent,
-  TradingButton,
+  Button,
   TradingDropdown,
   TradingDropdownContent,
   TradingDropdownItem,
@@ -41,7 +41,7 @@ export const MarketActionDrawer = () => {
         {!pubKeys.length || isReadOnly ? (
           <>
             <div className="flex-1">
-              <TradingButton
+              <Button
                 intent={Intent.Primary}
                 size="md"
                 onClick={() => {
@@ -50,35 +50,29 @@ export const MarketActionDrawer = () => {
                 fill={true}
               >
                 {t('Connect')}
-              </TradingButton>
+              </Button>
             </div>
             <div className="flex-1">
-              <TradingButton
-                onClick={() => setDrawer(DrawerView.Trade)}
-                fill={true}
-              >
+              <Button onClick={() => setDrawer(DrawerView.Trade)} fill={true}>
                 {t('Trade')}
-              </TradingButton>
+              </Button>
             </div>
           </>
         ) : (
           <>
             <div className="flex-1">
-              <TradingButton
-                onClick={() => setDrawer(DrawerView.Trade)}
-                fill={true}
-              >
+              <Button onClick={() => setDrawer(DrawerView.Trade)} fill={true}>
                 {t('Trade')}
-              </TradingButton>
+              </Button>
             </div>
             <div className="flex-1">
-              <TradingButton
+              <Button
                 onClick={() => setDrawer(DrawerView.Deposit)}
                 role="link"
                 fill={true}
               >
                 {t('Deposit')}
-              </TradingButton>
+              </Button>
             </div>
           </>
         )}
@@ -86,7 +80,7 @@ export const MarketActionDrawer = () => {
           <TradingDropdown
             trigger={
               <TradingDropdownTrigger>
-                <TradingButton fill={true}>...</TradingButton>
+                <Button fill={true}>...</Button>
               </TradingDropdownTrigger>
             }
           >
