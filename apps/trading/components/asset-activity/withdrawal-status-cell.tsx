@@ -39,7 +39,15 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     },
   });
 
-  const [status, setStatus] = useState<'idle' | 'delayed' | 'ready'>('idle');
+  const [status, setStatus] = useState<'idle' | 'delayed' | 'ready'>(() => {
+    if (data.asset?.source.__typename === 'ERC20') {
+      if (data.asset.source.withdrawThreshold === '0') {
+        return 'ready';
+      }
+    }
+
+    return 'idle';
+  });
   const [readyAt, setReadyAt] = useState<Date>();
   const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -58,10 +66,14 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
 
   useEffect(() => {
     const checkStatus = () => {
-      if (delay) {
+      const hasThreshold =
+        data.asset?.source.__typename === 'ERC20' &&
+        data.asset?.source.withdrawThreshold !== '0';
+
+      if (hasThreshold && delay) {
         const readyTimestamp =
           new Date(data.detail.createdTimestamp).getTime() +
-          (Number(delay) + 10) * 1000; // add a buffer of 3 seconds
+          (Number(delay) + 10) * 1000; // add a buffer
         const now = Date.now();
 
         setReadyAt(new Date(readyTimestamp));
@@ -82,7 +94,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     return () => {
       clearTimeout(timeoutRef.current);
     };
-  }, [delay, data.detail.createdTimestamp]);
+  }, [delay, data.asset, data.detail.createdTimestamp]);
 
   if (status === 'idle') {
     return <>-</>;
