@@ -105,7 +105,7 @@ export const StopOrderSetup = ({
   return (
     <div className={wrapperClasses}>
       <div className="mb-12 lg:mb-0">
-        <div className="bg-slate-100 text-slate-900 px-6 py-2 md:px-6 flex">
+        <div className="bg-gs-900 text-gs-50 px-6 py-2 md:px-6 flex">
           <div className="flex-1">
             <strong className="font-bold mb-1">{TypeLabel[type]} </strong>
             <p className=" font-xs mb-0">

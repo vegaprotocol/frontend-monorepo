@@ -106,8 +106,8 @@ export function TransferParticipants({
         <br />
 
         {/* This block of divs is used to render the inset arrow containing the transfer amount */}
-        <div className="bg-gs-200 dark:vega-dark-200 flex items-center justify-center my-4 relative">
-          <div className="bg-gs-200 border w-full pt-5 pb-3 px-3 border-gs-200  relative">
+        <div className="bg-gs-700 flex items-center justify-center my-4 relative">
+          <div className="bg-gs-700 border w-full pt-5 pb-3 px-3 border-gs-700  relative">
             <div className="text-xs z-20 relative leading-none">
               {transfer.asset ? (
                 <SizeInAsset assetId={transfer.asset} size={transfer.amount} />

@@ -31,7 +31,7 @@ export const Signature = ({ signature }: SignatureProps) => {
   return (
     <div className="inline-flex border rounded signature-component relative pr-[20px]">
       <div
-        className="bg-gray-100 px-2.5 py-0.5 text-xs text-gray-500 select-none cursor-default"
+        className="bg-gs-900 px-2.5 py-0.5 text-xs text-gs-100 select-none cursor-default"
         title={`${signature.algo}`}
       >
         <span>v{signature.version}</span>

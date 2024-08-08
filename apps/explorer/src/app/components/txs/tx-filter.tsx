@@ -9,7 +9,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   DropdownMenuSubContent,
-  Icon,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
@@ -138,7 +139,7 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
             <DropdownMenuCheckboxItem
               onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
             >
-              {t('Clear filters')} <Icon name="cross" />
+              {t('Clear filters')} <VegaIcon name={VegaIconNames.CROSS} />
             </DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
           </>
@@ -148,7 +149,7 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
           <DropdownMenuSub key={key}>
             <DropdownMenuSubTrigger>
               {t(key)}
-              <Icon name="chevron-right" />
+              <VegaIcon name={VegaIconNames.CHEVRON_RIGHT} />
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {value.map((f) => (
@@ -163,7 +164,7 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
                 >
                   {f}
                   <DropdownMenuItemIndicator>
-                    <Icon name="tick-circle" className="inline" />
+                    <VegaIcon name={VegaIconNames.TICK} className="inline" />
                   </DropdownMenuItemIndicator>
                 </DropdownMenuCheckboxItem>
               ))}

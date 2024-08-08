@@ -24,7 +24,7 @@ export const TabsTrigger = (
       {...props}
       className={classNames(
         'relative top-px uppercase border-b-2 py-4 border-transparent text-muted',
-        'data-[state=active]:border-vega-yellow data-[state=active]:text-vega-clight-50 data-[state=active]:dark:text-vega-cdark-50'
+        'data-[state=active]:border-vega-yellow data-[state=active]:text-gs-50'
       )}
     />
   );

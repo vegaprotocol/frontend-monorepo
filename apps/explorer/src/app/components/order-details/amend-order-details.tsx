@@ -49,7 +49,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
             <h2 className="display-5 mb-4 text-3xl font-bold">
               {t('Order not found')}
             </h2>
-            <p className="mb-12 text-gray-500">
+            <p className="mb-12 text-gs-100">
               {t('No order created from this transaction')}
             </p>
           </div>
@@ -73,7 +73,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
             {sideText[o.side]}
             {t(' order')}
           </h2>
-          <div className="mb-4 text-gray-500">
+          <div className="mb-4 text-gs-100">
             In <MarketLink id={o.market.id} />, updated at{' '}
             <Time date={o.updatedAt} />.
           </div>
@@ -85,7 +85,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                   {t('Size ±')}
                 </h2>
                 <h5
-                  className={`mb-0 text-lg font-medium capitalize text-gray-500 ${getSideDeltaColour(
+                  className={`mb-0 text-lg font-medium capitalize text-gs-100 ${getSideDeltaColour(
                     amend.sizeDelta
                   )}`}
                 >
@@ -98,7 +98,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 <h2 className="text-dark mb-4 text-2xl font-bold">
                   {t('New size')}
                 </h2>
-                <h5 className="mb-0 text-lg font-medium text-gray-500">
+                <h5 className="mb-0 text-lg font-medium text-gs-100">
                   {o ? Number(o.size) + Number(amend.sizeDelta) : null}
                 </h5>
               </div>
@@ -109,7 +109,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 <h2 className="text-dark mb-4 text-2xl font-bold">
                   {t('New price')}
                 </h2>
-                <h5 className="mb-0 text-lg font-medium text-gray-500">
+                <h5 className="mb-0 text-lg font-medium text-gs-100">
                   <PriceInMarket price={amend.price} marketId={o.market.id} />
                 </h5>
               </div>
@@ -121,7 +121,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 <h2 className="text-dark mb-4 text-2xl font-bold">
                   {t('New reference')}
                 </h2>
-                <h5 className="mb-0 text-lg font-medium text-gray-500">
+                <h5 className="mb-0 text-lg font-medium text-gs-100">
                   {peggedReference[amend.peggedReference]}
                 </h5>
               </div>
@@ -132,7 +132,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 <h2 className="text-dark mb-4 text-2xl font-bold">
                   {t('New offset')}
                 </h2>
-                <h5 className="mb-0 text-lg font-medium text-gray-500">
+                <h5 className="mb-0 text-lg font-medium text-gs-100">
                   {amend.peggedOffset}
                 </h5>
               </div>

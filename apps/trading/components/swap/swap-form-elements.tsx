@@ -44,7 +44,7 @@ export const AssetInput = ({
 
   return (
     <div
-      className="focus-within:bg-gs-800  bg-gs-700 py-2 px-4 rounded-lg border-gray-700 border flex flex-col gap-1 cursor-pointer"
+      className="focus-within:bg-gs-800  bg-gs-700 py-2 px-4 rounded-lg border-gs-600 border flex flex-col gap-1 cursor-pointer"
       data-testid={testId}
       role="button"
       // No need for tabindex as the input can be tabbed to
@@ -98,7 +98,7 @@ export const AssetInput = ({
 export const SwapButton = ({ onClick }: { onClick: () => void }) => (
   <button
     type="button"
-    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 self-center -my-5 z-10 hover:bg-gs-800 hover: border-gray-400 border"
+    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 self-center -my-5 z-10 hover:bg-gs-800 hover: border-gs-600 border"
     onClick={onClick}
     data-testid="swap-button"
   >

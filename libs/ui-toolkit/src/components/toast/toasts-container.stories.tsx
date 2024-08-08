@@ -122,13 +122,13 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
           <h1>{words[0]}</h1>
           <div>
             <button
-              className="underline text-gray-600 mr-2"
+              className="underline text-gs-100 mr-2"
               onClick={() => setTimeout(() => close(t.id), 500)}
             >
               {words[1]}
             </button>
             <button
-              className="underline text-gray-600"
+              className="underline text-gs-100"
               onClick={() =>
                 update(t.id, {
                   intent: sample([

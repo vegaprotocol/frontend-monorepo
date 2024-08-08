@@ -154,7 +154,7 @@ export const DropdownMenuSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames('bg-gs-200 mx-2 my-1 h-px', className)}
+    className={classNames('bg-gs-500 mx-2 my-1 h-px', className)}
   />
 ));
 
@@ -174,7 +174,10 @@ export const DropdownMenuSubContent = forwardRef<
 >(({ className, ...subContentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.SubContent
     ref={forwardedRef}
-    className={classNames('bg-gs-200', className)}
+    className={classNames(
+      'p-2 bg-gs-800 rounded border border-gs-400',
+      className
+    )}
     {...subContentProps}
   />
 ));

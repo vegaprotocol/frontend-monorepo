@@ -24,7 +24,7 @@ const EmptyList = ({ heading, label }: EmptyListProps) => {
           </h1>
         ) : null}
         {label ? (
-          <p className="font-alpha calt text-gray-500 text-center">{label}</p>
+          <p className="font-alpha calt text-gs-100 text-center">{label}</p>
         ) : null}
       </div>
     </div>

@@ -36,7 +36,7 @@ export const OracleProfileTitle = ({
         <span
           className={classNames(
             {
-              'text-gray-700 dark:text-gray-300': intent === Intent.None,
+              'text-gs-50': intent === Intent.None,
               'text-vega-blue': intent === Intent.Primary,
               'text-vega-green dark:text-vega-green': intent === Intent.Success,
               'dark:text-yellow text-yellow-600': intent === Intent.Warning,
