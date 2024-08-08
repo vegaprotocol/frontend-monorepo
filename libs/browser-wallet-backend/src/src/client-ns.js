@@ -2,10 +2,21 @@ import JSONRPCServer from '../lib/json-rpc-server.js';
 import * as txHelpers from './tx-helpers.js';
 import * as clientValidation from '../validation/client/index.js';
 import NodeRPC from './node-rpc.js';
-import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../frontend/lib/constants.js';
+// import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../frontend/lib/constants.js';
 // import { isIos } from '../lib/utils.js';
 
 // const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
+
+export const AUTO_CONSENT_TRANSACTION_TYPES = [
+  'orderSubmission',
+  'orderCancellation',
+  'orderAmendment',
+  'stopOrdersSubmission',
+  'stopOrdersCancellation',
+  'voteSubmission',
+  'updateMarginMode',
+  'batchMarketInstructions',
+];
 
 const Errors = {
   NOT_CONNECTED: [

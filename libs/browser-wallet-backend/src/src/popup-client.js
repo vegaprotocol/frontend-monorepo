@@ -1,6 +1,6 @@
-import JSONRPCClient from '../../frontend/lib/json-rpc-client.js';
+import JSONRPCClient from '../lib/json-rpc-client.js';
 import assert from 'nanoassert';
-import { isResponse } from '../../frontend/lib/json-rpc.js';
+import { isResponse } from '../lib/json-rpc.js';
 
 /**
  * Popup client

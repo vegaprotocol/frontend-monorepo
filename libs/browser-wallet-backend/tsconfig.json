@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2018",
     "module": "commonjs",
     "forceConsistentCasingInFileNames": true,
     "strict": true,

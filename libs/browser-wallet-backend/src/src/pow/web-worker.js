@@ -1,4 +1,4 @@
-import JSONRPCClient from '../../../frontend/lib/json-rpc-client.js';
+import JSONRPCClient from '../../lib/json-rpc-client.js';
 import mutex from 'mutexify/promise.js';
 
 const runtime = global.browser?.runtime ?? global.chrome?.runtime;
