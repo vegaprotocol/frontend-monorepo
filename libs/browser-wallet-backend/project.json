@@ -18,10 +18,7 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/browser-wallet-backend/**/*.ts",
-          "libs/browser-wallet-backend/package.json"
-        ]
+        "lintFilePatterns": ["libs/browser-wallet-backend/**/*.{ts,js}"]
       }
     },
     "test": {
