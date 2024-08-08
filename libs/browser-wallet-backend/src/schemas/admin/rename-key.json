@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "publicKey"],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "publicKey": {
+      "type": "string"
+    }
+  }
+}

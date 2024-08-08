@@ -1,0 +1,289 @@
+{
+  "type": "object",
+  "required": ["publicKey", "transaction", "sendingMode"],
+  "additionalProperties": false,
+  "errorMessage": "`client.send_transaction` must only be given `publicKey`, `transaction` and `sendingMode`",
+  "properties": {
+    "publicKey": {
+      "type": "string",
+      "pattern": "^[0-9a-z]{64}$",
+      "errorMessage": "`publicKey` must be a 64 character hex encoded publicKey"
+    },
+    "sendingMode": {
+      "enum": ["TYPE_ASYNC", 1, "TYPE_SYNC", 2, "TYPE_COMMIT", 3],
+      "errorMessage": "Only `TYPE_ASYNC` (1), `TYPE_SYNC` (2) and `TYPE_COMMIT` (3) are valid sending modes. The sendingMode must be the string name or numerical enum"
+    },
+    "transaction": {
+      "type": "object",
+      "errorMessage": "Unsupported transaction type",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "required": ["orderSubmission"],
+          "properties": {
+            "orderSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["orderCancellation"],
+          "properties": {
+            "orderCancellation": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["orderAmendment"],
+          "properties": {
+            "orderAmendment": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["withdrawSubmission"],
+          "properties": {
+            "withdrawSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["proposalSubmission"],
+          "properties": {
+            "proposalSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["voteSubmission"],
+          "properties": {
+            "voteSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["liquidityProvisionSubmission"],
+          "properties": {
+            "liquidityProvisionSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["delegateSubmission"],
+          "properties": {
+            "delegateSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["undelegateSubmission"],
+          "properties": {
+            "undelegateSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["liquidityProvisionCancellation"],
+          "properties": {
+            "liquidityProvisionCancellation": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["liquidityProvisionAmendment"],
+          "properties": {
+            "liquidityProvisionAmendment": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["transfer"],
+          "properties": {
+            "transfer": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["cancelTransfer"],
+          "properties": {
+            "cancelTransfer": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["announceNode"],
+          "properties": {
+            "announceNode": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["batchMarketInstructions"],
+          "properties": {
+            "batchMarketInstructions": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["stopOrdersSubmission"],
+          "properties": {
+            "stopOrdersSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["stopOrdersCancellation"],
+          "properties": {
+            "stopOrdersCancellation": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["createReferralSet"],
+          "properties": {
+            "createReferralSet": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["updateReferralSet"],
+          "properties": {
+            "updateReferralSet": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["applyReferralCode"],
+          "properties": {
+            "applyReferralCode": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["updateMarginMode"],
+          "properties": {
+            "updateMarginMode": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["joinTeam"],
+          "properties": {
+            "joinTeam": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["batchProposalSubmission"],
+          "properties": {
+            "batchProposalSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["updatePartyProfile"],
+          "properties": {
+            "updatePartyProfile": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["submitAmm"],
+          "properties": {
+            "submitAmm": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["amendAmm"],
+          "properties": {
+            "amendAmm": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["cancelAmm"],
+          "properties": {
+            "cancelAmm": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["nodeVote"],
+          "properties": {
+            "nodeVote": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["nodeSignature"],
+          "properties": {
+            "nodeSignature": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["chainEvent"],
+          "properties": {
+            "chainEvent": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["keyRotateSubmission"],
+          "properties": {
+            "keyRotateSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["stateVariableProposal"],
+          "properties": {
+            "stateVariableProposal": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["validatorHeartbeat"],
+          "properties": {
+            "validatorHeartbeat": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["ethereumKeyRotateSubmission"],
+          "properties": {
+            "ethereumKeyRotateSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["protocolUpgradeProposal"],
+          "properties": {
+            "protocolUpgradeProposal": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["issueSignatures"],
+          "properties": {
+            "issueSignatures": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["oracleDataSubmission"],
+          "properties": {
+            "oracleDataSubmission": {}
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["delayedTransactionsWrapper"],
+          "properties": {
+            "delayedTransactionsWrapper": {}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["origin", "autoConsent"],
+  "properties": {
+    "origin": {
+      "type": "string"
+    },
+    "autoConsent": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["passphrase", "walletName"],
+  "properties": {
+    "passphrase": {
+      "type": "string"
+    },
+    "walletName": {
+      "type": "string"
+    }
+  }
+}

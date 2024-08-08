@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["origin"],
+  "properties": {
+    "origin": {
+      "type": "string"
+    }
+  }
+}
