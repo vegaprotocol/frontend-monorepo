@@ -198,7 +198,7 @@ const WithdrawForm = ({
               return (
                 <TradingButton
                   intent={Intent.Info}
-                  size="small"
+                  size="sm"
                   onClick={() => openVegaWalletDialog()}
                 >
                   {t('Connect')}
@@ -343,7 +343,7 @@ const WithdrawForm = ({
       )}
       <TradingButton
         type="submit"
-        size="large"
+        size="lg"
         fill={true}
         intent={Intent.Secondary}
       >

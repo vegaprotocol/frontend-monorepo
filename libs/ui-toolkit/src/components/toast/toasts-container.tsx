@@ -104,7 +104,7 @@ export const ToastsContainer = ({
         >
           <TradingButton
             title={t('Dismiss all toasts')}
-            size="small"
+            size="sm"
             fill={true}
             onClick={() => {
               closeAll();

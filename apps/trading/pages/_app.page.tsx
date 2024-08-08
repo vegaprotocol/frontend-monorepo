@@ -31,6 +31,7 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
+import { TradingButton, Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 const Title = () => {
   const t = useT();
@@ -62,6 +63,25 @@ function AppBody({ Component }: AppProps) {
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
+
+  return (
+    <div className="flex flex-col gap-2 items-start">
+      <TradingButton>Trading empty</TradingButton>
+      <TradingButton intent={Intent.None}>Trading none</TradingButton>
+      <TradingButton intent={Intent.Primary}>Trading primary</TradingButton>
+      <TradingButton intent={Intent.Secondary}>Traidng secondary</TradingButton>
+      <TradingButton intent={Intent.Info}>Trading info</TradingButton>
+      <TradingButton intent={Intent.Danger}>Trading danger</TradingButton>
+      <TradingButton intent={Intent.Success}>Trading success</TradingButton>
+      <TradingButton intent={Intent.Warning}>Trading warning</TradingButton>
+
+      <Button>Button Empty</Button>
+      <Button variant="default">Button default</Button>
+      <Button variant="primary">Button primary</Button>
+      <Button variant="secondary">Button secondary</Button>
+    </div>
+  );
+
   return (
     <div className="h-full overflow-hidden">
       <Head>

@@ -146,7 +146,7 @@ export const TransactionSteps = ({
         </li>
       </ul>
       {isFinal(status) && (
-        <TradingButton size="large" onClick={reset}>
+        <TradingButton size="lg" onClick={reset}>
           {resetButtonLabel}
         </TradingButton>
       )}

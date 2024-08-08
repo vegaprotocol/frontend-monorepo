@@ -37,7 +37,7 @@ export const Pagination = ({
       <div className="flex items-center text-xs">
         <span>{rowMessage}</span>
         {pageInfo?.hasNextPage ? (
-          <Button size="extra-small" className="ml-1" onClick={onLoad}>
+          <Button size="xs" className="ml-1" onClick={onLoad}>
             {t('Load more')}
           </Button>
         ) : null}

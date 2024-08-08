@@ -188,7 +188,7 @@ export const CreateCodeForm = () => {
 
                   <CopyWithTooltip text={code}>
                     <TradingButton
-                      size="extra-small"
+                      size="xs"
                       icon={<VegaIcon name={VegaIconNames.COPY} />}
                     >
                       <span>{t('Copy')}</span>

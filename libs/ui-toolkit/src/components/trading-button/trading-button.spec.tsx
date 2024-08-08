@@ -4,7 +4,7 @@ import { TradingButton } from './trading-button';
 
 describe('TradingButton', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<TradingButton size="small" />);
+    const { baseElement } = render(<TradingButton size="sm" />);
     expect(baseElement).toBeTruthy();
   });
 });

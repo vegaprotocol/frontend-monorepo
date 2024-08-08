@@ -38,7 +38,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
   }
 
   return (
-    <TradingButton size="large" intent={Intent.Secondary} onClick={openDialog}>
+    <TradingButton size="lg" intent={Intent.Secondary} onClick={openDialog}>
       {t('Connect')}
     </TradingButton>
   );

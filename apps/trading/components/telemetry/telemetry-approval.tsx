@@ -43,7 +43,7 @@ export const TelemetryApproval = ({
             onClick={() => setTelemetryValue('true')}
             intent={Intent.Info}
             data-testid="share-data-button"
-            size="small"
+            size="sm"
             fill
           >
             {telemetryValue === 'true'
@@ -53,7 +53,7 @@ export const TelemetryApproval = ({
 
           <TradingButton
             onClick={() => setTelemetryValue('false')}
-            size="small"
+            size="sm"
             intent={Intent.None}
             data-testid="do-not-share-data-button"
             fill

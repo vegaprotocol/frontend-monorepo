@@ -43,7 +43,7 @@ export const MarketActionDrawer = () => {
             <div className="flex-1">
               <TradingButton
                 intent={Intent.Primary}
-                size="medium"
+                size="md"
                 onClick={() => {
                   openVegaWalletDialog();
                 }}

@@ -28,7 +28,7 @@ const WalletDisconnectAdditionalContent = () => {
           hideToast();
           openVegaWalletDialog();
         }}
-        size="small"
+        size="sm"
         intent={Intent.Danger}
         icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
       >

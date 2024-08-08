@@ -275,7 +275,7 @@ export const SwapForm = ({
         type="submit"
         intent={Intent.Secondary}
         data-testid="swap-now-button"
-        size="large"
+        size="lg"
         disabled={
           !market || marketData?.marketState !== MarketState.STATE_ACTIVE
         }

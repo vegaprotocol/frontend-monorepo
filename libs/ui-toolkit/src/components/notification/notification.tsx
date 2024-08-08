@@ -119,7 +119,7 @@ export const Notification = ({
         {buttonProps && (
           <TradingButton
             intent={intent}
-            size={buttonProps.size || 'small'}
+            size={buttonProps.size || 'sm'}
             onClick={buttonProps.action}
             className={classNames(buttonProps.className)}
             data-testid={buttonProps.dataTestId}

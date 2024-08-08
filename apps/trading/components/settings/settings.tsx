@@ -64,7 +64,7 @@ export const Settings = () => {
       <SettingsGroup label={t('Reset to default')}>
         <TradingButton
           name="reset-to-defaults"
-          size="small"
+          size="sm"
           intent={Intent.None}
           onClick={() => {
             setOpen(true);

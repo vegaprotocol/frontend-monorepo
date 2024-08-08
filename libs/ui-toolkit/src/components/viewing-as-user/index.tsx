@@ -33,7 +33,7 @@ export const ViewingAsBanner = ({
         </span>
         <TradingButton
           intent={Intent.None}
-          size="extra-small"
+          size="xs"
           data-testid="exit-view"
           onClick={disconnect}
         >

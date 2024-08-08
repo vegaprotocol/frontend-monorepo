@@ -32,7 +32,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const marketId = useGlobalStore((store) => store.marketId);
 
   const buttonProps = {
-    size: 'small' as const,
+    size: 'sm' as const,
     'data-testid': 'get-started-button',
     intent: Intent.Info,
   };
@@ -184,7 +184,7 @@ export const GetStarted = ({ lead }: Props) => {
         </p>
         <TradingButton
           onClick={openVegaWalletDialog}
-          size="small"
+          size="sm"
           data-testid="order-connect-wallet"
           intent={Intent.Info}
         >

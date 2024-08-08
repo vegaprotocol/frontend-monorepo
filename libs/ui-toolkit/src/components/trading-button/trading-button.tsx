@@ -9,7 +9,7 @@ import { Intent } from '../../utils/intent';
 import { Link } from 'react-router-dom';
 
 type TradingButtonProps = {
-  size?: 'large' | 'medium' | 'small' | 'extra-small' | 'custom';
+  size?: 'lg' | 'md' | 'sm' | 'xs';
   intent?: Intent | null;
   children?: ReactNode;
   icon?: ReactNode;
@@ -31,13 +31,13 @@ const getClassName = (
     'flex gap-2 items-center justify-center rounded disabled:opacity-40',
     // size
     {
-      'h-12 rounded-lg': size === 'large',
-      'h-10': !size || size === 'medium',
-      'h-8': size === 'small',
-      'px-3 text-sm': size === 'small',
-      'h-6 px-2 text-xs': size === 'extra-small',
-      'text-base': size !== 'small' && size !== 'custom',
-      'px-4': size !== 'small' && size !== 'extra-small' && size !== 'custom',
+      'h-12 rounded-lg': size === 'lg',
+      'h-10': !size || size === 'md',
+      'h-8': size === 'sm',
+      'px-3 text-sm': size === 'sm',
+      'h-6 px-2 text-xs': size === 'xs',
+      'text-base': size !== 'sm',
+      'px-4': size !== 'sm' && size !== 'xs',
     },
     // colours
     {
@@ -107,7 +107,7 @@ export const TradingButton = forwardRef<
 >(
   (
     {
-      size = 'medium',
+      size = 'md',
       intent = Intent.None,
       type = 'button',
       minimal = false,
@@ -134,7 +134,7 @@ export const TradingButton = forwardRef<
 );
 
 export const TradingAnchorButton = ({
-  size = 'medium',
+  size = 'md',
   intent = Intent.None,
   minimal = false,
   icon,

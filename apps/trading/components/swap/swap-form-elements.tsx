@@ -150,7 +150,7 @@ export const PriceImpactInput = ({
             <TradingButton
               intent={Intent.None}
               disabled={disabled}
-              size="small"
+              size="sm"
               className={classNames('mr-2', {
                 ' bg-gs-700': val === value,
               })}

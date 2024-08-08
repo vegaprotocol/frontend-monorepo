@@ -225,7 +225,7 @@ const CreateTeamFormContainer = ({
 
                   <CopyWithTooltip text={teamCode}>
                     <TradingButton
-                      size="extra-small"
+                      size="xs"
                       icon={<VegaIcon name={VegaIconNames.COPY} />}
                     >
                       <span>{t('Copy')}</span>

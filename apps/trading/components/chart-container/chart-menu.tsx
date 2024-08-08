@@ -51,7 +51,7 @@ export const ChartMenu = () => {
 
   const contentAlign = 'end';
   const triggerClasses = 'text-xs';
-  const triggerButtonProps = { size: 'extra-small' } as const;
+  const triggerButtonProps = { size: 'xs' } as const;
 
   const isPennant = chartlib === 'pennant';
   const commonMenuItems = (
@@ -59,7 +59,7 @@ export const ChartMenu = () => {
       onClick={() => {
         setChartlib(isPennant ? 'tradingview' : 'pennant');
       }}
-      size="extra-small"
+      size="xs"
       testId="chartlib-toggle-button"
     >
       {isPennant ? 'TradingView' : t('Vega chart')}

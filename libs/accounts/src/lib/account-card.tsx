@@ -51,13 +51,7 @@ const Button = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ onClick, label, icon, ...props }, ref) => (
-  <TradingButton
-    size="custom"
-    className="p-[6px]"
-    onClick={onClick}
-    {...props}
-    ref={ref}
-  >
+  <TradingButton onClick={onClick} {...props} ref={ref}>
     <div className="flex flex-col items-center p">
       <VegaIcon name={icon} size={16} className="mb-1" />
       <span className="text-xs">{label}</span>

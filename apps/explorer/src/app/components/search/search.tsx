@@ -1,6 +1,11 @@
 import { useCallback } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingButton as Button,
+  Input,
+  InputError,
+  Intent,
+} from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/route-names';
@@ -200,7 +205,7 @@ export const SearchForm = () => {
           </div>
         )}
         <Button
-          variant="primary"
+          intent={Intent.Primary}
           type="submit"
           size="xs"
           data-testid="search-button"

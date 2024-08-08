@@ -35,7 +35,7 @@ export const OpenOrdersMenu = ({ marketId }: { marketId: string }) => {
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => {
   const t = useT();
   return (
-    <TradingButton size="extra-small" onClick={onClick} data-testid="cancelAll">
+    <TradingButton size="xs" onClick={onClick} data-testid="cancelAll">
       {t('Cancel all')}
     </TradingButton>
   );

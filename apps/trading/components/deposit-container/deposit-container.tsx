@@ -204,7 +204,7 @@ const DepositForm = ({
                         if (show) show();
                       }}
                       intent={Intent.Info}
-                      size="small"
+                      size="sm"
                     >
                       {t('Connect')}
                     </TradingButton>
@@ -344,7 +344,7 @@ const DepositForm = ({
       )}
       <TradingButton
         type="submit"
-        size="large"
+        size="lg"
         fill={true}
         intent={Intent.Secondary}
       >

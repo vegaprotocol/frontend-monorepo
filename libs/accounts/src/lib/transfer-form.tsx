@@ -465,7 +465,7 @@ export const TransferForm = ({
         fill={true}
         disabled={isReadOnly}
         intent={Intent.Secondary}
-        size="large"
+        size="lg"
       >
         {t('Transfer')}
       </TradingButton>

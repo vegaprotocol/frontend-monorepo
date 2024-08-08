@@ -456,7 +456,7 @@ export const RewardPot = ({
                       );
                       create({ transfer });
                     }}
-                    size="small"
+                    size="sm"
                     data-testid="redeem-rewards-button"
                   >
                     {t('Redeem rewards')}

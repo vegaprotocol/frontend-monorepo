@@ -329,7 +329,7 @@ export const RewardHistoryTable = ({
         <div className="flex gap-0.5">
           <TradingButton
             onClick={() => setIsParty(false)}
-            size="extra-small"
+            size="xs"
             minimal={isParty}
             data-testid="total-distributed-button"
           >
@@ -337,7 +337,7 @@ export const RewardHistoryTable = ({
           </TradingButton>
           <TradingButton
             onClick={() => setIsParty(true)}
-            size="extra-small"
+            size="xs"
             disabled={!pubKey}
             minimal={!isParty}
             data-testid="earned-by-me-button"
