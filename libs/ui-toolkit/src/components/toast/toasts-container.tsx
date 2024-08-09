@@ -1,5 +1,5 @@
 import { usePrevious } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 import { Button } from '../button';
@@ -52,7 +52,7 @@ export const ToastsContainer = ({
   return (
     <Portal
       ref={ref as Ref<HTMLDivElement>}
-      className={classNames(
+      className={cn(
         'group absolute z-30 pointer-events-auto',
         { 'bottom-0 right-0': position === ToastPosition.BottomRight },
         { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
@@ -74,7 +74,7 @@ export const ToastsContainer = ({
       )}
     >
       <ul
-        className={classNames('relative mt-[38px]', 'flex flex-col gap-[8px]', {
+        className={cn('relative mt-[38px]', 'flex flex-col gap-[8px]', {
           'flex-col-reverse': order === 'desc',
         })}
       >
@@ -93,7 +93,7 @@ export const ToastsContainer = ({
               );
             })}
         <div
-          className={classNames(
+          className={cn(
             'absolute right-0 top-[-38px] z-20 w-full',
             'transition-opacity',
             'sm:opacity-0 sm:hover:!opacity-100 sm:group-hover:opacity-50',

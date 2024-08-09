@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { RouteTitle } from '../route-title';
@@ -36,7 +36,7 @@ export const PageTitle = ({
       className="flex flex-col md:flex-row gap-1 justify-between content-start mb-8"
       data-testid="page-title"
     >
-      <RouteTitle className={classNames('mb-1', className)} {...props}>
+      <RouteTitle className={cn('mb-1', className)} {...props}>
         {title}
       </RouteTitle>
       {actions && <PageActions>{actions}</PageActions>}

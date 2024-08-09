@@ -14,7 +14,7 @@ import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 
 interface Web3ConnectDialogProps {
@@ -76,14 +76,9 @@ const ConnectButton = ({
   const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   return (
     <button
-      className={classNames(
-        'flex items-center gap-2 p-2 rounded ',
-        'hover:bg-gs-100',
-        {
-          '!bg-vega-yellow text-black hover:active:!bg-vega-yellow':
-            isActivating,
-        }
-      )}
+      className={cn('flex items-center gap-2 p-2 rounded ', 'hover:bg-gs-100', {
+        '!bg-vega-yellow text-black hover:active:!bg-vega-yellow': isActivating,
+      })}
       data-testid={`web3-connector-${info.name}`}
       title={info.alt}
       onClick={async () => {

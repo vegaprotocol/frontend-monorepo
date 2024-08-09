@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/environment';
 import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useMatch } from 'react-router-dom';
 
 export const NodeHealthContainer = ({
@@ -51,7 +51,7 @@ export const NodeHealthContainer = ({
       alignOffset={0}
     >
       <button
-        className={classNames('flex justify-center items-center gap-2', {
+        className={cn('flex justify-center items-center gap-2', {
           'h-4 p-1 rounded hover:bg-gs-200 text-xs': variant === 'normal',
           'flex w-4 h-4 p-1 bg-gs-500  rounded': variant === 'compact',
         })}

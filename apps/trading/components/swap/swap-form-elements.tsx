@@ -15,7 +15,7 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export const AssetInput = ({
   label,
@@ -151,7 +151,7 @@ export const PriceImpactInput = ({
               intent={Intent.None}
               disabled={disabled}
               size="sm"
-              className={classNames('mr-2', {
+              className={cn('mr-2', {
                 ' bg-gs-700': val === value,
               })}
               key={val}

@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import type { To } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
@@ -24,15 +24,13 @@ export const NavButton = ({ icon, text, to }: NavButtonProperties) => {
 
         return (
           <div className="h-full grid gap-0 grid-rows-[1fr_auto_auto]">
-            <div className={classnames('grid items-center mt-5', textColor)}>
+            <div className={cn('grid items-center mt-5', textColor)}>
               {icon}
             </div>
-            <span className={classnames('mt-2 text-xs', textColor)}>
-              {text}
-            </span>
+            <span className={cn('mt-2 text-xs', textColor)}>{text}</span>
             <div
               data-testid={locators.linkActive}
-              className={classnames('h-1 w-full mt-2', {
+              className={cn('h-1 w-full mt-2', {
                 'bg-vega-yellow': isActive,
               })}
             />

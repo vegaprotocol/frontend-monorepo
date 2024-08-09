@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useOracleStatuses } from '../../hooks';
 import type { IconName } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getLinkIcon, useVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import ReactMarkdown from 'react-markdown';
@@ -34,7 +34,7 @@ export const OracleProfileTitle = ({
     <span className="w-full flex gap-1 items-center justify-between pr-6">
       <span className="flex gap-1 items-center">
         <span
-          className={classNames(
+          className={cn(
             {
               'text-gs-50': intent === Intent.None,
               'text-vega-blue': intent === Intent.Primary,

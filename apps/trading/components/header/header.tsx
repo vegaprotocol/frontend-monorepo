@@ -1,5 +1,5 @@
 import { TinyScroll, Tooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface TradeMarketHeaderProps {
@@ -40,7 +40,7 @@ export const HeaderStat = ({
   return (
     <div
       {...props}
-      className={classNames(
+      className={cn(
         'text-muted',
         'min-w-min last:pr-0 whitespace-nowrap',
         props.className

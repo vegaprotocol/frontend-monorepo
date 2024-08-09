@@ -1,6 +1,6 @@
 import type { ThHTMLAttributes } from 'react';
 import React from 'react';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 interface TableProps {
   allowWrap?: boolean;
@@ -34,7 +34,7 @@ export const Table = ({
 }: TableProps) => {
   const classes = allowWrap
     ? className
-    : classnames(className, 'overflow-x-auto whitespace-nowrap');
+    : cn(className, 'overflow-x-auto whitespace-nowrap');
   return (
     <div className={classes}>
       <table className="w-full" {...props}>
@@ -52,7 +52,7 @@ export const TableWithTbody = ({
 }: TableProps) => {
   const classes = allowWrap
     ? className
-    : classnames(className, 'overflow-x-auto whitespace-nowrap');
+    : cn(className, 'overflow-x-auto whitespace-nowrap');
   return (
     <div className={classes}>
       <table className="w-full" {...props}>
@@ -67,7 +67,7 @@ export const TableHeader = ({
   className,
   ...props
 }: TableHeaderProps) => {
-  const cellClasses = classnames(className, {
+  const cellClasses = cn(className, {
     'text-left font-normal': props?.scope === 'row',
   });
   return (
@@ -83,7 +83,7 @@ export const TableRow = ({
   modifier,
   ...props
 }: TableRowProps) => {
-  const cellClasses = classnames(className, {
+  const cellClasses = cn(className, {
     'border-b border-gs-600': modifier === 'bordered',
     'border-b-2 bg-gs-500 border-gs-900': modifier === 'background',
   });
@@ -100,7 +100,7 @@ export const TableCell = ({
   modifier,
   ...props
 }: TableCellProps) => {
-  const cellClasses = classnames(className, {
+  const cellClasses = cn(className, {
     'py-1': modifier === 'bordered',
   });
   return (

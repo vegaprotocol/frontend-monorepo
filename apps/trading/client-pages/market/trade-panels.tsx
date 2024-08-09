@@ -2,7 +2,7 @@ import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   Popover,
   Splash,
@@ -181,12 +181,9 @@ const ViewButton = ({
   onClick: () => void;
 }) => {
   const label = useViewLabel(view);
-  const className = classNames(
-    'py-2 px-4 capitalize text-sm whitespace-nowrap',
-    {
-      'bg-gs-500 ': isActive,
-    }
-  );
+  const className = cn('py-2 px-4 capitalize text-sm whitespace-nowrap', {
+    'bg-gs-500 ': isActive,
+  });
 
   return (
     <button data-testid={view} onClick={onClick} className={className}>

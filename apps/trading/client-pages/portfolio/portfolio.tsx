@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
@@ -130,7 +130,7 @@ const PortfolioAssets = () => {
       <div className="flex justify-between bg-gs-700 ">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
-          className={classNames('transition-all w-1/3 p-1 relative', {
+          className={cn('transition-all w-1/3 p-1 relative', {
             '!w-1/2': searchTerm?.length > 10,
           })}
         >

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import * as RootSwitch from '@radix-ui/react-switch';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export interface SwitchProps {
   name?: string;
@@ -16,14 +16,14 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
     { name = 'switch', labelText, onCheckedChange, checked = false, disabled },
     ref
   ) => {
-    const wrapperClasses = classNames(
+    const wrapperClasses = cn(
       'rounded-full relative outline-none cursor-default',
       'w-[41px] h-[18px]',
       'bg-gs-500 ',
       'data-[state=checked]:bg-gs-300'
     );
 
-    const thumbClasses = classNames(
+    const thumbClasses = cn(
       'cursor-pointer',
       'block w-[18px] h-[18px]',
       'bg-gs-50',

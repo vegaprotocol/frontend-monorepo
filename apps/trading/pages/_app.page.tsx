@@ -17,7 +17,7 @@ import { HashRouter, useLocation } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
 import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeInProgressNotification,
@@ -57,7 +57,7 @@ const Title = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
-  const gridClasses = classNames(
+  const gridClasses = cn(
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 export function getNavLinkClassNames(
@@ -17,7 +17,7 @@ export const getActiveNavLinkClassNames = (
   fullWidth = false,
   subNav = false
 ): string | undefined => {
-  return classNames('mx-2 lg:mx-3 self-start relative', {
+  return cn('mx-2 lg:mx-3 self-start relative', {
     'my-4 md:my-0 md:py-3': !subNav,
     'py-2 px-4': subNav,
     'cursor-default': isActive,
@@ -48,7 +48,7 @@ export const Nav = ({
   titleContent,
   title,
 }: NavbarProps) => {
-  const themeWrapperClasses = classNames(
+  const themeWrapperClasses = cn(
     'w-full overflow-y-hidden overflow-x-auto md:overflow-x-hidden font-alpha lg:text-lg',
     {
       dark: navbarTheme === 'dark',
@@ -56,7 +56,7 @@ export const Nav = ({
   );
 
   const isYellow = navbarTheme === 'yellow';
-  const navbarClasses = classNames(
+  const navbarClasses = cn(
     'min-w-max w-full flex items-stretch border-b px-4',
     {
       'dark:bg-black dark:text-white border-default': !isYellow,
@@ -71,7 +71,7 @@ export const Nav = ({
         <div className="flex gap-4 items-center">
           {icon}
           <h1
-            className={classNames(
+            className={cn(
               'h-full flex flex-col my-0 justify-center font-alpha calt uppercase',
               { 'text-black': isYellow, 'text-white': !isYellow }
             )}

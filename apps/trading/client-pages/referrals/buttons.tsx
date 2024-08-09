@@ -1,10 +1,10 @@
 import { Intent, Button } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ComponentProps, ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
-const RAINBOW_TAB_STYLE = classNames(
+const RAINBOW_TAB_STYLE = cn(
   'inline-block',
   'bg-gs-500 ',
   'hover:bg-gs-400 ',
@@ -16,14 +16,14 @@ const RAINBOW_TAB_STYLE = classNames(
   'first:rounded-tl-lg last:rounded-tr-lg'
 );
 
-const DISABLED_RAINBOW_TAB_STYLE = classNames(
+const DISABLED_RAINBOW_TAB_STYLE = cn(
   'pointer-events-none',
   'text-gs-100 ',
   'data-[state="active"]:text-white',
   '[&.active]:text-white'
 );
 
-const TAB_STYLE = classNames(
+const TAB_STYLE = cn(
   'inline-block',
   'bg-transparent',
   'text-gs-200 ',
@@ -35,7 +35,7 @@ const TAB_STYLE = classNames(
   'mx-4 px-0 py-3',
   'uppercase'
 );
-const DISABLED_TAB_STYLE = classNames('pointer-events-none');
+const DISABLED_TAB_STYLE = cn('pointer-events-none');
 
 export const RainbowTabButton = forwardRef<
   HTMLButtonElement,
@@ -43,7 +43,7 @@ export const RainbowTabButton = forwardRef<
 >(({ children, className, disabled = false, ...props }, ref) => (
   <button
     ref={ref}
-    className={classNames(
+    className={cn(
       RAINBOW_TAB_STYLE,
       { 'pointer-events-none': disabled },
       className
@@ -64,7 +64,7 @@ export const RainbowTabLink = ({
 }: { disabled?: boolean } & ComponentProps<typeof NavLink>) => (
   <NavLink
     to={to}
-    className={classNames(
+    className={cn(
       RAINBOW_TAB_STYLE,
       disabled && DISABLED_RAINBOW_TAB_STYLE,
       typeof className === 'string' ? className : undefined
@@ -84,7 +84,7 @@ export const TabLink = ({
 }: { disabled?: boolean } & ComponentProps<typeof NavLink>) => (
   <NavLink
     to={to}
-    className={classNames(
+    className={cn(
       TAB_STYLE,
       disabled && DISABLED_TAB_STYLE,
       typeof className === 'string' ? className : undefined
@@ -95,7 +95,7 @@ export const TabLink = ({
   </NavLink>
 );
 
-export const Button = forwardRef<
+export const ReferralButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<typeof Button>
 >(({ children, intent, type, ...props }, ref) => {
@@ -110,4 +110,4 @@ export const Button = forwardRef<
     </Button>
   );
 });
-Button.displayName = 'Button';
+ReferralButton.displayName = 'Button';

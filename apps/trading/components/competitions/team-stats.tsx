@@ -14,7 +14,7 @@ import {
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
 import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { type TeamGame } from '../../lib/hooks/use-games';
 
 export const TeamStats = ({
@@ -136,7 +136,7 @@ export const FavoriteGame = ({
   return (
     <dl className="flex flex-col gap-1">
       <dt
-        className={classNames('text-muted text-sm', {
+        className={cn('text-muted text-sm', {
           hidden: noLabel,
         })}
       >
@@ -186,10 +186,10 @@ export const Stat = ({
   label: ReactNode;
   tooltip?: string;
   valueTestId?: string;
-  className?: classNames.Argument;
+  className?: string;
 }) => {
   return (
-    <div className={classNames(className)}>
+    <div className={cn(className)}>
       <dd className="text-3xl lg:text-4xl" data-testid={valueTestId}>
         {value}
       </dd>

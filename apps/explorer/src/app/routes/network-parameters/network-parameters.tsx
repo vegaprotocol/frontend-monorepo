@@ -1,5 +1,5 @@
 import startCase from 'lodash/startCase';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Link } from 'react-router-dom';
 import {
   AsyncRenderer,
@@ -87,7 +87,7 @@ export const renderGroupedParams = (
   parentKeys: string[] = []
 ) => {
   const Header = `h${level}` as keyof JSX.IntrinsicElements;
-  const headerStyles = classNames('uppercase font-semibold', {
+  const headerStyles = cn('uppercase font-semibold', {
     'pt-6 text-3xl underline': level === 1,
     'pt-3 text-2xl': level === 2,
     'pt-2 text-lg': level === 3,

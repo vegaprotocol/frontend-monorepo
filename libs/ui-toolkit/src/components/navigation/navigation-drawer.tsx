@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { type CSSProperties, type HTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { createContext } from 'react';
@@ -25,7 +25,7 @@ export const BurgerIcon = ({
   className,
 }: { variant?: 'burger' | 'close' } & HTMLAttributes<SVGAElement>) => (
   <svg
-    className={classNames('stroke-[1px] transition-transform', className)}
+    className={cn('stroke-[1px] transition-transform', className)}
     width="16"
     height="16"
     viewBox="0 0 16 16"
@@ -35,7 +35,7 @@ export const BurgerIcon = ({
       x2={15.5}
       y1={3.5}
       y2={3.5}
-      className={classNames('transition-transform duration-75', {
+      className={cn('transition-transform duration-75', {
         'origin-[8px_3.5px] translate-y-[4px] rotate-45': variant === 'close',
       })}
     />
@@ -44,7 +44,7 @@ export const BurgerIcon = ({
       x2={15.5}
       y1={11.5}
       y2={11.5}
-      className={classNames('transition-transform duration-75', {
+      className={cn('transition-transform duration-75', {
         'origin-[8px_11.5px] translate-y-[-4px] rotate-[-45deg]':
           variant === 'close',
       })}
@@ -65,7 +65,7 @@ export const NavigationDrawerTrigger = forwardRef<
     <button
       data-testid="button-menu-drawer"
       ref={ref}
-      className={classNames(
+      className={cn(
         'px-2',
         `hidden group-[.nav-size-narrow]:block group-[.nav-size-small]:block`,
         {
@@ -91,7 +91,7 @@ export const NavigationDrawerContent = ({
   return (
     <NavigationDrawerContext.Provider value={true}>
       <div
-        className={classNames(
+        className={cn(
           'drawer-content',
           'relative h-full overflow-auto border-l',
           'font-alpha px-4 pb-8',

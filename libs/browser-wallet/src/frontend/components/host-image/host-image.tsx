@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useState } from 'react';
 import { parse } from 'tldts';
 
@@ -49,7 +49,7 @@ const FallbackImage = ({ hostname, size }: HostImageProperties) => {
   return (
     <div
       data-testid={locators.hostImageFallback}
-      className={classnames(
+      className={cn(
         COLORS_MAP[colorIndex].textColor,
         COLORS_MAP[colorIndex].backgroundColor,
         'flex justify-center items-center rounded-md text-lg uppercase overflow-hidden'

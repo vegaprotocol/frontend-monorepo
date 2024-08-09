@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
@@ -22,7 +22,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
       <button
         data-testid="place-order"
         type="submit"
-        className={classNames(
+        className={cn(
           'w-full h-12 flex flex-col justify-center items-center rounded-lg text-white p-2 transition-colors',
           {
             'bg-vega-red-500 enabled:hover:bg-vega-red-550 dark:bg-vega-red-600 dark:enabled:hover:bg-vega-red-650':

@@ -43,7 +43,7 @@ import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useLatestTrade } from '@vegaprotocol/trades';
 
@@ -100,12 +100,12 @@ const MarginChart = ({
   className,
 }: MarginChartProps) => {
   return (
-    <div className={classnames('relative min-w-[208px]', className)}>
+    <div className={cn('relative min-w-[208px]', className)}>
       {markerLabel ? (
         <div className="mb-1 whitespace-nowrap">{markerLabel}</div>
       ) : null}
       <div
-        className={classnames('flex relative h-2', {
+        className={cn('flex relative h-2', {
           'bg-gs-800': other,
         })}
       >
@@ -124,7 +124,7 @@ const MarginChart = ({
         ) : null}
       </div>
       <div className="flex flex-wrap justify-between whitespace-nowrap">
-        <div className={classnames({ 'mr-1': other })}>{label}</div>
+        <div className={cn({ 'mr-1': other })}>{label}</div>
         {other ? <div className="text-right">{other}</div> : null}
       </div>
     </div>
@@ -171,7 +171,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
                 })
               : undefined
           }
-          className={classnames({ 'mb-2': hasOrderMarginAccountBalance })}
+          className={cn({ 'mb-2': hasOrderMarginAccountBalance })}
           marker={
             data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
           }

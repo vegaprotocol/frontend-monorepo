@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { HTMLAttributes } from 'react';
 
 export const Dude = ({ className }: HTMLAttributes<SVGElement>) => {
@@ -61,7 +61,7 @@ export const AnimatedDudeWithWire = ({ className }: { className?: string }) => (
   <div className="relative">
     <Wire className="absolute top-[25px]" />
     <Dude
-      className={classNames(
+      className={cn(
         'absolute left-[96px] animate-[wave_20s_ease-in-out_infinite]',
         className
       )}

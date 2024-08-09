@@ -6,7 +6,7 @@ import type {
   SliderRangeProps,
   SliderThumbProps,
 } from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export const SliderRoot = ({
   children,
@@ -15,7 +15,7 @@ export const SliderRoot = ({
   ...props
 }: SliderProps) => {
   const defaultStyles = 'relative flex items-center select-none touch-none';
-  const classes = classNames(
+  const classes = cn(
     defaultStyles,
     {
       'h-[20px] w-full': orientation === 'horizontal',
@@ -42,10 +42,7 @@ export const SliderTrack = ({
 }: SliderTrackProps) => {
   const defaultStyles = 'bg-gs-700  relative grow h-[4px]';
   return (
-    <SliderPrimitive.Track
-      className={classNames(defaultStyles, className)}
-      {...props}
-    >
+    <SliderPrimitive.Track className={cn(defaultStyles, className)} {...props}>
       {children}
     </SliderPrimitive.Track>
   );
@@ -55,7 +52,7 @@ export const SliderRange = ({ className, ...props }: SliderRangeProps) => {
   const defaultStyles = 'absolute bg-gs-100  h-full';
   return (
     <SliderPrimitive.Range
-      className={classNames(defaultStyles, className)}
+      className={cn(defaultStyles, className)}
       {...props}
     />
   );
@@ -73,7 +70,7 @@ export const SliderThumb = ({
     'block w-[18px] h-[18px] border-[2px] rounded-full border-white  bg-gs-50 focus-visible:outline-0';
   return (
     <SliderPrimitive.Thumb
-      className={classNames(defaultStyles, className, {
+      className={cn(defaultStyles, className, {
         [tooltipClasses]: tooltip,
       })}
       {...props}

@@ -1,7 +1,7 @@
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ColDef } from 'ag-grid-community';
 import { useT } from '../use-t';
 
@@ -27,7 +27,7 @@ export const AgGridThemed = ({
   const t = useT();
   const { theme } = useThemeSwitcher();
 
-  const wrapperClasses = classNames('vega-ag-grid', 'w-full h-full', {
+  const wrapperClasses = cn('vega-ag-grid', 'w-full h-full', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
   });

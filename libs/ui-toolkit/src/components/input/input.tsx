@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { forwardRef } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import { defaultFormElement } from '../../utils/shared';
@@ -82,13 +82,10 @@ const getAffixElement = ({
 }: Pick<InputProps, keyof AffixProps>) => {
   const position = prependIconName || prependElement ? 'pre' : 'post';
 
-  const className = classNames(
-    ['fill-black dark:fill-white', 'absolute', 'z-10'],
-    {
-      'left-3': position === 'pre',
-      'right-3': position === 'post',
-    }
-  );
+  const className = cn(['fill-black dark:fill-white', 'absolute', 'z-10'], {
+    'left-3': position === 'pre',
+    'right-3': position === 'post',
+  });
 
   const element = prependElement || appendElement;
   const iconName = prependIconName || appendIconName;
@@ -130,7 +127,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    const inputClassName = classNames(
+    const inputClassName = cn(
       'appearance-none dark:color-scheme-dark',
       className,
       {
@@ -143,7 +140,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         {...props}
         ref={ref}
-        className={classNames(defaultFormElement(hasError), inputClassName)}
+        className={cn(defaultFormElement(hasError), inputClassName)}
       />
     );
 

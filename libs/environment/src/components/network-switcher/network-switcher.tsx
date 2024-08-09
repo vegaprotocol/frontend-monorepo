@@ -12,7 +12,7 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../use-t';
 
 export const useEnvNameMapping: () => Record<Networks, string> = () => {
@@ -127,7 +127,7 @@ export const NetworkSwitcher = ({
       trigger={
         <DropdownMenuTrigger
           data-testid="network-switcher"
-          className={classNames(
+          className={cn(
             'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-100 whitespace-nowrap',
             className
           )}

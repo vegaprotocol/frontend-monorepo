@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 export type ProposalInfoLabelVariant =
@@ -14,7 +14,7 @@ const tertiary = 'bg-gs-500 text-gs-50';
 const highlight = 'bg-vega-yellow text-black';
 
 const getClassname = (variant: ProposalInfoLabelVariant) => {
-  return classNames(base, {
+  return cn(base, {
     [primary]: variant === 'primary',
     [secondary]: variant === 'secondary',
     [tertiary]: variant === 'tertiary',

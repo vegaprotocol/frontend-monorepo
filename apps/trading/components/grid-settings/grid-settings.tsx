@@ -16,7 +16,7 @@ export const GridSettings = ({
           filterModel: undefined,
         })
       }
-      size="extra-small"
+      size="xs"
     >
       {t('Reset Columns')}
     </Button>

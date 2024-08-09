@@ -18,7 +18,7 @@ import { ProductSelector } from './product-selector';
 import { AssetDropdown } from './asset-dropdown';
 import { SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import flatten from 'lodash/flatten';
 import {
@@ -217,7 +217,7 @@ const MarketList = ({
   return (
     <TinyScroll>
       <div
-        className={classNames(
+        className={cn(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
           'bg-gs-700 ',
           'p-2 mx-2 border-b border-default text-xs text-secondary'

@@ -17,7 +17,7 @@ import {
   toQUSD,
   unitiseEther,
 } from '@vegaprotocol/utils';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 interface WithdrawLimitsProps {
   amount: string;
@@ -186,7 +186,7 @@ const GasPrice = ({
     }
 
     return (
-      <div className={classNames('flex flex-col items-end self-end')}>
+      <div className={cn('flex flex-col items-end self-end')}>
         <Tooltip description={t('The current gas price range')}>
           <span>
             {/* base price per gas unit */}
@@ -198,7 +198,7 @@ const GasPrice = ({
           description={
             <div className="flex flex-col gap-1">
               {isExpensive && (
-                <span className={classNames(expensiveClassNames)}>
+                <span className={cn(expensiveClassNames)}>
                   {t(
                     "It seems that the current gas prices are exceeding the amount you're trying to withdraw"
                   )}{' '}
@@ -219,9 +219,7 @@ const GasPrice = ({
             </div>
           }
         >
-          <span className={classNames(expensiveClassNames, 'text-xs')}>
-            {range}
-          </span>
+          <span className={cn(expensiveClassNames, 'text-xs')}>{range}</span>
         </Tooltip>
 
         <span className="text-muted text-xs">

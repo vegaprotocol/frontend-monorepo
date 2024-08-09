@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   forwardRef,
   type AnchorHTMLAttributes,
@@ -20,7 +20,7 @@ const getClassName = (
   { size, intent, fill }: Pick<ButtonProps, 'size' | 'intent' | 'fill'>,
   className?: string
 ) =>
-  classNames(
+  cn(
     'inline-flex gap-2 items-center justify-center border disabled:opacity-40',
     // size
     {
@@ -106,6 +106,6 @@ export const ButtonLink = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement>
 >(({ type = 'button', className, ...props }, ref) => {
-  const style = classNames('inline underline underline-offset-4', className);
+  const style = cn('inline underline underline-offset-4', className);
   return <button ref={ref} className={style} type={type} {...props} />;
 });

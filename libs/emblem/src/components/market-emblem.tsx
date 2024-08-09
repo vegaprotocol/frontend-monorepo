@@ -3,7 +3,7 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 import { t } from 'i18next';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
@@ -43,7 +43,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         'relative flex items-center h-8 w-14 leading-[0] shrink-0',
         {
           'w-14': size === 30,
@@ -63,7 +63,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           src={baseChain}
           size={12}
           alt={t('Chain logo')}
-          className={classNames(`z-20 align-text-top absolute left-4`, {
+          className={cn(`z-20 align-text-top absolute left-4`, {
             'bottom-0': size === 30,
             'bottom-1': size === 26,
           })}
@@ -81,7 +81,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           src={quoteChain || settlementChain}
           size={12}
           alt={t('Chain logo')}
-          className={classNames(`align-text-top absolute`, {
+          className={cn(`align-text-top absolute`, {
             'bottom-0 right-0': size === 30,
             'bottom-1 right-2': size === 26,
           })}

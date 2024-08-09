@@ -8,7 +8,7 @@ import { BigNumber } from '../../../../lib/bignumber';
 import { SubHeading } from '../../../../components/heading';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 interface ProposalTermsProps {
   data: Record<string, unknown>;
@@ -118,7 +118,7 @@ const ProposalTermsRenderer = ({ data }: ProposalTermsProps) => {
 export const ProposalTerms = ({ data }: ProposalTermsProps) => {
   const { t } = useTranslation();
   const [showTerms, setShowTerms] = useState(false);
-  const showTermsIconClasses = classnames('mb-4', {
+  const showTermsIconClasses = cn('mb-4', {
     'rotate-180': showTerms,
   });
 

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import { useOnboardingStore } from '../../stores/onboarding';
@@ -14,7 +14,7 @@ export const DepositGetStarted = () => {
   const onboardingDismissed = useOnboardingStore((store) => store.dismissed);
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const step = useGetOnboardingStep();
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'flex flex-col py-4 px-6 gap-4 rounded',
     'bg-vega-blue-300 dark:bg-vega-blue-700',
     'border border-vega-blue-350 dark:border-vega-blue-650'

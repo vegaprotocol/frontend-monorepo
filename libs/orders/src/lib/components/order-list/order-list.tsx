@@ -9,7 +9,7 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
-  AnchorButton,
+  ButtonLink,
   TradingDropdownCopyItem,
   TradingDropdownItem,
   VegaIcon,
@@ -299,21 +299,21 @@ export const OrderListTable = memo<
                   {isOrderAmendable(data) && !props.isReadOnly && (
                     <>
                       {!data.icebergOrder && (
-                        <AnchorButton
+                        <ButtonLink
                           data-testid="edit"
                           onClick={() => onEdit(data)}
                           title={t('Edit order')}
                         >
                           <VegaIcon name={VegaIconNames.EDIT} size={16} />
-                        </AnchorButton>
+                        </ButtonLink>
                       )}
-                      <AnchorButton
+                      <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
                         title={t('Cancel order')}
                       >
                         <VegaIcon name={VegaIconNames.CROSS} size={16} />
-                      </AnchorButton>
+                      </ButtonLink>
                     </>
                   )}
                   <ActionsDropdown data-testid="order-actions-content">

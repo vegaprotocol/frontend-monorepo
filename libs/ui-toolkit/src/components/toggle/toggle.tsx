@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ChangeEvent } from 'react';
 
 // Supports controlled and uncontrolled setups.
@@ -28,12 +28,9 @@ export const Toggle = ({
   ...props
 }: ToggleProps) => {
   const fieldsetClasses = 'flex rounded-full bg-gs-600 text-sm';
-  const labelClasses = classnames(
-    'group flex-1',
-    '-ml-[1px] first-of-type:ml-0'
-  );
-  const radioClasses = classnames('sr-only', 'peer');
-  const buttonClasses = classnames(
+  const labelClasses = cn('group flex-1', '-ml-[1px] first-of-type:ml-0');
+  const radioClasses = cn('sr-only', 'peer');
+  const buttonClasses = cn(
     'relative inline-flex w-full h-full text-center items-center justify-center',
     'peer-checked:rounded-full',
     {

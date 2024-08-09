@@ -2,7 +2,7 @@ import styles from './toast.module.css';
 
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   forwardRef,
   useCallback,
@@ -63,7 +63,7 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         data-panel
         ref={ref}
         data-testid="toast-panel"
-        className={classNames(
+        className={cn(
           'mt-[10px] rounded p-2',
           'font-mono text-[12px] font-normal leading-[16px]',
           '[&>h4]:font-bold',
@@ -92,7 +92,7 @@ export const CollapsiblePanel = forwardRef<
       data-panel
       ref={ref}
       data-test
-      className={classNames(
+      className={cn(
         'relative',
         'mt-[10px] rounded p-2',
         'font-mono text-[12px] font-normal leading-[16px]',
@@ -115,7 +115,7 @@ export const CollapsiblePanel = forwardRef<
       {collapsed && (
         <div
           data-panel-curtain
-          className={classNames(
+          className={cn(
             'bg-gradient-to-b from-transparent to-inherit',
             'pointer-events-none absolute bottom-0 left-0 h-8 w-full'
           )}
@@ -123,7 +123,7 @@ export const CollapsiblePanel = forwardRef<
       )}
       <div
         data-panel-actions
-        className={classNames(
+        className={cn(
           'absolute bottom-0 right-0',
           'p-2',
           'rounded-tl',
@@ -155,11 +155,7 @@ export const ToastHeading = forwardRef<
   HTMLHeadingElement,
   HtmlHTMLAttributes<HTMLHeadingElement>
 >(({ children, className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={classNames('mb-1 text-sm uppercase', className)}
-    {...props}
-  >
+  <h3 ref={ref} className={cn('mb-1 text-sm uppercase', className)} {...props}>
     {children}
   </h3>
 ));
@@ -243,7 +239,7 @@ export const Toast = ({
           progressRef.current.style.animationPlayState = 'paused';
         }
       }}
-      className={classNames(
+      className={cn(
         'w-[320px] overflow-hidden rounded-md',
         'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
         'text-black dark:text-white',
@@ -331,7 +327,7 @@ export const Toast = ({
         </button>
         <div
           data-testid="toast-accent"
-          className={classNames(
+          className={cn(
             {
               // gray
               'bg-gs-200 text-gs-400': intent === Intent.None,
@@ -363,7 +359,7 @@ export const Toast = ({
           )}
         </div>
         <div
-          className={classNames(
+          className={cn(
             'relative',
             'flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]'
           )}
@@ -374,7 +370,7 @@ export const Toast = ({
             <div
               ref={progressRef}
               data-testid="toast-progress-bar"
-              className={classNames(
+              className={cn(
                 {
                   'bg-gs-200': intent === Intent.None,
                   'bg-vega-blue-400 dark:bg-vega-blue-600':

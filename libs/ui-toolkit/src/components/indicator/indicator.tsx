@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getIntentBackground, getIntentText, Intent } from '../../utils/intent';
 
 interface IndicatorProps {
@@ -10,7 +10,7 @@ export const Indicator = ({
   intent = Intent.None,
   size = 'md',
 }: IndicatorProps) => {
-  const names = classNames(
+  const names = cn(
     'inline-block rounded-full',
     getIntentText(intent),
     getIntentBackground(intent),

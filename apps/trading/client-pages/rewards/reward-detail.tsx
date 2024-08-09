@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { Link, useSearchParams } from 'react-router-dom';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import {
   type DispatchMetric,
@@ -168,7 +168,7 @@ export const RewardDetailContainer = (props: {
           <h2>{t('Entry conditions')}</h2>
           <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
             <div>
-              <dd className={classNames(valueClasses, 'calt')}>
+              <dd className={cn(valueClasses, 'calt')}>
                 {EntityScopeLabelMapping[entityScope]}
               </dd>
               <dt className={labelClasses}>{t('Entity scope')}</dt>
@@ -187,7 +187,7 @@ export const RewardDetailContainer = (props: {
               <dt className={labelClasses}>{t('Notional')}</dt>
             </div>
             <div>
-              <dd className={classNames(valueClasses, 'calt')}>
+              <dd className={cn(valueClasses, 'calt')}>
                 {DistributionStrategyMapping[strategy]}
               </dd>
               <dt className={labelClasses}>{t('Method')}</dt>

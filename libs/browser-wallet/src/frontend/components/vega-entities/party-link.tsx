@@ -1,5 +1,5 @@
 import { ExternalLink, truncateMiddle } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import { useNetwork } from '@/contexts/network/network-context';
 
@@ -18,7 +18,7 @@ export const PartyLink = ({
 
   return (
     <ExternalLink
-      className={classNames('text-vega-dark-400', { 'font-mono': !text })}
+      className={cn('text-vega-dark-400', { 'font-mono': !text })}
       data-testid={locators.partyLink}
       href={`${network.explorer}/parties/${publicKey}`}
     >

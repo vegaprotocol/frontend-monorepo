@@ -17,7 +17,7 @@ import {
 import type { Order } from '../order-data-provider';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../use-t';
 
 interface OrderViewDialogProps {
@@ -56,7 +56,7 @@ export const OrderViewDialog = ({
           <div data-testid={'order-side-label'}>{t('Side')}</div>
           <div
             data-testid={`order-side-value`}
-            className={classNames({
+            className={cn({
               // BUY
               'text-market-green-600 dark:text-market-green':
                 order.side === Schema.Side.SIDE_BUY,

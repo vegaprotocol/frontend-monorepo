@@ -1,6 +1,6 @@
 import { IconNames } from '@blueprintjs/icons';
 import type { IconName } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ComponentProps, ReactNode } from 'react';
 import {
   getIntentBackground,
@@ -49,20 +49,18 @@ export const Notification = ({
   return (
     <div
       data-testid={testId || 'notification'}
-      className={classNames(
+      className={cn(
         'flex items-start gap-2',
         'rounded py-2 px-3',
         getIntentBorder(intent),
         getIntentBackground(intent)
       )}
     >
-      <div
-        className={classNames('pt-px flex items-start', getIntentText(intent))}
-      >
+      <div className={cn('pt-px flex items-start', getIntentText(intent))}>
         <Icon size={4} name={getIcon(intent)} />
       </div>
       <div
-        className={classNames(
+        className={cn(
           'flex flex-col items-start overflow-hidden gap-1.5',
           'text-gs-50 font-alpha text-sm'
         )}
@@ -84,7 +82,7 @@ export const Notification = ({
             intent={intent}
             size={buttonProps.size || 'sm'}
             onClick={buttonProps.action}
-            className={classNames(buttonProps.className)}
+            className={cn(buttonProps.className)}
             data-testid={buttonProps.dataTestId}
             type="button"
             disabled={buttonProps.disabled || false}

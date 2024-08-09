@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 export interface FormGroupProps {
@@ -22,7 +22,7 @@ export const FormGroup = ({
   hideLabel = false,
   compact = false,
 }: FormGroupProps) => {
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'relative',
     {
       'mb-2': compact,
@@ -30,7 +30,7 @@ export const FormGroup = ({
     },
     className
   );
-  const labelClasses = classNames('block mb-2 text-sm', {
+  const labelClasses = cn('block mb-2 text-sm', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
   });

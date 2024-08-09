@@ -1,5 +1,5 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { VegaIconProps } from '../icon';
 import { VegaIcon, VegaIconNames } from '../icon';
 
@@ -52,7 +52,7 @@ export const AccordionItem = ({
   content,
   itemId,
 }: AccordionPanelProps) => {
-  const triggerClassNames = classNames(
+  const triggerClassNames = cn(
     'w-full py-2',
     'flex items-center justify-between gap-2 border-b border-gs-200 text-sm',
     'group'
@@ -85,7 +85,7 @@ export const AccordionChevron = ({
 }: Pick<VegaIconProps, 'size'>) => {
   return (
     <span
-      className={classNames(
+      className={cn(
         'flex transform transition ease-in-out duration-300',
         'group-data-[state=open]:rotate-180'
       )}

@@ -1,7 +1,7 @@
 import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Icon } from '../icon';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
@@ -19,7 +19,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         {...props}
-        className={classNames(
+        className={cn(
           defaultSelectElement(hasError),
           className,
           'appearance-none rounded-md'
@@ -56,7 +56,7 @@ export const RichSelect = forwardRef<
       <SelectPrimitive.Root {...props} defaultOpen={false}>
         <SelectPrimitive.Trigger
           data-testid={props['data-testid'] || 'rich-select-trigger'}
-          className={classNames(
+          className={cn(
             defaultSelectElement(hasError),
             'rounded-md pl-2 pr-11',
             'max-w-full overflow-hidden break-all'
@@ -65,14 +65,14 @@ export const RichSelect = forwardRef<
           ref={forwardedRef}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon className={classNames('absolute right-4')}>
+          <SelectPrimitive.Icon className={cn('absolute right-4')}>
             <Icon name="chevron-down" />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal container={containerRef.current}>
           <SelectPrimitive.Content
             ref={contentRef as Ref<HTMLDivElement>}
-            className={classNames(
+            className={cn(
               'relative',
               'z-20',
               'bg-gs-900',
@@ -104,7 +104,7 @@ export const Option = forwardRef<
 >(({ children, className, ...props }, forwardedRef) => (
   <SelectPrimitive.Item
     data-testid="rich-select-option"
-    className={classNames(
+    className={cn(
       'relative',
       'text-black dark:text-white',
       'cursor-pointer outline-none',

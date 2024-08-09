@@ -1,5 +1,5 @@
 import { InputError } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import zxcvbn from 'zxcvbn';
 
 const COLORS = [
@@ -36,7 +36,7 @@ export const PasswordFeedback = ({ password }: { password: string }) => {
             <div
               data-testid={locators.feedbackStrength}
               key={`password-feedback-bar-${index}`}
-              className={classNames('h-1 rounded-md', {
+              className={cn('h-1 rounded-md', {
                 'bg-vega-dark-150': passwordStrength.score < index + 1,
                 [COLORS[index]]: passwordStrength.score >= index + 1,
               })}

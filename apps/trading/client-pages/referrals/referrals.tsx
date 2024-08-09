@@ -10,7 +10,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { REFERRAL_DOCS_LINK } from './constants';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
@@ -58,7 +58,7 @@ export const Referrals = () => {
       {showNav && <Nav />}
 
       <section
-        className={classNames({
+        className={cn({
           'py-4 lg:py-8': showNav,
           'h-[300px] relative': loading || error,
         })}

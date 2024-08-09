@@ -26,7 +26,7 @@ import {
   TOKEN_VALIDATOR,
   useLinks,
 } from '@vegaprotocol/environment';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { NodeStatus, NodeStatusMapping } from '@vegaprotocol/types';
 import Hash from '../../components/links/hash';
 
@@ -56,7 +56,7 @@ const Rate = ({
     : { width: `${val.times(100).toFixed(2)}%` };
   return (
     <div
-      className={classNames(
+      className={cn(
         'overflow-hidden rounded h-[9px] flex w-full bg-gs-100',
         { 'pl-[9px]': asPoint },
         {
@@ -67,7 +67,7 @@ const Rate = ({
     >
       <div className="relative w-full">
         <div
-          className={classNames(
+          className={cn(
             'w-[9px] h-[9px] absolute top-0 right-0 transition-all rounded',
             {
               'bg-vega-green-550 dark:bg-vega-green-500': colour === 'green',
@@ -209,7 +209,7 @@ export const ValidatorsPage = () => {
                           <div>{t('Status')}</div>
                           <div className="break-all text-xs">
                             <span
-                              className={classNames('mr-1', {
+                              className={cn('mr-1', {
                                 'text-vega-green-550 dark:vega-green-500':
                                   v.status === NodeStatus.NODE_STATUS_VALIDATOR,
                                 'text-vega-pink-550 dark:vega-pink-500':

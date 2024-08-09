@@ -251,7 +251,7 @@ const DialogContent = ({
       )}
       <div className="flex justify-between gap-2">
         <Button
-          size="large"
+          size="lg"
           className="w-1/2"
           onClick={joinTeam}
           intent={Intent.Success}
@@ -260,7 +260,7 @@ const DialogContent = ({
           {t('Confirm')}
         </Button>
         <Button
-          size="large"
+          size="lg"
           className="w-1/2"
           onClick={onCancel}
           intent={Intent.Danger}

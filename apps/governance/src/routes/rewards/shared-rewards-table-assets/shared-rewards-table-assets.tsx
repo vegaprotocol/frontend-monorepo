@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import type { ReactNode } from 'react';
@@ -27,16 +27,16 @@ interface ColumnHeaderProps {
 }
 
 const headerGridItemStyles = (last = false) =>
-  classNames('border-r border-b border-default', 'py-3 px-5', {
+  cn('border-r border-b border-default', 'py-3 px-5', {
     'border-r-0': last,
   });
 
 export const rowGridItemStyles = (last = false) =>
-  classNames('relative', 'border-r border-b border-default', {
+  cn('relative', 'border-r border-b border-default', {
     'border-r-0': last,
   });
 
-const gridStyles = classNames(
+const gridStyles = cn(
   'grid grid-cols-[repeat(4,minmax(100px,auto))] max-w-full overflow-auto',
   `border-t border-default`,
   'text-sm'

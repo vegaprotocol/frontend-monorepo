@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
@@ -6,7 +6,7 @@ const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 export const Th = ({ children, ...props }: { children?: ReactNode }) => {
   return (
     <th
-      className={classNames(cellClass, 'text-secondary leading-none py-3')}
+      className={cn(cellClass, 'text-secondary leading-none py-3')}
       {...props}
     >
       {children}

@@ -20,7 +20,7 @@ import {
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
@@ -213,7 +213,7 @@ const KeypairItem = ({
           {copied && <span className="text-xs">{t('Copied')}</span>}
         </div>
         <div
-          className={classNames('flex-1 mr-2 text-secondary text-sm')}
+          className={cn('flex-1 mr-2 text-secondary text-sm')}
           data-testid={`key-${pk.publicKey}`}
         >
           {!isReadOnly && (

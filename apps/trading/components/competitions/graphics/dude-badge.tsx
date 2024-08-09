@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { DudeWithFlag } from './dude-with-flag';
 
 /**
@@ -19,11 +19,11 @@ export const DudeBadge = ({
   className,
 }: {
   variant: 'A' | 'B' | 'C' | undefined;
-  className?: classNames.Argument;
+  className?: string;
 }) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         'w-24 h-24 rounded-full bg-gs-900 relative',
         'rotate-12',
         {

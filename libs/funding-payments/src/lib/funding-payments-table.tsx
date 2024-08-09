@@ -28,7 +28,7 @@ import { forwardRef } from 'react';
 import type { FundingPayment } from './funding-payments-data-provider';
 
 import { getAsset } from '@vegaprotocol/markets';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
@@ -118,7 +118,7 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
               <Tooltip description={<span>{tooltip()}</span>}>
                 <span>
                   <span
-                    className={classNames({
+                    className={cn({
                       [positiveClassNames]: !data?.amount?.startsWith('-'),
                       [negativeClassNames]: !!data?.amount?.startsWith('-'),
                     })}

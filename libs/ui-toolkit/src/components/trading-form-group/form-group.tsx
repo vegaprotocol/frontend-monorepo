@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 export interface TradingFormGroupProps {
@@ -24,7 +24,7 @@ export const TradingFormGroup = ({
   compact = false,
   disabled = false,
 }: TradingFormGroupProps) => {
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'relative',
     {
       'mb-2': compact,
@@ -32,7 +32,7 @@ export const TradingFormGroup = ({
     },
     className
   );
-  const labelClasses = classNames('block mb-1 text-xs text-secondary', {
+  const labelClasses = cn('block mb-1 text-xs text-secondary', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
     'text-muted': disabled,

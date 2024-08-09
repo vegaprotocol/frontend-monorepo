@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 type TagProps = {
   color?:
@@ -19,7 +19,7 @@ export const Tag = ({
   ...props
 }: TagProps & HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={classNames(
+    className={cn(
       'w-max border rounded-[1rem] py-[0.125rem] px-2 text-xs',
       {
         'border-vega-yellow-550  text-vega-yellow-550 dark:border-vega-yellow-500  dark:text-vega-yellow-500':

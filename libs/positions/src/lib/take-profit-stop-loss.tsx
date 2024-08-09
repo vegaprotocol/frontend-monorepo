@@ -1,7 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import {
   Button,
-  AnchorButton,
   FormGroup,
   TradingInput as Input,
   InputError,
@@ -10,6 +9,7 @@ import {
   Pill,
   VegaIcon,
   VegaIconNames,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import {
   SizeOverrideSetting,
@@ -56,7 +56,7 @@ import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
 interface TakeProfitStopLossDialogProps {
@@ -498,7 +498,7 @@ const StopOrder = ({
           ]}
         />
       </span>
-      <AnchorButton
+      <ButtonLink
         data-testid="cancel-stop-order"
         onClick={() =>
           create({
@@ -511,7 +511,7 @@ const StopOrder = ({
         title={t('Cancel stop order')}
       >
         <VegaIcon name={VegaIconNames.CROSS} size={16} />
-      </AnchorButton>
+      </ButtonLink>
     </div>
   );
 };
@@ -536,7 +536,7 @@ const StopOrdersList = ({
   let openVolumeLeft = toBigNum(openVolume ?? '0', 0);
   return (
     <div className="mb-3" data-testid="stop-orders-list">
-      <AnchorButton
+      <ButtonLink
         data-testid="cancel-all"
         className="text-xs float-right mt-1"
         onClick={() =>
@@ -563,7 +563,7 @@ const StopOrdersList = ({
         title={t('Cancel all')}
       >
         {t('Cancel all')}
-      </AnchorButton>
+      </ButtonLink>
       <div className="clear-both">
         {stopOrders?.map((stopOrder) => {
           const element = (
@@ -675,7 +675,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-gs-100 ">{t('Position')}</dt>
         <dd
           data-testid="open-volume"
-          className={classNames(
+          className={cn(
             'text-right',
             openVolume?.openVolume &&
               signedNumberCssClass(openVolume.openVolume)

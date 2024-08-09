@@ -4,7 +4,7 @@ import {
   // VegaIcon,
   // VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-// import classNames from 'classnames';
+// import { cn } from '@vegaprotocol/utils';
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 
 // import { getExtensionApi } from '@/lib/extension-apis';
@@ -32,7 +32,7 @@ export const locators = {
 //     <Link
 //       data-testid={locators.externalLink}
 //       onClick={openInNewTab}
-//       className={classNames(
+//       className={cn(
 //         'inline-flex items-center gap-1 underline-offset-4',
 //         className
 //       )}
@@ -41,7 +41,7 @@ export const locators = {
 //       {typeof children === 'string' ? (
 //         <>
 //           <span
-//             className={classNames({ underline: typeof children === 'string' })}
+//             className={cn({ underline: typeof children === 'string' })}
 //           >
 //             {children}
 //           </span>

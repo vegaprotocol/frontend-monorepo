@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { type ReactNode } from 'react';
 
 interface HeadingProps {
@@ -18,19 +18,16 @@ export const Heading = ({
 
   return (
     <header
-      className={classNames('mb-6', {
+      className={cn('mb-6', {
         'mx-auto': centerContent,
         'mt-10': marginTop,
       })}
     >
       <h1
-        className={classNames(
-          'font-alpha calt text-5xl [word-break:break-word]',
-          {
-            'mt-0': !marginTop,
-            'mb-0': !marginBottom,
-          }
-        )}
+        className={cn('font-alpha calt text-5xl [word-break:break-word]', {
+          'mt-0': !marginTop,
+          'mb-0': !marginBottom,
+        })}
       >
         {title}
       </h1>
@@ -47,7 +44,7 @@ export const SubHeading = ({
 
   return (
     <h2
-      className={classNames('text-2xl font-alpha calt break-words', {
+      className={cn('text-2xl font-alpha calt break-words', {
         'mx-auto': centerContent,
         'mb-0': !marginBottom,
         'mb-4': marginBottom,

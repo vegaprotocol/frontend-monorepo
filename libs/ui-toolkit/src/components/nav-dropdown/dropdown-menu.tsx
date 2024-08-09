@@ -1,9 +1,9 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Icon } from '../icon';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { forwardRef } from 'react';
 
-const itemClass = classNames(
+const itemClass = cn(
   'relative flex items-center justify-between rounded-sm',
   'cursor-default hover:cursor-pointer',
   'hover:white dark:hover:white',
@@ -25,10 +25,7 @@ export const NavDropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
 >(({ className, children, ...props }, forwardedRef) => {
-  const triggerClasses = classNames(
-    className,
-    'bg-transparent whitespace-nowrap'
-  );
+  const triggerClasses = cn(className, 'bg-transparent whitespace-nowrap');
   return (
     <DropdownMenuPrimitive.Trigger
       asChild={true}
@@ -69,6 +66,6 @@ export const NavDropdownMenuItem = forwardRef<
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={cn(itemClass, className)}
   />
 ));

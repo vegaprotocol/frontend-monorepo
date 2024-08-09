@@ -14,7 +14,7 @@ import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
 import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
 import { TicketContainer } from '../ticket';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { MarginModeToggle } from '../margin-mode';
 import { useSidebar, ViewType } from '../../lib/hooks/use-sidebar';
 
@@ -77,7 +77,7 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
             <SidebarAccordionHeader>
               <AccordionPrimitive.Trigger
                 data-testid="Assets"
-                className={classNames('grid w-full', {
+                className={cn('grid w-full', {
                   'grid-cols-2': pinnedAssets.length === 2,
                   'grid-cols-1': pinnedAssets.length === 1,
                 })}

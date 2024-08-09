@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 import { useT } from '../../use-t';
 
@@ -97,7 +97,7 @@ export const OracleBasicProfile = ({
           </span>
         )}
         <span
-          className={classNames(
+          className={cn(
             {
               'text-gs-700': intent === Intent.None,
               'text-vega-blue': intent === Intent.Primary,

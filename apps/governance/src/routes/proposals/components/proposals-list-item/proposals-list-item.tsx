@@ -21,7 +21,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
         className={
           proposal.state === ProposalState.STATE_OPEN
             ? 'border border-white'
-            : null
+            : undefined
         }
       >
         <ProposalHeader proposal={proposal} voteState={voteState} />

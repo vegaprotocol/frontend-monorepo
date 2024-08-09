@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ComponentStory } from '@storybook/react';
 type Args = { type: string; alternatives: string; isAlpha: boolean };
 const sizeArr = [
@@ -18,7 +18,7 @@ const TextSample = ({ alternatives, isAlpha, type }: Args) => {
         {type}:
       </div>
       <div
-        className={classNames(
+        className={cn(
           'flex-grow flex flex-col justify-end text-left items-start',
           { 'font-alpha calt': isAlpha },
           [alternatives, type]

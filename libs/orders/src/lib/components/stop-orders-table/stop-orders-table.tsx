@@ -8,12 +8,12 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
-  AnchorButton,
   VegaIcon,
   VegaIconNames,
   TradingDropdownItem,
   TradingDropdownCopyItem,
   Pill,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { memo, useMemo } from 'react';
 import {
@@ -267,12 +267,12 @@ export const StopOrdersTable = memo(
               <div className="flex items-center justify-end gap-2">
                 {data.status === Schema.StopOrderStatus.STATUS_PENDING &&
                   !props.isReadOnly && (
-                    <AnchorButton
+                    <ButtonLink
                       data-testid="cancel"
                       onClick={() => onCancel(data)}
                     >
                       {t('Cancel')}
-                    </AnchorButton>
+                    </ButtonLink>
                   )}
                 {data.status === Schema.StopOrderStatus.STATUS_TRIGGERED &&
                   data.order && (

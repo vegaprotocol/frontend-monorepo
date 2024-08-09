@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 import Highlighter from 'react-syntax-highlighter';
 
@@ -18,7 +18,7 @@ export const SyntaxHighlighter = ({
   }, [data]);
   return (
     <div
-      className={classNames('syntax-highlighter-wrapper', {
+      className={cn('syntax-highlighter-wrapper', {
         'syntax-highlighter-wrapper-sm': size === 'smaller',
       })}
     >

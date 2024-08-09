@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/route-names';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { remove0x } from '@vegaprotocol/utils';
 import { determineType, isBlock, isHash, SearchTypes } from './detect-search';
 
@@ -61,7 +61,7 @@ export const Search = () => {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className={classNames(
+          className={cn(
             'search-dropdown',
             'p-2 min-w-[290px] z-20',
             'text-gs-300',
@@ -132,7 +132,7 @@ export const SearchForm = () => {
             {t('Search by block number or transaction hash')}
           </label>
           <button
-            className={classNames(
+            className={cn(
               'absolute top-[50%] translate-y-[-50%] left-2',
               'text-gs-300'
             )}
@@ -145,7 +145,7 @@ export const SearchForm = () => {
               setValue('search', '');
               clearErrors();
             }}
-            className={classNames(
+            className={cn(
               { hidden: searchQuery.length === 0 },
               'absolute top-[50%] translate-y-[-50%] right-2',
               'text-gs-300'
@@ -164,7 +164,7 @@ export const SearchForm = () => {
             })}
             id="search"
             data-testid="search"
-            className={classNames(
+            className={cn(
               'pl-8 py-2 text-xs',
               { 'pr-8': searchQuery.length > 1 },
               'border rounded border-gs-200 ',
@@ -183,7 +183,7 @@ export const SearchForm = () => {
         </div>
         {formState.errors.search && (
           <div
-            className={classNames(
+            className={cn(
               '[nav_&]:border [nav_&]:rounded [nav_&]:border-gs-300 [nav_&]:dark:border-gs-300',
               '[.search-dropdown_&]:border [.search-dropdown_&]:rounded [.search-dropdown_&]:border-gs-300 [.search-dropdown_&]:dark:border-gs-300',
               'bg-gs-900',

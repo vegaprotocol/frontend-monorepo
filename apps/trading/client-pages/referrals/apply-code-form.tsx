@@ -5,7 +5,7 @@ import {
   TradingDialog,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useState } from 'react';
@@ -238,7 +238,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           )}
         </p>
         <form
-          className={classNames('flex w-full flex-col gap-4', {
+          className={cn('flex w-full flex-col gap-4', {
             'animate-shake': Boolean(errors.code),
           })}
           onSubmit={handleSubmit(onSubmit)}

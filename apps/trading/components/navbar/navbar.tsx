@@ -21,7 +21,7 @@ import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
 import { Links } from '../../lib/links';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
 import { WalletIcon } from '../icons/wallet';
@@ -45,7 +45,7 @@ export const Navbar = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   const navTextClasses = 'text-gs-200 ';
-  const rootClasses = classNames(
+  const rootClasses = cn(
     navTextClasses,
     'flex gap-3 h-10 pr-1',
     'border-b border-default',
@@ -55,7 +55,7 @@ export const Navbar = () => {
     <N.Root className={rootClasses}>
       <NavLink
         to="/"
-        className={classNames(
+        className={cn(
           'flex items-center px-3',
           'bg-[image:var(--logo-bg-image)]',
           'bg-[color:var(--logo-bg-color)]'
@@ -118,7 +118,7 @@ export const Navbar = () => {
             data-testid="navbar-menu-overlay"
           />
           <D.Content
-            className={classNames(
+            className={cn(
               'lg:hidden',
               'border-default bg-gs-700  fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
               navTextClasses
@@ -270,7 +270,7 @@ const NavbarTrigger = ({
       {...props}
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
-      className={classNames(
+      className={cn(
         'w-full lg:h-full lg:w-auto',
         'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
         'text-lg lg:text-sm',
@@ -302,7 +302,7 @@ const NavbarLink = ({
       <NavLink
         to={to}
         end={end}
-        className={classNames(
+        className={cn(
           'block flex-col justify-center lg:flex lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
           'hover:text-gs-100 '
@@ -319,7 +319,7 @@ const NavbarLink = ({
           return (
             <>
               <span
-                className={classNames(
+                className={cn(
                   'inline-flex gap-1 items-center lg:border-0',
                   borderClasses,
                   {
@@ -330,7 +330,7 @@ const NavbarLink = ({
                 {children}
               </span>
               <span
-                className={classNames(
+                className={cn(
                   'absolute bottom-0 left-0 hidden h-0 w-full lg:block',
                   borderClasses
                 )}
@@ -362,7 +362,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
   return (
     <N.Content
       {...props}
-      className={classNames(
+      className={cn(
         'navbar-content group',
         'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
         'lg:bg-gs-700 lg:',
@@ -390,7 +390,7 @@ const NavbarLinkExternal = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className={classNames(
+        className={cn(
           'flex items-center gap-2 lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
           'hover:text-gs-100 '
@@ -432,7 +432,7 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       {...props}
-      className={classNames(
+      className={cn(
         'flex h-8 w-8 items-center rounded p-1 lg:hidden ',
         'hover:bg-gs-500 ',
         'hover:text-gs-50 '

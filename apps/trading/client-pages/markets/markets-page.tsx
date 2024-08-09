@@ -23,7 +23,7 @@ import { type ReactNode, useEffect } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   useNewListings,
   useTopGainers,
@@ -281,7 +281,7 @@ export const MarketTable = ({
           <button
             key="all"
             id="all"
-            className={classNames(
+            className={cn(
               'border border-default rounded-lg px-3 py-1.5 text-sm h-8',
               {
                 ' bg-gs-800':
@@ -305,7 +305,7 @@ export const MarketTable = ({
             return (
               <button
                 key={marketType}
-                className={classNames(
+                className={cn(
                   'border border-default rounded-lg px-3 py-1.5 text-sm',
                   {
                     ' bg-gs-800': isMarketTypeSelected(marketType),

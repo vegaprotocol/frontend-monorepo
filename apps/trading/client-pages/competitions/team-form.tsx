@@ -19,7 +19,7 @@ import {
   type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
 import { TxStatus, type Status } from '@vegaprotocol/wallet-react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useLayoutEffect, useState } from 'react';
 
 export type FormFields = {
@@ -300,7 +300,7 @@ const SubmitButton = ({
 
   const confirmed = (
     <span
-      className={classNames('text-sm transition-opacity opacity-0', {
+      className={cn('text-sm transition-opacity opacity-0', {
         'opacity-100': showConfirmed,
       })}
     >

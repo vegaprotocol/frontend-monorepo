@@ -1,6 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import type { SliderProps } from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { SliderThumb } from './slider';
 import BigNumber from 'bignumber.js';
 
@@ -41,7 +41,7 @@ export const PercentageSlider = ({
               return (
                 <span
                   key={left}
-                  className={classNames(
+                  className={cn(
                     'absolute translate-x-[-50%] block w-[10px] h-[10px] rounded-full',
                     {
                       'bg-gs-500 ': !lowerThanValue,

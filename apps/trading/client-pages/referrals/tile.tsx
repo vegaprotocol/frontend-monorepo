@@ -4,9 +4,9 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { HTMLAttributes, ReactNode } from 'react';
-import { Button } from './buttons';
+import { ReferralButton } from './buttons';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
 import { DApp, useLinks } from '@vegaprotocol/environment';
@@ -18,7 +18,7 @@ export const Tile = ({
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         'text-black dark:text-white',
         'overflow-hidden relative',
         'p-3 md:p-6',
@@ -79,7 +79,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   );
 };
 
-const FADE_OUT_STYLE = classNames(
+const FADE_OUT_STYLE = cn(
   'after:w-5 after:h-full after:absolute after:top-0 after:right-0',
   'after:bg-gradient-to-l after:from-gs-800 after:to-transparent'
 );
@@ -116,7 +116,7 @@ export const CodeTile = ({
           }
         >
           <div
-            className={classNames(
+            className={cn(
               'relative bg-rainbow bg-clip-text text-transparent text-2xl lg:text-5xl overflow-hidden',
               FADE_OUT_STYLE
             )}
@@ -125,10 +125,10 @@ export const CodeTile = ({
           </div>
         </Tooltip>
         <CopyWithTooltip text={code} description={t('Copy referral code')}>
-          <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
+          <ReferralButton className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
             <span className="sr-only">{t('Copy')}</span>
             <VegaIcon size={20} name={VegaIconNames.COPY} />
-          </Button>
+          </ReferralButton>
         </CopyWithTooltip>
         <CopyWithTooltip
           text={applyCodeLink}
@@ -142,10 +142,10 @@ export const CodeTile = ({
             </>
           }
         >
-          <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
+          <ReferralButton className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
             <span className="sr-only">{t('Copy')}</span>
             <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
-          </Button>
+          </ReferralButton>
         </CopyWithTooltip>
       </div>
     </StatTile>

@@ -1,11 +1,11 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import {
   ExternalLink,
   Intent,
-  TradingAnchorButton,
   Button,
   VegaIcon,
   VegaIconNames,
+  AnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
@@ -54,18 +54,18 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     );
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
     return (
-      <TradingAnchorButton
+      <AnchorButton
         {...buttonProps}
         href={Links.DEPOSIT()}
         onClick={() => setDialog('inactive')}
       >
         {t('Deposit')}
-      </TradingAnchorButton>
+      </AnchorButton>
     );
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
     const link = marketId ? Links.MARKET(marketId) : Links.HOME();
     return (
-      <TradingAnchorButton
+      <AnchorButton
         {...buttonProps}
         href={link}
         onClick={() => {
@@ -73,7 +73,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         }}
       >
         {t('Ready to trade')}
-      </TradingAnchorButton>
+      </AnchorButton>
     );
   }
 
@@ -119,7 +119,7 @@ export const GetStarted = ({ lead }: Props) => {
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'flex flex-col py-4 px-6 gap-4 rounded',
     'bg-vega-blue-300 dark:bg-vega-blue-700',
     'border border-vega-blue-350 dark:border-vega-blue-650',
@@ -208,7 +208,7 @@ const Step = ({
 }) => {
   return (
     <li
-      className={classNames('flex', {
+      className={cn('flex', {
         'text-gs-200 ': complete,
       })}
     >

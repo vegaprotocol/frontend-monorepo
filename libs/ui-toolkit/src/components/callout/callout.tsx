@@ -1,5 +1,5 @@
 import type { ReactNode, ReactElement } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getIntentBorder, Intent } from '../../utils/intent';
 import { Loader } from '../loader';
 import type { IconName } from '../icon';
@@ -57,7 +57,7 @@ const getIconElement = ({
     return (
       <Icon
         name={iconName}
-        className={classNames(wrapperClassName, 'fill-current')}
+        className={cn(wrapperClassName, 'fill-current')}
         size={6}
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
@@ -87,7 +87,7 @@ export function Callout({
     isLoading,
   });
 
-  const className = classNames(
+  const className = cn(
     'flex gap-4',
     'px-6 py-4',
     'border',

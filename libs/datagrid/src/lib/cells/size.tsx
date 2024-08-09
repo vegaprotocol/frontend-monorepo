@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export const Size = ({
@@ -17,7 +17,7 @@ export const Size = ({
   return (
     <span
       data-testid="size"
-      className={classNames('text-right', {
+      className={cn('text-right', {
         // BUY
         'text-market-green-600 dark:text-market-green':
           side === Schema.Side.SIDE_BUY && !forceTheme,

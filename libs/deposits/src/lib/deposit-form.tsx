@@ -17,7 +17,7 @@ import {
   TradingRichSelect,
   Notification,
   Intent,
-  AnchorButton,
+  ButtonLink,
   TradingSelect,
   truncateMiddle,
   Button,
@@ -559,7 +559,7 @@ const DisconnectEthereumButton = ({
   const disconnect = useWeb3Disconnect(connector);
 
   return (
-    <AnchorButton
+    <ButtonLink
       onClick={() => {
         disconnect();
         removeEagerConnector();
@@ -568,7 +568,7 @@ const DisconnectEthereumButton = ({
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </AnchorButton>
+    </ButtonLink>
   );
 };
 

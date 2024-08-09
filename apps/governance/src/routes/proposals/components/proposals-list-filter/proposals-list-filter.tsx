@@ -14,7 +14,7 @@ import {
   ProposalState,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import {
@@ -324,7 +324,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 pt != null && (
                   <li
                     key={i + 'pt'}
-                    className={classNames(
+                    className={cn(
                       'bg-gs-600 text-xs px-1 py-[2px] rounded',
                       'flex items-center gap-1'
                     )}
@@ -350,7 +350,7 @@ export const Filters = ({ count }: { count?: number }) => {
           {filter.id && filter.id.length > 0 && (
             <li
               key={'id'}
-              className={classNames(
+              className={cn(
                 'bg-vega-blue-550 text-xs px-1 py-[2px] rounded',
                 'flex items-center gap-1'
               )}
@@ -429,7 +429,7 @@ export const Filters = ({ count }: { count?: number }) => {
                       }
                     >
                       <span
-                        className={classNames({
+                        className={cn({
                           ' text-gs-100 cursor-help':
                             !filter.states.includes(ps) &&
                             !BASE_FILTER.states.includes(ps),

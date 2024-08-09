@@ -1,5 +1,5 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
 export const BORDER_COLOR = 'border-gs-500 ';
@@ -46,13 +46,13 @@ export const Table = forwardRef<
     ref
   ) => {
     const header = (
-      <thead className={classNames({ 'max-md:hidden': !noCollapse })}>
+      <thead className={cn({ 'max-md:hidden': !noCollapse })}>
         <tr>
           {columns.map(({ displayName, name, tooltip, headerClassName }) => (
             <th
               key={name}
               col-id={name}
-              className={classNames(
+              className={cn(
                 'px-5 py-3 text-xs  text-gs-100  font-normal',
                 INNER_BORDER_STYLE,
                 headerClassName
@@ -76,7 +76,7 @@ export const Table = forwardRef<
     return (
       <table
         ref={ref}
-        className={classNames(
+        className={cn(
           'w-full',
           'border-separate border rounded-md border-spacing-0 overflow-hidden',
           BORDER_COLOR,
@@ -90,7 +90,7 @@ export const Table = forwardRef<
           {data.map((dataEntry, i) => (
             <tr
               key={i}
-              className={classNames(dataEntry['className'] as string, {
+              className={cn(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
                 // collapsed (mobile) row divider
                 'first:border-t-0 max-md:border-t border-gs-500  first:mt-0 mt-1':
@@ -104,7 +104,7 @@ export const Table = forwardRef<
             >
               {columns.map(({ name, displayName, className, testId }, j) => (
                 <td
-                  className={classNames(
+                  className={cn(
                     'px-5 py-3',
                     {
                       'max-md:flex max-md:flex-col max-md:justify-between':

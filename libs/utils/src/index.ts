@@ -16,3 +16,5 @@ export * from './lib/validate';
 export * from './lib/is-test-env';
 export * from './lib/constants';
 export * from './lib/step';
+
+export { cn } from './lib/cn';

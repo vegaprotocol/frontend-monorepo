@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getDecimalSeparator, isNumeric } from '@vegaprotocol/utils';
 
 interface NumericCellProps {
@@ -31,7 +31,7 @@ export const NumericCell = forwardRef<HTMLSpanElement, NumericCellProps>(
     return (
       <span
         ref={ref}
-        className={classNames(
+        className={cn(
           'font-mono relative whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir',
           className
         )}

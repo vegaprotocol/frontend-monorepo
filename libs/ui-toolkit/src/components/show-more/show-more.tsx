@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../button';
 import type { ReactNode } from 'react';
@@ -38,14 +38,14 @@ export const ShowMore = ({
     };
   }, [closedMaxHeightPx]);
 
-  const containerClasses = classNames(
+  const containerClasses = cn(
     'overflow-hidden transition-all ease-in-out duration-300',
     {
       'max-h-none': expanded,
     }
   );
 
-  const overlayClasses = classNames(
+  const overlayClasses = cn(
     `absolute w-full h-16 bottom-0 left-0 transition-opacity duration-300 bg-gradient-to-b from-transparent ${
       overlayColourOverrides ? overlayColourOverrides : 'to-white dark:to-black'
     }`,

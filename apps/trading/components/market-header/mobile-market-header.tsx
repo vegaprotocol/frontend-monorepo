@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
@@ -59,7 +59,7 @@ export const MobileMarketHeader = () => {
             <VegaIcon
               name={VegaIconNames.CHEVRON_DOWN}
               size={16}
-              className={classNames(
+              className={cn(
                 'origin-center transition-transform ease-in-out duration-300 flex',
                 {
                   'rotate-180': openMarket,
@@ -104,7 +104,7 @@ export const MobileMarketHeader = () => {
                 <VegaIcon
                   name={VegaIconNames.CHEVRON_DOWN}
                   size={16}
-                  className={classNames(
+                  className={cn(
                     'min-w-0 transition-transform ease-in-out duration-300',
                     {
                       'rotate-180': openPrice,

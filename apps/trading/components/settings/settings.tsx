@@ -11,7 +11,7 @@ import {
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 
 export const SettingsPopover = () => {
@@ -137,11 +137,11 @@ const SettingsGroup = ({
 }) => {
   return (
     <div
-      className={classNames('gap-2', {
+      className={cn('gap-2', {
         'flex items-start justify-between gap-2': inline,
       })}
     >
-      <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
+      <div className={cn({ 'w-3/4': inline, 'mb-2': !inline })}>
         <label className="text-sm" id={label}>
           {label}
         </label>

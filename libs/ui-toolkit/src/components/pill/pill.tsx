@@ -1,6 +1,6 @@
 import type { ReactNode, HTMLProps } from 'react';
 import { Intent } from '../../utils/intent';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
@@ -11,7 +11,7 @@ interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
 }
 
 const getClasses = (size: Size, intent: Intent, className?: string) => {
-  return classNames(
+  return cn(
     'rounded-sm leading-none font-alpha flex-inline items-center',
     {
       'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,

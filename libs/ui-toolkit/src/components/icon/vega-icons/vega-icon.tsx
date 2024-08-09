@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import type { VegaIconNames } from './vega-icon-record';
 import { VegaIconNameMap } from './vega-icon-record';
@@ -12,7 +12,7 @@ export interface VegaIconProps {
 }
 
 export const VegaIcon = ({ size = 16, name, className }: VegaIconProps) => {
-  const effectiveClassName = classNames(
+  const effectiveClassName = cn(
     'inline-block',
     'align-text-bottom',
     'fill-current stroke-none',

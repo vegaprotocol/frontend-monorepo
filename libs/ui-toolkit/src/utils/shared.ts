@@ -1,10 +1,10 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export const defaultSelectElement = (hasError?: boolean, disabled?: boolean) =>
-  classnames(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');
+  cn(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');
 
 export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
-  classnames(
+  cn(
     'flex items-center w-full text-sm',
     'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
     'border',

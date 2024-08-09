@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 type BackgroundVideoProps = {
   className?: string;
@@ -10,7 +10,7 @@ export const BackgroundVideo = ({ className }: BackgroundVideoProps) => {
       muted
       loop
       playsInline
-      className={classNames(
+      className={cn(
         'absolute left-0 top-0 w-full h-full object-cover',
         className
       )}

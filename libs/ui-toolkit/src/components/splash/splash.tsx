@@ -1,13 +1,13 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 
 export interface SplashProps {
   children: ReactNode;
-  className?: classNames.Argument;
+  className?: string;
 }
 
 export const Splash = ({ children, className }: SplashProps) => {
-  const splashClasses = classNames(
+  const splashClasses = cn(
     'w-full h-full text-xs text-center text-gs-50',
     'flex items-center justify-center',
     className

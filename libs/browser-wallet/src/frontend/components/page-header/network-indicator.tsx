@@ -1,5 +1,5 @@
 // import { getIntentBackground, type Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
-// import classNames from 'classnames';
+// import { cn } from '@vegaprotocol/utils';
 
 // import { useNetwork } from '@/contexts/network/network-context';
 // import { useConnectionStore } from '@/stores/connections';
@@ -18,7 +18,7 @@ export const locators = {
 //   return (
 //     <div
 //       data-testid={locators.indicator}
-//       className={classNames(
+//       className={cn(
 //         'border-1 border-vega-dark-200 border inline-block w-3 h-3 mt-1 mr-2 rounded-full text-black',
 //         background
 //       )}

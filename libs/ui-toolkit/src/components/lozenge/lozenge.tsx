@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getIntentBackground, getIntentText } from '../../utils/intent';
 import type { Intent } from '../../utils/intent';
 
@@ -12,7 +12,7 @@ interface LozengeProps {
 export const Lozenge = ({ children, intent, className }: LozengeProps) => {
   return (
     <span
-      className={classNames(
+      className={cn(
         ['rounded-md', 'font-mono', 'leading-none', 'px-2 py-1'],
         getIntentBackground(intent),
         getIntentText(intent),

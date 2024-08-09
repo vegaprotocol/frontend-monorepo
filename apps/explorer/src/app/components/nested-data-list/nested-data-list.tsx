@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import isObject from 'lodash/isObject';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
@@ -76,13 +76,13 @@ const NestedDataListItem = ({
   );
   const isArr = isArray(value);
 
-  const listItemClasses = classNames('pl-4 border-l-4', {
+  const listItemClasses = cn('pl-4 border-l-4', {
     'pt-10 last:pb-0': hasChildren,
     'first:pt-0': hasChildren && !index,
     'pt-2': !hasChildren && index,
   });
 
-  const titleClasses = classNames({
+  const titleClasses = cn({
     'text-xl pl-4 border-l-4 font-alpha calt': hasChildren,
     'text-base font-medium whitespace-nowrap': !hasChildren,
   });

@@ -17,7 +17,7 @@ import {
 import { useT } from '../../../lib/use-t';
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import {
@@ -138,7 +138,7 @@ const TradingModeTooltip = ({
       return (
         <section data-testid="trading-mode-tooltip">
           <p
-            className={classNames('flex flex-col items-start gap-2', {
+            className={cn('flex flex-col items-start gap-2', {
               'mb-4': Boolean(compiledGrid),
             })}
           >
@@ -211,7 +211,7 @@ const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
+              <p className={cn({ 'mb-4': Boolean(compiledGrid) })}>
                 <span className="mb-2">
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -233,7 +233,7 @@ const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
+              <p className={cn({ 'mb-4': Boolean(compiledGrid) })}>
                 <span className="mb-2">
                   {t(
                     'This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
@@ -255,7 +255,7 @@ const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
+              <p className={cn({ 'mb-4': Boolean(compiledGrid) })}>
                 <span>
                   {t('This market is in auction due to high price volatility.')}
                 </span>{' '}
@@ -275,7 +275,7 @@ const TradingModeTooltip = ({
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LONG_BLOCK: {
           return (
             <section data-testid="trading-mode-tooltip">
-              <p className={classNames({ 'mb-4': Boolean(compiledGrid) })}>
+              <p className={cn({ 'mb-4': Boolean(compiledGrid) })}>
                 <span>
                   {t(
                     'This market is in auction due to slow block processing, potentially due to an upgrade or network downtime.'

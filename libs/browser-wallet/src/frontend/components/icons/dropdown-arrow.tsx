@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import locators from '../locators';
 import { className as defaultClassName } from './style';
@@ -7,7 +7,7 @@ export function DropdownArrow({ className }: Readonly<{ className?: string }>) {
   return (
     <svg
       data-testid={locators.dropdownArrow}
-      className={classnames(defaultClassName, 'fill-transparent', className)}
+      className={cn(defaultClassName, 'fill-transparent', className)}
       viewBox="0 0 13 14"
     >
       <path

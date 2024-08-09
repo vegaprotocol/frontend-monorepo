@@ -24,7 +24,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { getTierGradient } from '../helpers/tiers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
@@ -541,10 +541,7 @@ const VolumeTiers = ({
               <span className="md:hidden">-</span>
             ),
             indicator: indicator,
-            className: classNames(
-              getTierGradient(i + 1, tiers.length),
-              'text-xs'
-            ),
+            className: cn(getTierGradient(i + 1, tiers.length), 'text-xs'),
           };
         })}
       />
@@ -647,10 +644,7 @@ const ReferralTiers = ({
             volume: formatNumber(tier.minimumRunningNotionalTakerVolume),
             epochs: tier.minimumEpochs,
             indicator,
-            className: classNames(
-              getTierGradient(i + 1, tiers.length),
-              'text-xs'
-            ),
+            className: cn(getTierGradient(i + 1, tiers.length), 'text-xs'),
           };
         })}
       />

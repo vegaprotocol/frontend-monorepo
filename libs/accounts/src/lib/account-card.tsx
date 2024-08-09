@@ -28,7 +28,7 @@ import {
   forwardRef,
   type ButtonHTMLAttributes,
 } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
@@ -111,7 +111,7 @@ export const AccountCard = ({
   return (
     <section
       data-testid="account-card"
-      className={classNames('m-1 rounded border-default', {
+      className={cn('m-1 rounded border-default', {
         'bg-gs-700 hover:bg-gs-600': !(expandable && expanded),
         'bg-gs-600 ': expandable && expanded,
       })}

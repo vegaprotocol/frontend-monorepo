@@ -1,6 +1,6 @@
 import type { IconName } from '@blueprintjs/icons';
 import { IconSvgPaths20, IconSvgPaths16 } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export type { IconName } from '@blueprintjs/icons';
 
@@ -12,7 +12,7 @@ export interface IconProps {
 }
 
 export const Icon = ({ size = 4, name, className, ariaLabel }: IconProps) => {
-  const effectiveClassName = classNames(
+  const effectiveClassName = cn(
     'inline-block',
     'fill-current',
     'align-text-bottom',

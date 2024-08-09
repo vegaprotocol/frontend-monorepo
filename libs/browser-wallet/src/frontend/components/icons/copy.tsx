@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 import locators from '../locators';
 import { className as defaultClassName } from './style';
@@ -7,7 +7,7 @@ export function Copy({ className }: Readonly<{ className?: string }>) {
   return (
     <svg
       data-testid={locators.copyIcon}
-      className={classnames(defaultClassName, className)}
+      className={cn(defaultClassName, className)}
       width="16"
       height="16"
       viewBox="0 0 16 16"

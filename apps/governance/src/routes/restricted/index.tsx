@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import { BackgroundVideo } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 const Restricted = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
@@ -14,7 +14,7 @@ const Restricted = ({ name }: RouteChildProps) => {
     <div>
       <BackgroundVideo className="brightness-50" />
       <div
-        className={classNames(
+        className={cn(
           'max-w-[620px] p-2 mt-[10vh]',
           'mx-auto my-0',
           'antialiased text-white',

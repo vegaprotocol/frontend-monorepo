@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import * as RadioGroup from '@radix-ui/react-toggle-group';
 
 import { Side as ESide } from '@vegaprotocol/types';
@@ -32,7 +32,7 @@ export const Side = (props: {
             }}
           >
             <span
-              className={classNames(
+              className={cn(
                 'absolute top-0 left-0 rounded w-1/2 h-full transition-transform',
                 {
                   'bg-vega-green-600 dark:bg-vega-green-650':
@@ -47,7 +47,7 @@ export const Side = (props: {
                 value={value}
                 key={value}
                 data-testid={`order-side-${value}`}
-                className={classNames(
+                className={cn(
                   'flex gap-2 justify-center items-center flex-1 relative text-sm rounded transition-colors',
                   'data-[state=off]:hover:bg-gs-500',
                   'data-[state=off]:text-gs-200',

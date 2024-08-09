@@ -1,5 +1,5 @@
 import { FALLBACK_URL } from '../config/index';
-import className from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 
 export type ImgProps = {
   size?: number;
@@ -26,7 +26,7 @@ export function EmblemBase({ size = 30, ...p }: ImgProps) {
       alt={p.alt ? p.alt : 'Emblem'}
       width={size}
       height={size}
-      className={className('rounded-full bg-gs-600 border-gs-600', p.className)}
+      className={cn('rounded-full bg-gs-600 border-gs-600', p.className)}
     />
   );
 }

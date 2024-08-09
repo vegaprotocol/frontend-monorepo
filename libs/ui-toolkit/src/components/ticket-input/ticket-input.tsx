@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -27,7 +27,7 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
         {appendElement && appendElement}
         <label
           htmlFor={props.id}
-          className={classNames(
+          className={cn(
             'absolute transition-all text-muted transform text-sm left-2 pointer-events-none',
             '-translate-y-2 text-xs top-3',
             'peer-focus:text-xs peer-focus:-translate-y-2',

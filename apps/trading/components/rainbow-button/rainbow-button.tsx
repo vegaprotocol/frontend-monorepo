@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/utils';
 import { type ButtonHTMLAttributes } from 'react';
 
 type RainbowButtonProps = {
@@ -12,7 +12,7 @@ export const RainbowButton = ({
   ...props
 }: RainbowButtonProps & ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
-    className={classNames(
+    className={cn(
       'bg-rainbow rounded-lg overflow-hidden disabled:opacity-40',
       'hover:bg-rainbow-180 hover:animate-spin-rainbow',
       {
@@ -24,7 +24,7 @@ export const RainbowButton = ({
     {...props}
   >
     <div
-      className={classNames({
+      className={cn({
         'bg-gs-800  text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
           variant === 'border',
       })}
