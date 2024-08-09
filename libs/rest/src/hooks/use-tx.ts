@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import { useConfig } from './use-config';
 import { useWallet } from './use-wallet';
 
+// TODO: Deal with useTx
+
 type UseTxOptions = {
   onSuccess?: (result: Result) => void;
   onError?: (errorMessage?: string) => void;
