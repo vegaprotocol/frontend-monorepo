@@ -30,6 +30,7 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 
 const Title = () => {
   const t = useT();
@@ -78,7 +79,40 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeInProgressNotification />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
-          <Component />
+          {/* <Component /> */}
+          <div className="p-10 flex flex-col gap-2 items-start">
+            <Notification title="The title" message={'The message goes here'} />
+            <Notification
+              title="The title"
+              intent={Intent.Primary}
+              message={'The message goes here'}
+            />
+            <Notification
+              title="The title"
+              intent={Intent.Secondary}
+              message={'The message goes here'}
+            />
+            <Notification
+              title="The title"
+              intent={Intent.Info}
+              message={'The message goes here'}
+            />
+            <Notification
+              title="The title"
+              intent={Intent.Danger}
+              message={'The message goes here'}
+            />
+            <Notification
+              title="The title"
+              intent={Intent.Warning}
+              message={'The message goes here'}
+            />
+            <Notification
+              title="The title"
+              intent={Intent.Success}
+              message={'The message goes here'}
+            />
+          </div>
         </div>
       </div>
       <DialogsContainer />

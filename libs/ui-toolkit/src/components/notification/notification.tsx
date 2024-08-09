@@ -7,9 +7,8 @@ import { Icon } from '../icon';
 import { Button } from '../button';
 
 type NotificationProps = {
-  intent: Intent;
+  intent?: Intent;
   message: ReactNode | string;
-  size?: 'small' | 'medium';
   title?: string;
   buttonProps?: {
     text: string;
@@ -36,55 +35,49 @@ const getIcon = (intent: Intent): IconName => {
 };
 
 export const Notification = ({
-  intent,
+  intent = Intent.None,
   message,
   title,
-  size = 'small',
   testId,
   buttonProps,
 }: NotificationProps) => {
-  if (intent === Intent.Primary) {
-    intent = Intent.Info;
-  }
-
   return (
     <div
       data-testid={testId || 'notification'}
       className={classNames(
+        'flex items-start gap-2',
+        'border rounded py-2 px-3',
         {
-          'border-gs-500 ': intent === Intent.None,
-          'border-vega-blue-350 dark:border-vega-blue-650':
-            intent === Intent.Info,
-          'border-vega-green-350 dark:border-vega-green-650':
-            intent === Intent.Success,
-          'border-vega-orange-350 dark:border-vega-orange-650':
-            intent === Intent.Warning,
-          'border-vega-red-350 dark:border-vega-red-650':
-            intent === Intent.Danger,
+          'border-intent-none': intent === Intent.None,
+          'border-intent-primary': intent === Intent.Primary,
+          'border-intent-secondary': intent === Intent.Secondary,
+          'border-intent-info': intent === Intent.Info,
+          'border-intent-danger': intent === Intent.Danger,
+          'border-intent-warning': intent === Intent.Warning,
+          'border-intent-success': intent === Intent.Success,
         },
         {
-          'bg-gs-700  ': intent === Intent.None,
-          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Info,
-          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
-          'bg-vega-orange-300 dark:bg-vega-orange-700':
-            intent === Intent.Warning,
-          'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
-        },
-        'shadow-[0px_2px_4px_0px_rgba(0,0,0,0.09)]',
-        'border rounded-[2px] p-2',
-        'flex items-start gap-1.5'
+          'bg-intent-none-background': intent === Intent.None,
+          'bg-intent-primary-background': intent === Intent.Primary,
+          'bg-intent-secondary-background': intent === Intent.Secondary,
+          'bg-intent-info-background': intent === Intent.Info,
+          'bg-intent-danger-background': intent === Intent.Danger,
+          'bg-intent-warning-background': intent === Intent.Warning,
+          'bg-intent-success-background': intent === Intent.Success,
+        }
       )}
     >
       <div
         className={classNames(
+          'pt-px',
           {
-            'text-gs-50 ': intent === Intent.None,
-            'text-vega-blue-500': intent === Intent.Info,
-            'text-vega-green-500': intent === Intent.Success,
-            'text-yellow-500': intent === Intent.Warning,
-            'text-vega-red-500': intent === Intent.Danger,
-            'mt-[0.125rem]': !title || (!!title && size === 'small'),
-            'mt-1': !!title && size === 'medium',
+            'text-gs-50': intent === Intent.None,
+            'text-intent-primary': intent === Intent.Primary,
+            'text-intent-secondary': intent === Intent.Secondary,
+            'text-intent-info': intent === Intent.Info,
+            'text-intent-danger': intent === Intent.Danger,
+            'text-intent-warning': intent === Intent.Warning,
+            'text-intent-success': intent === Intent.Success,
           },
           'flex items-start'
         )}
@@ -93,27 +86,20 @@ export const Notification = ({
       </div>
       <div
         className={classNames(
-          'flex flex-col items-start overflow-hidden gap-0',
-          'text-gs-50 ',
-          'font-alpha',
-          { 'text-sm': size === 'small', 'text-base': size === 'medium' }
+          'flex flex-col items-start overflow-hidden gap-1.5',
+          'text-gs-50 font-alpha text-sm'
         )}
       >
         {title && (
-          <div
+          <h4
             key="title"
-            className="uppercase leading-none mb-2 max-w-full"
+            className="uppercase max-w-full truncate"
             title={title}
           >
-            <span className="block truncate">{title}</span>
-          </div>
+            {title}
+          </h4>
         )}
-        <div
-          key="message"
-          className={classNames('[word-break:break-word]', {
-            'mb-3': buttonProps,
-          })}
-        >
+        <div key="message" className="break-words">
           {message}
         </div>
         {buttonProps && (

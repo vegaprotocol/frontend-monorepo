@@ -32,30 +32,37 @@
     --intent-none: 209 210 211;
     --intent-none-outline: 209 210 211;
     --intent-none-foreground: 4 4 5;
+    --intent-none-background: 238 238 239;
 
     --intent-primary: 0 117 255;
     --intent-primary-outline: 0 117 255;
     --intent-primary-foreground: 255 255 255;
+    --intent-primary-background: 214 233 255;
 
     --intent-secondary: 0 117 255;
     --intent-secondary-outline: 0 117 255;
     --intent-secondary-foreground: 255 255 255;
+    --intent-secondary-background: 214 233 255;
 
     --intent-danger: 236 0 60;
     --intent-danger-outline: 236 0 60;
     --intent-danger-foreground: 255 255 255;
+    --intent-danger-background: 248 163 185;
 
     --intent-info: 0 117 255;
     --intent-info-outline: 0 117 255;
     --intent-info-foreground: 255 255 255;
+    --intent-info-background: 214 233 255;
 
     --intent-warning: 255 135 0;
     --intent-warning-outline: 255 135 0;
     --intent-warning-foreground: 255 255 255;
+    --intent-warning-background: 255 236 214;
 
     --intent-success: 0 247 128;
     --intent-success-outline: 0 247 128;
     --intent-success-foreground: 255 255 255;
+    --intent-success-background: 214 254 235;
 
     /* Logo */
     --logo-bg-color: #d7fb50;
@@ -87,6 +94,37 @@
     --intent-none: 50 51 57;
     --intent-none-outline: 50 51 57;
     --intent-none-foreground: 220 222 227;
+    --intent-none-background: 32 34 39;
+
+    --intent-primary: 0 117 255;
+    --intent-primary-outline: 0 117 255;
+    --intent-primary-foreground: 255 255 255;
+    --intent-primary-background: 1 20 42;
+
+    --intent-secondary: 0 117 255;
+    --intent-secondary-outline: 0 117 255;
+    --intent-secondary-foreground: 255 255 255;
+    --intent-secondary-background: 1 20 42;
+
+    --intent-danger: 236 0 60;
+    --intent-danger-outline: 236 0 60;
+    --intent-danger-foreground: 255 255 255;
+    --intent-danger-background: 47 0 12;
+
+    --intent-info: 0 117 255;
+    --intent-info-outline: 0 117 255;
+    --intent-info-foreground: 255 255 255;
+    --intent-info-background: 1 20 42;
+
+    --intent-warning: 255 135 0;
+    --intent-warning-outline: 255 135 0;
+    --intent-warning-foreground: 255 255 255;
+    --intent-warning-background: 42 23 1;
+
+    --intent-success: 0 247 128;
+    --intent-success-outline: 0 247 128;
+    --intent-success-foreground: 255 255 255;
+    --intent-success-background: 1 41 21;
   }
 }
 
@@ -123,15 +161,6 @@ body,
 /**
  * ALLOTMENT
  */
-
-html {
-  --focus-border: theme(colors.vega.pink.500);
-  --pennant-color-danger: theme(colors.vega.pink.500);
-}
-
-html.dark {
-  --focus-border: theme(colors.vega.yellow.500);
-}
 
 /* hide pane separation border, we leave it blank so border is applied within a padded area */
 .split-view-view::before {

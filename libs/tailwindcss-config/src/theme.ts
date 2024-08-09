@@ -36,36 +36,43 @@ export const theme = {
       none: {
         DEFAULT: 'rgb(var(--intent-none) / <alpha-value>)',
         foreground: 'rgb(var(--intent-none-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-none-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-none-outline) / <alpha-value>)',
       },
       primary: {
         DEFAULT: 'rgb(var(--intent-primary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-primary-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-primary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-primary-outline) / <alpha-value>)',
       },
       secondary: {
         DEFAULT: 'rgb(var(--intent-secondary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-secondary-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-secondary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-secondary-outline) / <alpha-value>)',
       },
       danger: {
         DEFAULT: 'rgb(var(--intent-danger) / <alpha-value>)',
         foreground: 'rgb(var(--intent-danger-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-danger-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-danger-outline) / <alpha-value>)',
       },
       info: {
         DEFAULT: 'rgb(var(--intent-info) / <alpha-value>)',
         foreground: 'rgb(var(--intent-info-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-info-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-info-outline) / <alpha-value>)',
       },
       warning: {
         DEFAULT: 'rgb(var(--intent-warning) / <alpha-value>)',
         foreground: 'rgb(var(--intent-warning-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-warning-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-warning-outline) / <alpha-value>)',
       },
       success: {
         DEFAULT: 'rgb(var(--intent-success) / <alpha-value>)',
         foreground: 'rgb(var(--intent-success-foreground) / <alpha-value>)',
+        background: 'rgb(var(--intent-success-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-success-outline) / <alpha-value>)',
       },
     },

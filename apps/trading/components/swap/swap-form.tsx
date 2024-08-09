@@ -300,7 +300,7 @@ export const SwapForm = ({
               onDeposit(topAsset.id);
             },
             dataTestId: 'deal-ticket-deposit-dialog-button',
-            size: 'small',
+            size: 'sm',
           }}
         />
       )}
