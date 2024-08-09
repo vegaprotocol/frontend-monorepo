@@ -49,7 +49,7 @@ export const OracleProfileTitle = ({
         </span>
         <span>
           {parentProvider && (
-            <Lozenge variant={Intent.Primary}>{t('Updated')}</Lozenge>
+            <Lozenge intent={Intent.Primary}>{t('Updated')}</Lozenge>
           )}
           {provider.url && (
             <span>

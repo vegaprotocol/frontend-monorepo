@@ -90,8 +90,10 @@ export function Callout({
   const className = classNames(
     'flex gap-4',
     'px-6 py-4',
+    'border',
     getIntentBorder(intent)
   );
+
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`
     : 'div';

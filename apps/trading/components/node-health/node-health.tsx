@@ -29,7 +29,7 @@ export const NodeHealthContainer = ({
           data-testid="node-health"
         >
           <div className="flex items-center gap-2">
-            <Indicator variant={intent} />
+            <Indicator intent={intent} />
             <p>{text}</p>
             <p>{datanodeBlockHeight}</p>
           </div>
@@ -62,7 +62,7 @@ export const NodeHealthContainer = ({
           <span>{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
         )}
 
-        <Indicator variant={intent} size="md" />
+        <Indicator intent={intent} size="md" />
       </button>
     </Tooltip>
   );

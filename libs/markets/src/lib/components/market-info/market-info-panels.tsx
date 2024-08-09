@@ -1639,7 +1639,7 @@ export const OracleInfoPanel = ({
   return (
     <>
       {shouldShowParentData && (
-        <Lozenge variant={Intent.Primary} className="text-sm">
+        <Lozenge intent={Intent.Primary} className="text-sm">
           {t('Updated')}
         </Lozenge>
       )}

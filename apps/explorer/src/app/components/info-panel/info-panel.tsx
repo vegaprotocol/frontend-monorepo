@@ -55,7 +55,7 @@ export const InfoPanel = ({
             {type && (
               <Lozenge
                 className="text-xs leading-relaxed cursor-auto"
-                variant={Intent.None}
+                intent={Intent.None}
               >
                 <Tooltip side="top" description={type} align="center">
                   <span>{type}</span>
