@@ -58,7 +58,8 @@
     --intent-success-foreground: 255 255 255;
 
     /* Logo */
-    --logo-bg: rgb(var(--intent-primary));
+    --logo-bg-color: #d7fb50;
+    --logo-bg-image: url(/logo-bg.png);
 
     /* Buttons */
     --button-border-radius-xs: theme(borderRadius.DEFAULT);

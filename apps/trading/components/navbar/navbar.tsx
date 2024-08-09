@@ -56,9 +56,12 @@ export const Navbar = () => {
       <NavLink
         to="/"
         className={classNames(
-          'flex items-center px-3 bg-[color:var(--logo-bg)]'
+          'flex items-center px-3',
+          'bg-[image:var(--logo-bg-image)]',
+          'bg-[color:var(--logo-bg-color)]'
         )}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="Logo" src="/logo.svg" className="block w-4" />
       </NavLink>
       {/* Used to show header in nav on mobile */}
