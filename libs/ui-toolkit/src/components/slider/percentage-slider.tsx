@@ -1,6 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import type { SliderProps } from '@radix-ui/react-slider';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import { SliderThumb } from './slider';
 import BigNumber from 'bignumber.js';
 

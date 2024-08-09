@@ -1,5 +1,5 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import { Divider } from './divider';
 
 export default {

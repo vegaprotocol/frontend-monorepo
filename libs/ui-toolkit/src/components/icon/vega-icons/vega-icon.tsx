@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../../utils/cn';
 
 import type { VegaIconNames } from './vega-icon-record';
 import { VegaIconNameMap } from './vega-icon-record';

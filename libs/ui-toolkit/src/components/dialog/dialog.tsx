@@ -1,5 +1,5 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';

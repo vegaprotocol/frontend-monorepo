@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 import { labelClasses } from '../checkbox';
 

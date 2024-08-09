@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 type BreadcrumbsProps = {

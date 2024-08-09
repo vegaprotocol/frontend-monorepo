@@ -1,9 +1,9 @@
 import type { ReactNode, ReactElement } from 'react';
-import { cn } from '@vegaprotocol/ui-toolkit';
 import { getIntentBorder, Intent } from '../../utils/intent';
 import { Loader } from '../loader';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
+import { cn } from '../../utils/cn';
 
 interface CalloutRootProps {
   children?: ReactNode;

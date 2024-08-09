@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { type ComponentPropsWithoutRef } from 'react';
 

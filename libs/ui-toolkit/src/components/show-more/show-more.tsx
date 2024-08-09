@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../button';
 import type { ReactNode } from 'react';

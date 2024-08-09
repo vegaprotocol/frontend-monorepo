@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import * as RootSwitch from '@radix-ui/react-switch';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 export interface SwitchProps {
   name?: string;

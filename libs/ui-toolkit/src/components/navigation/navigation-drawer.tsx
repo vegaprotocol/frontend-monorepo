@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import { type CSSProperties, type HTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { createContext } from 'react';

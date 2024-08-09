@@ -6,7 +6,7 @@ import type {
   SliderRangeProps,
   SliderThumbProps,
 } from '@radix-ui/react-slider';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 export const SliderRoot = ({
   children,

@@ -1,6 +1,6 @@
 import type { ReactNode, HTMLProps } from 'react';
 import { Intent } from '../../utils/intent';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {

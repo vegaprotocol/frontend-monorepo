@@ -1,5 +1,5 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
+import { cn } from '../../utils/cn';
 
 export interface FormGroupProps {
   children: ReactNode;

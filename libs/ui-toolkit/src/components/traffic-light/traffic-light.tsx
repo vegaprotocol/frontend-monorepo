@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 interface TrafficLightProps {
   value: number;

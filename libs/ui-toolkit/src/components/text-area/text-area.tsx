@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import type { TextareaHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { defaultFormElement } from '../../utils/shared';

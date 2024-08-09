@@ -8,7 +8,7 @@ import {
   Portal,
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 
 const tooltipContentClasses =
   'max-w-sm bg-gs-800 border border-gs-700 px-2 py-1 z-20 rounded text-xs text-gs-0 break-word';

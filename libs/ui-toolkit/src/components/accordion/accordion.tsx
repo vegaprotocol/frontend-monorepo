@@ -1,5 +1,5 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import type { VegaIconProps } from '../icon';
 import { VegaIcon, VegaIconNames } from '../icon';
 

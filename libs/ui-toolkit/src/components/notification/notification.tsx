@@ -1,6 +1,6 @@
 import { IconNames } from '@blueprintjs/icons';
 import type { IconName } from '@blueprintjs/icons';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import type { ComponentProps, ReactNode } from 'react';
 import {
   getIntentBackground,

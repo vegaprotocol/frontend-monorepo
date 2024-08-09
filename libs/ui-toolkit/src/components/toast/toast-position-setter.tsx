@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { cn } from '../../utils/cn';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '../icon';
 import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
