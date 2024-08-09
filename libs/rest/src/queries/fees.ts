@@ -1,7 +1,9 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+
 import { NODE_URL } from '../env';
 import {
-  v2GetFeesStatsResponse,
-  v2ListPaidLiquidityFeesResponse,
+  type v2GetFeesStatsResponse,
+  type v2ListPaidLiquidityFeesResponse,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
@@ -9,7 +11,7 @@ import compact from 'lodash/compact';
 import flatten from 'lodash/flatten';
 import omit from 'lodash/omit';
 import { z } from 'zod';
-import { Decimal, removePaginationWrapper } from '../utils';
+import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
 
 const parametersSchema = z.object({

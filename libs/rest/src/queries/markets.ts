@@ -1,3 +1,5 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+
 import { NODE_URL } from '../env';
 import { queryClient } from '../query-client';
 import {
@@ -8,7 +10,6 @@ import axios from 'axios';
 import get from 'lodash/get';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { removePaginationWrapper } from '../utils';
 import {
   type Assets,
   queryKeys as assetQueryKeys,

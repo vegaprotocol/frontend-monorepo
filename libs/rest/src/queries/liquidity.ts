@@ -1,3 +1,5 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+
 import { NODE_URL } from '../env';
 import {
   type v2ListAllLiquidityProvisionsResponse,
@@ -9,7 +11,7 @@ import compact from 'lodash/compact';
 import groupBy from 'lodash/groupBy';
 import maxBy from 'lodash/maxBy';
 import { z } from 'zod';
-import { Decimal, removePaginationWrapper } from '../utils';
+import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
 
 const parametersSchema = z.object({

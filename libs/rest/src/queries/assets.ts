@@ -1,3 +1,5 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+
 import { NODE_URL } from '../env';
 import {
   type v2ListAssetsResponse,
@@ -8,7 +10,6 @@ import axios from 'axios';
 import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { removePaginationWrapper } from '../utils';
 
 export const erc20AssetSchema = z.object({
   id: z.string(),

@@ -1,10 +1,12 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+
 import { NODE_URL } from '../env';
-import { v2ListCandleDataResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { type v2ListCandleDataResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
 import omit from 'lodash/omit';
 import { z } from 'zod';
-import { Decimal, removePaginationWrapper } from '../utils';
+import { Decimal } from '../utils';
 import { fromNanoSeconds } from '../utils/datetime';
 import type { Interval } from './candle-intervals';
 import { getMarketFromCache } from './markets';

@@ -1,3 +1,4 @@
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { NODE_URL } from '../env';
 import { queryClient } from '../query-client';
 import {
@@ -7,7 +8,7 @@ import {
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import { z } from 'zod';
-import { Decimal, removePaginationWrapper } from '../utils';
+import { Decimal } from '../utils';
 import { type Market, queryKeys as marketQueryKeys } from './markets';
 
 const ammStatusSchema = z.nativeEnum(v1AMMStatus);
