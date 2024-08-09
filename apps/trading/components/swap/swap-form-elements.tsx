@@ -44,7 +44,7 @@ export const AssetInput = ({
 
   return (
     <div
-      className="focus-within:bg-gs-800  bg-gs-700 py-2 px-4 rounded-lg border-gs-600 border flex flex-col gap-1 cursor-pointer"
+      className="focus-within:bg-gs-600 bg-gs-700 py-2 px-4 rounded-lg border-gs-500 border flex flex-col gap-1 cursor-pointer"
       data-testid={testId}
       role="button"
       // No need for tabindex as the input can be tabbed to
@@ -55,7 +55,7 @@ export const AssetInput = ({
       <label htmlFor={inputName} className="text-sm text-secondary">
         {label}
       </label>
-      <div className="flex items-center gap-px">
+      <div className="flex items-center gap-3">
         <div className="flex-grow">
           <input
             name={inputName}
@@ -65,7 +65,7 @@ export const AssetInput = ({
             onChange={(e) => {
               onAmountChange(e);
             }}
-            className="w-full bg-transparent p-2 focus:outline-none text-4xl cursor-pointer"
+            className="w-full bg-transparent py-2 focus:outline-none text-4xl cursor-pointer"
             data-testid={`${testId}-amount-input`}
           />
         </div>
@@ -98,7 +98,7 @@ export const AssetInput = ({
 export const SwapButton = ({ onClick }: { onClick: () => void }) => (
   <button
     type="button"
-    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 self-center -my-5 z-10 hover:bg-gs-800 hover: border-gs-600 border"
+    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 self-center -my-5 z-10 hover:bg-gs-800 hover: border-gs-500 border"
     onClick={onClick}
     data-testid="swap-button"
   >
@@ -193,30 +193,32 @@ export const DropdownAsset = ({
   return (
     <DropdownMenu
       trigger={
-        <DropdownMenuTrigger
-          asChild
-          className="flex items-center py-2 px-4 border rounded-full h-12 text-lg"
-          data-testid={`${testId}-trigger`}
-        >
-          {asset ? (
-            <span className="flex items-center gap-2 -ml-2">
-              <span className="w-8 h-8">
-                <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+        <DropdownMenuTrigger asChild>
+          <button
+            className="flex gap-4 items-center py-2 pl-2 pr-4 border border-gs-500 rounded-full h-12"
+            data-testid={`${testId}-trigger`}
+          >
+            {asset ? (
+              <span className="flex items-center gap-2">
+                <span className="w-8 h-8">
+                  <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+                </span>
+                <span>{asset.symbol}</span>
               </span>
-              <span>{asset.symbol}</span>
-            </span>
-          ) : (
-            <span>{t('Select asset')}</span>
-          )}
-          <VegaIcon
-            name={VegaIconNames.CHEVRON_DOWN}
-            size={14}
-            className="w-5 h-5 ml-4 flex items-center justify-center"
-          />
+            ) : (
+              <span className="pl-3 whitespace-nowrap">
+                {t('Select asset')}
+              </span>
+            )}
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
+          </button>
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent data-testid={`${testId}-dropdown-content`}>
+      <DropdownMenuContent
+        data-testid={`${testId}-dropdown-content`}
+        align="end"
+      >
         {assets.map((asset) => (
           <DropdownMenuItem
             onClick={() => {
