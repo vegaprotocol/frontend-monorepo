@@ -23,7 +23,6 @@ export * from './language-selector';
 export * from './link';
 export * from './loader';
 export * from './lozenge';
-export * from './nav-dropdown';
 export * from './navigation';
 export * from './notification';
 export * from './notification-banner';
