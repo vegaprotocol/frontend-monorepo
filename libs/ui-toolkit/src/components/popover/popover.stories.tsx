@@ -4,6 +4,7 @@ import { Button } from '../button';
 import { Popover } from './popover';
 
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Intent } from '../../utils/intent';
 export default {
   title: 'Popover',
   component: Popover,
@@ -16,7 +17,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
       <Popover
         open={open}
         onOpenChange={setOpen}
-        trigger={<Button variant="primary">Trigger</Button>}
+        trigger={<Button intent={Intent.Primary}>Trigger</Button>}
       >
         {args.children}
       </Popover>
