@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useOracleStatuses } from '../../hooks';
 import type { IconName } from '@blueprintjs/icons';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getLinkIcon, useVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import ReactMarkdown from 'react-markdown';

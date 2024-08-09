@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getIntentBackground, getIntentText } from '../../utils/intent';
 import type { Intent } from '../../utils/intent';
 

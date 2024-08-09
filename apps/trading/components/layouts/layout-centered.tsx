@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Outlet } from 'react-router-dom';
 
 export const SKY_BACKGROUND =

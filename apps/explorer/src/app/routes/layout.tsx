@@ -10,7 +10,7 @@ import {
   BreadcrumbsContainer,
   ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   isRouteErrorResponse,
   Link,

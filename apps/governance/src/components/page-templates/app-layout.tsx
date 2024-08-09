@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { ReactNode } from 'react';
 import { AnnouncementBanner } from '@vegaprotocol/announcements';

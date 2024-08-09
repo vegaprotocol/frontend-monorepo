@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { parse } from 'tldts';
 

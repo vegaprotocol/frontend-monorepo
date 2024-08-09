@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import countBy from 'lodash/countBy';
 import { useState, type ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';

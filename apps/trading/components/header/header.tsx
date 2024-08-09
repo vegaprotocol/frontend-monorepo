@@ -1,5 +1,5 @@
 import { TinyScroll, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface TradeMarketHeaderProps {

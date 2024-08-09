@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from '@vegaprotocol/datagrid';
 import { VolumeType } from './orderbook-data';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const HIDE_VOL_WIDTH = 190;
 const HIDE_CUMULATIVE_VOL_WIDTH = 260;

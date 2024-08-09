@@ -3,7 +3,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 type AssetOptionProps = {

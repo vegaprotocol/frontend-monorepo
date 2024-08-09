@@ -1,5 +1,5 @@
 // import { getIntentBackground, type Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
-// import { cn } from '@vegaprotocol/utils';
+// import { cn } from '@vegaprotocol/ui-toolkit';
 
 // import { useNetwork } from '@/contexts/network/network-context';
 // import { useConnectionStore } from '@/stores/connections';

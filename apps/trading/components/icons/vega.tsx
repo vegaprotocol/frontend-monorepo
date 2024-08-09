@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export function Vega({ className }: { className?: string }) {
   const svgClasses = cn(className, 'fill-current');

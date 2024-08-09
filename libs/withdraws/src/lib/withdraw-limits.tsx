@@ -17,7 +17,7 @@ import {
   toQUSD,
   unitiseEther,
 } from '@vegaprotocol/utils';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 interface WithdrawLimitsProps {
   amount: string;

@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ConnectorType } from '@vegaprotocol/wallet';
 import { VegaIcon, VegaIconNames, VLogo } from '@vegaprotocol/ui-toolkit';
 

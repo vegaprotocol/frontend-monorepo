@@ -1,6 +1,6 @@
 import type { IconName } from '@blueprintjs/icons';
 import { IconSvgPaths20, IconSvgPaths16 } from '@blueprintjs/icons';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type { IconName } from '@blueprintjs/icons';
 

@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import {

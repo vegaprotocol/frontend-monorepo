@@ -23,7 +23,7 @@ import { type ReactNode, useEffect } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   useNewListings,
   useTopGainers,

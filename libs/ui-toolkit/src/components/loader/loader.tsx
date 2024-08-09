@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import styles from './loader.module.scss';
 
 export const pseudoRandom = (seed: number) => {

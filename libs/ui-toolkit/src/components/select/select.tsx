@@ -1,7 +1,7 @@
 import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Icon } from '../icon';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';

@@ -1,5 +1,5 @@
 import { BackgroundVideo } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const RestrictedPage = () => {
   const errorTitle = '451 Unavailable';

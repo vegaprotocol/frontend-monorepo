@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { ns, useT } from '../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   Loader,
   TextChildrenTooltip as Tooltip,

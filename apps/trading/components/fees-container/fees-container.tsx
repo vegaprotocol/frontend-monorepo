@@ -24,7 +24,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getTierGradient } from '../helpers/tiers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 

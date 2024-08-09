@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const WalletIcon = ({ className }: { className?: string }) => {
   return (

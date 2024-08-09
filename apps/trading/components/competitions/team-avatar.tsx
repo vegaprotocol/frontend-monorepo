@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const NUM_AVATARS = 20;
 const AVATAR_PATHNAME_PATTERN = '/team-avatars/{id}.png';

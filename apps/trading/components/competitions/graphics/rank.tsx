@@ -1,5 +1,5 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const Rank = ({
   variant,

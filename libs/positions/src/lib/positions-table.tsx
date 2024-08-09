@@ -43,7 +43,7 @@ import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useLatestTrade } from '@vegaprotocol/trades';
 

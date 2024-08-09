@@ -1,5 +1,5 @@
 import { Intent, Button } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ComponentProps, ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { NavLink } from 'react-router-dom';

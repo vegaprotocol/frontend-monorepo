@@ -17,7 +17,7 @@ import {
 import type { Order } from '../order-data-provider';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
 
 interface OrderViewDialogProps {

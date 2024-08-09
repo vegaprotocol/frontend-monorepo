@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { Icon } from '../icon';
 

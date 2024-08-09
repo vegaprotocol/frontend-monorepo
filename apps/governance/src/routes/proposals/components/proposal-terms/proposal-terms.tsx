@@ -8,7 +8,7 @@ import { BigNumber } from '../../../../lib/bignumber';
 import { SubHeading } from '../../../../components/heading';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalTermsProps {
   data: Record<string, unknown>;

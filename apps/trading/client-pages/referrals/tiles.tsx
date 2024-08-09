@@ -6,7 +6,7 @@ import {
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useT } from '../../lib/use-t';
 import BigNumber from 'bignumber.js';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ReactNode } from 'react';
 import { Trans } from 'react-i18next';
 import { type StatValue, COMPACT_NUMBER_FORMAT } from './constants';

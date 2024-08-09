@@ -28,7 +28,7 @@ import { forwardRef } from 'react';
 import type { FundingPayment } from './funding-payments-data-provider';
 
 import { getAsset } from '@vegaprotocol/markets';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 

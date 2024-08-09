@@ -10,7 +10,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { REFERRAL_DOCS_LINK } from './constants';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';

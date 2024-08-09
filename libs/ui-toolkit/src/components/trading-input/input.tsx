@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import { defaultFormElement } from '../../utils/trading-shared';

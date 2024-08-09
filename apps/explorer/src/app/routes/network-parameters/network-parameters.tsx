@@ -1,5 +1,5 @@
 import startCase from 'lodash/startCase';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import {
   AsyncRenderer,

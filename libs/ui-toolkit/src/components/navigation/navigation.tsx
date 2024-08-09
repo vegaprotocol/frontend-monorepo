@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ComponentProps, ReactNode } from 'react';
 import { useLayoutEffect } from 'react';
 import { useContext } from 'react';

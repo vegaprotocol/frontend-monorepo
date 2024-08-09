@@ -2,7 +2,7 @@ import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   Popover,
   Splash,

@@ -1,5 +1,5 @@
 import { FALLBACK_URL } from '../config/index';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type ImgProps = {
   size?: number;

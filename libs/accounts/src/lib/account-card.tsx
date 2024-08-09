@@ -28,7 +28,7 @@ import {
   forwardRef,
   type ButtonHTMLAttributes,
 } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 

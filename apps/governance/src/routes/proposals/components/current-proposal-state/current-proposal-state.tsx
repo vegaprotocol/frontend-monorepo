@@ -4,7 +4,7 @@ import {
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 export enum AdditionalProposalState {

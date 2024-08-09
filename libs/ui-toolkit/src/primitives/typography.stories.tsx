@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ComponentStory } from '@storybook/react';
 type Args = { type: string; alternatives: string; isAlpha: boolean };
 const sizeArr = [

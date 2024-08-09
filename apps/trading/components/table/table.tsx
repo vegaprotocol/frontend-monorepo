@@ -1,5 +1,5 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
 export const BORDER_COLOR = 'border-gs-500 ';

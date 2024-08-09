@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ButtonHTMLAttributes } from 'react';
 
 type RainbowButtonProps = {

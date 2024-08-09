@@ -5,7 +5,7 @@ import {
 } from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const BottomDrawer = ({
   shouldScaleBackground = true,

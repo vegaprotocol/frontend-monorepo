@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';

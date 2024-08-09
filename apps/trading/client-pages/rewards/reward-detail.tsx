@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { Link, useSearchParams } from 'react-router-dom';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import {
   type DispatchMetric,

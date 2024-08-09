@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const CenteredGridCellWrapper = ({
   children,

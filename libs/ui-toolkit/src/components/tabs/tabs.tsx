@@ -4,7 +4,7 @@ import {
   useResizeObserver,
   useLocalStorage,
 } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useRef, useState } from 'react';
 import { VegaIcon } from '../icon/vega-icons/vega-icon';

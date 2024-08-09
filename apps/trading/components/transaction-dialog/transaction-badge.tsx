@@ -1,5 +1,5 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const BADGE_SIZING = cn('w-8 h-8 rounded-full relative flex-shrink-0');
 const BADGE_BACKGROUND = 'bg-gs-700 ';

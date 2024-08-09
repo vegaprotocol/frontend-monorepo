@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getIntentBackground, getIntentText, Intent } from '../../utils/intent';
 
 interface IndicatorProps {

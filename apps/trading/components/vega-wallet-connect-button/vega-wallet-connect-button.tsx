@@ -20,7 +20,7 @@ import {
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';

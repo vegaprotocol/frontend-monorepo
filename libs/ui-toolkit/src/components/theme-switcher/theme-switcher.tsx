@@ -1,7 +1,7 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Toggle } from '../toggle';
 import { useT } from '../../use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 export const ThemeSwitcher = ({

@@ -3,7 +3,7 @@ import type { Statistics, NodeData } from '../../config/stats-fields';
 import { fieldsDefinition } from '../../config/stats-fields';
 import { useStatsQuery } from './__generated__/Stats';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
 
 interface StatsManagerProps {

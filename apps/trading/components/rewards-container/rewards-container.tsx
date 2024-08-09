@@ -41,7 +41,7 @@ import {
 import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [

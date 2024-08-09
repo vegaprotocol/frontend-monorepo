@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { toastIconMapping } from '../toast';
 import { Intent } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';

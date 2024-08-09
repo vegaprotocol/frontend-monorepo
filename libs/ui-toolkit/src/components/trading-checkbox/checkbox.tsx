@@ -1,6 +1,6 @@
 import { VegaIcon, VegaIconNames } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { labelClasses } from '../checkbox';
 

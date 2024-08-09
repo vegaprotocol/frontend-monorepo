@@ -4,7 +4,7 @@ import {
   // VegaIcon,
   // VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-// import { cn } from '@vegaprotocol/utils';
+// import { cn } from '@vegaprotocol/ui-toolkit';
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 
 // import { getExtensionApi } from '@/lib/extension-apis';

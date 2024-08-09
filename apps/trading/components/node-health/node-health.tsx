@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/environment';
 import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useMatch } from 'react-router-dom';
 
 export const NodeHealthContainer = ({

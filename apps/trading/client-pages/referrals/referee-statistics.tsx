@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useRefereeStats } from './hooks/use-referee-stats';
 import {
   BenefitTierTile,

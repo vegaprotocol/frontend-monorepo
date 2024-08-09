@@ -11,7 +11,7 @@ import { Links } from '../../lib/links';
 import orderBy from 'lodash/orderBy';
 import { take } from 'lodash';
 import { DispatchMetricLabels } from '@vegaprotocol/types';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
 import { type TeamGame } from '../../lib/hooks/use-games';
 import { Rank } from './graphics/rank';

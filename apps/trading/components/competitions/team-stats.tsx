@@ -14,7 +14,7 @@ import {
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
 import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type TeamGame } from '../../lib/hooks/use-games';
 
 export const TeamStats = ({

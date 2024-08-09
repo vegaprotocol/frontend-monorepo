@@ -19,7 +19,7 @@ import {
   type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
 import { TxStatus, type Status } from '@vegaprotocol/wallet-react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useLayoutEffect, useState } from 'react';
 
 export type FormFields = {

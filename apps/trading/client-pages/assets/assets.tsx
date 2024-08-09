@@ -1,6 +1,6 @@
 import { useT } from '../../lib/use-t';
 import { Links, Routes } from '../../lib/links';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   TradingDropdown,

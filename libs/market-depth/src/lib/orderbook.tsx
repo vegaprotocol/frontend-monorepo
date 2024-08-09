@@ -11,7 +11,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
 import { useT } from './use-t';

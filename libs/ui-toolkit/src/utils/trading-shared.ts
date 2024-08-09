@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const defaultSelectElement = (hasError?: boolean, disabled?: boolean) =>
   cn(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');

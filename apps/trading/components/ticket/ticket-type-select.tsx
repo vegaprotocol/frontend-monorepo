@@ -9,7 +9,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../lib/use-t';
 import { type TicketType } from './schemas';

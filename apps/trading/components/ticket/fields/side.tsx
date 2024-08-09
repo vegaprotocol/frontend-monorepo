@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import * as RadioGroup from '@radix-ui/react-toggle-group';
 
 import { Side as ESide } from '@vegaprotocol/types';

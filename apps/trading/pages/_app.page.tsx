@@ -17,7 +17,7 @@ import { HashRouter, useLocation } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
 import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeInProgressNotification,

@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction, ReactNode } from 'react';
 

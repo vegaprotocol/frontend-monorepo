@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getIntentBackground } from '../../utils/intent';
 import { Intent } from '../../utils/intent';
 

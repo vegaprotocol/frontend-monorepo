@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ChangeEvent } from 'react';
 
 // Supports controlled and uncontrolled setups.

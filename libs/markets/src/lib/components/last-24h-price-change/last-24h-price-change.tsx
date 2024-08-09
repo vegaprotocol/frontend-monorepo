@@ -9,7 +9,7 @@ import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 interface Props {
   marketId?: string;

@@ -21,7 +21,7 @@ import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
 import { Links } from '../../lib/links';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
 import { WalletIcon } from '../icons/wallet';

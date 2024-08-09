@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { RouteTitle } from '../route-title';

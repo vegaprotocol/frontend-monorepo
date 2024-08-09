@@ -1,6 +1,6 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { PartyVestingStats } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { formatNumber } from '@vegaprotocol/utils';

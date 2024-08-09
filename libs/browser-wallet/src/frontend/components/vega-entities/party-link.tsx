@@ -1,5 +1,5 @@
 import { ExternalLink, truncateMiddle } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useNetwork } from '@/contexts/network/network-context';
 

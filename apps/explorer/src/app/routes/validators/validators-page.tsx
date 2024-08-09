@@ -26,7 +26,7 @@ import {
   TOKEN_VALIDATOR,
   useLinks,
 } from '@vegaprotocol/environment';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { NodeStatus, NodeStatusMapping } from '@vegaprotocol/types';
 import Hash from '../../components/links/hash';
 

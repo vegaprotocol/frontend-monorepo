@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useReferrerStats } from './hooks/use-referrer-stats';
 import {
   BaseCommissionTile,

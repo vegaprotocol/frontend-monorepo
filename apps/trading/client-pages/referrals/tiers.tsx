@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/utils';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { Table } from '../../components/table';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from '../../components/helpers/tag';
 import { getTierColor, getTierGradient } from '../../components/helpers/tiers';

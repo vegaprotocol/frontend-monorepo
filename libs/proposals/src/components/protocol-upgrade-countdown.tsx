@@ -1,6 +1,6 @@
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { convertToCountdownString } from '@vegaprotocol/utils';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { useT } from '../use-t';

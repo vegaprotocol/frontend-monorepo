@@ -12,7 +12,7 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
 
 export const useEnvNameMapping: () => Record<Networks, string> = () => {

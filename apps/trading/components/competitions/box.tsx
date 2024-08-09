@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type HTMLAttributes } from 'react';
 
 export const BORDER_COLOR = 'border-gs-500 ';

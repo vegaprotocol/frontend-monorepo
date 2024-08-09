@@ -14,7 +14,7 @@ import {
   ProposalState,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import {

@@ -5,7 +5,7 @@ import {
   TradingDialog,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useState } from 'react';

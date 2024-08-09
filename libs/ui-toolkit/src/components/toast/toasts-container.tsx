@@ -1,5 +1,5 @@
 import { usePrevious } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 import { Button } from '../button';

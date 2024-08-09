@@ -1,6 +1,6 @@
 import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ElementRef, forwardRef, type ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';

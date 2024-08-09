@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';

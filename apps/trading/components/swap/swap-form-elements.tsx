@@ -15,7 +15,7 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const AssetInput = ({
   label,

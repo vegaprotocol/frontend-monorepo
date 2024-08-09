@@ -1,5 +1,5 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLProps, ReactNode } from 'react';
 
 export const Card = ({

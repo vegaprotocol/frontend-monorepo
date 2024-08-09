@@ -1,5 +1,5 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
 import '../src/styles.scss';
 export const parameters = {

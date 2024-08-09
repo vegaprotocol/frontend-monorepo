@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';

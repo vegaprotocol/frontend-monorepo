@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ComponentProps } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 

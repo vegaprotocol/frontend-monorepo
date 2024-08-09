@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Intent, AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import { useOnboardingStore } from '../../stores/onboarding';

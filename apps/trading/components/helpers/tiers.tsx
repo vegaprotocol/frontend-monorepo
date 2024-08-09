@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import type { Tag } from './tag';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 // rainbow-ish order
 export const TIER_COLORS: Array<ComponentProps<typeof Tag>['color']> = [

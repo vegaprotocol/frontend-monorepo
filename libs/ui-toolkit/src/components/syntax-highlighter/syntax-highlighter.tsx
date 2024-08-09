@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import Highlighter from 'react-syntax-highlighter';
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import isObject from 'lodash/isObject';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';

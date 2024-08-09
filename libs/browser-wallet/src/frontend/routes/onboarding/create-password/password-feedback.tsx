@@ -1,5 +1,5 @@
 import { InputError } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import zxcvbn from 'zxcvbn';
 
 const COLORS = [

@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {

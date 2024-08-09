@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import { BackgroundVideo } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const Restricted = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);

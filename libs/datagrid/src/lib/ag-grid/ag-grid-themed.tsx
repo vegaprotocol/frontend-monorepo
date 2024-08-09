@@ -1,7 +1,7 @@
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ColDef } from 'ag-grid-community';
 import { useT } from '../use-t';
 

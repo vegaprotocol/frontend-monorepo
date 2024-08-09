@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {

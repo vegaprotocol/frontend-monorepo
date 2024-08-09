@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/route-names';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
 import { determineType, isBlock, isHash, SearchTypes } from './detect-search';
 

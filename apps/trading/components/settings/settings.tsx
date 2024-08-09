@@ -11,7 +11,7 @@ import {
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
 export const SettingsPopover = () => {

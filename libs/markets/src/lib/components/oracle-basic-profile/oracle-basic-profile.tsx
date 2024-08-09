@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 import { useT } from '../../use-t';
 

@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';

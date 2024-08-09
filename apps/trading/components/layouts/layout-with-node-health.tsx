@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { NodeHealthContainer } from '../node-health';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const LayoutWithNodeHealth = () => {
   return (

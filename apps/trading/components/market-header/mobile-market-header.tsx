@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';

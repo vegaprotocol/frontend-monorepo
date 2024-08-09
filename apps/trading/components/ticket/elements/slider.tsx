@@ -1,5 +1,5 @@
 import * as SliderPrimitives from '@radix-ui/react-slider';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ComponentProps } from 'react';
 
 const markers = [0, 25, 50, 75, 100];

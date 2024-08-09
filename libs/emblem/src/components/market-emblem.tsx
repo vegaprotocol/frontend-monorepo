@@ -3,7 +3,7 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 import { t } from 'i18next';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for

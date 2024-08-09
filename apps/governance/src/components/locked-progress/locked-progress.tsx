@@ -2,7 +2,7 @@ import React from 'react';
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const Colors = theme.colors;
 

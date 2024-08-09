@@ -18,7 +18,7 @@ import { ProductSelector } from './product-selector';
 import { AssetDropdown } from './asset-dropdown';
 import { SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import flatten from 'lodash/flatten';
 import {

@@ -1,5 +1,5 @@
 import type { ReactNode, ReactElement } from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getIntentBorder, Intent } from '../../utils/intent';
 import { Loader } from '../loader';
 import type { IconName } from '../icon';

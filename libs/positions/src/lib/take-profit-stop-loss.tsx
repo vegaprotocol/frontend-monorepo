@@ -56,7 +56,7 @@ import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
 interface TakeProfitStopLossDialogProps {

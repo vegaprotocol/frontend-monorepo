@@ -17,7 +17,7 @@ import {
 import { useT } from '../../../lib/use-t';
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import {

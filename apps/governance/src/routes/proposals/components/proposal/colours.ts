@@ -1,4 +1,4 @@
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 // rainbow-ish order
 const COLOURS = ['red', 'pink', 'orange', 'yellow', 'green', 'blue', 'purple'];

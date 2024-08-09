@@ -1,7 +1,7 @@
 import { useVerifiedStatusIcon } from '@vegaprotocol/markets';
 import type { Provider } from '@vegaprotocol/markets';
 import { Icon, type IconName, Intent } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type OracleVerifiedStatusIconProps = {
   provider: Provider;

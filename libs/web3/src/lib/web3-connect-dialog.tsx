@@ -14,7 +14,7 @@ import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 
 interface Web3ConnectDialogProps {

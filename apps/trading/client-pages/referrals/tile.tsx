@@ -4,7 +4,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { ReferralButton } from './buttons';
 import { useT } from '../../lib/use-t';

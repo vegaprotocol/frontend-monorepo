@@ -29,7 +29,7 @@ import {
 } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
 import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 import { getAssetSymbol } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';

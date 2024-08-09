@@ -14,7 +14,7 @@ import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
 import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
 import { TicketContainer } from '../ticket';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { MarginModeToggle } from '../margin-mode';
 import { useSidebar, ViewType } from '../../lib/hooks/use-sidebar';
 

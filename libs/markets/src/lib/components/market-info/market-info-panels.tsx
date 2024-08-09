@@ -79,7 +79,7 @@ import {
 } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 import { getQuoteName, getAsset } from '../../market-utils';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import {
   NetworkParams,

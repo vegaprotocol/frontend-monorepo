@@ -1,6 +1,6 @@
 import type { ThHTMLAttributes } from 'react';
 import React from 'react';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 interface TableProps {
   allowWrap?: boolean;

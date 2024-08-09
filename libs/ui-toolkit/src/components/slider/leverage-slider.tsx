@@ -1,6 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import type { SliderProps } from '@radix-ui/react-slider';
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { SliderThumb } from './slider';
 
 export const LeverageSlider = (
