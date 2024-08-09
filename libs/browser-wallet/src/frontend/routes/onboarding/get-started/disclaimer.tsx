@@ -1,4 +1,4 @@
-import { AnchorButton, Dialog } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { ExternalLink } from '@/components/external-link';
@@ -93,12 +93,12 @@ export const Disclaimer = () => {
         private keys to their Vega Wallet and and should never share their seed
         phrase with anyone.
       </p>
-      <AnchorButton
+      <ButtonLink
         onClick={() => setOpen(true)}
         data-testid={locators.readMoreButton}
       >
         Read more
-      </AnchorButton>
+      </ButtonLink>
     </section>
   );
 };

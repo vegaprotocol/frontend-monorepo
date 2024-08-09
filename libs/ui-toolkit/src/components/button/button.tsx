@@ -8,7 +8,7 @@ import {
 import { Intent } from '../../utils/intent';
 import { Link } from 'react-router-dom';
 
-type ButtonProps = {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: 'lg' | 'md' | 'sm' | 'xs';
   intent?: Intent | null;
   children?: ReactNode;
@@ -51,10 +51,7 @@ const getClassName = (
     className
   );
 
-export const Button = forwardRef<
-  HTMLButtonElement,
-  ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
->(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       size = 'md',
@@ -81,6 +78,9 @@ export const Button = forwardRef<
   )
 );
 
+export type AnchorButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> &
+  ButtonProps & { href: string };
+
 export const AnchorButton = ({
   size = 'md',
   intent = Intent.None,
@@ -90,8 +90,7 @@ export const AnchorButton = ({
   className,
   fill,
   ...props
-}: AnchorHTMLAttributes<HTMLAnchorElement> &
-  ButtonProps & { href: string }) => (
+}: AnchorButtonProps) => (
   <Link
     to={href}
     className={getClassName({ size, intent, fill }, className)}

@@ -1,4 +1,4 @@
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { MessageIcon } from '@/components/icons/message';
@@ -48,13 +48,13 @@ export const WalletsPageKeyList = ({
         )}
       />
       <div className="mt-3 text-white">
-        <AnchorButton
+        <ButtonLink
           disabled={creatingKey}
           onClick={createKey}
           data-testid={locators.walletsCreateKey}
         >
           Create new key/pair
-        </AnchorButton>
+        </ButtonLink>
       </div>
     </>
   );

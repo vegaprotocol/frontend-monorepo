@@ -1,4 +1,10 @@
-import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  FormGroup,
+  Input,
+  InputError,
+  Intent,
+} from '@vegaprotocol/ui-toolkit';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
@@ -58,7 +64,7 @@ export const RenameKeyForm = ({
         fill={true}
         data-testid={locators.renameKeySubmit}
         className="mt-2"
-        variant="primary"
+        intent={Intent.Primary}
         type="submit"
         disabled={!newKeyName || keyNameTooLong || !newKeyName.trim()}
       >

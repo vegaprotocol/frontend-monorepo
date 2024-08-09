@@ -62,13 +62,13 @@ export const TeamCard = ({
         </h1>
         {games && <FavoriteGame games={games} noLabel />}
         <AnchorButton
-          size="extra-small"
+          size="xs"
           intent={Intent.Primary}
           href={Links.COMPETITIONS_TEAM(team.teamId)}
         >
           {t('Profile')}
         </AnchorButton>
-        <UpdateTeamButton team={team} size="extra-small" />
+        <UpdateTeamButton team={team} size="xs" />
       </Box>
 
       {/** Tiles */}

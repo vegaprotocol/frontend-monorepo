@@ -6,7 +6,7 @@ import {
   ExternalLink,
   Intent,
   Tooltip,
-  TradingAnchorButton,
+  AnchorButton,
   Button,
   TradingDialog,
   VegaIcon,
@@ -247,13 +247,13 @@ const CreateCodeDialog = ({
             }
           )}
         </p>
-        <TradingAnchorButton
+        <AnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
           intent={Intent.Primary}
           target="_blank"
         >
           {t('Stake some $VEGA now')}
-        </TradingAnchorButton>
+        </AnchorButton>
       </div>
     );
   }

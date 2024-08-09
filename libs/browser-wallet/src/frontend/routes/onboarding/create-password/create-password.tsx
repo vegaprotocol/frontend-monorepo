@@ -1,4 +1,4 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -106,7 +106,7 @@ export const CreatePassword = () => {
             fill={true}
             data-testid={locators.submitPassphraseButton}
             className="mt-8"
-            variant="primary"
+            intent={Intent.Primary}
             type="submit"
             disabled={
               !!errors.confirmPassword?.message ||

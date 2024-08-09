@@ -1,6 +1,6 @@
 import {
   Loader,
-  TradingAnchorButton,
+  AnchorButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -83,9 +83,9 @@ export const Referrals = () => {
 
       <section className="py-14 flex flex-col justify-center items-center gap-4">
         <h2 className="text-2xl">{t('How it works')}</h2>
-        <TradingAnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
+        <AnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
           {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-        </TradingAnchorButton>
+        </AnchorButton>
       </section>
     </ErrorBoundary>
   );

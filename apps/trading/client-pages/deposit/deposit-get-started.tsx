@@ -1,5 +1,5 @@
 import { cn } from '@vegaprotocol/utils';
-import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import { useOnboardingStore } from '../../stores/onboarding';
 import {
@@ -31,13 +31,13 @@ export const DepositGetStarted = () => {
         <h3 className="text-lg">{t('Get started')}</h3>
         <GetStartedCheckList />
         {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
-          <TradingAnchorButton
+          <AnchorButton
             href={Links.HOME()}
             onClick={() => dismiss()}
             intent={Intent.Info}
           >
             {t('Start trading')}
-          </TradingAnchorButton>
+          </AnchorButton>
         )}
       </div>
     </div>

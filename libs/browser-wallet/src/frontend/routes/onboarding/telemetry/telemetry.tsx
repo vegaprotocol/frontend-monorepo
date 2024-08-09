@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -87,7 +87,7 @@ export const Telemetry = () => {
             disabled={loading}
             fill={true}
             type="submit"
-            variant="primary"
+            intent={Intent.Primary}
           >
             Opt into error reporting
           </Button>

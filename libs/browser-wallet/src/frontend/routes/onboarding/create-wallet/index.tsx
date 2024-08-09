@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 
 import { Header } from '@/components/header';
@@ -26,7 +26,7 @@ export const CreateWallet = () => {
           navigate(FULL_ROUTES.saveMnemonic);
         }}
         className="mt-6 mb-4"
-        variant="primary"
+        intent={Intent.Primary}
       >
         Create a wallet
       </Button>

@@ -2,7 +2,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   CopyWithTooltip,
   Intent,
-  TradingAnchorButton,
+  AnchorButton,
   Button,
   TradingDialog,
   VegaIcon,
@@ -156,13 +156,13 @@ const CreateTeamFormContainer = ({
             )}
           </p>
         )}
-        <TradingAnchorButton
+        <AnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
           intent={Intent.Primary}
           target="_blank"
         >
           {t('Stake some $VEGA now')}
-        </TradingAnchorButton>
+        </AnchorButton>
       </div>
     );
   }

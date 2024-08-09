@@ -5,7 +5,7 @@ import {
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
-  AnchorButton,
+  ButtonLink,
   Dialog,
   KeyValueTable,
   KeyValueTableRow,
@@ -42,11 +42,11 @@ export const OrderViewDialog = ({
           <div data-testid={'order-market-label'}>{t('Market')}</div>
           <div data-testid={`order-market-value`}>
             {onMarketClick ? (
-              <AnchorButton
+              <ButtonLink
                 onClick={() => order.market && onMarketClick(order.market?.id)}
               >
                 {order.market?.tradableInstrument.instrument.name}
-              </AnchorButton>
+              </ButtonLink>
             ) : (
               order.market?.tradableInstrument.instrument.name
             )}
