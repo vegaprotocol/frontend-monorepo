@@ -23,8 +23,6 @@ export * from './language-selector';
 export * from './link';
 export * from './loader';
 export * from './lozenge';
-export * from './nav-dropdown';
-export * from './nav';
 export * from './navigation';
 export * from './notification';
 export * from './notification-banner';
@@ -60,7 +58,6 @@ export * from './highlight-progress-bar';
 export * from './epoch-countdown';
 
 // Trading specific components
-export * from './trading-button';
 export * from './trading-checkbox';
 export * from './trading-dialog';
 export * from './trading-dropdown';

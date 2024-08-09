@@ -10,7 +10,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useNodeDataQuery } from './__generated__/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {
@@ -59,7 +59,7 @@ const Home = ({ name }: RouteChildProps) => {
         </p>
         <Link to={Routes.REDEEM}>
           <Button
-            variant="primary"
+            intent={Intent.Primary}
             size="md"
             data-testid="check-vesting-page-btn"
           >

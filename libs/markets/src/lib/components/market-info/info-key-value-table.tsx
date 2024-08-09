@@ -88,13 +88,13 @@ export const Row = ({
         </Tooltip>
 
         {valueDiffersFromParentMarket && (
-          <Lozenge className="py-0" variant={Intent.Primary}>
+          <Lozenge className="py-0" intent={Intent.Primary}>
             {t('Updated')}
           </Lozenge>
         )}
 
         {newValueInSuccessorMarket && (
-          <Lozenge className="py-0" variant={Intent.Primary}>
+          <Lozenge className="py-0" intent={Intent.Primary}>
             {t('Added')}
           </Lozenge>
         )}

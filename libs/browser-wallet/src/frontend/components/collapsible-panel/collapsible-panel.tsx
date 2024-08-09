@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
@@ -19,7 +19,7 @@ export const CollapsiblePanel = ({
   return (
     <div data-testid={locators.collapsiblePanel}>
       <button
-        className={classnames('flex justify-between w-full', {
+        className={cn('flex justify-between w-full', {
           'mb-4': isOpen,
         })}
         onClick={() => setIsOpen(!isOpen)}
@@ -27,7 +27,7 @@ export const CollapsiblePanel = ({
       >
         <SubHeader content={title} />
         <DropdownArrow
-          className={classnames('w-3 ml-3 mb-1', {
+          className={cn('w-3 ml-3 mb-1', {
             'rotate-180': isOpen,
           })}
         />

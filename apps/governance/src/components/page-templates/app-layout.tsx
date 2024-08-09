@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { ReactNode } from 'react';
 import { AnnouncementBanner } from '@vegaprotocol/announcements';
@@ -18,7 +18,7 @@ interface AppLayoutProps {
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   const { isReadOnly } = useVegaWallet();
-  const AppLayoutClasses = classNames(
+  const AppLayoutClasses = cn(
     'app w-full max-w-[1500px] mx-auto grid',
     'font-alpha lg:text-body-large',
     {

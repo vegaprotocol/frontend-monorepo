@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import styles from './loader.module.scss';
 
 export const pseudoRandom = (seed: number) => {
@@ -17,7 +17,7 @@ export interface LoaderProps {
 }
 
 export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
-  const itemClasses = classNames('loader-item', styles['loader-item'], {
+  const itemClasses = cn('loader-item', styles['loader-item'], {
     'dark:bg-white bg-black': !forceTheme,
     'bg-white': forceTheme === 'dark',
     'bg-black': forceTheme === 'light',

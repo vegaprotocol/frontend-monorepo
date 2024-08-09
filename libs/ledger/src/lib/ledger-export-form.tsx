@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import {
   InputError,
   Intent,
-  TradingButton,
+  Button,
   TradingFormGroup,
   TradingInput,
   TradingSelect,
@@ -284,9 +284,9 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         )}
       />
       <div className="relative text-sm" title={t('Download all to .csv file')}>
-        <TradingButton fill type="submit" data-testid="ledger-download-button">
+        <Button fill type="submit" data-testid="ledger-download-button">
           {t('Download')}
-        </TradingButton>
+        </Button>
       </div>
       {offset ? (
         <p className="text-xs text-gs-100 mt-1">

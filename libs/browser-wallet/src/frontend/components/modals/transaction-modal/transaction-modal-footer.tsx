@@ -1,4 +1,4 @@
-import { Button, Checkbox } from '@vegaprotocol/ui-toolkit';
+import { Button, Checkbox, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
@@ -57,7 +57,7 @@ export const TransactionModalFooter = ({
         </Button>
         <Button
           data-testid={locators.transactionModalApproveButton}
-          variant="primary"
+          intent={Intent.Primary}
           onClick={() => handleDecision(true)}
         >
           Confirm

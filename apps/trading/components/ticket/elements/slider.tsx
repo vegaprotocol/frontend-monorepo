@@ -1,5 +1,5 @@
 import * as SliderPrimitives from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ComponentProps } from 'react';
 
 const markers = [0, 25, 50, 75, 100];
@@ -9,7 +9,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
     <div className="flex flex-col gap-0.5">
       <SliderPrimitives.Root
         {...props}
-        className={classNames(
+        className={cn(
           'relative flex items-center select-none touch-none w-full height-10 py-1.5',
           {
             'opacity-50': props.disabled,
@@ -23,7 +23,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
               <button
                 key={m}
                 type="button"
-                className={classNames('relative -top-1 w-3 h-3 rounded-full', {
+                className={cn('relative -top-1 w-3 h-3 rounded-full', {
                   'bg-gs-100 ':
                     props.value !== undefined && props.value[0] >= m,
                   'bg-gs-500 ': props.value === undefined || props.value[0] < m,
@@ -52,7 +52,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
             <span key={m} className="w-3 relative">
               <button
                 type="button"
-                className={classNames('absolute text-xs text-muted', {
+                className={cn('absolute text-xs text-muted', {
                   'left-1/2 -translate-x-1/2': isMiddle,
                   'left-0': i === 0,
                   'right-0': i === markers.length - 1,

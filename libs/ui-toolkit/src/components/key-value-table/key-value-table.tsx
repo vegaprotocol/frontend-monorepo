@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import * as React from 'react';
 
 export interface KeyValueTableProps
@@ -65,7 +65,7 @@ export const KeyValueTableRow = ({
   ddClassName,
   id,
 }: KeyValueTableRowProps) => {
-  const dlClassName = classNames(
+  const dlClassName = cn(
     'flex gap-1 flex-wrap justify-between py-1 text-sm items-start',
     {
       'border-b border-gs-600': !noBorder,
@@ -74,8 +74,8 @@ export const KeyValueTableRow = ({
     { 'flex-row': inline },
     className
   );
-  const dtClassNames = classNames('break-words', dtClassName, 'text-gs-100');
-  const ddClassNames = classNames(
+  const dtClassNames = cn('break-words', dtClassName, 'text-gs-100');
+  const ddClassNames = cn(
     'break-words',
     {
       'font-mono': numerical,

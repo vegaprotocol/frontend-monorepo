@@ -49,7 +49,6 @@ export const ExportRecoveryPhraseForm = ({
         fill={true}
         onClick={onClose}
         className="mt-2"
-        variant="default"
       >
         Close
       </Button>

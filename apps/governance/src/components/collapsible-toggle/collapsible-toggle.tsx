@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction, ReactNode } from 'react';
 
@@ -15,7 +15,7 @@ export const CollapsibleToggle = ({
   dataTestId,
   children,
 }: CollapsibleToggleProps) => {
-  const classes = classnames('transition-transform ease-in-out duration-300', {
+  const classes = cn('transition-transform ease-in-out duration-300', {
     'rotate-180': toggleState,
   });
 

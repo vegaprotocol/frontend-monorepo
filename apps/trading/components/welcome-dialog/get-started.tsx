@@ -1,11 +1,11 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   ExternalLink,
   Intent,
-  TradingAnchorButton,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
+  AnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
@@ -32,14 +32,14 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const marketId = useGlobalStore((store) => store.marketId);
 
   const buttonProps = {
-    size: 'small' as const,
+    size: 'sm' as const,
     'data-testid': 'get-started-button',
     intent: Intent.Info,
   };
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton
+      <Button
         {...buttonProps}
         onClick={() => {
           if (VEGA_ENV === Networks.MAINNET && risk !== 'accepted') {
@@ -50,22 +50,22 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         }}
       >
         {t('Connect')}
-      </TradingButton>
+      </Button>
     );
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
     return (
-      <TradingAnchorButton
+      <AnchorButton
         {...buttonProps}
         href={Links.DEPOSIT()}
         onClick={() => setDialog('inactive')}
       >
         {t('Deposit')}
-      </TradingAnchorButton>
+      </AnchorButton>
     );
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
     const link = marketId ? Links.MARKET(marketId) : Links.HOME();
     return (
-      <TradingAnchorButton
+      <AnchorButton
         {...buttonProps}
         href={link}
         onClick={() => {
@@ -73,14 +73,14 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         }}
       >
         {t('Ready to trade')}
-      </TradingAnchorButton>
+      </AnchorButton>
     );
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => setDialog('connect')}>
+    <Button {...buttonProps} onClick={() => setDialog('connect')}>
       {t('Get started')}
-    </TradingButton>
+    </Button>
   );
 };
 
@@ -119,7 +119,7 @@ export const GetStarted = ({ lead }: Props) => {
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'flex flex-col py-4 px-6 gap-4 rounded',
     'bg-vega-blue-300 dark:bg-vega-blue-700',
     'border border-vega-blue-350 dark:border-vega-blue-650',
@@ -182,14 +182,14 @@ export const GetStarted = ({ lead }: Props) => {
             ]}
           />
         </p>
-        <TradingButton
+        <Button
           onClick={openVegaWalletDialog}
-          size="small"
+          size="sm"
           data-testid="order-connect-wallet"
           intent={Intent.Info}
         >
           {t('Connect wallet')}
-        </TradingButton>
+        </Button>
       </div>
     );
   }
@@ -208,7 +208,7 @@ const Step = ({
 }) => {
   return (
     <li
-      className={classNames('flex', {
+      className={cn('flex', {
         'text-gs-200 ': complete,
       })}
     >

@@ -83,7 +83,7 @@ const RedemptionRouter = () => {
         ) : (
           <Button
             fill={true}
-            variant="primary"
+            intent={Intent.Primary}
             onClick={() => navigate(`${RoutesConfig.REDEEM}/${account}`)}
             data-testid="view-connected-eth-btn"
           >

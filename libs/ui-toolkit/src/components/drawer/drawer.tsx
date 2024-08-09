@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { Icon } from '../icon';
 
@@ -26,7 +26,7 @@ export function Drawer({
   showClose,
   trigger,
 }: DrawerProps) {
-  const contentClasses = classNames(
+  const contentClasses = cn(
     'group/drawer',
     'h-full max-w-[500px] w-[90vw] z-10 top-0 right-0 fixed transition-transform',
     className,
@@ -36,7 +36,7 @@ export function Drawer({
     }
   );
 
-  const overlayClass = classNames('inset-0 bg-black/50 z-20', {
+  const overlayClass = cn('inset-0 bg-black/50 z-20', {
     hidden: !open,
     fixed: open,
   });

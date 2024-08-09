@@ -16,7 +16,7 @@ import {
   Dialog,
   VegaIcon,
   VegaIconNames,
-  TradingButton,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
@@ -162,7 +162,7 @@ export const OrderEditDialog = ({
             )}
           </TradingFormGroup>
         </div>
-        <TradingButton type="submit">{t('Update')}</TradingButton>
+        <Button type="submit">{t('Update')}</Button>
       </form>
     </Dialog>
   );

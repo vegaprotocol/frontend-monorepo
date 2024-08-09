@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
@@ -30,7 +30,7 @@ export const CollapsibleCard = ({
         {title}
         <div>
           <DropdownArrow
-            className={classnames('w-3 ml-3 mb-1', {
+            className={cn('w-3 ml-3 mb-1', {
               'rotate-180': isOpen,
             })}
           />
@@ -38,7 +38,7 @@ export const CollapsibleCard = ({
       </button>
       <div
         data-testid={locators.collapsibleCardContent}
-        className={classnames('p-3', { hidden: !isOpen })}
+        className={cn('p-3', { hidden: !isOpen })}
       >
         {cardContent}
       </div>

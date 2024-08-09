@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface SplashProperties extends HTMLAttributes<HTMLDivElement> {
@@ -18,14 +18,14 @@ export function Splash({
   return (
     <div
       {...properties}
-      className={classnames(
+      className={cn(
         'bg-black z-[15] fixed flex flex-col items-center justify-start',
         'w-full h-full top-0 left-0 right-0 overflow-y-auto text-white',
         className
       )}
     >
       <div
-        className={classnames('h-full w-full min-h-full max-w-full', {
+        className={cn('h-full w-full min-h-full max-w-full', {
           'flex flex-col justify-center': centered,
         })}
       >

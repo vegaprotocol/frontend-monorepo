@@ -2,6 +2,7 @@ import {
   Button,
   CopyWithTooltip,
   Dialog,
+  Intent,
   KeyValueTable,
   KeyValueTableRow,
   Splash,
@@ -126,7 +127,7 @@ const WithdrawalApprovalDialogContent = ({
               <Button
                 className="flex gap-1 items-center no-underline"
                 size="xs"
-                variant="primary"
+                intent={Intent.Primary}
               >
                 <VegaIcon name={VegaIconNames.COPY} size={14} />
                 <span className="text-sm no-underline">{t('Copy')}</span>

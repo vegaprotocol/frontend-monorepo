@@ -4,7 +4,7 @@ import {
   Input,
   InputError,
   Intent,
-  TradingButton,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { useForm } from 'react-hook-form';
@@ -138,9 +138,9 @@ const ProfileForm = ({
           </InputError>
         )}
       </FormGroup>
-      <TradingButton type="submit" intent={Intent.Info}>
+      <Button type="submit" intent={Intent.Info}>
         {t('Submit')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };

@@ -66,7 +66,7 @@ export const ApproveNotification = ({
           { assetSymbol: selectedAsset?.symbol }
         )}
         buttonProps={{
-          size: 'small',
+          size: 'sm',
           text: t('Approve {{assetSymbol}}', {
             assetSymbol: selectedAsset?.symbol,
           }),
@@ -81,7 +81,7 @@ export const ApproveNotification = ({
     allowance: formatNumber(balances.allowance.toString()),
   });
   const buttonProps = {
-    size: 'small' as const,
+    size: 'sm' as const,
     text: t('Approve {{assetSymbol}}', {
       assetSymbol: selectedAsset?.symbol,
     }),

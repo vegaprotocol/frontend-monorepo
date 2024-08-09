@@ -1,5 +1,5 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLProps, ReactNode } from 'react';
 
 export const Card = ({
@@ -24,7 +24,7 @@ export const Card = ({
   return (
     <div
       data-testid={testId}
-      className={classNames(
+      className={cn(
         'relative col-span-full lg:col-auto',
         'rounded-lg',
         {
@@ -41,7 +41,7 @@ export const Card = ({
             mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
             maskComposite: 'exclude',
           }}
-          className={classNames(
+          className={cn(
             'absolute inset-0 p-px bg-gradient-to-br rounded-lg pointer-events-none',
             {
               'from-vega-blue to-vega-green': variant === 'cool',
@@ -80,7 +80,7 @@ export const CardStat = ({
 }) => {
   const val = (
     <span
-      className={classNames('inline-block text-3xl leading-none', {
+      className={cn('inline-block text-3xl leading-none', {
         'bg-rainbow bg-clip-text text-transparent': highlight,
         'cursor-help': description,
       })}
@@ -110,15 +110,10 @@ export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
 
 export const CardTableTH = (props: HTMLProps<HTMLTableHeaderCellElement>) => {
   return (
-    <th
-      {...props}
-      className={classNames('text-left font-normal', props.className)}
-    />
+    <th {...props} className={cn('text-left font-normal', props.className)} />
   );
 };
 
 export const CardTableTD = (props: HTMLProps<HTMLTableCellElement>) => {
-  return (
-    <td {...props} className={classNames('text-right', props.className)} />
-  );
+  return <td {...props} className={cn('text-right', props.className)} />;
 };

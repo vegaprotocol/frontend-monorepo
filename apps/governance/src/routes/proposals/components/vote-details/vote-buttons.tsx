@@ -7,6 +7,7 @@ import {
   Button,
   ButtonLink,
   ExternalLink,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
@@ -255,7 +256,7 @@ export const VoteButtons = ({
             <Button
               data-testid="vote-for"
               onClick={() => submitVote(VoteValue.VALUE_YES)}
-              variant="primary"
+              intent={Intent.Primary}
               disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteFor')}
@@ -263,7 +264,7 @@ export const VoteButtons = ({
             <Button
               data-testid="vote-against"
               onClick={() => submitVote(VoteValue.VALUE_NO)}
-              variant="primary"
+              intent={Intent.Primary}
               disabled={currentStakeAvailable.isLessThanOrEqualTo(0)}
             >
               {t('voteAgainst')}

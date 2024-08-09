@@ -1,5 +1,5 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { type ReactNode } from 'react';
 
@@ -26,13 +26,13 @@ export const TradingDialog = ({
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content
-          className={classNames(
+          className={cn(
             'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
             'w-full h-full'
           )}
         >
           <div
-            className={classNames(
+            className={cn(
               'z-20 relative top-[5vw] pb-[5vw]',
               'w-10/12 max-w-[512px]',
               'mx-auto'
@@ -40,7 +40,7 @@ export const TradingDialog = ({
           >
             <div
               data-testid="dialog-content"
-              className={classNames(
+              className={cn(
                 'border rounded-md',
                 'p-8',
                 'border-gs-600 ',
@@ -48,7 +48,7 @@ export const TradingDialog = ({
                 'text-gs-50 '
               )}
             >
-              <div className={classNames('flex justify-between items-center')}>
+              <div className={cn('flex justify-between items-center')}>
                 <DialogPrimitives.Title className="text-3xl font-alpha calt">
                   {title}
                 </DialogPrimitives.Title>

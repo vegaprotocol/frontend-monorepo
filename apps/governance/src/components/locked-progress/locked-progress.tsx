@@ -2,17 +2,12 @@ import React from 'react';
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const Colors = theme.colors;
 
 const ProgressContents = ({ children }: { children: React.ReactNode }) => (
-  <div
-    className={classnames(
-      'flex justify-between font-mono mb-2',
-      'gap-y-0 gap-x-4'
-    )}
-  >
+  <div className={cn('flex justify-between font-mono mb-2', 'gap-y-0 gap-x-4')}>
     {children}
   </div>
 );
@@ -30,7 +25,7 @@ const ProgressIndicator = ({
     style={{
       backgroundColor: bgColor,
     }}
-    className={classnames('inline-block w-4 h-4 border', {
+    className={cn('inline-block w-4 h-4 border', {
       'mr-2': side === 'left',
       'ml-2': side === 'right',
       'border-black': light,

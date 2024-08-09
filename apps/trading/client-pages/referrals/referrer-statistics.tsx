@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useReferrerStats } from './hooks/use-referrer-stats';
 import {
   BaseCommissionTile,
@@ -45,7 +45,7 @@ export const ReferrerStatistics = ({
       data-as="referrer"
       className="relative mx-auto"
     >
-      <div className={classNames('grid grid-cols-1 grid-rows-1 gap-5')}>
+      <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
         {/** TEAM TILE - referral set id is the same as team id */}
         <TeamTile teamId={setId} />
         {/** TILES ROW 1 */}

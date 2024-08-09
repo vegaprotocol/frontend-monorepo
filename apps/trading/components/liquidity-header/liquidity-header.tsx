@@ -105,7 +105,7 @@ export const LiquidityHeader = () => {
         heading={t('Liquidity supplied')}
         data-testid="liquidity-supplied"
       >
-        <Indicator variant={status} /> {formatNumberPercentage(percentage, 2)}
+        <Indicator intent={status} /> {formatNumberPercentage(percentage, 2)}
       </HeaderStat>
       <HeaderStat
         heading={t('Fees paid')}

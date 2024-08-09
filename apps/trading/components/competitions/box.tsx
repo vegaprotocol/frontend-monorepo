@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type HTMLAttributes } from 'react';
 
 export const BORDER_COLOR = 'border-gs-500 ';
@@ -12,7 +12,7 @@ export const Box = ({
   return (
     <div
       {...props}
-      className={classNames(
+      className={cn(
         BORDER_COLOR,
         GRADIENT,
         'border rounded-lg',
@@ -22,7 +22,7 @@ export const Box = ({
     >
       {Boolean(backgroundImage?.length) && (
         <div
-          className={classNames(
+          className={cn(
             'pointer-events-none',
             'bg-no-repeat bg-center bg-[length:500px_500px]',
             'absolute top-0 left-0 w-full h-full -z-10 opacity-30 blur-lg'

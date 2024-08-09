@@ -75,7 +75,7 @@ export const ProposalDate = ({ terms, id }: ProposalDateProps) => {
   const proposal = data?.proposal as Proposal;
 
   return (
-    <Lozenge className="font-sans text-xs float-right">
+    <Lozenge className="text-xs float-right">
       {getDate(proposal, terms)}
     </Lozenge>
   );

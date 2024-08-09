@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode, AnchorHTMLAttributes } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 
@@ -10,7 +10,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
  * Form an HTML link tag
  */
 export const Link = ({ className, children, ...props }: LinkProps) => {
-  const anchorClassName = classNames(className, {
+  const anchorClassName = cn(className, {
     'underline underline-offset-4': typeof children === 'string',
     'cursor-pointer': props['aria-disabled'] !== true,
     'opacity-50 pointer-events-none': props['aria-disabled'] === true,
@@ -42,7 +42,7 @@ Link.displayName = 'Link';
 
 export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   <Link
-    className={classNames(
+    className={cn(
       'inline-flex items-center gap-1 underline underline-offset-4',
       className
     )}
@@ -53,9 +53,7 @@ export const ExternalLink = ({ children, className, ...props }: LinkProps) => (
   >
     {typeof children === 'string' ? (
       <>
-        <span
-          className={classNames({ underline: typeof children === 'string' })}
-        >
+        <span className={cn({ underline: typeof children === 'string' })}>
           {children}
         </span>
         <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />

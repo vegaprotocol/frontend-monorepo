@@ -1,4 +1,5 @@
 import {
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
@@ -62,7 +63,15 @@ export const Dropdown = ({ enabled, trigger, content }: DropdownProperties) => {
             data-testid={locators.dropdownTrigger}
             className="border-0"
           >
-            <WrappedTrigger clickable={true} trigger={trigger} />
+            <button
+              className={cn(
+                'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
+                'border-gs-200',
+                'hover:border-gs-300'
+              )}
+            >
+              <WrappedTrigger clickable={true} trigger={trigger} />
+            </button>
           </DropdownMenuTrigger>
         }
       >

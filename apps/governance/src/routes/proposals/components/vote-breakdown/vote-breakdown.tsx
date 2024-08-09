@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import countBy from 'lodash/countBy';
 import { useState, type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
@@ -44,17 +44,17 @@ const VoteProgress = ({
   testId,
   children,
 }: VoteProgressProps) => {
-  const containerClasses = classNames(
+  const containerClasses = cn(
     'relative h-2 rounded-md overflow-hidden',
     colourfulBg ? 'bg-vega-red' : 'bg-gs-200'
   );
 
-  const progressClasses = classNames(
+  const progressClasses = cn(
     'absolute h-full top-0 left-0',
     colourfulBg ? 'bg-vega-green' : 'bg-white'
   );
 
-  const textClasses = classNames(
+  const textClasses = cn(
     'w-full flex items-center justify-start text-white text-sm pb-1'
   );
 
@@ -528,12 +528,10 @@ const VoteBreakDownUI = ({
     ? t('byTokenVote')
     : t('byLiquidityVote');
 
-  const sectionWrapperClasses = classNames(
-    'flex justify-between flex-wrap gap-6'
-  );
-  const sectionClasses = classNames('min-w-[300px] flex-1 flex-grow');
-  const headingClasses = classNames('mb-2 text-sm text-white font-bold');
-  const progressDetailsClasses = classNames(
+  const sectionWrapperClasses = cn('flex justify-between flex-wrap gap-6');
+  const sectionClasses = cn('min-w-[300px] flex-1 flex-grow');
+  const headingClasses = cn('mb-2 text-sm text-white font-bold');
+  const progressDetailsClasses = cn(
     'flex justify-between flex-wrap mt-2 text-sm'
   );
 

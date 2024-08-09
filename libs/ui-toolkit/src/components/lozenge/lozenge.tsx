@@ -1,27 +1,25 @@
 import type { ReactNode } from 'react';
-import classNames from 'classnames';
-import { getIntentTextAndBackground } from '../../utils/intent';
+import { cn } from '../../utils/cn';
+import { getIntentBackground, getIntentText } from '../../utils/intent';
 import type { Intent } from '../../utils/intent';
 
 interface LozengeProps {
   children: ReactNode;
-  variant?: Intent;
+  intent?: Intent;
   className?: string;
 }
 
-const getLozengeClasses = (
-  variant?: LozengeProps['variant'],
-  className?: string
-) => {
-  return classNames(
-    ['rounded-md', 'font-mono', 'leading-none', 'px-2 py-1'],
-    getIntentTextAndBackground(variant),
-    className
-  );
-};
-
-export const Lozenge = ({ children, variant, className }: LozengeProps) => {
+export const Lozenge = ({ children, intent, className }: LozengeProps) => {
   return (
-    <span className={getLozengeClasses(variant, className)}>{children}</span>
+    <span
+      className={cn(
+        ['rounded-md', 'font-mono', 'leading-none', 'px-2 py-1'],
+        getIntentBackground(intent),
+        getIntentText(intent),
+        className
+      )}
+    >
+      {children}
+    </span>
   );
 };

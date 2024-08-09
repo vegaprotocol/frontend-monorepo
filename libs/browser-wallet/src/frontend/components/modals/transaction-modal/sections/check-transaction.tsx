@@ -56,7 +56,6 @@ const CheckTransactionResult = ({
     return (
       <Notification
         testId={locators.checkTransactionLoading}
-        intent={Intent.None}
         message={
           <div className="flex flex-row justify-between">
             <span className="mr-2">Checking transaction validity</span>

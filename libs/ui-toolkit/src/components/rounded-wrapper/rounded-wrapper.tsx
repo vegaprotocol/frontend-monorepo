@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 
 export interface RoundedWrapperProps {
@@ -7,7 +7,7 @@ export interface RoundedWrapperProps {
   paddingBottom?: boolean;
   marginBottomLarge?: boolean;
   heightFull?: boolean;
-  className?: classNames.Argument;
+  className?: string;
 }
 
 export const RoundedWrapper = ({
@@ -19,7 +19,7 @@ export const RoundedWrapper = ({
   className,
 }: RoundedWrapperProps) => (
   <div
-    className={classNames(
+    className={cn(
       'rounded-xl pt-4 px-4 overflow-hidden',
       {
         'border border-gs-400': border,

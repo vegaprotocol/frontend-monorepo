@@ -10,7 +10,7 @@ import {
   VegaIcon,
   VegaIconNames,
   Tooltip,
-  TradingAnchorButton,
+  AnchorButton,
   Intent,
   CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
@@ -179,14 +179,14 @@ const TeamPage = ({
             {team.teamUrl && team.teamUrl.length > 0 && (
               <Tooltip description={t("Visit the team's page.")}>
                 <span>
-                  <TradingAnchorButton
+                  <AnchorButton
                     intent={Intent.Info}
                     target="_blank"
                     referrerPolicy="no-referrer"
                     href={team.teamUrl}
                   >
                     <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-                  </TradingAnchorButton>
+                  </AnchorButton>
                 </span>
               </Tooltip>
             )}

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Outlet } from 'react-router-dom';
 
 export const SKY_BACKGROUND =
@@ -11,7 +11,7 @@ export const LayoutCentered = ({
 }) => {
   return (
     <div
-      className={classNames('overflow-y-auto h-full relative', {
+      className={cn('overflow-y-auto h-full relative', {
         [SKY_BACKGROUND]: variant === 'sky',
       })}
     >

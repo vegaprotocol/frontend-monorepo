@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Intent,
-  TradingButton,
+  Button,
   TradingInput,
   VegaIcon,
   VegaIconNames,
@@ -15,7 +15,7 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const AssetInput = ({
   label,
@@ -147,11 +147,11 @@ export const PriceImpactInput = ({
         </div>
         <div className="flex justify-end">
           {autoValues.map((val) => (
-            <TradingButton
+            <Button
               intent={Intent.None}
               disabled={disabled}
-              size="small"
-              className={classNames('mr-2', {
+              size="sm"
+              className={cn('mr-2', {
                 ' bg-gs-700': val === value,
               })}
               key={val}
@@ -163,7 +163,7 @@ export const PriceImpactInput = ({
               data-testid={`auto-value-${val}`}
             >
               {val}%
-            </TradingButton>
+            </Button>
           ))}
         </div>
         {Number(value) >= 100 && (

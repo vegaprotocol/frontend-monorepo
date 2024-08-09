@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import {
@@ -26,7 +26,7 @@ import { EthWalletContainer } from './components/eth-wallet-container';
 import { useWeb3React } from '@web3-react/core';
 import type { InMemoryCacheConfig } from '@apollo/client';
 
-const pageWrapperClasses = classnames(
+const pageWrapperClasses = cn(
   'min-h-screen w-screen',
   'grid grid-rows-[auto,1fr]',
   'bg-gs-900',

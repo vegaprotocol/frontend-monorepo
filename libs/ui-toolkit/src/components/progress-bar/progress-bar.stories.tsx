@@ -34,7 +34,7 @@ None.args = {
 
 export const Primary = Template.bind({});
 Primary.args = {
-  variant: 'Primary',
+  intent: 'Primary',
   value: 10,
 };
 

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 type BreadcrumbsProps = {
@@ -13,7 +13,7 @@ export const Breadcrumbs = ({
   const crumbs = elements.map((crumb, i) => (
     <li
       key={i}
-      className={classNames(
+      className={cn(
         'before:content-["/"] before:pr-2 before:text-gs-300 before:float-left',
         'overflow-hidden text-ellipsis leading-loose'
       )}
@@ -23,7 +23,7 @@ export const Breadcrumbs = ({
   ));
   return crumbs.length > 0 ? (
     <ol
-      className={classNames(
+      className={cn(
         ['flex flex-row flex-wrap gap-2', 'text-sm sm:text-base'],
         className
       )}

@@ -18,6 +18,41 @@
     --gs-700: 32 34 39;
     --gs-800: 23 25 30;
     --gs-900: 5 6 12;
+
+    /* Intent Variants */
+    --intent-none: transparent;
+    --intent-none-outline: 209 210 211;
+    --intent-none-foreground: 255 255 255;
+
+    --intent-primary: 0 117 255;
+    --intent-primary-outline: 0 117 255;
+    --intent-primary-foreground: 255 255 255;
+
+    --intent-secondary: 0 117 255;
+    --intent-secondary-outline: 0 117 255;
+    --intent-secondary-foreground: 255 255 255;
+
+    --intent-danger: 236 0 60;
+    --intent-danger-outline: 0 117 255;
+    --intent-danger-foreground: 255 255 255;
+
+    --intent-info: 0 117 255;
+    --intent-info-outline: 0 117 255;
+    --intent-info-foreground: 255 255 255;
+
+    --intent-warning: 255 135 0;
+    --intent-warning-outline: 0 117 255;
+    --intent-warning-foreground: 255 255 255;
+
+    --intent-success: 0 247 128;
+    --intent-success-outline: 0 247 128;
+    --intent-success-foreground: 255 255 255;
+
+    /* Buttons */
+    --button-border-radius-xs: theme(borderRadius.DEFAULT);
+    --button-border-radius-sm: theme(borderRadius.DEFAULT);
+    --button-border-radius-md: theme(borderRadius.DEFAULT);
+    --button-border-radius-lg: theme(borderRadius.lg);
   }
 
   *,

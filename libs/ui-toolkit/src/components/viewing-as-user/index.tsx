@@ -1,7 +1,7 @@
 import { type Status } from '@vegaprotocol/wallet';
 import { NotificationBanner } from '../notification-banner';
 import { Intent } from '../../utils/intent';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 import { useT } from '../../use-t';
 
 export function truncateMiddle(address: string, start = 6, end = 4) {
@@ -31,14 +31,14 @@ export const ViewingAsBanner = ({
             pubKey: pubKey && truncateMiddle(pubKey),
           })}
         </span>
-        <TradingButton
+        <Button
           intent={Intent.None}
-          size="extra-small"
+          size="xs"
           data-testid="exit-view"
           onClick={disconnect}
         >
           {t('Exit view as')}
-        </TradingButton>
+        </Button>
       </div>
     </NotificationBanner>
   );

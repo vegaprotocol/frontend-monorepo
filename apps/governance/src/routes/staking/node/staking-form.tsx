@@ -212,7 +212,7 @@ export const StakingForm = ({
                   text: t('associateVegaNow'),
                   action: () => navigate(Routes.ASSOCIATE),
                   className: 'py-1',
-                  size: 'small',
+                  size: 'sm',
                 }}
               />
             )}

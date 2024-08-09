@@ -1,12 +1,12 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { forwardRef, type ComponentProps, type ReactNode } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useT } from '../../use-t';
 
-const itemClass = classNames(
+const itemClass = cn(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
   'hover:bg-gs-400',
@@ -73,7 +73,7 @@ export const TradingDropdownContent = forwardRef<
   ) => (
     <DropdownMenuPrimitive.Content
       ref={forwardedRef}
-      className={classNames(
+      className={cn(
         'bg-gs-700 ',
         'border-gs-500  border',
         'text-default z-20 rounded p-2'
@@ -97,7 +97,7 @@ export const TradingDropdownItem = forwardRef<
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={cn(itemClass, className)}
   />
 ));
 TradingDropdownItem.displayName = 'DropdownMenuItem';
@@ -112,7 +112,7 @@ export const TradingDropdownCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, 'justify-between', className)}
+    className={cn(itemClass, 'justify-between', className)}
   />
 ));
 TradingDropdownCheckboxItem.displayName = 'DropdownMenuCheckboxItem';
@@ -129,7 +129,7 @@ export const TradingDropdownRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, 'justify-between', className)}
+    className={cn(itemClass, 'justify-between', className)}
   />
 ));
 TradingDropdownRadioItem.displayName = 'DropdownMenuRadioItem';
@@ -162,7 +162,7 @@ export const TradingDropdownSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames('bg-gs-500  mx-2 my-1 h-px', className)}
+    className={cn('bg-gs-500  mx-2 my-1 h-px', className)}
   />
 ));
 TradingDropdownSeparator.displayName = 'DropdownMenuSeparator';

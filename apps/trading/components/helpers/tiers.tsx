@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import type { Tag } from './tag';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 // rainbow-ish order
 export const TIER_COLORS: Array<ComponentProps<typeof Tag>['color']> = [
@@ -28,7 +28,7 @@ export const getTierColor = (tier: number, max = TIER_COLORS.length) => {
 };
 
 export const getTierGradient = (tier: number, max = TIER_COLORS.length) =>
-  classNames({
+  cn({
     'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%  bg-highlight':
       'yellow' === getTierColor(tier, max),
     'from-vega-green-400 dark:from-vega-green-600 to-20%  bg-highlight':

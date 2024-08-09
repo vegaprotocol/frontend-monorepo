@@ -1,4 +1,4 @@
-import { TradingButton as Button, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { type ReactNode } from 'react';
 import { useT } from '../../hooks/use-t';
 

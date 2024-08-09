@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 import { Frame } from '../../frame';
 import { Tick } from '../../icons/tick';
@@ -56,7 +56,7 @@ export const ConnectionDetails = ({
         </Button>
         <Button
           data-testid={locators.connectionModalApproveButton}
-          variant="primary"
+          intent={Intent.Primary}
           onClick={() => handleDecision(true)}
         >
           Connect

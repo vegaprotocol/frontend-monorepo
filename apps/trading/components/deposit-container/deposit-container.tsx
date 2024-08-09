@@ -11,7 +11,7 @@ import {
 import {
   FormGroup,
   TradingInput as Input,
-  TradingButton,
+  Button,
   truncateMiddle,
   TradingInputError,
   Intent,
@@ -198,16 +198,16 @@ const DepositForm = ({
               <ConnectKitButton.Custom>
                 {({ show }) => {
                   return (
-                    <TradingButton
+                    <Button
                       type="button"
                       onClick={() => {
                         if (show) show();
                       }}
                       intent={Intent.Info}
-                      size="small"
+                      size="sm"
                     >
                       {t('Connect')}
-                    </TradingButton>
+                    </Button>
                   );
                 }}
               </ConnectKitButton.Custom>
@@ -342,14 +342,9 @@ const DepositForm = ({
           queryKey={queryKey}
         />
       )}
-      <TradingButton
-        type="submit"
-        size="large"
-        fill={true}
-        intent={Intent.Secondary}
-      >
+      <Button type="submit" size="lg" fill={true} intent={Intent.Secondary}>
         {t('Deposit')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };

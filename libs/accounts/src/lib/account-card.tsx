@@ -2,7 +2,7 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   ProgressBar,
@@ -28,7 +28,7 @@ import {
   forwardRef,
   type ButtonHTMLAttributes,
 } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
@@ -45,24 +45,18 @@ type ButtonProps = {
   onClick?: () => void;
   label: string;
   icon: VegaIconNames;
-} & ComponentProps<typeof TradingButton>;
+} & ComponentProps<typeof Button>;
 
-const Button = forwardRef<
+const ActionButton = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ onClick, label, icon, ...props }, ref) => (
-  <TradingButton
-    size="custom"
-    className="p-[6px]"
-    onClick={onClick}
-    {...props}
-    ref={ref}
-  >
+  <Button onClick={onClick} {...props} size="lg" ref={ref}>
     <div className="flex flex-col items-center p">
       <VegaIcon name={icon} size={16} className="mb-1" />
       <span className="text-xs">{label}</span>
     </div>
-  </TradingButton>
+  </Button>
 ));
 
 const BreakdownItem = ({ data }: { data: AccountFields }) => {
@@ -117,7 +111,7 @@ export const AccountCard = ({
   return (
     <section
       data-testid="account-card"
-      className={classNames('m-1 rounded border-default', {
+      className={cn('m-1 rounded border-default', {
         'bg-gs-700 hover:bg-gs-600': !(expandable && expanded),
         'bg-gs-600 ': expandable && expanded,
       })}
@@ -196,7 +190,10 @@ export const AccountCard = ({
           <TradingDropdown
             trigger={
               <TradingDropdownTrigger asChild>
-                <Button label={t('Deposit')} icon={VegaIconNames.DEPOSIT} />
+                <ActionButton
+                  label={t('Deposit')}
+                  icon={VegaIconNames.DEPOSIT}
+                />
               </TradingDropdownTrigger>
             }
           >
@@ -220,19 +217,19 @@ export const AccountCard = ({
               </TradingDropdownItem>
             </TradingDropdownContent>
           </TradingDropdown>
-          <Button
+          <ActionButton
             data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}
             label={t('Swap')}
             icon={VegaIconNames.SWAP}
           />
-          <Button
+          <ActionButton
             data-testid="account-action-transfer"
             onClick={() => actions.onClickTransfer?.(asset.id)}
             label={t('Transfer')}
             icon={VegaIconNames.TRANSFER}
           />
-          <Button
+          <ActionButton
             data-testid="account-action-withdraw"
             onClick={() => actions.onClickWithdraw?.(asset.id)}
             label={t('Withdraw')}

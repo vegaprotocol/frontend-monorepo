@@ -1,4 +1,4 @@
-import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Notification } from '@vegaprotocol/ui-toolkit';
 import { isBefore } from 'date-fns';
 import ReactTimeAgo from 'react-time-ago';
 
@@ -62,7 +62,6 @@ export const Transfer = ({ transaction }: ReceiptComponentProperties) => {
       {!isOwnKey && (
         <div className="mt-4">
           <Notification
-            intent={Intent.None}
             title="External key"
             message="This key is not imported into your app. Please ensure this is the key you want to transfer to before confirming."
           />

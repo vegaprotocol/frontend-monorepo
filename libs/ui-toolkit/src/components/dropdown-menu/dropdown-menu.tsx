@@ -1,5 +1,5 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { type ComponentProps, type ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
@@ -7,7 +7,7 @@ import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useT } from '../../use-t';
 
-const itemClass = classNames(
+const itemClass = cn(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
   'hover:bg-gs-900',
@@ -43,21 +43,9 @@ export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   DropdownMenuPrimitive.DropdownMenuTriggerProps
 >(({ className, children, ...props }, forwardedRef) => {
-  const triggerClasses = classNames(
-    'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
-    'border-gs-200',
-    'hover:border-gs-300',
-    className
-  );
-
   return (
-    <DropdownMenuPrimitive.Trigger
-      asChild={true}
-      ref={forwardedRef}
-      className={triggerClasses}
-      {...props}
-    >
-      <button>{children}</button>
+    <DropdownMenuPrimitive.Trigger asChild={true} ref={forwardedRef} {...props}>
+      {children}
     </DropdownMenuPrimitive.Trigger>
   );
 });
@@ -93,7 +81,7 @@ export const DropdownMenuItem = forwardRef<
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, className)}
+    className={cn(itemClass, className)}
   />
 ));
 
@@ -107,7 +95,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, 'justify-between', className)}
+    className={cn(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -123,7 +111,7 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemProps}
     ref={forwardedRef}
-    className={classNames(itemClass, 'justify-between', className)}
+    className={cn(itemClass, 'justify-between', className)}
   />
 ));
 
@@ -154,7 +142,7 @@ export const DropdownMenuSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames('bg-gs-500 mx-2 my-1 h-px', className)}
+    className={cn('bg-gs-500 mx-2 my-1 h-px', className)}
   />
 ));
 
@@ -174,10 +162,7 @@ export const DropdownMenuSubContent = forwardRef<
 >(({ className, ...subContentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.SubContent
     ref={forwardedRef}
-    className={classNames(
-      'p-2 bg-gs-800 rounded border border-gs-400',
-      className
-    )}
+    className={cn('p-2 bg-gs-800 rounded border border-gs-400', className)}
     {...subContentProps}
   />
 ));
@@ -190,7 +175,7 @@ export const DropdownMenuSubTrigger = forwardRef<
   React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>
 >(({ className, ...subTriggerProps }, forwardedRef) => (
   <DropdownMenuPrimitive.SubTrigger
-    className={classNames(className, itemClass)}
+    className={cn(className, itemClass)}
     ref={forwardedRef}
     {...subTriggerProps}
   />

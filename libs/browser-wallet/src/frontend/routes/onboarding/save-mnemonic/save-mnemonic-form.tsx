@@ -2,6 +2,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { Checkbox } from '@/components/checkbox';
 import { LoadingButton } from '@/components/loading-button';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 export const locators = {
   saveMnemonicButton: 'save-mnemonic-button',
@@ -43,7 +44,7 @@ export const SaveMnemonicForm = ({
         data-testid={locators.saveMnemonicButton}
         fill={true}
         type="submit"
-        variant="primary"
+        intent={Intent.Primary}
         disabled={!acceptedTerms || loading || disabled}
       />
     </form>

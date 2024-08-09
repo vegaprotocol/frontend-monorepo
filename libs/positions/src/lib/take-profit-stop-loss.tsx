@@ -1,7 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingButton as Button,
-  ButtonLink,
+  Button,
   FormGroup,
   TradingInput as Input,
   InputError,
@@ -10,6 +9,7 @@ import {
   Pill,
   VegaIcon,
   VegaIconNames,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import {
   SizeOverrideSetting,
@@ -56,7 +56,7 @@ import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
 interface TakeProfitStopLossDialogProps {
@@ -675,7 +675,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-gs-100 ">{t('Position')}</dt>
         <dd
           data-testid="open-volume"
-          className={classNames(
+          className={cn(
             'text-right',
             openVolume?.openVolume &&
               signedNumberCssClass(openVolume.openVolume)

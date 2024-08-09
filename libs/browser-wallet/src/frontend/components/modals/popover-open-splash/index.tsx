@@ -35,7 +35,7 @@ export const locators = {
 //             <Button
 //               fill={true}
 //               onClick={focusPopover}
-//               variant="primary"
+//               intent={Intent.Primary}
 //               data-testid={locators.continueHere}
 //             >
 //               Continue here

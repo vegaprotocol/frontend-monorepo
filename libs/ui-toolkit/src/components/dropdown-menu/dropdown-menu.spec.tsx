@@ -16,7 +16,11 @@ describe('DropdownMenu', () => {
     render(
       <div className="test-wrapper">
         <DropdownMenu
-          trigger={<DropdownMenuTrigger>Trigger</DropdownMenuTrigger>}
+          trigger={
+            <DropdownMenuTrigger>
+              <button>Trigger</button>
+            </DropdownMenuTrigger>
+          }
         >
           <DropdownMenuContent>
             <p>{text}</p>

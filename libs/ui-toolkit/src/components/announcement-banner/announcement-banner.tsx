@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 
 export interface BannerProps {
@@ -12,7 +12,7 @@ export const AnnouncementBanner = ({
   children,
   background = 'url("https://static.vega.xyz/assets/img/banner-bg.jpg")',
 }: BannerProps) => {
-  const bannerClasses = classnames('p-4', className);
+  const bannerClasses = cn('p-4', className);
 
   return (
     <div

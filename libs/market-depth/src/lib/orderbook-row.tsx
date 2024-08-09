@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from '@vegaprotocol/datagrid';
 import { VolumeType } from './orderbook-data';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const HIDE_VOL_WIDTH = 190;
 const HIDE_CUMULATIVE_VOL_WIDTH = 260;
@@ -42,7 +42,7 @@ export const OrderbookRow = memo(
 
     return (
       <div
-        className={classNames('relative px-1', {
+        className={cn('relative px-1', {
           'bg-gs-800 ': crossed,
         })}
       >
@@ -53,10 +53,7 @@ export const OrderbookRow = memo(
         />
         <div
           data-testid={`${txtId}-rows-container`}
-          className={classNames(
-            'grid gap-1 text-right relative',
-            `grid-cols-${cols}`
-          )}
+          className={cn('grid gap-1 text-right relative', `grid-cols-${cols}`)}
         >
           <OrderBookRowCell
             onClick={() => onClick({ price: addDecimal(price, decimalPlaces) })}
@@ -69,7 +66,7 @@ export const OrderbookRow = memo(
                 decimalPlaces,
                 priceFormatDecimalPlaces
               )}
-              className={classNames({
+              className={cn({
                 'text-market-red dark:text-market-red': type === VolumeType.ask,
                 'text-market-green-600 dark:text-market-green':
                   type === VolumeType.bid,
@@ -148,7 +145,7 @@ const CumulationBar = ({
   return (
     <div
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
-      className={classNames(
+      className={cn(
         'absolute left-0 top-0 h-full',
         type === VolumeType.bid
           ? 'bg-market-green/10 dark:bg-market-green/10'

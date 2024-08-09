@@ -82,7 +82,7 @@ CustomIconAndContent.args = {
         exercitationem illo explicabo est labore tempore sint, quibusdam error,
         ipsa nam.
       </p>
-      <Button variant="secondary">Action</Button>
+      <Button intent={Intent.Secondary}>Action</Button>
     </div>
   ),
 };

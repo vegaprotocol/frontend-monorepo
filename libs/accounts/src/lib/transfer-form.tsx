@@ -17,7 +17,7 @@ import {
   TradingRichSelectOption,
   TradingSelect,
   Tooltip,
-  TradingButton,
+  Button,
   truncateMiddle,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
@@ -460,15 +460,15 @@ export const TransferForm = ({
           decimals={asset.decimals}
         />
       )}
-      <TradingButton
+      <Button
         type="submit"
         fill={true}
         disabled={isReadOnly}
         intent={Intent.Secondary}
-        size="large"
+        size="lg"
       >
         {t('Transfer')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };

@@ -8,12 +8,12 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
-  ButtonLink,
   VegaIcon,
   VegaIconNames,
   TradingDropdownItem,
   TradingDropdownCopyItem,
   Pill,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { memo, useMemo } from 'react';
 import {

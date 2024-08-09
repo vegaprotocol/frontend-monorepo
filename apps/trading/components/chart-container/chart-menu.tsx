@@ -8,7 +8,7 @@ import {
 } from 'pennant';
 import { Trans } from 'react-i18next';
 import {
-  TradingButton,
+  Button,
   TradingDropdown,
   TradingDropdownCheckboxItem,
   TradingDropdownContent,
@@ -51,19 +51,19 @@ export const ChartMenu = () => {
 
   const contentAlign = 'end';
   const triggerClasses = 'text-xs';
-  const triggerButtonProps = { size: 'extra-small' } as const;
+  const triggerButtonProps = { size: 'xs' } as const;
 
   const isPennant = chartlib === 'pennant';
   const commonMenuItems = (
-    <TradingButton
+    <Button
       onClick={() => {
         setChartlib(isPennant ? 'tradingview' : 'pennant');
       }}
-      size="extra-small"
-      testId="chartlib-toggle-button"
+      size="xs"
+      data-testid="chartlib-toggle-button"
     >
       {isPennant ? 'TradingView' : t('Vega chart')}
-    </TradingButton>
+    </Button>
   );
 
   const pennantMenuItems = (
@@ -71,11 +71,11 @@ export const ChartMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+            <Button {...triggerButtonProps}>
               {t('Interval: {{interval}}', {
                 interval: t(interval),
               })}
-            </TradingButton>
+            </Button>
           </TradingDropdownTrigger>
         }
       >
@@ -102,9 +102,9 @@ export const ChartMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+            <Button {...triggerButtonProps}>
               <Icon name={chartTypeIcon.get(chartType) as IconName} />
-            </TradingButton>
+            </Button>
           </TradingDropdownTrigger>
         }
       >
@@ -127,9 +127,7 @@ export const ChartMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
-              {t('Indicators')}
-            </TradingButton>
+            <Button {...triggerButtonProps}>{t('Indicators')}</Button>
           </TradingDropdownTrigger>
         }
       >

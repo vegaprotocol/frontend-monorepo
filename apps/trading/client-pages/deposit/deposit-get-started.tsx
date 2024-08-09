@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
+import { cn } from '@vegaprotocol/ui-toolkit';
+import { Intent, AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import { useOnboardingStore } from '../../stores/onboarding';
 import {
@@ -14,7 +14,7 @@ export const DepositGetStarted = () => {
   const onboardingDismissed = useOnboardingStore((store) => store.dismissed);
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const step = useGetOnboardingStep();
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'flex flex-col py-4 px-6 gap-4 rounded',
     'bg-vega-blue-300 dark:bg-vega-blue-700',
     'border border-vega-blue-350 dark:border-vega-blue-650'
@@ -31,13 +31,13 @@ export const DepositGetStarted = () => {
         <h3 className="text-lg">{t('Get started')}</h3>
         <GetStartedCheckList />
         {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
-          <TradingAnchorButton
+          <AnchorButton
             href={Links.HOME()}
             onClick={() => dismiss()}
             intent={Intent.Info}
           >
             {t('Start trading')}
-          </TradingAnchorButton>
+          </AnchorButton>
         )}
       </div>
     </div>

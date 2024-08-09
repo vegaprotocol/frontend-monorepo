@@ -1,6 +1,6 @@
 import { useT } from '../../lib/use-t';
 import { Links, Routes } from '../../lib/links';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   TradingDropdown,
@@ -18,7 +18,7 @@ export const Assets = () => {
   const title = useTitle();
 
   const linkClasses = ({ isActive }: { isActive: boolean }) => {
-    return classNames('border-b-2 border-transparent', {
+    return cn('border-b-2 border-transparent', {
       'border-vega-yellow': isActive,
     });
   };
