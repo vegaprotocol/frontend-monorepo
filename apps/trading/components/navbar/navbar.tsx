@@ -57,8 +57,8 @@ export const Navbar = () => {
         to="/"
         className={cn(
           'flex items-center px-3',
-          'bg-[image:var(--logo-bg-image)]',
-          'bg-[color:var(--logo-bg-color)]'
+          'bg-[image:var(--nav-logo-bg)]',
+          'bg-[color:var(--nav-accent-color)]'
         )}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -313,7 +313,7 @@ const NavbarLink = ({
           const borderClasses = {
             'border-b-2': true,
             'border-transparent': !isActive,
-            'border-intent-secondary lg:group-[.navbar-content]:border-transparent':
+            'border-[color:var(--nav-accent-color)] lg:group-[.navbar-content]:border-transparent':
               isActive,
           };
           return (

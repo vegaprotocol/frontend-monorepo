@@ -64,9 +64,9 @@
     --intent-success-foreground: 255 255 255;
     --intent-success-background: 214 254 235;
 
-    /* Logo */
-    --logo-bg-color: #d7fb50;
-    --logo-bg-image: url(/logo-bg.png);
+    /* Navbar */
+    --nav-accent-color: #d7fb50;
+    --nav-logo-bg: url(/logo-bg.png);
 
     /* Buttons */
     --button-border-radius-xs: theme(borderRadius.DEFAULT);

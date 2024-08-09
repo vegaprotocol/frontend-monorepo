@@ -30,7 +30,6 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
-import { Intent, Callout } from '@vegaprotocol/ui-toolkit';
 
 const Title = () => {
   const t = useT();
@@ -79,21 +78,7 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeInProgressNotification />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
-          {/* <Component /> */}
-          <div className="p-10 flex flex-col gap-2 items-start">
-            <Callout title="The title">
-              <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Dolore, enim!
-              </p>
-            </Callout>
-            <Callout title="The title" intent={Intent.Primary} />
-            <Callout title="The title" intent={Intent.Secondary} />
-            <Callout title="The title" intent={Intent.Info} />
-            <Callout title="The title" intent={Intent.Danger} />
-            <Callout title="The title" intent={Intent.Warning} />
-            <Callout title="The title" intent={Intent.Success} />
-          </div>
+          <Component />
         </div>
       </div>
       <DialogsContainer />
