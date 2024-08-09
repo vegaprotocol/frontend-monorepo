@@ -51,7 +51,7 @@ const ActionButton = forwardRef<
   HTMLButtonElement,
   ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
 >(({ onClick, label, icon, ...props }, ref) => (
-  <Button onClick={onClick} {...props} ref={ref}>
+  <Button onClick={onClick} {...props} size="lg" ref={ref}>
     <div className="flex flex-col items-center p">
       <VegaIcon name={icon} size={16} className="mb-1" />
       <span className="text-xs">{label}</span>
