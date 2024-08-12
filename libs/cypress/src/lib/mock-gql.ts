@@ -1,6 +1,7 @@
 import type { GraphQLError } from 'graphql';
 import type { RouteHandler } from 'cypress/types/net-stubbing';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
+import { storedApiNodeSchema } from '@vegaprotocol/environment';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -43,9 +44,13 @@ const extractVariables = (req: CyHttpMessages.IncomingHttpRequest): object => {
 
 export function addMockStatistics() {
   Cypress.Commands.add('mockStatistics', (handler: RouteHandler) => {
+    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    if (!apiNode) {
+      throw new Error('API_NODE not configured');
+    }
     cy.intercept(
       'GET',
-      Cypress.env('VEGA_URL').replace('graphql', 'statistics'),
+      apiNode.graphQLApiUrl.replace('graphql', 'statistics'),
       handler
     ).as('ChainId');
   });
@@ -53,7 +58,11 @@ export function addMockStatistics() {
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
-    cy.intercept('POST', Cypress.env('VEGA_URL'), handler).as('GQL');
+    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    if (!apiNode) {
+      throw new Error('API_NODE not configured');
+    }
+    cy.intercept('POST', apiNode.graphQLApiUrl, handler).as('GQL');
   });
 }
 

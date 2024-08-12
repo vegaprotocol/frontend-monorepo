@@ -1,4 +1,4 @@
-import { queryClient } from '@/query-client';
+import { queryClient } from '../query-client';
 import {
   queryOptions,
   useQuery,

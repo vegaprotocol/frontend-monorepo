@@ -1,4 +1,4 @@
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { queryClient } from '../query-client';
 import {
   type v2ListLatestMarketDataResponse,
@@ -42,7 +42,7 @@ export async function retrieveMarketsData(
   apiUrl?: string,
   params?: MarketsDataQueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
   const searchParams = parametersSchema.parse(params);
 
   const markets = queryClient.getQueryData<Markets>(marketQueryKeys.list());

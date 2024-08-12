@@ -22,7 +22,7 @@ describe('Network loader', () => {
   it('renders a skeleton when there is no vega url in the environment', () => {
     // @ts-ignore Typescript doesn't recognise mocked instances
     useEnvironment.mockImplementation(() => ({
-      VEGA_URL: undefined,
+      API_NODE: undefined,
       status: 'success',
     }));
 
@@ -41,7 +41,10 @@ describe('Network loader', () => {
 
     // @ts-ignore Typescript doesn't recognise mocked instances
     useEnvironment.mockImplementation(() => ({
-      VEGA_URL: 'http://vega.node',
+      API_NODE: {
+        graphQLApiUrl: 'http://vega.node',
+        restApiUrl: 'http://vega.node',
+      },
       status: 'success',
     }));
 

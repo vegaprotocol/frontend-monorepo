@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { queryClient } from '../query-client';
 import {
   type v2ListMarketsResponse,
@@ -37,7 +37,7 @@ export type Markets = z.infer<typeof marketsSchema>;
  * Retrieves all markets from `/markets` endpoint.
  */
 export const retrieveMarkets = async (apiUrl?: string) => {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const assets = queryClient.getQueryData<Assets>(assetQueryKeys.list());
 

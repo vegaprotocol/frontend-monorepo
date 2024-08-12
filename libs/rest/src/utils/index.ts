@@ -1,2 +1,2 @@
-export * from './data';
+export * from './datetime';
 export * from './numbers';

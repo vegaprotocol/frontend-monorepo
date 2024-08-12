@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { type v2ListCandleDataResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
@@ -39,7 +39,7 @@ export async function retrieveCandleData(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
   let searchParams = parametersSchema.parse(params);
 
   // have to omit optional parameters, otherwise the API results with Bad Request

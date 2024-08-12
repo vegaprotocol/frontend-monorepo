@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { NODE_URL } from '../env';
+import { restApiUrl, restApiUrl } from '../env';
 import {
   type v2ListAssetsResponse,
   type vegaAsset,
@@ -32,7 +32,7 @@ export type ERC20Asset = z.infer<typeof erc20AssetSchema>;
 export type Assets = z.infer<typeof assetsSchema>;
 
 export const retrieveAssets = async (apiUrl?: string) => {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
   const res = await axios.get<v2ListAssetsResponse>(`${API}/assets`);
   const edges = res.data.assets?.edges;
   const rawAssets = removePaginationWrapper(edges);

@@ -64,9 +64,12 @@ def test_get_started_interactive(vega: VegaServiceNull, page: Page):
 
     # Assert step 1 complete
     expect(page.get_by_test_id("icon-tick")).to_have_count(1)
+    
+    graphQLApiUrl = f"http://localhost:{vega.data_node_rest_port}/graphql"
+    restApiUrl = f"http://localhost:{vega.data_node_rest_port}"
     env = json.dumps(
         {
-            "VEGA_URL": f"http://localhost:{vega.data_node_rest_port}/graphql",
+            "API_NODE": f"{{graphQLApiUrl: '{graphQLApiUrl}', restApiUrl: '{restApiUrl}'}}",
             "VEGA_WALLET_URL": f"http://localhost:{vega.wallet_port}",
         }
     )

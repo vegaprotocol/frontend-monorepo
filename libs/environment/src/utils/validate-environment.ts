@@ -1,11 +1,33 @@
 import z from 'zod';
 import { Networks } from '../types';
 
+export const apiNodeSchema = z.object({
+  graphQLApiUrl: z.string(),
+  restApiUrl: z.string(),
+});
+export const storedApiNodeSchema = z
+  .string()
+  .optional()
+  .nullable()
+  .transform((value) => {
+    if (value) {
+      try {
+        const json = JSON.parse(value);
+        const apiNode = apiNodeSchema.parse(json);
+        return apiNode;
+      } catch {
+        // NOOP
+      }
+    }
+    return undefined;
+  });
+export type ApiNode = z.infer<typeof apiNodeSchema>;
+
 // combine schema above with custom rule to ensure either
-// VEGA_URL or VEGA_CONFIG_URL are provided
+// API_NODE or VEGA_CONFIG_URL are provided
 export const envSchema = z
   .object({
-    VEGA_URL: z.optional(z.string()),
+    API_NODE: z.optional(apiNodeSchema),
     VEGA_WALLET_URL: z.optional(z.string()),
     VEGA_CONFIG_URL: z.optional(z.string()),
     GIT_BRANCH: z.optional(z.string()),
@@ -58,11 +80,11 @@ export const envSchema = z
   })
   .refine(
     (data) => {
-      return !(!data.VEGA_URL && !data.VEGA_CONFIG_URL);
+      return !(!data.API_NODE && !data.VEGA_CONFIG_URL);
     },
     {
       message:
-        'Must provide either NX_VEGA_CONFIG_URL or NX_VEGA_URL in the environment.',
+        'Must provide either NX_VEGA_CONFIG_URL or NX_API_NODE in the environment.',
     }
   );
 

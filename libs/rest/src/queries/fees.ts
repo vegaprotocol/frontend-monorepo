@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import {
   type v2GetFeesStatsResponse,
   type v2ListPaidLiquidityFeesResponse,
@@ -50,7 +50,7 @@ export async function retrieveLiquidityFees(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   let searchParams = parametersSchema.parse(params);
   if (searchParams.epochSeq == null) {
@@ -139,7 +139,7 @@ export async function retrieveMakerFees(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   let searchParams = parametersSchema.parse(params);
   if (searchParams.epochSeq == null) {

@@ -15,9 +15,9 @@ const WARNING_LATENCY = 3000;
 export const useNodeHealth = () => {
   const t = useT();
   const online = useNavigatorOnline();
-  const url = useEnvironment((store) => store.VEGA_URL);
+  const apiNode = useEnvironment((store) => store.API_NODE);
   const headerStore = useHeaderStore();
-  const headers = url ? headerStore[url] : undefined;
+  const headers = apiNode ? headerStore[apiNode.graphQLApiUrl] : undefined;
   const { data, error, startPolling, stopPolling } = useNodeCheckQuery({
     fetchPolicy: 'no-cache',
   });

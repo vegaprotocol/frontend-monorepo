@@ -1,3 +1,4 @@
+import { storedApiNodeSchema } from '@vegaprotocol/environment';
 import { createMarket } from '../capsule/create-market';
 
 declare global {
@@ -12,13 +13,18 @@ declare global {
 
 export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
+    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    if (!apiNode) {
+      throw new Error('API_NODE not configured');
+    }
+
     const config = {
       vegaPubKey: Cypress.env('VEGA_PUBLIC_KEY'),
       token: Cypress.env('VEGA_WALLET_API_TOKEN'),
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
-      vegaUrl: Cypress.env('VEGA_URL'),
+      vegaUrl: apiNode.graphQLApiUrl,
       faucetUrl: Cypress.env('FAUCET_URL'),
     };
 

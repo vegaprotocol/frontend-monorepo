@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import {
   type v2ListAllLiquidityProvisionsResponse,
   type v2ListLiquidityProvidersResponse,
@@ -34,7 +34,7 @@ export async function retrieveLiquidityProviders(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const searchParams = parametersSchema.parse(params);
   const res = await axios.get<v2ListLiquidityProvidersResponse>(
@@ -54,7 +54,7 @@ export async function retrieveLiquidityProvisions(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const searchParams = parametersSchema.parse(params);
 

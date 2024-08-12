@@ -102,13 +102,13 @@ function VegaTradingApp(props: AppProps) {
     store.setDialogOpen,
   ]);
 
-  // Start validation of env vars and determine VEGA_URL
+  // Start validation of env vars and determine API_NODE
   useInitializeEnv();
 
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   //
-  // This is the last point at which we get pregenerated
+  // This is the last point at which we get pre-generated
   // HTML so render a ssr friendly loader component
   if (status === 'default') {
     return <SSRLoader />;

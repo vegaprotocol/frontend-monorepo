@@ -1,5 +1,5 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { queryClient } from '../query-client';
 import {
   AMMStatusReason,
@@ -49,7 +49,7 @@ export type AMM = z.infer<typeof ammSchema>;
 export type AMMs = z.infer<typeof ammsSchema>;
 
 export const retrieveAMMs = (apiUrl?: string, params?: AMMsQueryParams) => {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const searchParams = parametersSchema.parse(params);
 

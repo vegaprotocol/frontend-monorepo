@@ -15,3 +15,10 @@ export { CHAIN_IDS } from './chains';
 
 // External chain environments
 export * from './external-chain';
+
+export {
+  apiNodeSchema,
+  envSchema,
+  storedApiNodeSchema,
+  type ApiNode,
+} from './utils/validate-environment';

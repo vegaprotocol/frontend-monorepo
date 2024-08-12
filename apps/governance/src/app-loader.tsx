@@ -20,7 +20,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const { VEGA_URL } = useEnvironment();
+  const { API_NODE } = useEnvironment();
   const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
@@ -81,8 +81,11 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   }, [setAssociatedBalances, account, pubKey]);
 
   React.useEffect(() => {
-    const networkLimitsEndpoint = new URL('/network/limits', VEGA_URL).href;
-    const statsEndpoint = new URL('/statistics', VEGA_URL).href;
+    const networkLimitsEndpoint = new URL(
+      '/network/limits',
+      API_NODE?.graphQLApiUrl
+    ).href;
+    const statsEndpoint = new URL('/statistics', API_NODE?.graphQLApiUrl).href;
 
     // eslint-disable-next-line
     let interval: any = null;
@@ -144,7 +147,12 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     return () => {
       stopPoll();
     };
-  }, [appDispatch, VEGA_URL, t, featureFlags.GOVERNANCE_NETWORK_LIMITS]);
+  }, [
+    appDispatch,
+    t,
+    featureFlags.GOVERNANCE_NETWORK_LIMITS,
+    API_NODE?.graphQLApiUrl,
+  ]);
 
   if (featureFlags.GOVERNANCE_NETWORK_DOWN) {
     return (

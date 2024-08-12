@@ -57,13 +57,27 @@ const createDefaultMockClient = () => {
 
 global.fetch = jest.fn();
 // eslint-disable-next-line
-const setupFetch = ({ hosts }: any) => {
+const setupFetch = ({ hosts, restHosts }: any) => {
   const result = `
   [API]
       [API.GraphQL]
           Hosts = ${JSON.stringify(hosts)}
+      [API.REST]
+          Hosts = ${JSON.stringify(restHosts)}
   `;
-  return () => {
+  return (url?: string) => {
+    // rest api test
+    if (url?.includes('/api/v2/info')) {
+      return Promise.resolve({
+        ok: true,
+        json: () => ({
+          commitHash: 'test',
+          version: 'vTEST',
+        }),
+      });
+    }
+
+    // config fetch
     return Promise.resolve({
       ok: true,
       text: () => Promise.resolve(result),
@@ -126,15 +140,28 @@ describe('useEnvironment', () => {
     return renderHook(() => useEnvironment());
   };
 
-  it('exposes env vars and sets VEGA_URL from config nodes', async () => {
+  it('exposes env vars and sets API_NODE from config nodes', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+
     const nodes = [
-      'https://api.n00.foo.vega.xyz',
-      'https://api.n01.foo.vega.xyz',
+      {
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+      },
+      {
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+      },
     ];
-    // @ts-ignore: typscript doesn't recognise the mock implementation
-    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+
+    // @ts-ignore: typescript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
+    );
 
     const { result } = setup();
 
@@ -150,13 +177,17 @@ describe('useEnvironment', () => {
       expect(result.current.status).toBe('success');
     });
 
-    // resulting VEGA_URL should be one of the nodes from the config
-    expect(nodes.includes(result.current.VEGA_URL as string)).toBe(true);
+    // resulting API_NODE should be one of the nodes from the config
+    expect(
+      nodes
+        .map((n) => n.graphQLApiUrl)
+        .includes(result.current.API_NODE?.graphQLApiUrl as string)
+    ).toBe(true);
     expect(result.current).toMatchObject({
       ...mockEnvVars,
       nodes,
     });
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(3); // config + 2 rest api tests
     expect(fetch).toHaveBeenCalledWith(configUrl);
   });
 
@@ -165,26 +196,39 @@ describe('useEnvironment', () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
 
-    const slowNode = 'https://api.n00.foo.vega.xyz';
+    const slowNode = {
+      graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+    };
     const slowWait = 2000;
-    const fastNode = 'https://api.n01.foo.vega.xyz';
+
+    const fastNode = {
+      graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+    };
     const fastWait = 1000;
+
     const nodes = [slowNode, fastNode];
 
     mockCanMeasureResponseTime.mockImplementation(() => true);
     mockMeasureResponseTime.mockImplementation((url: string) => {
-      if (url === slowNode) return slowWait;
-      if (url === fastNode) return fastWait;
+      if (url === slowNode.graphQLApiUrl) return slowWait;
+      if (url === fastNode.graphQLApiUrl) return fastWait;
       return Infinity;
     });
 
-    // @ts-ignore: typscript doesn't recognise the mock implementation
-    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+    // @ts-ignore: typescript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
+    );
 
     mockCreateClient.mockImplementation((obj: ClientOptions) => ({
       query: () =>
         new Promise((resolve) => {
-          const wait = obj.url === fastNode ? fastWait : slowWait;
+          const wait = obj.url === fastNode.graphQLApiUrl ? fastWait : slowWait;
           setTimeout(() => {
             resolve({
               data: {
@@ -236,13 +280,13 @@ describe('useEnvironment', () => {
       expect(result.current.status).toEqual('success');
     });
 
-    expect(result.current.VEGA_URL).toBe(fastNode);
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(fastNode);
+    expect(result.current.API_NODE).toEqual(fastNode);
+    expect(localStorage.getItem(STORAGE_KEY)).toEqual(JSON.stringify(fastNode));
     expect(result.current).toMatchObject({
       ...mockEnvVars,
       nodes,
     });
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(configUrl);
     jest.useRealTimers();
   });
@@ -250,11 +294,22 @@ describe('useEnvironment', () => {
   it('passes a node if both queries and subscriptions working', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
-    const successNode = 'https://api.n01.foo.vega.xyz';
-    const failNode = 'https://api.n00.foo.vega.xyz';
+    const successNode = {
+      graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+    };
+    const failNode = {
+      graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+    };
     const nodes = [failNode, successNode];
-    // @ts-ignore: typscript doesn't recognise the mock implementation
-    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+    // @ts-ignore: typescript doesn't recognise the mock implementation
+    global.fetch.mockImplementation(
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
+    );
     mockCreateClient.mockImplementation((clientOptions: ClientOptions) => ({
       query: () =>
         Promise.resolve({
@@ -279,7 +334,7 @@ describe('useEnvironment', () => {
       subscribe: () => ({
         // eslint-disable-next-line
         subscribe: (obj: any) => {
-          if (clientOptions.url === failNode) {
+          if (clientOptions.url === failNode.graphQLApiUrl) {
             // make n00 fail the subscription
             obj.error();
           } else {
@@ -303,19 +358,32 @@ describe('useEnvironment', () => {
       expect(result.current.status).toBe('success');
     });
 
-    expect(result.current.VEGA_URL).toBe(successNode);
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(successNode);
+    expect(result.current.API_NODE).toEqual(successNode);
+    expect(localStorage.getItem(STORAGE_KEY)).toEqual(
+      JSON.stringify(successNode)
+    );
   });
 
   it('fails initialization if no suitable node is found', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     const nodes = [
-      'https://api.n00.foo.vega.xyz',
-      'https://api.n01.foo.vega.xyz',
+      {
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+      },
+      {
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+      },
     ];
     // @ts-ignore: typscript doesn't recognise the mock implementation
-    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+    global.fetch.mockImplementation(
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
+    );
 
     // set all clients to fail both query and subscription
     mockCreateClient.mockImplementation(() => ({
@@ -342,20 +410,23 @@ describe('useEnvironment', () => {
       expect(result.current.status).toBe('failed');
     });
 
-    expect(result.current.VEGA_URL).toBe(undefined); // VEGA_URL is unset, app should handle some UI
+    expect(result.current.API_NODE).toEqual(undefined); // API_NODE is unset, app should handle some UI
     expect(result.current).toMatchObject({
       ...mockEnvVars,
       nodes,
     });
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledTimes(3);
     expect(fetch).toHaveBeenCalledWith(configUrl);
   });
 
   it('uses env vars from window._env_ if set', async () => {
-    const url = 'http://foo.bar.com';
+    const apiNode = {
+      graphQLApiUrl: 'http://foo.bar.com/gql',
+      restApiUrl: 'http://foo.bar.com/rest',
+    };
     // @ts-ignore _env_ is declared in app
     window._env_ = {
-      VEGA_URL: url,
+      API_NODE: JSON.stringify(apiNode),
     };
 
     const { result } = setup();
@@ -364,7 +435,7 @@ describe('useEnvironment', () => {
       result.current.initialize();
     });
 
-    expect(result.current.VEGA_URL).toBe(url);
+    expect(result.current.API_NODE).toEqual(apiNode);
 
     // @ts-ignore delete _env_
     delete window['_env_'];
@@ -385,11 +456,11 @@ describe('useEnvironment', () => {
     console.error = error;
   });
 
-  it('errors if neither VEGA_URL or VEGA_CONFIG_URL are set', async () => {
+  it('errors if neither API_NODE or VEGA_CONFIG_URL are set', async () => {
     const error = console.error;
     console.error = noop;
     process.env['NX_VEGA_ENV'] = undefined;
-    process.env['NX_VEGA_URL'] = undefined;
+    process.env['NX_API_NODE'] = undefined;
     const { result } = setup();
     await act(async () => {
       result.current.initialize();
@@ -400,9 +471,13 @@ describe('useEnvironment', () => {
     console.error = error;
   });
 
-  it('allows for undefined VEGA_CONFIG_URL if VEGA_URL is set', async () => {
-    const url = 'https://my.vega.url';
-    process.env['NX_VEGA_URL'] = url;
+  it('allows for undefined VEGA_CONFIG_URL if API_NODE is set', async () => {
+    const apiNode = {
+      graphQLApiUrl: 'http://foo.bar.com/gql',
+      restApiUrl: 'http://foo.bar.com/rest',
+    };
+
+    process.env['NX_API_NODE'] = JSON.stringify(apiNode);
     process.env['NX_VEGA_CONFIG_URL'] = undefined;
     const { result } = setup();
     act(() => {
@@ -412,21 +487,32 @@ describe('useEnvironment', () => {
       expect(result.current.status).toBe('success');
     });
     expect(result.current).toMatchObject({
-      VEGA_URL: url,
+      API_NODE: apiNode,
       VEGA_CONFIG_URL: undefined,
     });
   });
 
-  it('allows for undefined VEGA_URL if VEGA_CONFIG_URL is set', async () => {
+  it('allows for undefined API_NODE if VEGA_CONFIG_URL is set', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
-    process.env['NX_VEGA_URL'] = undefined;
+    process.env['NX_API_NODE'] = undefined;
     const nodes = [
-      'https://api.n00.foo.vega.xyz',
-      'https://api.n01.foo.vega.xyz',
+      {
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+      },
+      {
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+      },
     ];
     // @ts-ignore setup mock fetch for config url
-    global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
+    global.fetch.mockImplementation(
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
+    );
     const { result } = setup();
     act(() => {
       result.current.initialize();
@@ -434,13 +520,17 @@ describe('useEnvironment', () => {
     await waitFor(() => {
       expect(result.current.status).toBe('success');
     });
-    expect(nodes.includes(result.current.VEGA_URL as string)).toBe(true);
+    expect(
+      nodes
+        .map((n) => n.graphQLApiUrl)
+        .includes(result.current.API_NODE?.graphQLApiUrl as string)
+    ).toBe(true);
   });
 
   it('handles error if node config cannot be fetched', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
-    process.env['NX_VEGA_URL'] = undefined;
+    process.env['NX_API_NODE'] = undefined;
     // @ts-ignore setup mock fetch for config url
     global.fetch.mockImplementation(() => {
       throw new Error('failed to fetch');
@@ -460,7 +550,7 @@ describe('useEnvironment', () => {
   it('handles an invalid node config', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
-    process.env['NX_VEGA_URL'] = undefined;
+    process.env['NX_API_NODE'] = undefined;
     // @ts-ignore: typscript doesn't recognise the mock implementation
     global.fetch.mockImplementation(setupFetch({ invalid: 'invalid' }));
     const { result } = setup();
@@ -478,35 +568,62 @@ describe('useEnvironment', () => {
   it('uses stored url', async () => {
     const configUrl = 'https://vega.xyz/testnet-config.toml';
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
+    const nodes = [
+      {
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+      },
+      {
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+      },
+    ];
     // @ts-ignore setup mock fetch for config url
     global.fetch.mockImplementation(
-      setupFetch({ hosts: ['http://foo.bar.com'] })
+      setupFetch({
+        hosts: nodes.map((n) => n.graphQLApiUrl),
+        restHosts: nodes.map((n) => n.restApiUrl),
+      })
     );
-    const url = 'https://api.n00.foo.com';
-    localStorage.setItem(STORAGE_KEY, url);
+
+    const storedNode = {
+      graphQLApiUrl: 'https://api.n00.foo.com/gql',
+      restApiUrl: 'https://api.n00.foo.com/rest',
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(storedNode));
     const { result } = setup();
     await act(async () => {
       result.current.initialize();
     });
-    expect(result.current.VEGA_URL).toBe(url);
+    expect(result.current.API_NODE?.graphQLApiUrl).toBe(
+      storedNode.graphQLApiUrl
+    );
     expect(result.current.status).toBe('success');
   });
 
-  it('can update VEGA_URL', async () => {
-    const url = 'https://api.n00.foo.com';
-    const newUrl = 'http://foo.bar.com';
-    process.env['NX_VEGA_URL'] = url;
+  it('can update API_NODE', async () => {
+    const apiNode = {
+      graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+    };
+    const newApiNode = {
+      graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
+      restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+    };
+    process.env['NX_API_NODE'] = JSON.stringify(apiNode);
     const { result } = setup();
     await act(async () => {
       result.current.initialize();
     });
-    expect(result.current.VEGA_URL).toBe(url);
+    expect(result.current.API_NODE).toEqual(apiNode);
     expect(result.current.status).toBe('success');
     act(() => {
-      result.current.setUrl(newUrl);
+      result.current.setApiNode(newApiNode);
     });
-    expect(result.current.VEGA_URL).toBe(newUrl);
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(newUrl);
+    expect(result.current.API_NODE).toEqual(newApiNode);
+    expect(localStorage.getItem(STORAGE_KEY)).toEqual(
+      JSON.stringify(newApiNode)
+    );
   });
 });
 

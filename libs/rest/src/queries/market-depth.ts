@@ -1,4 +1,4 @@
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import { z } from 'zod';
@@ -37,7 +37,7 @@ export async function retrieveMarketDepth(
     throw new Error('market not found');
   }
 
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const res = await axios.get<vegaMarketDepth>(
     `${API}/market/depth/${searchParams.marketId}/latest`

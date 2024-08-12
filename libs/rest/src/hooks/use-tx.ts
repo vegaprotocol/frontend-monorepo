@@ -1,4 +1,4 @@
-import { wsUrl } from '../env';
+import { wsApiUrl } from '../env';
 import type {
   googlerpcStatus,
   v2ObserveTransactionResultsResponse,
@@ -134,7 +134,7 @@ type UseObserveTransactionResultOptions = {
 export const useObserveTransactionResult = (
   options: UseObserveTransactionResultOptions
 ) => {
-  const apiUrl = wsUrl();
+  const apiUrl = wsApiUrl();
   useEffect(() => {
     const ws = new WebSocket(`${apiUrl}/stream/transaction-results`);
     ws.onmessage = (event) => {

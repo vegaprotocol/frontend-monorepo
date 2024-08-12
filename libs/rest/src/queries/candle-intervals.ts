@@ -1,4 +1,4 @@
-import { NODE_URL } from '../env';
+import { restApiUrl } from '../env';
 import { v2ListCandleIntervalsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
@@ -38,7 +38,7 @@ export async function retrieveCandleIntervals(
   apiUrl: string | undefined,
   params: QueryParams
 ) {
-  const API = apiUrl || NODE_URL;
+  const API = apiUrl || restApiUrl();
 
   const searchParams = parametersSchema.parse(params);
 
