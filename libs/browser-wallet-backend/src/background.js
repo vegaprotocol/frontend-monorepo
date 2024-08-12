@@ -2,7 +2,7 @@ import { NetworkCollection } from './src/network.js';
 import { WalletCollection } from './src/wallets.js';
 import { TransactionsCollection } from './src/transactions.js';
 import { ConnectionsCollection } from './src/connections.js';
-import { PortServer } from '../frontend/lib/port-server.js';
+import { PortServer } from './lib/port-server.js';
 import { PopupClient } from './src/popup-client.js';
 // import { createNotificationWindow } from './src/windows.js';
 import { setupListeners } from './lib/setup-listeners.js';

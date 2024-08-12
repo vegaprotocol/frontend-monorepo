@@ -50,6 +50,7 @@ import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog'
 import { useTranslation } from 'react-i18next';
 import { useSentryInit } from './hooks/use-sentry-init';
 import { useVegaWalletConfig } from './hooks/use-vega-wallet-config';
+import '@vegaprotocol/browser-wallet-backend';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
