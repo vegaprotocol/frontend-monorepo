@@ -29,11 +29,10 @@ export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
 
 const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
-  const ethTxSent = useRef(false);
   const { status: ethWalletStatus } = useAccount();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { submitWithdraw } = useEvmWithdraw();
+  const { submitWithdraw, data: txData } = useEvmWithdraw();
   const { data: approval } = useWithdrawalApprovalQuery({
     variables: {
       withdrawalId: data.detail.id,
@@ -44,8 +43,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     // The onConnect handler from useModal is called twice
     // so this is to make sure if a tx is already created we
     // dont immediately create another one
-    if (ethTxSent.current) return;
-    ethTxSent.current = true;
+    if (txData?.hash) return;
 
     const asset = data.asset;
 
