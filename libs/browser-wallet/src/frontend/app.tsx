@@ -1,3 +1,4 @@
+import '@vegaprotocol/browser-wallet-backend'
 // import { useEffect } from 'react';
 import { MemoryRouter as Router } from 'react-router-dom';
 
