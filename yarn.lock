@@ -8805,10 +8805,10 @@
     compare "^2.0.0"
     nanoassert "^2.0.0"
 
-"@vegaprotocol/enums@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.2.tgz#8382e0b0e359f3e5045f26e22a607910cfb06684"
-  integrity sha512-XRS82UW0tVeVlvjD39uPp9MoFPuo+DYoxtpVjlif0mQNn74vfuhQus8UniGRCCCj7CyvXQx3hnM3xyzGwxqPaw==
+"@vegaprotocol/enums@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.3.tgz#167a810c76c3f799e677ce40ffd71727e670da41"
+  integrity sha512-mcovDhh46qeUP61Myoni97cpHCmdmHONBVbYV2s3P/sxciNx5tjF3ZthtnfgRCNOHfMQ75CjSX2NzE5DDd8EMQ==
 
 "@vegaprotocol/protos@^0.21.0":
   version "0.21.0"

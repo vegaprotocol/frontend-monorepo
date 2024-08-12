@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 const extensionStorage = globalThis.localStorage;
 
 function abstractStorage(storage) {

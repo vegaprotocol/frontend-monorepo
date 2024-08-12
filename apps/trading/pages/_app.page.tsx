@@ -31,8 +31,7 @@ import './styles.css';
 // import { TransactionHandlers } from './transaction-handlers';
 // import { useT } from '../lib/use-t';
 // import { NodeHealthContainer } from '../components/node-health';
-import BrowserWallet from '@vegaprotocol/browser-wallet'
-
+import BrowserWallet from '@vegaprotocol/browser-wallet';
 
 // const Title = () => {
 //   const t = useT();
@@ -106,16 +105,16 @@ import BrowserWallet from '@vegaprotocol/browser-wallet'
 //   )
 // }
 
-import dynamic from 'next/dynamic'
-import React from 'react' 
+import dynamic from 'next/dynamic';
+import React from 'react';
 
 // @ts-ignore - just testing
-// const NoSSRWrapper = props => ( 
-//     <React.Fragment>{props.children}</React.Fragment> 
-// ) 
-export const Test = dynamic(() => import('@vegaprotocol/browser-wallet'), { 
-    ssr: false 
-})
+// const NoSSRWrapper = props => (
+//     <React.Fragment>{props.children}</React.Fragment>
+// )
+export const Test = dynamic(() => import('@vegaprotocol/browser-wallet'), {
+  ssr: false,
+});
 
 function VegaTradingApp(props: AppProps) {
   // const status = useEnvironment((store) => store.status);
@@ -135,10 +134,8 @@ function VegaTradingApp(props: AppProps) {
   // if (status === 'default') {
   //   return <SSRLoader />;
   // }
-  if (typeof window === 'undefined') return null
-  return (
-      <Test />
-  );
+  if (typeof window === 'undefined') return null;
+  return <Test />;
 }
 
 export default VegaTradingApp;
