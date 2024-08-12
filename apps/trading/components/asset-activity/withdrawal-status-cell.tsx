@@ -12,7 +12,7 @@ import { useEvmWithdraw } from '../../lib/hooks/use-evm-withdraw';
 import { useAccount, useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
-import { ConnectKitButton } from 'connectkit';
+import { useModal } from 'connectkit';
 
 type Props = {
   data: RowWithdrawal;
@@ -29,6 +29,7 @@ export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
 
 const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
+  const ethTxSent = useRef(false);
   const { status: ethWalletStatus } = useAccount();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
@@ -37,6 +38,42 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     variables: {
       withdrawalId: data.detail.id,
     },
+  });
+
+  const handleComplete = () => {
+    // The onConnect handler from useModal is called twice
+    // so this is to make sure if a tx is already created we
+    // dont immediately create another one
+    if (ethTxSent.current) return;
+    ethTxSent.current = true;
+
+    const asset = data.asset;
+
+    if (!config || !configs) {
+      throw new Error('could not fetch ethereum configs');
+    }
+
+    if (!approval?.erc20WithdrawalApproval) {
+      throw new Error('no withdrawal approval');
+    }
+
+    if (asset?.source.__typename !== 'ERC20') {
+      throw new Error(`invalid asset type ${asset?.source.__typename}`);
+    }
+
+    if (!cfg) {
+      throw new Error(`could not find evm config for asset ${asset.id}`);
+    }
+
+    submitWithdraw({
+      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
+      approval: approval.erc20WithdrawalApproval,
+      asset,
+    });
+  };
+
+  const modal = useModal({
+    onConnect: handleComplete,
   });
 
   const [status, setStatus] = useState<'idle' | 'delayed' | 'ready'>(() => {
@@ -114,72 +151,22 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   }
 
   if (status === 'ready') {
-    if (ethWalletStatus === 'connected') {
-      return (
-        <span className="flex gap-1 items-center">
-          {t('Pending')}:{' '}
-          <button
-            onClick={() => {
-              const asset = data.asset;
-
-              if (!config || !configs) {
-                throw new Error('could not fetch ethereum configs');
-              }
-
-              if (!approval?.erc20WithdrawalApproval) {
-                throw new Error('no withdrawal approval');
-              }
-
-              if (asset?.source.__typename !== 'ERC20') {
-                throw new Error(
-                  `invalid asset type ${asset?.source.__typename}`
-                );
-              }
-
-              if (!cfg) {
-                throw new Error(
-                  `could not find evm config for asset ${asset.id}`
-                );
-              }
-
-              submitWithdraw({
-                bridgeAddress: cfg.collateral_bridge_contract
-                  .address as `0x${string}`,
-                approval: approval.erc20WithdrawalApproval,
-                asset,
-              });
-            }}
-            className="underline underline-offset-4"
-          >
-            {t('Complete')}
-          </button>
-          <button
-            onClick={() => openDialog(data.detail.id)}
-            className="underline underline-offset-4"
-          >
-            {t('View')}
-          </button>
-        </span>
-      );
-    }
-
     return (
       <span className="flex gap-1 items-center">
         {t('Pending')}:{' '}
-        <ConnectKitButton.Custom>
-          {({ show }) => {
-            return (
-              <button
-                className="underline underline-offset-4"
-                onClick={() => {
-                  if (show) show();
-                }}
-              >
-                {t('Connect')}
-              </button>
-            );
+        <button
+          onClick={() => {
+            if (ethWalletStatus === 'disconnected') {
+              modal.setOpen(true);
+              return;
+            }
+
+            handleComplete();
           }}
-        </ConnectKitButton.Custom>
+          className="underline underline-offset-4"
+        >
+          {t('Complete')}
+        </button>
         <button
           onClick={() => openDialog(data.detail.id)}
           className="underline underline-offset-4"
