@@ -13,6 +13,7 @@ import { useAccount, useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
 import { useModal } from 'connectkit';
+import { TradingButton as Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 type Props = {
   data: RowWithdrawal;
@@ -152,7 +153,9 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     return (
       <span className="flex gap-1 items-center">
         {t('Pending')}:{' '}
-        <button
+        <Button
+          intent={Intent.Secondary}
+          size="extra-small"
           onClick={() => {
             if (ethWalletStatus === 'disconnected') {
               modal.setOpen(true);
@@ -161,16 +164,12 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
 
             handleComplete();
           }}
-          className="underline underline-offset-4"
         >
           {t('Complete')}
-        </button>
-        <button
-          onClick={() => openDialog(data.detail.id)}
-          className="underline underline-offset-4"
-        >
+        </Button>
+        <Button size="extra-small" onClick={() => openDialog(data.detail.id)}>
           {t('View')}
-        </button>
+        </Button>
       </span>
     );
   }
