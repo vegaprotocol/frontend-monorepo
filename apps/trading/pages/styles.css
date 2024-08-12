@@ -229,6 +229,10 @@ html [data-theme='dark'] {
   --ag-modal-overlay-background-color: rgb(var(--gs-800) / 50%);
 }
 
+.ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
+  background: theme(colors.vega.blue.300);
+}
+
 /* Dark variables */
 .ag-theme-balham-dark {
   --ag-background-color: theme(colors.gs.900);
@@ -246,6 +250,10 @@ html [data-theme='dark'] {
 .ag-theme-balham .ag-row.no-hover,
 .ag-theme-balham .ag-row.no-hover:hover {
   background: var(--ag-background-color);
+}
+
+.ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
+  background: theme(colors.vega.blue.700);
 }
 
 /**
