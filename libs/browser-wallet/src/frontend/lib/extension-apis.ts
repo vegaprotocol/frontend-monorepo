@@ -179,6 +179,14 @@ export const getExtensionApi = () => {
 
                 break;
               }
+              case RpcMethods.ListTransactions: {
+                pushMessage({
+                  jsonrpc: '2.0',
+                  result: { transactions: {} },
+                  id: message.id,
+                });
+                break;
+              }
               default: {
                 if (
                   [
