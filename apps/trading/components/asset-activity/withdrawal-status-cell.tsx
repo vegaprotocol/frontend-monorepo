@@ -13,7 +13,12 @@ import { useAccount, useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
 import { useModal } from 'connectkit';
-import { TradingButton as Button, Intent } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingButton as Button,
+  Intent,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 
 type Props = {
   data: RowWithdrawal;
@@ -152,7 +157,6 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   if (status === 'ready') {
     return (
       <span className="flex gap-1 items-center">
-        {t('Pending')}:{' '}
         <Button
           intent={Intent.Secondary}
           size="extra-small"
@@ -167,9 +171,12 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
         >
           {t('Complete')}
         </Button>
-        <Button size="extra-small" onClick={() => openDialog(data.detail.id)}>
-          {t('View')}
-        </Button>
+        <button
+          onClick={() => openDialog(data.detail.id)}
+          className="text-gs-100"
+        >
+          <VegaIcon name={VegaIconNames.INFO} className="mt-1" />
+        </button>
       </span>
     );
   }
