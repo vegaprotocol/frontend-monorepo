@@ -92,9 +92,16 @@ export const ProposalSummary = ({
         </section>
       )}
       <div className="pt-5">
-        <button className="underline max-md:hidden mr-5" onClick={openDialog}>
-          {t('View terms')}
-        </button>{' '}
+        {terms && (
+          <>
+            <button
+              className="underline max-md:hidden mr-5"
+              onClick={openDialog}
+            >
+              {t('View terms')}
+            </button>{' '}
+          </>
+        )}
         <ProposalLink id={id} text={t('Full details')} />
         {terms && <ProposalDate terms={terms} id={id} />}
       </div>

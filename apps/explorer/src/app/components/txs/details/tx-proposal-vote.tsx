@@ -5,6 +5,8 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import ProposalLink from '../../links/proposal-link/proposal-link';
 import { VoteIcon } from '../../vote-icon/vote-icon';
+import { ProposalSummary } from './proposal/summary';
+import { useExplorerProposalQuery } from '../../links/proposal-link/__generated__/Proposal';
 
 interface TxProposalVoteProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -27,27 +29,50 @@ export const TxProposalVote = ({
   pubKey,
   blockData,
 }: TxProposalVoteProps) => {
+  const { data } = useExplorerProposalQuery({
+    variables: { id: txData?.command.voteSubmission.proposalId },
+  });
+
   if (!txData || !txData.command.voteSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
   const vote = txData.command.voteSubmission.value === 'VALUE_YES';
 
+  const rationale =
+    data?.proposal?.__typename === 'Proposal'
+      ? {
+          description: data.proposal.rationale.description,
+          title: data.proposal.rationale.title,
+        }
+      : undefined;
+
   return (
-    <TableWithTbody className="mb-8" allowWrap={true}>
-      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Proposal details')}</TableCell>
-        <TableCell>
-          <ProposalLink id={txData.command.voteSubmission.proposalId} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Vote')}</TableCell>
-        <TableCell>
-          <VoteIcon vote={vote} />
-        </TableCell>
-      </TableRow>
-    </TableWithTbody>
+    <>
+      <TableWithTbody className="mb-8" allowWrap={true}>
+        <TxDetailsShared
+          txData={txData}
+          pubKey={pubKey}
+          blockData={blockData}
+        />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Proposal details')}</TableCell>
+          <TableCell>
+            <ProposalLink id={txData.command.voteSubmission.proposalId} />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Vote')}</TableCell>
+          <TableCell>
+            <VoteIcon vote={vote} />
+          </TableCell>
+        </TableRow>
+      </TableWithTbody>
+      <ProposalSummary
+        id={txData.command.voteSubmission.proposalId}
+        rationale={rationale}
+        terms={undefined}
+      />
+    </>
   );
 };
