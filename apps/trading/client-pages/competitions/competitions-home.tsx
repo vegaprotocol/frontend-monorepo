@@ -59,7 +59,8 @@ export const CompetitionsHome = () => {
       navigate(Links.COMPETITIONS_CREATE_TEAM());
     },
     tooltip: undefined,
-    testId: 'create-public-team-button',
+    // @ts-ignore Button takes all button element attributes
+    'data-testid': 'create-public-team-button',
   };
 
   /** Action B */
@@ -72,7 +73,8 @@ export const CompetitionsHome = () => {
       navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
     },
     tooltip: undefined,
-    testId: 'create-private-team-button',
+    // @ts-ignore Button takes all button element attributes
+    'data-testid': 'create-private-team-button',
   };
 
   /** Action C */
@@ -85,7 +87,8 @@ export const CompetitionsHome = () => {
       navigate(Links.COMPETITIONS_TEAMS());
     },
     tooltip: undefined,
-    testId: 'choose-team-button',
+    // @ts-ignore Button takes all button element attributes
+    'data-testid': 'choose-team-button',
   };
 
   if (myRole === Role.NOT_IN_TEAM_BUT_REFERRER) {

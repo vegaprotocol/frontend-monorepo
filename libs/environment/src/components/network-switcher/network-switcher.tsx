@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -11,7 +12,7 @@ import {
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
 
 export const useEnvNameMapping: () => Record<Networks, string> = () => {
@@ -82,7 +83,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-gs-300">
+  <span className="text-gs-100">
     {useLabelText({ isCurrent, isAvailable })}
   </span>
 );
@@ -126,15 +127,15 @@ export const NetworkSwitcher = ({
       trigger={
         <DropdownMenuTrigger
           data-testid="network-switcher"
-          className={classNames(
+          className={cn(
             'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-100 whitespace-nowrap',
             className
           )}
         >
-          <span className="flex justify-between items-center gap-2">
+          <Button size="sm">
             <span>{envTriggerMapping[current]}</span>
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </span>
+          </Button>
         </DropdownMenuTrigger>
       }
     >

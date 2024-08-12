@@ -1,7 +1,7 @@
 import { useVerifiedStatusIcon } from '@vegaprotocol/markets';
 import type { Provider } from '@vegaprotocol/markets';
 import { Icon, type IconName, Intent } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type OracleVerifiedStatusIconProps = {
   provider: Provider;
@@ -20,7 +20,7 @@ export const OracleVerifiedStatusIcon = ({
   const { icon, message, intent } = useVerifiedStatusIcon(provider);
   return (
     <div
-      className={classNames(
+      className={cn(
         {
           'text-gs-700': intent === Intent.None,
           'text-vega-blue': intent === Intent.Primary,

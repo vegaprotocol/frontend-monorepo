@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useDialogStore } from '@vegaprotocol/wallet-react';
 import { Button } from '@vegaprotocol/ui-toolkit';
@@ -8,7 +8,7 @@ export const ConnectToSeeRewards = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
   const { t } = useTranslation();
 
-  const classes = classNames(
+  const classes = cn(
     'flex flex-col items-center justify-center h-[300px] w-full',
     'border border-gs-200'
   );

@@ -6,12 +6,12 @@ import { useT } from '../../lib/use-t';
 import { formatNumberRounded } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { Box } from './box';
-import { Intent, Tooltip, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, Tooltip, AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 import orderBy from 'lodash/orderBy';
 import { take } from 'lodash';
 import { DispatchMetricLabels } from '@vegaprotocol/types';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
 import { type TeamGame } from '../../lib/hooks/use-games';
 import { Rank } from './graphics/rank';
@@ -50,12 +50,7 @@ export const TeamCard = ({
   if (rank === 3) rankElement = <Rank variant="bronze" />;
 
   return (
-    <div
-      className={classNames(
-        'gap-6 grid grid-cols-1 grid-rows-1',
-        'md:grid-cols-3'
-      )}
-    >
+    <div className={cn('gap-6 grid grid-cols-1 grid-rows-1', 'md:grid-cols-3')}>
       {/** Card */}
       <Box
         backgroundImage={team.avatarUrl || getFallbackAvatar(team.teamId)}
@@ -66,20 +61,20 @@ export const TeamCard = ({
           {team.name}
         </h1>
         {games && <FavoriteGame games={games} noLabel />}
-        <TradingAnchorButton
-          size="extra-small"
+        <AnchorButton
+          size="xs"
           intent={Intent.Primary}
           href={Links.COMPETITIONS_TEAM(team.teamId)}
         >
           {t('Profile')}
-        </TradingAnchorButton>
-        <UpdateTeamButton team={team} size="extra-small" />
+        </AnchorButton>
+        <UpdateTeamButton team={team} size="xs" />
       </Box>
 
       {/** Tiles */}
       <Box className="w-full md:col-span-2">
         <div
-          className={classNames(
+          className={cn(
             'grid gap-3 w-full mb-4',
             'md:grid-cols-3 md:grid-rows-2',
             'grid-cols-2 grid-rows-3'

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ConnectorType } from '@vegaprotocol/wallet';
 import { VegaIcon, VegaIconNames, VLogo } from '@vegaprotocol/ui-toolkit';
 
@@ -9,7 +9,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     case 'injected': {
       return (
         <span
-          className={classNames(
+          className={cn(
             defaultWrapperClasses,
             'bg-black dark:bg-white text-gs-800 '
           )}
@@ -21,7 +21,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     case 'jsonRpc': {
       return (
         <span
-          className={classNames(
+          className={cn(
             defaultWrapperClasses,
             'bg-black dark:bg-white text-gs-800  text-xs'
           )}
@@ -33,7 +33,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     case 'snap': {
       return (
         <span
-          className={classNames(
+          className={cn(
             defaultWrapperClasses,
             'border bg-white dark:bg-gs-600'
           )}
@@ -45,10 +45,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     case 'viewParty': {
       return (
         <span
-          className={classNames(
-            defaultWrapperClasses,
-            'bg-vega-blue-500 text-gs-800'
-          )}
+          className={cn(defaultWrapperClasses, 'bg-vega-blue-500 text-gs-800')}
         >
           <VegaIcon name={VegaIconNames.EYE} size={20} />
         </span>
@@ -57,7 +54,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     default: {
       return (
         <span
-          className={classNames(
+          className={cn(
             defaultWrapperClasses,
             'bg-gs-600 text-gs-800  text-xs'
           )}

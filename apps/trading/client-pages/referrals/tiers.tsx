@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/utils';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { Table } from '../../components/table';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from '../../components/helpers/tag';
 import { getTierColor, getTierGradient } from '../../components/helpers/tiers';
@@ -22,7 +22,7 @@ import { Trans } from 'react-i18next';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
-    className={classNames('bg-gs-800  rounded-lg animate-pulse', {
+    className={cn('bg-gs-800  rounded-lg animate-pulse', {
       'w-full h-20': variant === 'large',
     })}
   ></div>
@@ -47,7 +47,7 @@ const StakingTier = ({
   const multiplierImage = (
     <div
       aria-hidden
-      className={classNames(
+      className={cn(
         'w-full max-w-[80px] h-full min-h-[80px]',
         'bg-cover bg-right-bottom',
         {
@@ -63,7 +63,7 @@ const StakingTier = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         'overflow-hidden',
         'border rounded-md w-full',
         'flex flex-row',
@@ -72,11 +72,7 @@ const StakingTier = ({
         BORDER_COLOR
       )}
     >
-      <div
-        className={classNames(
-          'p-3 flex flex-row min-h-[80px] h-full items-center'
-        )}
-      >
+      <div className={cn('p-3 flex flex-row min-h-[80px] h-full items-center')}>
         <div>
           <Tag color={getTierColor(tier, max)}>
             {t('Multiplier')} {referralRewardMultiplier}x
@@ -182,7 +178,7 @@ export const TiersContainer = () => {
 
       {/* Container */}
       <div
-        className={classNames(
+        className={cn(
           'md:bg-gs-800',
           'md:',
           'md:text-black',
@@ -315,7 +311,7 @@ const TiersTable = ({
       className="bg-gs-0"
       data={data.map((d) => ({
         ...d,
-        className: classNames(getTierGradient(d.tier, data.length)),
+        className: cn(getTierGradient(d.tier, data.length)),
       }))}
     />
   );

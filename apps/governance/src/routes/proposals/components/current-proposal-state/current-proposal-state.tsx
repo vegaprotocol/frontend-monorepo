@@ -4,7 +4,7 @@ import {
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 export enum AdditionalProposalState {
@@ -49,7 +49,7 @@ export const CurrentProposalState = ({
     | ProposalState
     | AdditionalProposalState
     | ProtocolUpgradeProposalStatus;
-  className?: classNames.Argument;
+  className?: string;
   tooltip?: ReactNode;
   children?: ReactNode;
 }) => {
@@ -111,7 +111,7 @@ export const CurrentProposalState = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         'rounded px-1 py-[2px]',
         'font-alpha text-xs',
         'flex items-center gap-1',

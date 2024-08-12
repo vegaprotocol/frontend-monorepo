@@ -4,7 +4,7 @@ import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../../../routes';
-import { Button, Pagination } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent, Pagination } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ExternalLinks } from '@vegaprotocol/environment';
@@ -258,7 +258,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
         <div className="xs:justify-self-end" data-testid="new-proposal-link">
           <Link to={`${Routes.PROPOSALS}/propose/raw`}>
-            <Button variant="primary" size="sm">
+            <Button intent={Intent.Primary} size="sm">
               <div className="flex items-center gap-1">{t('NewProposal')}</div>
             </Button>
           </Link>

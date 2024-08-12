@@ -1,6 +1,6 @@
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { convertToCountdownString } from '@vegaprotocol/utils';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { useT } from '../use-t';
@@ -68,7 +68,7 @@ export const ProtocolUpgradeCountdown = ({
     >
       <div
         data-testid="protocol-upgrade-counter"
-        className={classNames(
+        className={cn(
           'flex h-8 flex-nowrap items-center gap-1 px-2 py-1 text-xs lg:px-4',
           'rounded border',
           'border-vega-orange-500 dark:border-vega-orange-500',

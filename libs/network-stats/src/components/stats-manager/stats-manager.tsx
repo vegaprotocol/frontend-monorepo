@@ -3,7 +3,7 @@ import type { Statistics, NodeData } from '../../config/stats-fields';
 import { fieldsDefinition } from '../../config/stats-fields';
 import { useStatsQuery } from './__generated__/Stats';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
 
 interface StatsManagerProps {
@@ -43,7 +43,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         'grid grid-cols-2 md:grid-cols-3 gap-3 w-full self-start justify-self-center',
         className
       )}
@@ -51,7 +51,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
       {panels.map(({ field, title, description, value, good }, i) => (
         <div
           key={i}
-          className={classNames(
+          className={cn(
             'border rounded p-2 relative border-gs-600',
             {
               'col-span-2': field === 'chainId',
@@ -67,7 +67,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
         >
           <div className="uppercase flex items-center gap-2 text-xs font-alpha calt">
             <div
-              className={classNames('w-2 h-2 rounded-full', {
+              className={cn('w-2 h-2 rounded-full', {
                 'bg-gs-200': good === undefined,
                 'bg-vega-pink dark:bg-vega-pink': good !== undefined && !good,
                 'bg-vega-green dark:bg-vega-green': good !== undefined && good,

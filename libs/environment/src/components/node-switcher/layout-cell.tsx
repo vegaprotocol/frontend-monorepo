@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
 
 type LayoutCellProps = {
@@ -24,7 +24,7 @@ export const LayoutCell = ({
   ];
 
   return (
-    <div className={classnames(classes)}>
+    <div className={cn(classes)}>
       {label && (
         <>
           <span className="lg:hidden text-xs text-gs-200  whitespace-nowrap">
@@ -39,7 +39,7 @@ export const LayoutCell = ({
       )}
       <span
         data-testid={dataTestId}
-        className={classnames('font-mono text-xs lg:text-sm', {
+        className={cn('font-mono text-xs lg:text-sm', {
           'text-danger': !isLoading && hasError,
           'text-muted': isLoading,
         })}

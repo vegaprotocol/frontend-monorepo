@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 
 interface TrafficLightProps {
   value: number;
@@ -14,7 +14,7 @@ export const TrafficLight = ({
   q2,
   children,
 }: TrafficLightProps) => {
-  const slippageClassName = classNames({
+  const slippageClassName = cn({
     'text-darkerGreen dark:text-lightGreen': value < q1,
     'text-amber': value >= q1 && value < q2,
     'text-vega-pink': value >= q2,

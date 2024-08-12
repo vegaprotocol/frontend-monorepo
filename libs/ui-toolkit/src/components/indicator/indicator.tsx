@@ -1,19 +1,19 @@
-import classNames from 'classnames';
-import { Intent } from '../../utils/intent';
-import { getIntentTextAndBackground } from '../../utils/intent';
+import { cn } from '../../utils/cn';
+import { getIntentBackground, getIntentText, Intent } from '../../utils/intent';
 
 interface IndicatorProps {
-  variant?: Intent;
+  intent?: Intent;
   size?: 'md' | 'lg';
 }
 
 export const Indicator = ({
-  variant = Intent.None,
+  intent = Intent.None,
   size = 'md',
 }: IndicatorProps) => {
-  const names = classNames(
+  const names = cn(
     'inline-block rounded-full',
-    getIntentTextAndBackground(variant),
+    getIntentText(intent),
+    getIntentBackground(intent),
     {
       'w-2 h-2': size === 'md',
       'w-3 h-3': size === 'lg',

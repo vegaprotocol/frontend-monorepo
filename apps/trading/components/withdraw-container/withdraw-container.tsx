@@ -26,7 +26,7 @@ import {
 import {
   FormGroup,
   TradingInput as Input,
-  TradingButton,
+  Button,
   TradingInputError,
   Intent,
   TradingRichSelect,
@@ -196,13 +196,13 @@ const WithdrawForm = ({
           render={() => {
             if (!pubKeys.length) {
               return (
-                <TradingButton
+                <Button
                   intent={Intent.Info}
-                  size="small"
+                  size="sm"
                   onClick={() => openVegaWalletDialog()}
                 >
                   {t('Connect')}
-                </TradingButton>
+                </Button>
               );
             }
 
@@ -341,14 +341,9 @@ const WithdrawForm = ({
           data={data}
         />
       )}
-      <TradingButton
-        type="submit"
-        size="large"
-        fill={true}
-        intent={Intent.Secondary}
-      >
+      <Button type="submit" size="lg" fill={true} intent={Intent.Secondary}>
         {t('Withdraw')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };

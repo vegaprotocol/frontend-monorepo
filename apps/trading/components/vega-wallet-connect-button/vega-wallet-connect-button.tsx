@@ -5,7 +5,7 @@ import { truncateByChars } from '@vegaprotocol/utils';
 import {
   VegaIcon,
   VegaIconNames,
-  TradingButton as Button,
+  Button,
   Intent,
   TradingDropdown,
   TradingDropdownTrigger,
@@ -20,7 +20,7 @@ import {
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
@@ -64,7 +64,7 @@ export const VegaWalletConnectButton = ({
             }}
           >
             <Button
-              size="small"
+              size="sm"
               icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />}
             >
               {activeKey ? (
@@ -126,7 +126,7 @@ export const VegaWalletConnectButton = ({
         onClick?.();
         openVegaWalletDialog();
       }}
-      size="small"
+      size="sm"
       intent={intent}
       icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
     >
@@ -213,7 +213,7 @@ const KeypairItem = ({
           {copied && <span className="text-xs">{t('Copied')}</span>}
         </div>
         <div
-          className={classNames('flex-1 mr-2 text-secondary text-sm')}
+          className={cn('flex-1 mr-2 text-secondary text-sm')}
           data-testid={`key-${pk.publicKey}`}
         >
           {!isReadOnly && (

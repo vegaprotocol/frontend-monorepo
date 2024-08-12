@@ -1,5 +1,5 @@
 import { Checkbox as UICheckbox } from '@vegaprotocol/ui-toolkit';
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { Control, FieldValues, Path } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -29,7 +29,7 @@ export function Checkbox<T extends FieldValues>({
         return (
           <div
             data-testid={locators.checkboxWrapper}
-            className={classnames('mt-4 flex items-center gap-4', className)}
+            className={cn('mt-4 flex items-center gap-4', className)}
           >
             <UICheckbox
               label={label}

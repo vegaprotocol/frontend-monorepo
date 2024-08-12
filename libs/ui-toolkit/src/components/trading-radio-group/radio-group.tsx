@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 import { labelClasses } from '../checkbox';
 
@@ -29,7 +29,7 @@ export const TradingRadioGroup = forwardRef<
     }: TradingRadioGroupProps,
     ref
   ) => {
-    const groupClasses = classNames(
+    const groupClasses = cn(
       'flex text-sm',
       {
         'flex-col gap-2': orientation === 'vertical',
@@ -67,12 +67,12 @@ export const TradingRadio = ({
   disabled,
   className,
 }: RadioProps) => {
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'flex items-center gap-1.5 text-xs',
     labelClasses,
     className
   );
-  const itemClasses = classNames(
+  const itemClasses = cn(
     'flex justify-center items-center',
     'w-3 h-3 rounded-full border',
     'border-gs-500 ',
@@ -80,7 +80,7 @@ export const TradingRadio = ({
     'disabled:border-gs-600',
     'bg-gs-700 '
   );
-  const indicatorClasses = classNames(
+  const indicatorClasses = cn(
     'block w-2.5 h-2.5 border-2 rounded-full',
     'bg-gs-50',
     'border-gs-700 '

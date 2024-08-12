@@ -9,7 +9,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../lib/use-t';
 import { type TicketType } from './schemas';
@@ -44,7 +44,7 @@ export const TicketTypeSelect = ({
           value={itemValue}
           key={itemValue}
           data-testid={`order-type-${itemValue}`}
-          className={classNames(
+          className={cn(
             toggleClasses,
             'data-[state=on]:border-b-gs-400 data-[state=on]:text-gs-50'
           )}
@@ -57,7 +57,7 @@ export const TicketTypeSelect = ({
           <TradingDropdownTrigger>
             <button
               data-testid="order-type-stop"
-              className={classNames(
+              className={cn(
                 toggleClasses,
                 'flex gap-1 justify-center items-center',
                 {

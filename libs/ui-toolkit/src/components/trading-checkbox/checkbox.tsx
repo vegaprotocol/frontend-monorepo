@@ -1,6 +1,6 @@
 import { VegaIcon, VegaIconNames } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 import { labelClasses } from '../checkbox';
 
@@ -20,7 +20,7 @@ export const TradingCheckbox = ({
   onCheckedChange,
   disabled = false,
 }: TradingCheckboxProps) => {
-  const rootClasses = classNames(
+  const rootClasses = cn(
     'relative flex justify-center items-center w-3 h-3',
     'border rounded-sm overflow-hidden',
     'border-gs-500 ',
@@ -52,7 +52,7 @@ export const TradingCheckbox = ({
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
       <span
-        className={classNames('text-xs flex-1', {
+        className={cn('text-xs flex-1', {
           'text-gs-200 ': disabled,
         })}
       >

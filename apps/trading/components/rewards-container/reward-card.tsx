@@ -4,14 +4,14 @@ import {
   formatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   type VegaIconSize,
+  AnchorButton,
   Tooltip,
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -101,7 +101,7 @@ const GroupCard = ({
   return (
     <div data-reward-card>
       <div
-        className={classNames(
+        className={cn(
           'bg-gradient-to-r col-span-full p-px lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
@@ -109,14 +109,14 @@ const GroupCard = ({
         data-testid="active-rewards-card"
       >
         <div
-          className={classNames(
+          className={cn(
             CardColourStyles[colour].mainClassName,
             'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
           <div
-            className={classNames(
+            className={cn(
               'flex justify-between gap-2',
               'pb-3 border-b-[0.5px]  border-gs-500'
             )}
@@ -168,7 +168,7 @@ const GroupCard = ({
             </div>
           </div>
 
-          <div className={classNames('flex flex-col gap-3 h-full')}>
+          <div className={cn('flex flex-col gap-3 h-full')}>
             {/** DISPATCH METRIC */}
             <h4 data-testid="dispatch-metric-info" className="text-lg">
               {DispatchMetricLabels[dispatchMetric]}
@@ -191,13 +191,13 @@ const GroupCard = ({
             )}
           </div>
           <div>
-            <TradingAnchorButton
+            <AnchorButton
               intent={null}
-              className={classNames(CardColourStyles[colour].btn, 'w-full')}
+              className={cn(CardColourStyles[colour].btn, 'w-full')}
               href={link}
             >
               {t('View reward details')}
-            </TradingAnchorButton>
+            </AnchorButton>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ const RewardCard = ({
   return (
     <div data-reward-card className="min-h-[366px] h-full">
       <div
-        className={classNames(
+        className={cn(
           'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
@@ -251,13 +251,13 @@ const RewardCard = ({
         data-testid="active-rewards-card"
       >
         <div
-          className={classNames(
+          className={cn(
             CardColourStyles[colour].mainClassName,
             'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
-            className={classNames(
+            className={cn(
               'flex justify-between gap-4',
               'pb-4 border-b-[0.5px]  border-gs-500'
             )}
@@ -866,7 +866,7 @@ const CardIcon = ({
 }) => {
   return (
     <Tooltip description={<span>{tooltip}</span>}>
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon name={iconName} size={size} />
       </span>
     </Tooltip>
@@ -896,7 +896,7 @@ const EntityIcon = ({
         entityScope ? <span>{EntityScopeMapping[entityScope]}</span> : undefined
       }
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon
           name={EntityScopeIconMap[entityScope] || VegaIconNames.QUESTION_MARK}
           size={size}
@@ -923,7 +923,7 @@ const DistributionStrategyIcon = ({
       }
       underline={true}
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
       </span>
     </Tooltip>

@@ -1,9 +1,9 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, Button } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 
@@ -22,7 +22,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
       <button
         data-testid="place-order"
         type="submit"
-        className={classNames(
+        className={cn(
           'w-full h-12 flex flex-col justify-center items-center rounded-lg text-white p-2 transition-colors',
           {
             'bg-vega-red-500 enabled:hover:bg-vega-red-550 dark:bg-vega-red-600 dark:enabled:hover:bg-vega-red-650':
@@ -38,8 +38,8 @@ export const SubmitButton = ({ text }: { text: string }) => {
   }
 
   return (
-    <TradingButton size="large" intent={Intent.Secondary} onClick={openDialog}>
+    <Button size="lg" intent={Intent.Secondary} onClick={openDialog}>
       {t('Connect')}
-    </TradingButton>
+    </Button>
   );
 };

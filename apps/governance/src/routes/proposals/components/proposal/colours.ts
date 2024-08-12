@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 // rainbow-ish order
 const COLOURS = ['red', 'pink', 'orange', 'yellow', 'green', 'blue', 'purple'];
@@ -15,7 +15,7 @@ const getColour = (indicator: number, max = COLOURS.length) => {
 };
 
 export const getStyle = (indicator: number, max = COLOURS.length) =>
-  classNames({
+  cn({
     'bg-vega-yellow-400 before:bg-vega-yellow-400':
       'yellow' === getColour(indicator, max),
     'bg-vega-green-400 before:bg-vega-green-400':
@@ -34,7 +34,7 @@ export const getStyle = (indicator: number, max = COLOURS.length) =>
   });
 
 export const getIndicatorStyle = (indicator: number) =>
-  classNames(
+  cn(
     'rounded-sm text-black inline-block px-1 py-1 font-alpha calt h-8 w-7 text-center',
     'text-border-1',
     getStyle(indicator),

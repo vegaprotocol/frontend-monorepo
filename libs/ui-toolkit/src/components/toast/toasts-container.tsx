@@ -1,8 +1,8 @@
 import { usePrevious } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 import { Toast } from './toast';
 import type { Toasts } from './use-toasts';
 import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
@@ -52,7 +52,7 @@ export const ToastsContainer = ({
   return (
     <Portal
       ref={ref as Ref<HTMLDivElement>}
-      className={classNames(
+      className={cn(
         'group absolute z-30 pointer-events-auto',
         { 'bottom-0 right-0': position === ToastPosition.BottomRight },
         { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
@@ -74,7 +74,7 @@ export const ToastsContainer = ({
       )}
     >
       <ul
-        className={classNames('relative mt-[38px]', 'flex flex-col gap-[8px]', {
+        className={cn('relative mt-[38px]', 'flex flex-col gap-[8px]', {
           'flex-col-reverse': order === 'desc',
         })}
       >
@@ -93,7 +93,7 @@ export const ToastsContainer = ({
               );
             })}
         <div
-          className={classNames(
+          className={cn(
             'absolute right-0 top-[-38px] z-20 w-full',
             'transition-opacity',
             'sm:opacity-0 sm:hover:!opacity-100 sm:group-hover:opacity-50',
@@ -102,16 +102,16 @@ export const ToastsContainer = ({
             }
           )}
         >
-          <TradingButton
+          <Button
             title={t('Dismiss all toasts')}
-            size="small"
+            size="sm"
             fill={true}
             onClick={() => {
               closeAll();
             }}
           >
             {t('Dismiss all')}
-          </TradingButton>
+          </Button>
         </div>
       </ul>
     </Portal>

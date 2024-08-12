@@ -2,7 +2,7 @@ import { type FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   Notification,
@@ -271,17 +271,17 @@ export const SwapForm = ({
         data-testid="price-impact-input"
         disabled={!market}
       />
-      <TradingButton
+      <Button
         type="submit"
         intent={Intent.Secondary}
         data-testid="swap-now-button"
-        size="large"
+        size="lg"
         disabled={
           !market || marketData?.marketState !== MarketState.STATE_ACTIVE
         }
       >
         {t('Swap')}
-      </TradingButton>
+      </Button>
       <GetStarted lead={t('Connect wallet')} />
       {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
         <Notification
@@ -300,7 +300,7 @@ export const SwapForm = ({
               onDeposit(topAsset.id);
             },
             dataTestId: 'deal-ticket-deposit-dialog-button',
-            size: 'small',
+            size: 'sm',
           }}
         />
       )}

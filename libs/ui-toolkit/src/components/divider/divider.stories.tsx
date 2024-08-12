@@ -1,5 +1,5 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
-import className from 'classnames';
+import { cn } from '../../utils/cn';
 import { Divider } from './divider';
 
 export default {
@@ -10,20 +10,20 @@ export default {
 const Template: ComponentStory<typeof Divider> = (args) => {
   return (
     <div
-      className={className('flex', {
+      className={cn('flex', {
         'flex-col': args?.orientation !== 'vertical',
         'h-[50px]': args?.orientation === 'vertical',
       })}
     >
       <div
-        className={className(
+        className={cn(
           'h-[50px]',
           args?.orientation !== 'vertical' ? 'w-full' : 'w-1/2'
         )}
       />
       <Divider orientation={args?.orientation} />
       <div
-        className={className(
+        className={cn(
           'h-[50px]',
           args?.orientation !== 'vertical' ? 'w-full' : 'w-2/2'
         )}

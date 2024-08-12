@@ -4,14 +4,14 @@ import {
   Popover,
   Switch,
   ToastPositionSetter,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
 export const SettingsPopover = () => {
@@ -62,16 +62,16 @@ export const Settings = () => {
         <ToastPositionSetter />
       </SettingsGroup>
       <SettingsGroup label={t('Reset to default')}>
-        <TradingButton
+        <Button
           name="reset-to-defaults"
-          size="small"
+          size="sm"
           intent={Intent.None}
           onClick={() => {
             setOpen(true);
           }}
         >
           {t('Reset')}
-        </TradingButton>
+        </Button>
         <Dialog open={open} title={t('Reset')}>
           <div className="mb-4">
             <p>
@@ -85,7 +85,7 @@ export const Settings = () => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <TradingButton
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.Primary}
               onClick={() => {
@@ -95,8 +95,8 @@ export const Settings = () => {
               }}
             >
               {t('Yes, clear cache and refresh')}
-            </TradingButton>
-            <TradingButton
+            </Button>
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.None}
               onClick={() => {
@@ -104,7 +104,7 @@ export const Settings = () => {
               }}
             >
               {t('No, keep settings')}
-            </TradingButton>
+            </Button>
           </div>
         </Dialog>
       </SettingsGroup>
@@ -137,11 +137,11 @@ const SettingsGroup = ({
 }) => {
   return (
     <div
-      className={classNames('gap-2', {
+      className={cn('gap-2', {
         'flex items-start justify-between gap-2': inline,
       })}
     >
-      <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
+      <div className={cn({ 'w-3/4': inline, 'mb-2': !inline })}>
         <label className="text-sm" id={label}>
           {label}
         </label>

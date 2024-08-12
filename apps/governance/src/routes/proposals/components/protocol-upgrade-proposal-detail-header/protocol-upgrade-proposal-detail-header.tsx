@@ -14,7 +14,7 @@ export const ProtocolUpgradeProposalDetailHeader = ({
     <>
       <Heading title={t('vegaRelease{release}', { release: releaseTag })} />
       <div className="mb-10">
-        <Lozenge variant={Intent.Success}>{t('networkUpgrade')}</Lozenge>
+        <Lozenge intent={Intent.Success}>{t('networkUpgrade')}</Lozenge>
       </div>
     </>
   );

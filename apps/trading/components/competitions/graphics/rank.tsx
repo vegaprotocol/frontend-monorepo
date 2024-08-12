@@ -1,22 +1,22 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const Rank = ({
   variant,
   className,
 }: {
   variant?: 'gold' | 'silver' | 'bronze';
-  className?: classNames.Argument;
+  className?: string;
 }) => {
   const { theme } = useThemeSwitcher();
   return (
     <div
-      title={classNames({
+      title={cn({
         '1': variant === 'gold',
         '2': variant === 'silver',
         '3': variant === 'bronze',
       })}
-      className={classNames(
+      className={cn(
         {
           'text-yellow-300': variant === 'gold',
           'text-gs-500': variant === 'silver',

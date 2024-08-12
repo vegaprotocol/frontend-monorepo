@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { getIntentBackground } from '../../utils/intent';
 import { Intent } from '../../utils/intent';
 
@@ -19,7 +19,7 @@ export const ProgressBar = ({
     <div
       data-progress-bar
       style={{ height: compact ? '4px' : '6px' }}
-      className={classNames(
+      className={cn(
         'relative',
         {
           'bg-gs-700': !compact,
@@ -29,7 +29,7 @@ export const ProgressBar = ({
     >
       <div
         data-progress-bar-value
-        className={classNames(
+        className={cn(
           'absolute left-0 top-0 bottom-0',
           { 'rounded-sm': compact },
           intent === undefined || intent === Intent.None

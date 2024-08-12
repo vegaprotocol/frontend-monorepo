@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { toastIconMapping } from '../toast';
 import { Intent } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
@@ -8,7 +8,7 @@ interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;
   onClose?: () => void;
-  className?: classNames.Argument;
+  className?: string;
 }
 
 export const NotificationBanner = ({
@@ -20,7 +20,7 @@ export const NotificationBanner = ({
 }: NotificationBannerProps & HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         'flex items-center border-b pl-3 pr-2',
         'text-xs leading-tight font-normal',
         {
@@ -54,7 +54,7 @@ export const NotificationBanner = ({
         <Icon
           name={toastIconMapping[intent]}
           size={4}
-          className={classNames('mr-2', {
+          className={cn('mr-2', {
             'text-vega-blue-500 dark:text-vega-blue-500':
               intent === Intent.Primary,
 

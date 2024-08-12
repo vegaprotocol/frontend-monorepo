@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { HTMLAttributes } from 'react';
 
 interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
@@ -16,7 +16,7 @@ export const InputError = ({
   className,
   ...props
 }: InputErrorProps) => {
-  const effectiveClassName = classNames(
+  const effectiveClassName = cn(
     'text-sm block items-center first-letter:capitalize',
     'mt-2 min-w-0 break-words',
     {
@@ -32,7 +32,7 @@ export const InputError = ({
     <div
       data-testid={testId || 'input-error-text'}
       aria-describedby={forInput}
-      className={classNames(effectiveClassName, className)}
+      className={cn(effectiveClassName, className)}
       {...props}
       role="alert"
     >

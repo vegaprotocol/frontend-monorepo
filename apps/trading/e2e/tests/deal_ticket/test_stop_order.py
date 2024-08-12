@@ -106,7 +106,8 @@ def test_submit_stop_market_order_triggered(
     select_mini(page, 'order-stopExpiryStrategy', 'Cancel')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
-    page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
+    # Sometimes playright does not find the field to be visible, enabled and editable
+    page.get_by_test_id("date-picker-field").fill(expires_at_input_value, force=True)
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
@@ -141,7 +142,8 @@ def test_submit_stop_limit_order_pending(
     select_mini(page, 'order-stopExpiryStrategy', 'Trigger')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
-    page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
+    # Sometimes playright does not find the field to be visible, enabled and editable
+    page.get_by_test_id("date-picker-field").fill(expires_at_input_value, force=True)
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)

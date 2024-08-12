@@ -6,7 +6,12 @@ import { BigNumber } from '../../lib/bignumber';
 import { useNumberParts } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { useTranslation } from 'react-i18next';
-import { AnchorButton, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  AnchorButton,
+  ExternalLink,
+  Intent,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import {
   CONSOLE_TRANSFER_ASSET,
   DApp,
@@ -281,7 +286,7 @@ const CurrencyValue = ({
   const redeemBtn = isRedeemable ? (
     <Tooltip description={t('RedeemRewardsTooltip')}>
       <AnchorButton
-        variant="primary"
+        intent={Intent.Primary}
         size="xs"
         href={transferAssetLink(assetId)}
         target="_blank"

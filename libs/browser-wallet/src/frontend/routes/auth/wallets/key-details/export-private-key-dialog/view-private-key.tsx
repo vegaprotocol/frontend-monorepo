@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 import { HiddenContainer } from '@/components/hidden-container';
 
@@ -26,7 +26,7 @@ export const ViewPrivateKey = ({
         data-testid={locators.viewPrivateKeyClose}
         className="mt-4"
         fill={true}
-        variant="primary"
+        intent={Intent.Primary}
         onClick={onClose}
       >
         Close

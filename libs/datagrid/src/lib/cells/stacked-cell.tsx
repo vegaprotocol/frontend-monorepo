@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 export const StackedCell = ({
@@ -13,14 +13,14 @@ export const StackedCell = ({
   const rowClass = 'text-ellipsis whitespace-nowrap overflow-hidden';
 
   return (
-    <div className={classNames('leading-4', className)}>
+    <div className={cn('leading-4', className)}>
       <div className={rowClass} data-testid="stack-cell-primary">
         <span>{primary}</span>
       </div>
       {secondary && (
         <div
           data-testid="stack-cell-secondary"
-          className={classNames(rowClass, 'text-xs text-muted')}
+          className={cn(rowClass, 'text-xs text-muted')}
         >
           {secondary}
         </div>

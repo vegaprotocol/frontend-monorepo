@@ -1,5 +1,5 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 
 import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
@@ -33,11 +33,11 @@ export function Dialog({
   dataTestId = 'dialog-content',
   description,
 }: DialogProps) {
-  const contentClasses = classNames(
+  const contentClasses = cn(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
     'w-full h-full'
   );
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     // Dimensions
     'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -70,7 +70,7 @@ export function Dialog({
             </DialogPrimitives.Description>
           )}
           <div
-            className={classNames(
+            className={cn(
               // Positions the modal in the center of screen
               'z-20 relative rounded top-[5vw] pb-3'
             )}

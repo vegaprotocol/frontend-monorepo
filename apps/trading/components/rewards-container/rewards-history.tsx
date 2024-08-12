@@ -8,11 +8,7 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
-import {
-  TradingButton,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
   useRewardsHistoryQuery,
   type RewardsHistoryQuery,
@@ -327,23 +323,21 @@ export const RewardHistoryTable = ({
         </h4>
 
         <div className="flex gap-0.5">
-          <TradingButton
+          <Button
             onClick={() => setIsParty(false)}
-            size="extra-small"
-            minimal={isParty}
+            size="xs"
             data-testid="total-distributed-button"
           >
             {t('Total distributed')}
-          </TradingButton>
-          <TradingButton
+          </Button>
+          <Button
             onClick={() => setIsParty(true)}
-            size="extra-small"
+            size="xs"
             disabled={!pubKey}
-            minimal={!isParty}
             data-testid="earned-by-me-button"
           >
             {t('Earned by me')}
-          </TradingButton>
+          </Button>
         </div>
       </div>
       <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">

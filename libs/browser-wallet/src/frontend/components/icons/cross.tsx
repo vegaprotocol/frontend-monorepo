@@ -1,11 +1,11 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { className as defaultClassName } from './style';
 
 export function Cross({ className }: Readonly<{ className?: string }>) {
   return (
     <svg
-      className={classnames(defaultClassName, className)}
+      className={cn(defaultClassName, className)}
       viewBox="0 0 12 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useRefereeStats } from './hooks/use-referee-stats';
 import {
   BenefitTierTile,
@@ -58,7 +58,7 @@ export const RefereeStatistics = ({
         data-as="referee"
         className="relative mx-auto mb-20"
       >
-        <div className={classNames('grid grid-cols-1 grid-rows-1 gap-5')}>
+        <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
           {/** TEAM TILE - referral set id is the same as team id */}
           <TeamTile teamId={setId} />
           {/** TILES ROW 1 */}
@@ -138,7 +138,7 @@ export const PreviewRefereeStatistics = ({
 }: {
   setId: string;
   withTeamTile?: boolean;
-  className?: classNames.Argument;
+  className?: string;
 }) => {
   const program = useReferralProgram();
   const aggregationEpochs =
@@ -202,9 +202,9 @@ export const PreviewRefereeStatistics = ({
       data-testid="referral-statistics"
       data-as="referee"
       data-preview
-      className={classNames('relative mx-auto mb-20', className)}
+      className={cn('relative mx-auto mb-20', className)}
     >
-      <div className={classNames('grid grid-cols-1 grid-rows-1 gap-5')}>
+      <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
         {/** TEAM TILE - referral set id is the same as team id */}
         {withTeamTile && <TeamTile teamId={setId} />}
         {/** TILES ROW 1 */}

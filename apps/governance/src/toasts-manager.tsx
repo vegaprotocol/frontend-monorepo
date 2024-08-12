@@ -1,7 +1,7 @@
 import {
   Intent,
   ToastsContainer,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
   useToasts,
@@ -22,18 +22,18 @@ const WalletDisconnectAdditionalContent = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <p className="mt-2">
-      <TradingButton
+      <Button
         data-testid="connect-vega-wallet"
         onClick={() => {
           hideToast();
           openVegaWalletDialog();
         }}
-        size="small"
+        size="sm"
         intent={Intent.Danger}
         icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
       >
         <span className="whitespace-nowrap uppercase">{t('Connect')}</span>
-      </TradingButton>
+      </Button>
     </p>
   );
 };

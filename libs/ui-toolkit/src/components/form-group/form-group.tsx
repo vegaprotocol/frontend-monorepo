@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import { cn } from '../../utils/cn';
 
 export interface FormGroupProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ export const FormGroup = ({
   hideLabel = false,
   compact = false,
 }: FormGroupProps) => {
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     'relative',
     {
       'mb-2': compact,
@@ -30,7 +30,7 @@ export const FormGroup = ({
     },
     className
   );
-  const labelClasses = classNames('block mb-2 text-sm', {
+  const labelClasses = cn('block mb-2 text-sm', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
   });

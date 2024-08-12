@@ -92,7 +92,7 @@ const TopThirdCellRenderer = (
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
-            rightIcon={
+            icon={
               <Icon
                 name="arrow-right"
                 className="mr-2 fill-current align-text-top"

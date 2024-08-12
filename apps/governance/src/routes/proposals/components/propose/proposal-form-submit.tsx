@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { VegaWalletContainer } from '../../../../components/vega-wallet-container';
 
@@ -20,7 +20,7 @@ export const ProposalFormSubmit = ({
       <VegaWalletContainer>
         {() => (
           <Button
-            variant="primary"
+            intent={Intent.Primary}
             type="submit"
             data-testid="proposal-submit"
             disabled={isSubmitting}

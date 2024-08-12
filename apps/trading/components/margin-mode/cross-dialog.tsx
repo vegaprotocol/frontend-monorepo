@@ -2,7 +2,7 @@ import { MarginMode } from '@vegaprotocol/types';
 import { MarginMode as MarginModeTx } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
-import { TradingButton as Button, Dialog } from '@vegaprotocol/ui-toolkit';
+import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import { MarginChange } from './margin-change';
 import { NoWalletWarning } from './no-wallet-warning';
 

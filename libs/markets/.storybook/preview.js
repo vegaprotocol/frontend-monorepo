@@ -1,5 +1,5 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
 import '../src/styles.scss';
 export const parameters = {
@@ -42,7 +42,7 @@ export const globalTypes = {
 };
 
 const StoryWrapper = ({ children, fill }) => {
-  const classes = classNames('p-4', 'bg-gs-900', 'text-gs-50', {
+  const classes = cn('p-4', 'bg-gs-900', 'text-gs-50', {
     'w-screen h-screen': fill,
   });
   return <div className={classes}>{children}</div>;

@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 import { forwardRef } from 'react';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import { defaultFormElement } from '../../utils/trading-shared';
@@ -80,7 +80,7 @@ const getAffixElement = ({
   appendIconName,
   appendIconDescription,
 }: Pick<TradingInputProps, keyof AffixProps>) => {
-  const className = classNames('absolute top-0 bottom-0 flex items-center', {
+  const className = cn('absolute top-0 bottom-0 flex items-center', {
     'left-2': prependIconName || prependElement,
     'right-2': appendIconName || appendElement,
   });
@@ -127,7 +127,7 @@ export const TradingInput = forwardRef<HTMLInputElement, TradingInputProps>(
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    const inputClassName = classNames(
+    const inputClassName = cn(
       'appearance-none dark:color-scheme-dark px-3 h-8',
       className,
       {
@@ -140,7 +140,7 @@ export const TradingInput = forwardRef<HTMLInputElement, TradingInputProps>(
       <input
         {...props}
         ref={ref}
-        className={classNames(
+        className={cn(
           defaultFormElement(hasError, props.disabled),
           inputClassName
         )}

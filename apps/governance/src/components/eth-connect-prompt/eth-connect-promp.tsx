@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 
@@ -7,7 +7,7 @@ export const EthConnectPrompt = () => {
   const { open } = useWeb3ConnectStore();
   return (
     <Button
-      variant="default"
+      intent={Intent.Primary}
       onClick={() => open()}
       fill={true}
       data-testid="connect-to-eth-btn"
