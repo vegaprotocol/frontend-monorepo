@@ -17,6 +17,9 @@ export const theme = {
     'button-md': 'var(--button-border-radius-md)',
     'button-lg': 'var(--button-border-radius-lg)',
   },
+  borderWidth: {
+    button: 'var(--button-border-width)',
+  },
   colors: {
     gs: {
       '0': 'rgb(var(--gs-0) / <alpha-value>)',
@@ -38,18 +41,24 @@ export const theme = {
         foreground: 'rgb(var(--intent-none-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-none-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-none-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-none-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-none-to) / <alpha-value>)',
       },
       primary: {
         DEFAULT: 'rgb(var(--intent-primary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-primary-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-primary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-primary-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-primary-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-primary-to) / <alpha-value>)',
       },
       secondary: {
         DEFAULT: 'rgb(var(--intent-secondary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-secondary-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-secondary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-secondary-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-secondary-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-secondary-to) / <alpha-value>)',
       },
       danger: {
         DEFAULT: 'rgb(var(--intent-danger) / <alpha-value>)',

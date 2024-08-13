@@ -82,6 +82,7 @@
     --intent-success-background: var(--color-green-300);
 
     /* Buttons */
+    --button-border-width: 1px;
     --button-border-radius-xs: theme(borderRadius.DEFAULT);
     --button-border-radius-sm: theme(borderRadius.DEFAULT);
     --button-border-radius-md: theme(borderRadius.DEFAULT);
