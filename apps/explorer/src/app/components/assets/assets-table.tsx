@@ -14,7 +14,7 @@ import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { useNavigate } from 'react-router-dom';
 import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
-import type { Asset } from '@vegaprotocol/types';
+import { AssetStatus, type Asset } from '@vegaprotocol/types';
 import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
 
 type AssetsTableProps = {
@@ -38,6 +38,10 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
       window.removeEventListener('resize', showColumnsOnDesktop);
     };
   }, []);
+
+  const dataFiltered = data
+    ? data?.filter((asset) => asset.status !== AssetStatus.STATUS_REJECTED)
+    : data;
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
@@ -108,7 +112,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
   return (
     <AgGrid
       ref={ref}
-      rowData={data}
+      rowData={dataFiltered}
       getRowId={({ data }: { data: AssetFieldsFragment }) => data.id}
       overlayNoRowsTemplate={t('This chain has no assets')}
       domLayout="autoHeight"
