@@ -6,7 +6,7 @@ import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { NetworkProvider } from '@/contexts/network/network-provider';
 import { Routing } from './routes';
-import '@vegaprotocol/browser-wallet-backend'
+import '@vegaprotocol/browser-wallet-backend';
 
 export const locators = {
   appWrapper: 'app-wrapper',
