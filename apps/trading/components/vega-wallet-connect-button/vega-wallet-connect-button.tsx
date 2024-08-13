@@ -26,16 +26,6 @@ import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
 
-import dynamic from 'next/dynamic';
-import React from 'react';
-
-export const BrowserWallet = dynamic(
-  () => import('@vegaprotocol/browser-wallet'),
-  {
-    ssr: false,
-  }
-);
-
 export const VegaWalletConnectButton = ({
   intent = Intent.None,
   onClick,
@@ -107,8 +97,6 @@ export const VegaWalletConnectButton = ({
               onSelect={selectPubKey}
               isReadOnly={isReadOnly}
             />
-            <TradingDropdownSeparator />
-            <BrowserWallet />
             <TradingDropdownSeparator />
             {!isReadOnly && (
               <TradingDropdownItem
