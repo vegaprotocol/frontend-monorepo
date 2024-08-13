@@ -36,7 +36,7 @@ export interface HostImageProperties {
 }
 
 const FallbackImage = ({ hostname, size }: HostImageProperties) => {
-  const colorIndex = getRemainder(hostname);
+  const colorIndex = 0; // getRemainder(hostname);
   let letter = '?';
   try {
     const host = new URL(hostname).host;
@@ -65,21 +65,5 @@ const FallbackImage = ({ hostname, size }: HostImageProperties) => {
 };
 
 export const HostImage = ({ hostname, size = 48 }: HostImageProperties) => {
-  const [useFallback, setUseFallback] = useState(false);
-  return useFallback ? (
-    <FallbackImage hostname={hostname} size={size} />
-  ) : (
-    <img
-      data-testid={locators.hostImage}
-      style={{
-        width: size,
-        height: size,
-        minWidth: size,
-        minHeight: size,
-      }}
-      alt={hostname}
-      src={`${hostname}/favicon.ico`}
-      onError={() => setUseFallback(true)}
-    />
-  );
+  return <FallbackImage hostname={hostname} size={size} />
 };
