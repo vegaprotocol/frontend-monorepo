@@ -31,7 +31,6 @@ export const mockClient = (
   keys: Key[] = defaultKeys,
   globals?: Partial<AppGlobals>
 ) => {
-  console.log('Mock client');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pushMessage = (message: any) => {
     console.log('sending', message);
@@ -45,7 +44,6 @@ export const mockClient = (
   };
   const lst = (message) => {
     const msg = message.detail;
-    console.log(msg);
     switch (msg.method) {
       case RpcMethods.ListWallets: {
         pushMessage({

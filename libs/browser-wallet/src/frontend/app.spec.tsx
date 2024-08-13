@@ -8,12 +8,12 @@ import { mockStore } from '@/test-helpers/mock-store';
 
 import App from './app';
 
-jest.mock('javascript-time-ago', () =>({
-  addDefaultLocale: jest.fn(), 
+jest.mock('javascript-time-ago', () => ({
+  addDefaultLocale: jest.fn(),
 }));
 jest.mock('@vegaprotocol/browser-wallet-backend', () => ({
   createWalletBackend: jest.fn(),
-}))
+}));
 jest.mock('@/stores/globals');
 jest.mock('@/hooks/prevent-window-resize');
 jest.mock('@/hooks/listen-for-popups');
@@ -68,6 +68,6 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByTestId('global-error-boundary')).toBeInTheDocument();
     expect(screen.getByTestId('routing')).toBeInTheDocument();
-    expect(screen.getByTestId('json-rpc-provider')).toBeInTheDocument();;
+    expect(screen.getByTestId('json-rpc-provider')).toBeInTheDocument();
   });
 });

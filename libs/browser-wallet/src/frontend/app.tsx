@@ -10,7 +10,7 @@ import { Routing } from './routes';
 export const locators = {
   appWrapper: 'app-wrapper',
 };
-createWalletBackend()
+createWalletBackend();
 TimeAgo.addDefaultLocale(en);
 
 function App() {

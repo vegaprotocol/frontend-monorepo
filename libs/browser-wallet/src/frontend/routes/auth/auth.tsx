@@ -64,7 +64,15 @@ export const Auth = () => {
       loadAssets(request, network.id);
       loadMarkets(request, network.id);
     }
-  }, [loadingConnections, loadAssets, loadMarkets, loadingWallets, network.id, request, loadingNetworks]);
+  }, [
+    loadingConnections,
+    loadAssets,
+    loadMarkets,
+    loadingWallets,
+    network.id,
+    request,
+    loadingNetworks,
+  ]);
   // const isWallets = !!useMatch(FULL_ROUTES.wallets);
 
   // Only render the UI if the wallets and networks have loaded
