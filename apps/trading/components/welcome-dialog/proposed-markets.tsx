@@ -66,9 +66,7 @@ export const ProposedMarkets = () => {
       <div className="mt-7 pt-8 border-t border-default">
         {newMarkets.length > 0 ? (
           <>
-            <h2 className="font-alpha uppercase text-2xl">
-              {t('Proposed markets')}
-            </h2>
+            <h2 className="uppercase text-2xl">{t('Proposed markets')}</h2>
             <dl data-testid="welcome-notice-proposed-markets" className="py-5">
               {compact(newMarkets).map(({ displayName, id }, i) => (
                 <div className="pt-1 flex justify-between" key={i}>

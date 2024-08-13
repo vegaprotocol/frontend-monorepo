@@ -20,7 +20,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const { isReadOnly } = useVegaWallet();
   const AppLayoutClasses = cn(
     'app w-full max-w-[1500px] mx-auto grid',
-    'font-alpha lg:text-body-large',
+    'lg:text-body-large',
     {
       'grid-rows-[repeat(2,min-content)_1fr_min-content]': !isReadOnly,
       'grid-rows-[repeat(3,min-content)_1fr_min-content]': isReadOnly,

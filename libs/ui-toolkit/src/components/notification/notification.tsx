@@ -62,7 +62,7 @@ export const Notification = ({
       <div
         className={cn(
           'flex flex-col items-start overflow-hidden gap-1.5',
-          'text-gs-50 font-alpha text-sm'
+          'text-gs-50 text-sm'
         )}
       >
         {title && (

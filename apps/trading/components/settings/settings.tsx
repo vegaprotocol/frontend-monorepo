@@ -38,7 +38,7 @@ export const Settings = () => {
 
   return (
     <section className="flex flex-col gap-3 p-4 w-96">
-      <h2 className="font-alpha calt uppercase">{t('Settings')}</h2>
+      <h2 className="font-alt calt uppercase">{t('Settings')}</h2>
       <SettingsGroup label={t('Dark mode')}>
         <Switch
           name="settings-theme-switch"

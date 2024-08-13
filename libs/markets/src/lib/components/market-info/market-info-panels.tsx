@@ -497,7 +497,7 @@ const SuccessionLineItem = ({
   return (
     <div
       data-testid="succession-line-item"
-      className={cn('bg-gs-700  rounded p-2', 'font-alpha', 'flex flex-col ')}
+      className="bg-gs-700 rounded p-2 flex flex-col"
     >
       <div className="flex justify-between">
         <div>

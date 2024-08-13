@@ -44,7 +44,7 @@ function App() {
           {/* <NetworkProvider> */}
           <main
             data-testid={locators.appWrapper}
-            className="w-full h-full bg-black font-alpha text-vega-dark-400 overflow-hidden"
+            className="w-full h-full bg-black text-vega-dark-400 overflow-hidden"
           >
             <Routing />
           </main>

@@ -12,7 +12,7 @@ export type Metric = components['schemas']['vegaDispatchMetric'];
 export const wrapperClasses =
   'border border-gs-700  pv-2 w-full sm:w-1/3 basis-1/3';
 export const headerClasses =
-  'bg-gs-700 border-gs-700 text-center text-xl py-2 font-alpha calt';
+  'bg-gs-700 border-gs-700 text-center text-xl py-2 font-alt calt';
 
 export type Transfer = components['schemas']['commandsv1Transfer'];
 

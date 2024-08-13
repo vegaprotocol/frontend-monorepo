@@ -83,7 +83,7 @@ const NestedDataListItem = ({
   });
 
   const titleClasses = cn({
-    'text-xl pl-4 border-l-4 font-alpha calt': hasChildren,
+    'text-xl pl-4 border-l-4 font-alt calt': hasChildren,
     'text-base font-medium whitespace-nowrap': !hasChildren,
   });
 

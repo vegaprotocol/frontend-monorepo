@@ -136,7 +136,7 @@ export const TiersContainer = () => {
 
   return (
     <>
-      <h2 className="text-3xl font-alpha calt" id="current-program-details">
+      <h2 className="text-3xl font-alt calt" id="current-program-details">
         {t('Current program details')}
       </h2>
       {details?.id && (
@@ -158,7 +158,7 @@ export const TiersContainer = () => {
       )}
 
       {/* Meta */}
-      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-gs-100  font-alpha calt">
+      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-gs-100  font-alt calt">
         {details?.id && (
           <span>
             {t('Proposal ID:')}{' '}

@@ -59,7 +59,7 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       getSigners(terminationDataSource)
     );
 
-  const headerClassName = 'font-alpha calt text-xl mt-4 border-b-2 pb-2';
+  const headerClassName = 'font-alt calt text-xl mt-4 border-b-2 pb-2';
 
   return (
     <div>

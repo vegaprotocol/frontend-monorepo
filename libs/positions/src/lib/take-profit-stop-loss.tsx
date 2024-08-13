@@ -667,7 +667,7 @@ export const TakeProfitStopLoss = ({
 
   return (
     <>
-      <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-gs-50">
+      <dl className="mb-6 grid grid-cols-2 gap-1 text-gs-50">
         <dt className="text-gs-100 ">{t('Symbol')}</dt>
         <dd className="text-right" data-testid="instrument-code">
           {market?.tradableInstrument.instrument.code}

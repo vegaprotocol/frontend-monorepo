@@ -40,7 +40,7 @@ const Logo = ({
           data-testid="nav-app-name"
           className={cn(
             'group-[.nav-size-small]:text-sm',
-            'font-alpha calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
+            'font-alt calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
             'border-l border-l-gs-200 pl-4'
           )}
         >
@@ -289,7 +289,7 @@ export const Navigation = ({
       <div
         className={cn(
           'navbar',
-          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-200'
+          'flex gap-4 h-12 items-center text-lg text-gs-200'
         )}
       >
         {children}

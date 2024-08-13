@@ -19,7 +19,7 @@ export const Balance = ({
   symbol: string;
 }) => {
   return balance ? (
-    <div className="font-alpha text-xs" data-testid="asset-balance">
+    <div className="text-xs" data-testid="asset-balance">
       {balance} {symbol}
     </div>
   ) : (

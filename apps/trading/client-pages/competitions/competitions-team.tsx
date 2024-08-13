@@ -199,7 +199,7 @@ const TeamPage = ({
               </button>
             </CopyWithTooltip>
           </div>
-          <div className="flex gap-2 items-baseline text-xs text-muted font-alpha calt">
+          <div className="flex gap-2 items-baseline text-xs text-muted font-alt calt">
             {closedIndicator}
             <div className="">
               {t('Created at')}:{' '}

@@ -19,12 +19,12 @@ const EmptyList = ({ heading, label }: EmptyListProps) => {
 
       <div className="mt-4">
         {heading ? (
-          <h1 className="font-alpha calt text-xl uppercase text-center leading-relaxed">
+          <h1 className="font-alt calt text-xl uppercase text-center leading-relaxed">
             {heading}
           </h1>
         ) : null}
         {label ? (
-          <p className="font-alpha calt text-gs-100 text-center">{label}</p>
+          <p className="font-alt calt text-gs-100 text-center">{label}</p>
         ) : null}
       </div>
     </div>

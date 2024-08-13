@@ -25,7 +25,7 @@ const Failure = ({ reason }: { reason?: ReactNode }) => {
   return (
     <Splash>
       <div className="border border-vega-red m-10 mx-auto w-4/5 max-w-3xl rounded-lg overflow-hidden animate-shake">
-        <div className="bg-vega-red text-white px-2 py-2 flex gap-1 items-center font-alpha calt uppercase">
+        <div className="bg-vega-red text-white px-2 py-2 flex gap-1 items-center font-alt calt uppercase">
           <VLogo className="h-4" />
           <span className="text-lg">{t('Failed to initialize the app')}</span>
         </div>

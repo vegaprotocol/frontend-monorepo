@@ -147,7 +147,7 @@ const GroupCard = ({
                   </span>
                 </span>
 
-                <span className="font-alpha" data-testid="reward-asset">
+                <span data-testid="reward-asset">
                   <AssetSymbol asset={transferAsset} />
                 </span>
               </h3>
@@ -281,7 +281,7 @@ const RewardCard = ({
                   {rewardAmount}
                 </span>
 
-                <span className="font-alpha" data-testid="reward-asset">
+                <span data-testid="reward-asset">
                   <AssetSymbol asset={transferAsset as AssetFieldsFragment} />
                 </span>
               </h3>

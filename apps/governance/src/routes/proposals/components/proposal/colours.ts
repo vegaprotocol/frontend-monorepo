@@ -35,7 +35,7 @@ export const getStyle = (indicator: number, max = COLOURS.length) =>
 
 export const getIndicatorStyle = (indicator: number) =>
   cn(
-    'rounded-sm text-black inline-block px-1 py-1 font-alpha calt h-8 w-7 text-center',
+    'rounded-sm text-black inline-block px-1 py-1 font-alt calt h-8 w-7 text-center',
     'text-border-1',
     getStyle(indicator),
     // Comment below if you want to remove the "chevron"

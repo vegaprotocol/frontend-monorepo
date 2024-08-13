@@ -69,8 +69,7 @@ export const initializeWalletConnector = (
                 themeVariables: {
                   '--wcm-z-index': '40',
                   '--wcm-accent-color': theme.colors.vega.yellow.DEFAULT,
-                  '--wcm-background-color': theme.colors.vega.dark[100],
-                  '--wcm-font-family': 'AlphaLyrae',
+                  '--wcm-background-color': theme.colors.gs[100],
                   '--wcm-container-border-radius': '0.25rem',
                   '--wcm-background-border-radius': '0.25rem',
                   '--wcm-accent-fill-color': theme.colors.vega.yellow.DEFAULT,

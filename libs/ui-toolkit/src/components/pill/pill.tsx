@@ -12,7 +12,7 @@ interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
 
 const getClasses = (size: Size, intent: Intent, className?: string) => {
   return cn(
-    'rounded-sm leading-none font-alpha flex-inline items-center',
+    'rounded-sm leading-none flex-inline items-center',
     {
       'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
       'bg-gs-500 ': intent === Intent.None,

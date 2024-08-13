@@ -13,7 +13,7 @@ export const NoRewards = () => {
   return (
     <div className={classes}>
       <SubHeading title={t('noRewardsHaveBeenDistributedYet')} />
-      <p className="font-alpha calt text-xl">{t('checkBackSoon')}</p>
+      <p className="font-alt calt text-xl">{t('checkBackSoon')}</p>
     </div>
   );
 };

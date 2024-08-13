@@ -52,7 +52,7 @@ export const ProposalAssetDetails = ({
 
   const title = (
     <span>
-      <Lozenge className="text-lg !font-alpha">{asset.symbol}</Lozenge>{' '}
+      <Lozenge className="text-lg">{asset.symbol}</Lozenge>{' '}
       <span className="lowercase">{t('assetSpecification')}</span>
     </span>
   );

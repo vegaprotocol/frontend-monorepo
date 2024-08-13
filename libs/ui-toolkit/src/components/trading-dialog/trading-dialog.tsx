@@ -49,7 +49,7 @@ export const TradingDialog = ({
               )}
             >
               <div className={cn('flex justify-between items-center')}>
-                <DialogPrimitives.Title className="text-3xl font-alpha calt">
+                <DialogPrimitives.Title className="text-3xl font-alt calt">
                   {title}
                 </DialogPrimitives.Title>
                 <DialogPrimitives.Close>

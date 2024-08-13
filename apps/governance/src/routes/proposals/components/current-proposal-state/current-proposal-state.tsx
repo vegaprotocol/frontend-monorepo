@@ -113,7 +113,7 @@ export const CurrentProposalState = ({
     <div
       className={cn(
         'rounded px-1 py-[2px]',
-        'font-alpha text-xs',
+        'text-xs',
         'flex items-center gap-1',
         PROPOSAL_STATE_COLOR_MAP[state],
         { 'cursor-help': Boolean(tooltip) },

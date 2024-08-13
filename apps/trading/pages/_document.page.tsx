@@ -4,15 +4,6 @@ export default function Document() {
   return (
     <>
       <Head>
-        {/* preload fonts */}
-        <link
-          rel="preload"
-          href="/AlphaLyrae.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-
         {/* icons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link
@@ -45,7 +36,7 @@ export default function Document() {
           // and delivered via IPFS we override this to show a server side render loading animation until the
           // js is downloaded and react takes over rendering
           style={{ display: 'block' }}
-          className="bg-white dark:bg-black text-default font-alpha"
+          className="bg-white dark:bg-black text-gs-50 font-sans"
         >
           <Main />
           <NextScript />

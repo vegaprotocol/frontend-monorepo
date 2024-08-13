@@ -65,7 +65,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             }
           )}
         >
-          <div className="uppercase flex items-center gap-2 text-xs font-alpha calt">
+          <div className="uppercase flex items-center gap-2 text-xs font-alt calt">
             <div
               className={cn('w-2 h-2 rounded-full', {
                 'bg-gs-200': good === undefined,

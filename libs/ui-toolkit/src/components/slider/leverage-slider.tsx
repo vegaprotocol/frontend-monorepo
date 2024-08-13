@@ -72,7 +72,7 @@ export const LeverageSlider = (
                   props.onValueChange && props.onValueChange([labelValue])
                 }
                 key={labelValue}
-                className="absolute translate-x-[-50%] text-xs font-alpha mt-1 text-gs-100 "
+                className="absolute translate-x-[-50%] text-xs mt-1 text-gs-100 "
                 style={{
                   left,
                 }}

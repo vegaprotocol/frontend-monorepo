@@ -193,7 +193,7 @@ export const ValidatorsPage = () => {
                     className="border border-gs-200  rounded p-2 overflow-hidden"
                   >
                     <div className="w-full">
-                      <h2 className="font-alpha text-2xl leading-[60px]">
+                      <h2 className="text-2xl leading-[60px]">
                         <ExternalLink href={validatorPage}>
                           {validatorName}
                         </ExternalLink>

@@ -243,7 +243,7 @@ export const Toast = ({
         'w-[320px] overflow-hidden rounded-md',
         'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
         'text-black dark:text-white',
-        'font-alpha text-[14px] leading-[19px]',
+        'text-sm leading-[19px]',
         // background
         {
           'bg-gs-100 ': intent === Intent.None,

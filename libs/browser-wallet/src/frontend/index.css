@@ -33,11 +33,6 @@ html {
   scrollbar-width: none; /* Firefox */
 }
 
-@font-face {
-  font-family: 'AlphaLyrae';
-  src: url('./AlphaLyrae-Medium.woff2') format('woff2');
-}
-
 .loader-item:nth-child(0) {
   animation-delay: 0ms;
   animation-direction: reverse;

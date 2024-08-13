@@ -123,7 +123,7 @@ Explorer.args = {
     <>
       <ThemeSwitcher />
       {/* JUST A PLACEHOLDER */}
-      <div className="border rounded px-2 py-1 text-xs font-alpha w-60 flex items-center gap-1">
+      <div className="border rounded px-2 py-1 text-xs w-60 flex items-center gap-1">
         <Icon name="search" size={3} className="text-gs-200" />
         <input
           className="w-full bg-transparent outline-none"

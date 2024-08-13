@@ -227,34 +227,9 @@ export const theme = {
     success: '#00F780',
   },
   fontFamily: {
-    mono: [
-      'ui-monospace',
-      'Menlo',
-      'Monaco',
-      'Cascadia Mono',
-      'Segoe UI Mono',
-      'Roboto Mono',
-      'Oxygen Mono',
-      'Ubuntu Monospace',
-      'Source Code Pro',
-      'Fira Mono',
-      'Droid Sans Mono',
-      'Courier New',
-      'monospace',
-    ],
-    sans: [
-      '"Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-    ],
-    alpha: [
-      'AlphaLyrae, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-      { fontFeatureSettings: '"calt" 0, "liga" 0' },
-    ],
-    glitch: [
-      'AlphaLyrae, monospace',
-      {
-        fontFeatureSettings: '"ss02" 1',
-      },
-    ],
+    mono: 'var(--font-mono)',
+    sans: 'var(--font-sans)',
+    alt: ['var(--font-alt)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
   },
   keyframes: {
     rotate: {
