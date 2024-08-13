@@ -13,7 +13,7 @@ import {
   queryKeys as assetQueryKeys,
   erc20AssetSchema,
 } from './assets';
-import { getQueryClient } from '../rest-config';
+import type { QueryClient } from '@tanstack/react-query';
 
 const marketSchema = z.object({
   id: z.string(),
@@ -35,8 +35,7 @@ export type Markets = z.infer<typeof marketsSchema>;
 /**
  * Retrieves all markets from `/markets` endpoint.
  */
-export const retrieveMarkets = async () => {
-  const queryClient = getQueryClient();
+export const retrieveMarkets = async (queryClient: QueryClient) => {
   const endpoint = restApiUrl('/api/v2/markets');
 
   const assets = queryClient.getQueryData<Assets>(assetQueryKeys.list());
@@ -114,8 +113,7 @@ export const queryKeys = {
   single: (marketId?: string) => [...queryKeys.all, 'single', { marketId }],
 } as const;
 
-export function getMarketFromCache(marketId: string) {
-  const queryClient = getQueryClient();
+export function getMarketFromCache(queryClient: QueryClient, marketId: string) {
   const market = queryClient.getQueryData<Market>(queryKeys.single(marketId));
   return market;
 }

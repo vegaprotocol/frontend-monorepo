@@ -9,7 +9,7 @@ import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { type Market, queryKeys as marketQueryKeys } from './markets';
-import { getQueryClient } from '../rest-config';
+import type { QueryClient } from '@tanstack/react-query';
 
 const ammStatusSchema = z.nativeEnum(v1AMMStatus);
 const ammStatusReasonSchema = z.nativeEnum(AMMStatusReason);
@@ -48,8 +48,10 @@ const ammsSchema = z.array(ammSchema);
 export type AMM = z.infer<typeof ammSchema>;
 export type AMMs = z.infer<typeof ammsSchema>;
 
-export const retrieveAMMs = (params?: AMMsQueryParams) => {
-  const queryClient = getQueryClient();
+export const retrieveAMMs = (
+  queryClient: QueryClient,
+  params?: AMMsQueryParams
+) => {
   const endpoint = restApiUrl('/api/v2/amms');
 
   const searchParams = parametersSchema.parse(params);

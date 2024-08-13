@@ -1,32 +1,33 @@
 import {
-  queryOptions,
   useQuery,
+  useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { type Markets, queryKeys, retrieveMarkets } from '../queries/markets';
-import { getQueryClient } from '../rest-config';
-
-function marketsOptions() {
-  return queryOptions({
-    queryKey: queryKeys.list(),
-    queryFn: () => retrieveMarkets(),
-    staleTime: Number.POSITIVE_INFINITY,
-  });
-}
 
 export function useMarkets() {
-  const queryResult = useQuery(marketsOptions());
+  const queryClient = useQueryClient();
+  const queryResult = useQuery({
+    queryKey: queryKeys.list(),
+    queryFn: () => retrieveMarkets(queryClient),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
   return queryResult;
 }
 
 export function useSuspenseMarkets() {
-  const queryResult = useSuspenseQuery(marketsOptions());
+  const queryClient = useQueryClient();
+  const queryResult = useSuspenseQuery({
+    queryKey: queryKeys.list(),
+    queryFn: () => retrieveMarkets(queryClient),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
 
   return queryResult;
 }
 
 export function useMarket(marketId?: string) {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(marketId),
     queryFn: () => {

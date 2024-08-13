@@ -10,7 +10,7 @@ import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { type Markets, queryKeys as marketQueryKeys } from './markets';
-import { getQueryClient } from '../rest-config';
+import type { QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.optional(
   z.object({
@@ -38,8 +38,10 @@ export type MarketData = z.infer<typeof marketDataSchema>;
 const marketsDataSchema = z.map(z.string(), marketDataSchema);
 export type MarketsData = z.infer<typeof marketsDataSchema>;
 
-export async function retrieveMarketsData(params?: MarketsDataQueryParams) {
-  const queryClient = getQueryClient();
+export async function retrieveMarketsData(
+  queryClient: QueryClient,
+  params?: MarketsDataQueryParams
+) {
   const endpoint = restApiUrl('/api/v2/markets/data');
   const searchParams = parametersSchema.parse(params);
 
