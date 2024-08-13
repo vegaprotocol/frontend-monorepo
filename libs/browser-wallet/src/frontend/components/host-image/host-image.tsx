@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { parse } from 'tldts';
 
 export const locators = {
@@ -7,19 +7,19 @@ export const locators = {
   hostImageFallback: 'host-image-fallback',
 };
 
-function toHex(string_: string) {
-  let result = '';
-  for (let index = 0; index < string_.length; index++) {
-    // eslint-disable-next-line unicorn/prefer-code-point
-    result += string_.charCodeAt(index).toString(16);
-  }
-  return result;
-}
+// function toHex(string_: string) {
+//   let result = '';
+//   for (let index = 0; index < string_.length; index++) {
+//     // eslint-disable-next-line unicorn/prefer-code-point
+//     result += string_.charCodeAt(index).toString(16);
+//   }
+//   return result;
+// }
 
-const getRemainder = (string_: string) => {
-  const h = toHex(string_);
-  return Number(BigInt('0x' + h) % BigInt(6));
-};
+// const getRemainder = (string_: string) => {
+//   const h = toHex(string_);
+//   return Number(BigInt('0x' + h) % BigInt(6));
+// };
 
 const COLORS_MAP = [
   { backgroundColor: 'bg-vega-pink-650', textColor: 'text-vega-pink-500' },

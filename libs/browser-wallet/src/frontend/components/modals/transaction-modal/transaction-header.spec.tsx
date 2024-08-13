@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { locators as headerLocators } from '@/components/header';
-import { locators as hostImageLocators } from '@/components/host-image';
+// import { locators as hostImageLocators } from '@/components/host-image';
 import { locators as subheaderLocators } from '@/components/sub-header';
 
 import { locators, TransactionHeader } from './transaction-header';

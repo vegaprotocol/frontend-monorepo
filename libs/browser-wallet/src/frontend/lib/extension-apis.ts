@@ -1,4 +1,3 @@
-const alive = false;
 export const getExtensionApi = () => {
   return {
     // TODO: this stores the mnemonic this is NOT secure!!!
