@@ -17,6 +17,7 @@ TimeAgo.addDefaultLocale(en);
 function App() {
   return (
     // @ts-ignore -- https://github.com/remix-run/react-router/issues/7375#issuecomment-975431736
+    // eslint-disable-next-line react/jsx-pascal-case
     <UNSAFE_LocationContext.Provider value={ null }>
       <Router>
       <GlobalErrorBoundary>
