@@ -6,7 +6,7 @@ import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { NetworkProvider } from '@/contexts/network/network-provider';
 import { Routing } from './routes';
-import '@vegaprotocol/browser-wallet-backend'
+import '@vegaprotocol/browser-wallet-backend';
 
 export const locators = {
   appWrapper: 'app-wrapper',
@@ -18,20 +18,20 @@ function App() {
   return (
     // @ts-ignore -- https://github.com/remix-run/react-router/issues/7375#issuecomment-975431736
     // eslint-disable-next-line react/jsx-pascal-case
-    <UNSAFE_LocationContext.Provider value={ null }>
+    <UNSAFE_LocationContext.Provider value={null}>
       <Router>
-      <GlobalErrorBoundary>
-        <JsonRPCProvider>
-          <NetworkProvider>
-            <main
-              data-testid={locators.appWrapper}
-              className="w-full h-full bg-black font-alpha text-vega-dark-400 overflow-hidden"
-            >
-              <Routing />
-            </main>
-          </NetworkProvider>
-        </JsonRPCProvider>
-      </GlobalErrorBoundary>
+        <GlobalErrorBoundary>
+          <JsonRPCProvider>
+            <NetworkProvider>
+              <main
+                data-testid={locators.appWrapper}
+                className="w-full h-full bg-black font-alpha text-vega-dark-400 overflow-hidden"
+              >
+                <Routing />
+              </main>
+            </NetworkProvider>
+          </JsonRPCProvider>
+        </GlobalErrorBoundary>
       </Router>
     </UNSAFE_LocationContext.Provider>
   );
