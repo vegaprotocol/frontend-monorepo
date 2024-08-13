@@ -82,5 +82,5 @@ function abstractStorage(storage) {
   };
 }
 
-export class StorageLocalMap extends abstractStorage(new Map()) {}
+export class StorageLocalMap extends abstractStorage(wrappedLocalStorage) {}
 export class StorageSessionMap extends abstractStorage(new Map()) {}

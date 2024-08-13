@@ -1,9 +1,5 @@
 export const getExtensionApi = () => {
   return {
-    // TODO: this stores the mnemonic this is NOT secure!!!
-    storage: {
-      session: localStorage,
-    },
     runtime: {
       connect: ({ name }: { name: string }) => {
         return {

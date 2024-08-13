@@ -1,5 +1,4 @@
 import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
-import { clearMnemonic } from '@/hooks/suggest-mnemonic';
 
 import { RpcMethods } from './client-rpc-methods';
 
@@ -29,8 +28,6 @@ export const importWallet = async (
     },
     propagateError
   );
-  // Ensure that the mnemonic has been cleared from memory if the wallet was created successfully
-  await clearMnemonic();
 };
 
 export const createWallet = async (mnemonic: string, request: SendMessage) => {
@@ -41,6 +38,4 @@ export const createWallet = async (mnemonic: string, request: SendMessage) => {
   await request(RpcMethods.GenerateKey, {
     wallet: WALLET_NAME,
   });
-  // Ensure that the mnemonic has been cleared from memory if the wallet was created successfully
-  await clearMnemonic();
 };

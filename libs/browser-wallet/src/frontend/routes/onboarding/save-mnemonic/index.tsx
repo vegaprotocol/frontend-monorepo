@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HiddenContainer } from '@/components/hidden-container';
 import { OnboardingPage } from '@/components/pages/onboarding-page';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { clearMnemonic, useSuggestMnemonic } from '@/hooks/suggest-mnemonic';
+import { useSuggestMnemonic } from '@/hooks/suggest-mnemonic';
 import { createWallet } from '@/lib/create-wallet';
 
 import { FULL_ROUTES } from '../../route-names';
@@ -47,7 +47,6 @@ export const SaveMnemonic = () => {
     <OnboardingPage
       name="Secure your wallet"
       backLocation={FULL_ROUTES.createWallet}
-      onBack={clearMnemonic}
     >
       <>
         <p data-testid={locators.saveMnemonicDescription} className="pb-6">
