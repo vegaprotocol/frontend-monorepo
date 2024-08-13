@@ -32,7 +32,7 @@ const Failure = ({ reason }: { reason?: ReactNode }) => {
         <div className="p-4 text-left text-sm">
           <p className="mb-4">{reason}</p>
           <div className="text-center">
-            <Button className="border-2" onClick={() => setNodeSwitcher(true)}>
+            <Button onClick={() => setNodeSwitcher(true)}>
               {t('Change node')}
             </Button>
           </div>

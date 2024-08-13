@@ -227,8 +227,8 @@ export const theme = {
     success: '#00F780',
   },
   fontFamily: {
-    mono: 'var(--font-mono)',
-    sans: 'var(--font-sans)',
+    mono: ['var(--font-mono)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    sans: ['var(--font-sans)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
     alt: ['var(--font-alt)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
   },
   keyframes: {

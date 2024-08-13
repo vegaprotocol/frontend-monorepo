@@ -21,7 +21,7 @@ const getClassName = (
   className?: string
 ) =>
   cn(
-    'inline-flex gap-2 items-center justify-center border-button disabled:opacity-40',
+    'inline-flex text-red gap-2 items-center justify-center disabled:opacity-40',
     // size
     {
       'h-12 px-6 rounded-button-lg text-base': size === 'lg',
@@ -32,19 +32,19 @@ const getClassName = (
     // colours
     'enabled:hover:brightness-90  dark:enabled:hover:brightness-110',
     {
-      'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline text-gs-50':
+      'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline border-button text-gs-50':
         intent === Intent.None,
-      'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline':
+      'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline border-button':
         intent === Intent.Primary,
-      'bg-intent-secondary bg-gradient-to-tr from-intent-secondary-from to-intent-secondary-to text-intent-secondary-foreground border-0':
+      'bg-intent-secondary bg-gradient-to-tr from-intent-secondary-from to-intent-secondary-to text-intent-secondary-foreground border-button':
         intent === Intent.Secondary,
-      'bg-intent-danger text-intent-danger-foreground border-intent-danger-outline':
+      'bg-intent-danger text-intent-danger-foreground border-intent-danger-outline border-button':
         intent === Intent.Danger,
-      'bg-intent-info text-intent-info-foreground border-intent-info-outline':
+      'bg-intent-info text-intent-info-foreground border-intent-info-outline border-button':
         intent === Intent.Info,
-      'bg-intent-warning text-intent-warning-foreground border-intent-warning-outline':
+      'bg-intent-warning text-intent-warning-foreground border-intent-warning-outline border-button':
         intent === Intent.Warning,
-      'bg-intent-success text-intent-success-foreground border-intent-success-outline':
+      'bg-intent-success text-intent-success-foreground border-intent-success-outline border-button':
         intent === Intent.Success,
     },
     { 'w-full': fill },

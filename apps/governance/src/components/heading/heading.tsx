@@ -24,7 +24,7 @@ export const Heading = ({
       })}
     >
       <h1
-        className={cn('font-alt calt text-5xl [word-break:break-word]', {
+        className={cn('font-alt text-5xl [word-break:break-word]', {
           'mt-0': !marginTop,
           'mb-0': !marginBottom,
         })}
