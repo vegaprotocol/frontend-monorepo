@@ -33,8 +33,6 @@
     --color-green: 0 247 128;
     --color-green-700: 1 41 21;
 
-    --color-teal: 173 255 244;
-
     /* grayscale */
     --gs-0: var(--color-black);
     --gs-50: 4 4 5;
@@ -71,7 +69,11 @@
      * - intent: base bg color, eg buttons
      * - intent-outline: borders
      * - intent-foreground: card text color
-     * - intent-background: card bg color */
+     * - intent-background: card bg color
+     * - intent-from: 'from' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     * - intent-to: 'to' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     */
+
     --intent-none: var(--gs-500);
     --intent-none-outline: var(--gs-500);
     --intent-none-foreground: var(--gs-50);
@@ -82,12 +84,10 @@
     --intent-primary-foreground: var(--color-white);
     --intent-primary-background: var(--color-blue-300);
 
-    --intent-secondary: var(--color-teal);
-    --intent-secondary-outline: var(--color-teal);
-    --intent-secondary-foreground: var(--color-black);
-    --intent-secondary-background: var(--color-teal);
-    --intent-secondary-from: var(--color-blue-400);
-    --intent-secondary-to: var(--color-teal);
+    --intent-secondary: var(--color-blue);
+    --intent-secondary-outline: var(--color-blue);
+    --intent-secondary-foreground: var(--color-white);
+    --intent-secondary-background: var(--color-blue-300);
 
     --intent-danger: var(--color-red);
     --intent-danger-outline: var(--color-red);
