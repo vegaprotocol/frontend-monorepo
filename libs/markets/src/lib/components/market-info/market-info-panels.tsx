@@ -49,6 +49,7 @@ import type {
   SignerKind,
 } from '@vegaprotocol/types';
 import {
+  AccountType,
   CompositePriceType,
   ConditionOperatorMapping,
   LiquidityFeeMethodMapping,
@@ -384,6 +385,23 @@ export const KeyDetailsInfoPanel = ({
 
   const assetDecimals = getAsset(market).decimals;
 
+  const marketInsuranceAccount = market.accountsConnection?.edges?.find(
+    (account) => {
+      if (!account || !account.node) return false;
+      if (account.node.type === AccountType.ACCOUNT_TYPE_INSURANCE) {
+        return true;
+      }
+      return false;
+    }
+  );
+
+  const marketInsuranceAccountBalance = marketInsuranceAccount?.node?.balance
+    ? addDecimalsFormatNumber(
+        marketInsuranceAccount.node.balance,
+        assetDecimals
+      )
+    : 0;
+
   return (
     <>
       <KeyValueTable>
@@ -419,6 +437,7 @@ export const KeyDetailsInfoPanel = ({
                 positionDecimalPlaces: market.positionDecimalPlaces,
                 settlementAssetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
+                marketInsuranceAccount: marketInsuranceAccountBalance,
               }
             : {
                 name: market.tradableInstrument.instrument.name,
@@ -430,6 +449,7 @@ export const KeyDetailsInfoPanel = ({
                 positionDecimalPlaces: market.positionDecimalPlaces,
                 settlementAssetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
+                marketInsuranceAccount: marketInsuranceAccountBalance,
               }
         }
         parentData={
