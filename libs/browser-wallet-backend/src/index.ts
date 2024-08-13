@@ -1,1 +1,1 @@
-export * from './background';
+import './background';

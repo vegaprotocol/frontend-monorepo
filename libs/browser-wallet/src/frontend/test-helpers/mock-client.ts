@@ -42,7 +42,8 @@ export const mockClient = (
       50
     );
   };
-  const lst = (message) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lst = (message: any) => {
     const msg = message.detail;
     switch (msg.method) {
       case RpcMethods.ListWallets: {
