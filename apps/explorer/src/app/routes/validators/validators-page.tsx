@@ -271,20 +271,6 @@ export const ValidatorsPage = () => {
                             </div>
                           </div>
                         </KeyValueTableRow>
-                        <KeyValueTableRow>
-                          <div>{t('Proposer priority')}</div>
-                          <div className="w-44 text-right">
-                            <Rate
-                              value={tm?.proposerPriorityRatio}
-                              colour="orange"
-                              asPoint={true}
-                              zero={true}
-                            />
-                            <div className="text-[10px] leading-3">
-                              {tm?.proposerPriority.toString()}
-                            </div>
-                          </div>
-                        </KeyValueTableRow>
 
                         <KeyValueTableRow>
                           <div>{t('Stake share')}</div>
