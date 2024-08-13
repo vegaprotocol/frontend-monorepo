@@ -292,6 +292,7 @@ html [data-theme='dark'] {
 
 .vega-ag-grid .ag-header-row {
   @apply font-alt;
+  font-weight: 400;
 }
 
 .ag-theme-balham,
