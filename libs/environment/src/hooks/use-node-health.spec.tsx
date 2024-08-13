@@ -7,10 +7,10 @@ import { NodeCheckDocument } from '../utils/__generated__/NodeCheck';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
-const vegaUrl = 'https://foo.bar.com';
+const apiUrl = 'https://foo.bar.com';
 
 jest.mock('./use-environment', () => ({
-  useEnvironment: () => vegaUrl,
+  useEnvironment: () => ({ graphQLApiUrl: apiUrl, restApiUrl: apiUrl }),
 }));
 jest.mock('@vegaprotocol/apollo-client');
 
@@ -54,7 +54,7 @@ function setup(
 ) {
   // @ts-ignore ignore mock implementation
   useHeaderStore.mockImplementation(() => ({
-    [vegaUrl]: headers,
+    [apiUrl]: headers,
   }));
 
   return renderHook(() => useNodeHealth(), {
