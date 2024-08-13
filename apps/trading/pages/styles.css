@@ -101,7 +101,7 @@
     /* Buttons */
     --button-border-radius-xs: theme(borderRadius.DEFAULT);
     --button-border-radius-sm: theme(borderRadius.DEFAULT);
-    --button-border-radius-md: theme(borderRadius.full);
+    --button-border-radius-md: theme(borderRadius.DEFAULT);
     --button-border-radius-lg: theme(borderRadius.lg);
   }
 
