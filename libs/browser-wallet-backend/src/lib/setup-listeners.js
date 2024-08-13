@@ -165,7 +165,9 @@ export const setupListeners = (
     postMessage: (message) => {
       console.log('port post message', message);
       // window.postMessage(message);
-      window.dispatchEvent(new CustomEvent('test2', { detail: message }));
+      window.dispatchEvent(
+        new CustomEvent('popup-response', { detail: message })
+      );
     },
     disconnect: () => {
       console.log('disconnect');
@@ -173,14 +175,47 @@ export const setupListeners = (
     onMessage: {
       addListener: (callback) => {
         console.log('onMessage addListener', callback);
-        window.addEventListener('test', (message) => {
+        window.addEventListener('popup', (message) => {
           console.log('onMessage', message);
           callback(message.detail);
         });
       },
       removeListener: (callback) => {
         console.log('onMessage removeListener', callback);
-        window.removeEventListener('test', callback);
+        window.removeEventListener('popup', callback);
+      },
+    },
+    onDisconnect: {
+      addListener: (callback) => {
+        console.log('onMessage addListener', callback);
+      },
+      removeListener: (callback) => {
+        console.log('onMessage removeListener', callback);
+      },
+    },
+  });
+  clientPorts.listen({
+    postMessage: (message) => {
+      console.log('port post message', message);
+      // window.postMessage(message);
+      window.dispatchEvent(
+        new CustomEvent('content-script-response', { detail: message })
+      );
+    },
+    disconnect: () => {
+      console.log('disconnect');
+    },
+    onMessage: {
+      addListener: (callback) => {
+        console.log('onMessage addListener', callback);
+        window.addEventListener('content-script', (message) => {
+          console.log('onMessage', message);
+          callback(message.detail);
+        });
+      },
+      removeListener: (callback) => {
+        console.log('onMessage removeListener', callback);
+        window.removeEventListener('content-script', callback);
       },
     },
     onDisconnect: {
