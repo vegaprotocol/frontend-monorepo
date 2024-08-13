@@ -49,10 +49,7 @@ export const setupListeners = (
   settings,
   clientPorts,
   popupPorts,
-  interactor,
-  connections,
-  keySortIndex,
-  wallets
+  interactor
 ) => {
   // TODO only run once not on every setup
   install({ networks, settings });
