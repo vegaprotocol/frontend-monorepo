@@ -10,67 +10,153 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2021", "dom"],
+    "lib": [
+      "es2021",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["libs/browser-wallet/src/frontend/*"],
-      "@vegaprotocol/accounts": ["libs/accounts/src/index.ts"],
-      "@vegaprotocol/announcements": ["libs/announcements/src/index.ts"],
-      "@vegaprotocol/apollo-client": ["libs/apollo-client/src/index.ts"],
-      "@vegaprotocol/assets": ["libs/assets/src/index.ts"],
-      "@vegaprotocol/browser-wallet": ["libs/browser-wallet/src/index.ts"],
+      "@/*": [
+        "libs/browser-wallet/src/frontend/*"
+      ],
+      "@vegaprotocol/accounts": [
+        "libs/accounts/src/index.ts"
+      ],
+      "@vegaprotocol/announcements": [
+        "libs/announcements/src/index.ts"
+      ],
+      "@vegaprotocol/apollo-client": [
+        "libs/apollo-client/src/index.ts"
+      ],
+      "@vegaprotocol/assets": [
+        "libs/assets/src/index.ts"
+      ],
+      "@vegaprotocol/browser-wallet": [
+        "libs/browser-wallet/src/index.ts"
+      ],
       "@vegaprotocol/browser-wallet-backend": [
         "libs/browser-wallet-backend/src/index.ts"
       ],
-      "@vegaprotocol/candles-chart": ["libs/candles-chart/src/index.ts"],
-      "@vegaprotocol/cypress": ["libs/cypress/src/index.ts"],
-      "@vegaprotocol/data-provider": ["libs/data-provider/src/index.ts"],
-      "@vegaprotocol/datagrid": ["libs/datagrid/src/index.ts"],
-      "@vegaprotocol/deposits": ["libs/deposits/src/index.ts"],
-      "@vegaprotocol/emblem": ["libs/emblem/src/index.ts"],
-      "@vegaprotocol/environment": ["libs/environment/src/index.ts"],
-      "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
-      "@vegaprotocol/funding-payments": ["libs/funding-payments/src/index.ts"],
-      "@vegaprotocol/i18n": ["libs/i18n/src/index.ts"],
-      "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
-      "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
-      "@vegaprotocol/logger": ["libs/logger/src/index.ts"],
-      "@vegaprotocol/market-depth": ["libs/market-depth/src/index.ts"],
-      "@vegaprotocol/markets": ["libs/markets/src/index.ts"],
-      "@vegaprotocol/mock": ["libs/cypress/mock.ts"],
-      "@vegaprotocol/network-info": ["libs/network-info/src/index.ts"],
+      "@vegaprotocol/candles-chart": [
+        "libs/candles-chart/src/index.ts"
+      ],
+      "@vegaprotocol/cypress": [
+        "libs/cypress/src/index.ts"
+      ],
+      "@vegaprotocol/data-provider": [
+        "libs/data-provider/src/index.ts"
+      ],
+      "@vegaprotocol/datagrid": [
+        "libs/datagrid/src/index.ts"
+      ],
+      "@vegaprotocol/deposits": [
+        "libs/deposits/src/index.ts"
+      ],
+      "@vegaprotocol/emblem": [
+        "libs/emblem/src/index.ts"
+      ],
+      "@vegaprotocol/environment": [
+        "libs/environment/src/index.ts"
+      ],
+      "@vegaprotocol/fills": [
+        "libs/fills/src/index.ts"
+      ],
+      "@vegaprotocol/funding-payments": [
+        "libs/funding-payments/src/index.ts"
+      ],
+      "@vegaprotocol/i18n": [
+        "libs/i18n/src/index.ts"
+      ],
+      "@vegaprotocol/ledger": [
+        "libs/ledger/src/index.ts"
+      ],
+      "@vegaprotocol/liquidity": [
+        "libs/liquidity/src/index.ts"
+      ],
+      "@vegaprotocol/logger": [
+        "libs/logger/src/index.ts"
+      ],
+      "@vegaprotocol/market-depth": [
+        "libs/market-depth/src/index.ts"
+      ],
+      "@vegaprotocol/markets": [
+        "libs/markets/src/index.ts"
+      ],
+      "@vegaprotocol/mock": [
+        "libs/cypress/mock.ts"
+      ],
+      "@vegaprotocol/network-info": [
+        "libs/network-info/src/index.ts"
+      ],
       "@vegaprotocol/network-parameters": [
         "libs/network-parameters/src/index.ts"
       ],
-      "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
-      "@vegaprotocol/orders": ["libs/orders/src/index.ts"],
-      "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
-      "@vegaprotocol/proposals": ["libs/proposals/src/index.ts"],
-      "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
-      "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
+      "@vegaprotocol/network-stats": [
+        "libs/network-stats/src/index.ts"
+      ],
+      "@vegaprotocol/orders": [
+        "libs/orders/src/index.ts"
+      ],
+      "@vegaprotocol/positions": [
+        "libs/positions/src/index.ts"
+      ],
+      "@vegaprotocol/proposals": [
+        "libs/proposals/src/index.ts"
+      ],
+      "@vegaprotocol/react-helpers": [
+        "libs/react-helpers/src/index.ts"
+      ],
+      "@vegaprotocol/smart-contracts": [
+        "libs/smart-contracts/src/index.ts"
+      ],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.ts"
       ],
-      "@vegaprotocol/tendermint": ["libs/tendermint/src/index.ts"],
-      "@vegaprotocol/trades": ["libs/trades/src/index.ts"],
-      "@vegaprotocol/trading-view": ["libs/trading-view/src/index.ts"],
-      "@vegaprotocol/types": ["libs/types/src/index.ts"],
-      "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
-      "@vegaprotocol/utils": ["libs/utils/src/index.ts"],
-      "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
-      "@vegaprotocol/wallet-react": ["libs/wallet-react/src/index.ts"],
+      "@vegaprotocol/tendermint": [
+        "libs/tendermint/src/index.ts"
+      ],
+      "@vegaprotocol/trades": [
+        "libs/trades/src/index.ts"
+      ],
+      "@vegaprotocol/trading-view": [
+        "libs/trading-view/src/index.ts"
+      ],
+      "@vegaprotocol/types": [
+        "libs/types/src/index.ts"
+      ],
+      "@vegaprotocol/ui-toolkit": [
+        "libs/ui-toolkit/src/index.ts"
+      ],
+      "@vegaprotocol/utils": [
+        "libs/utils/src/index.ts"
+      ],
+      "@vegaprotocol/wallet": [
+        "libs/wallet/src/index.ts"
+      ],
+      "@vegaprotocol/wallet-react": [
+        "libs/wallet-react/src/index.ts"
+      ],
       "@vegaprotocol/wallet-react/testing": [
         "libs/wallet-react/src/testing.ts"
       ],
-      "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
-      "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
-      "browser-wallet-backend": ["libs/browser-wallet-backend/src/index.ts"]
+      "@vegaprotocol/web3": [
+        "libs/web3/src/index.ts"
+      ],
+      "@vegaprotocol/withdraws": [
+        "libs/withdraws/src/index.ts"
+      ],
+      "browser-wallet-backend": [
+        "libs/browser-wallet-backend/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"],
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ],
   "files": [
     "node_modules/@nx/react/typings/cssmodule.d.ts",
     "node_modules/@nx/react/typings/image.d.ts"

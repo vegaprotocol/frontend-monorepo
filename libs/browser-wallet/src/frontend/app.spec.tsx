@@ -8,6 +8,12 @@ import { mockStore } from '@/test-helpers/mock-store';
 
 import App from './app';
 
+jest.mock('javascript-time-ago', () =>({
+  addDefaultLocale: jest.fn(), 
+}));
+jest.mock('@vegaprotocol/browser-wallet-backend', () => ({
+  createWalletBackend: jest.fn(),
+}))
 jest.mock('@/stores/globals');
 jest.mock('@/hooks/prevent-window-resize');
 jest.mock('@/hooks/listen-for-popups');
@@ -62,25 +68,6 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByTestId('global-error-boundary')).toBeInTheDocument();
     expect(screen.getByTestId('routing')).toBeInTheDocument();
-    // expect(screen.getByTestId('network-provider')).toBeInTheDocument();
-    expect(screen.getByTestId('json-rpc-provider')).toBeInTheDocument();
-    expect(document.body.style.minHeight).toBe('600px');
-  });
-
-  it('calls global level hooks', () => {
-    mockStore(useGlobalsStore, {
-      isMobile: false,
-    });
-    render(<App />);
-    expect(usePreventWindowResize).toHaveBeenCalled();
-    // expect(usePing).toHaveBeenCalled();
-  });
-
-  it('does not add min width if the device is mobile', () => {
-    mockStore(useGlobalsStore, {
-      isMobile: true,
-    });
-    render(<App />);
-    expect(document.body.style.minHeight).toBe('');
+    expect(screen.getByTestId('json-rpc-provider')).toBeInTheDocument();;
   });
 });

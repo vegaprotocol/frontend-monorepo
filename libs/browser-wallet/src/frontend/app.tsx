@@ -1,4 +1,4 @@
-import '@vegaprotocol/browser-wallet-backend';
+import { createWalletBackend } from '@vegaprotocol/browser-wallet-backend';
 import { MemoryRouter as Router } from 'react-router-dom';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -10,7 +10,7 @@ import { Routing } from './routes';
 export const locators = {
   appWrapper: 'app-wrapper',
 };
-
+createWalletBackend()
 TimeAgo.addDefaultLocale(en);
 
 function App() {
