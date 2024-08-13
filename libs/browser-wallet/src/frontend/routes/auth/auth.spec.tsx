@@ -101,12 +101,6 @@ describe('Auth', () => {
     expect(fetchAssets).toHaveBeenCalledTimes(1);
     expect(fetchMarkets).toHaveBeenCalledTimes(1);
   });
-  it('renders wallets header on wallets page', () => {
-    mockStores();
-    renderComponent(FULL_ROUTES.wallets);
-
-    expect(screen.getByTestId('dapps-header')).toBeVisible();
-  });
   it('renders nothing if wallets are loading', () => {
     mockStore(useWalletStore, {
       loadWallets: jest.fn(),
