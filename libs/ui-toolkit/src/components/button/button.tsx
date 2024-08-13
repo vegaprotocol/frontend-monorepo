@@ -30,7 +30,7 @@ const getClassName = (
       'h-6 px-2 rounded-button-xs text-xs': size === 'xs',
     },
     // colours
-    'enabled:hover:brightness-110',
+    'enabled:hover:brightness-90  dark:enabled:hover:brightness-110',
     {
       'bg-intent-none text-intent-none-foreground border-intent-none-outline text-gs-50':
         intent === Intent.None,
