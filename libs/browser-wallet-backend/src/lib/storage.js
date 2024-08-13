@@ -1,5 +1,19 @@
 // eslint-disable-next-line no-undef
-const extensionStorage = globalThis.localStorage;
+const wrappedLocalStorage = {
+  get(key) {
+    const json = localStorage.getItem(key);
+    return json ? JSON.parse(json) : null;
+  },
+  set(key, val) {
+    return localStorage.setItem(key, JSON.stringify(val, null, '\t'));
+  },
+  clear() {
+    localStorage.clear();
+  },
+  delete(key) {
+    localStorage.removeItem(key);
+  },
+};
 
 function abstractStorage(storage) {
   // Based on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -21,8 +35,7 @@ function abstractStorage(storage) {
     }
 
     async _load() {
-      const json = (await storage.getItem(this._prefix)) ?? '{}';
-      return JSON.parse(json);
+      return storage.get(this._prefix) ?? {};
     }
 
     async has(key) {
@@ -37,7 +50,7 @@ function abstractStorage(storage) {
     async set(key, value) {
       const val = await this._load();
       val[key] = value;
-      await storage.setItem(this._prefix, JSON.stringify(val, null, '\t'));
+      await storage.set(this._prefix, val);
       return this;
     }
 
@@ -46,13 +59,13 @@ function abstractStorage(storage) {
       const hadKey = val[key] != null;
       if (hadKey) {
         delete val[key];
-        await storage.setItem(this._prefix, JSON.stringify(val, null, '\t'));
+        await storage.set(this._prefix, val);
       }
       return hadKey;
     }
 
     async clear() {
-      await storage.removeItem(this._prefix);
+      await storage.delete(this._prefix);
     }
 
     async keys() {
@@ -69,5 +82,5 @@ function abstractStorage(storage) {
   };
 }
 
-export class StorageLocalMap extends abstractStorage(extensionStorage) {}
-export class StorageSessionMap extends abstractStorage(extensionStorage) {}
+export class StorageLocalMap extends abstractStorage(new Map()) {}
+export class StorageSessionMap extends abstractStorage(new Map()) {}
