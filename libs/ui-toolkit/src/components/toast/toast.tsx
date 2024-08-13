@@ -348,7 +348,7 @@ export const Toast = ({
         >
           {loader ? (
             <div className="h-[15px] w-[15px]">
-              <Loader size="small" forceTheme="dark" />
+              <Loader size="small" />
             </div>
           ) : (
             <Icon

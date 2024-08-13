@@ -224,7 +224,7 @@ export const EthWallet = () => {
                       })
                     }
                   >
-                    <Loader size="small" forceTheme="dark" />
+                    <Loader size="small" />
                     {t('pendingTransactions')}
                   </button>
                 </div>
