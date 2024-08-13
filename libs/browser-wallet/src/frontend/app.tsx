@@ -1,7 +1,7 @@
 import '@vegaprotocol/browser-wallet-backend';
 import { MemoryRouter as Router } from 'react-router-dom';
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { NetworkProvider } from '@/contexts/network/network-provider';
@@ -11,7 +11,7 @@ export const locators = {
   appWrapper: 'app-wrapper',
 };
 
-TimeAgo.addDefaultLocale(en)
+TimeAgo.addDefaultLocale(en);
 
 function App() {
   return (

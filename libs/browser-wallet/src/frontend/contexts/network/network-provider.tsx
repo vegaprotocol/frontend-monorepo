@@ -76,5 +76,9 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
   }
 
   // The above if statement ensures that either networkFromChainId or selectedNetwork is defined. So value is always defined.
-  return <NetworkContext.Provider value={{ network: value, interactionMode }}>{children}</NetworkContext.Provider>
+  return (
+    <NetworkContext.Provider value={{ network: value, interactionMode }}>
+      {children}
+    </NetworkContext.Provider>
+  );
 };

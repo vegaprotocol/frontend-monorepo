@@ -65,5 +65,5 @@ const FallbackImage = ({ hostname, size }: HostImageProperties) => {
 };
 
 export const HostImage = ({ hostname, size = 48 }: HostImageProperties) => {
-  return <FallbackImage hostname={hostname} size={size} />
+  return <FallbackImage hostname={hostname} size={size} />;
 };
