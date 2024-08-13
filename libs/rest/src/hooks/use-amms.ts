@@ -5,7 +5,7 @@ import { Time } from '../utils/datetime';
 export const useAMMs = (params?: AMMsQueryParams) => {
   const queryResult = useQuery({
     queryKey: params ? queryKeys.filtered(params) : queryKeys.list(),
-    queryFn: () => retrieveAMMs(undefined, params),
+    queryFn: () => retrieveAMMs(params),
     staleTime: Time.MIN,
   });
 

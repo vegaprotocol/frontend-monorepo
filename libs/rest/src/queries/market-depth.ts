@@ -1,4 +1,4 @@
-import { restApiUrl } from '../env';
+import { restApiUrl } from '../paths';
 import { vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import { z } from 'zod';
@@ -26,10 +26,7 @@ const marketDepthSchema = z.object({
   sequenceNumber: z.string(),
 });
 
-export async function retrieveMarketDepth(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
+export async function retrieveMarketDepth(params: QueryParams) {
   const searchParams = parametersSchema.parse(params);
 
   const market = getMarketFromCache(searchParams.marketId);
@@ -37,11 +34,11 @@ export async function retrieveMarketDepth(
     throw new Error('market not found');
   }
 
-  const API = apiUrl || restApiUrl();
+  const endpoint = restApiUrl('/api/v2/market/depth/{marketId}/latest', {
+    marketId: searchParams.marketId,
+  });
 
-  const res = await axios.get<vegaMarketDepth>(
-    `${API}/market/depth/${searchParams.marketId}/latest`
-  );
+  const res = await axios.get<vegaMarketDepth>(endpoint);
 
   const data = res.data;
 

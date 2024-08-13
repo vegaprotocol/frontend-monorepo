@@ -1,10 +1,10 @@
-import { queryClient } from '../query-client';
 import {
   queryOptions,
   useQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { type Markets, queryKeys, retrieveMarkets } from '../queries/markets';
+import { getQueryClient } from '../rest-config';
 
 function marketsOptions() {
   return queryOptions({
@@ -26,6 +26,7 @@ export function useSuspenseMarkets() {
 }
 
 export function useMarket(marketId?: string) {
+  const queryClient = getQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(marketId),
     queryFn: () => {

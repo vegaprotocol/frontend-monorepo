@@ -1,6 +1,5 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { restApiUrl } from '../env';
-import { queryClient } from '../query-client';
+import { restApiUrl } from '../paths';
 import {
   AMMStatusReason,
   v1AMMStatus,
@@ -10,6 +9,7 @@ import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { type Market, queryKeys as marketQueryKeys } from './markets';
+import { getQueryClient } from '../rest-config';
 
 const ammStatusSchema = z.nativeEnum(v1AMMStatus);
 const ammStatusReasonSchema = z.nativeEnum(AMMStatusReason);
@@ -48,13 +48,14 @@ const ammsSchema = z.array(ammSchema);
 export type AMM = z.infer<typeof ammSchema>;
 export type AMMs = z.infer<typeof ammsSchema>;
 
-export const retrieveAMMs = (apiUrl?: string, params?: AMMsQueryParams) => {
-  const API = apiUrl || restApiUrl();
+export const retrieveAMMs = (params?: AMMsQueryParams) => {
+  const queryClient = getQueryClient();
+  const endpoint = restApiUrl('/api/v2/amms');
 
   const searchParams = parametersSchema.parse(params);
 
   return axios
-    .get<v2ListAMMsResponse>(`${API}/amms`, {
+    .get<v2ListAMMsResponse>(endpoint, {
       params: new URLSearchParams(searchParams),
     })
     .then((res) => {

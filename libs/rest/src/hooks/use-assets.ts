@@ -1,10 +1,10 @@
-import { queryClient } from '../query-client';
 import {
   queryOptions,
   useQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { type Assets, queryKeys, retrieveAssets } from '../queries/assets';
+import { getQueryClient } from '../rest-config';
 
 function assetOptions() {
   return queryOptions({
@@ -25,6 +25,7 @@ export function useSuspenseAssets() {
 }
 
 export function useAsset(assetId?: string | null) {
+  const queryClient = getQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(assetId),
     queryFn: () => {

@@ -9,7 +9,7 @@ import { Time } from '../utils/datetime';
 export function useLiquidityProvisions(marketId: string) {
   const queryResult = useQuery({
     queryKey: queryKeys.market(marketId),
-    queryFn: () => retrieveLiquidityProvisions(undefined, { marketId }),
+    queryFn: () => retrieveLiquidityProvisions({ marketId }),
     staleTime: Time.DAY,
   });
 
@@ -19,7 +19,7 @@ export function useLiquidityProvisions(marketId: string) {
 export function useLiquidityProviders(marketId: string) {
   const queryResult = useQuery({
     queryKey: queryKeys.providers(marketId),
-    queryFn: () => retrieveLiquidityProviders(undefined, { marketId }),
+    queryFn: () => retrieveLiquidityProviders({ marketId }),
     staleTime: Time.DAY,
   });
 

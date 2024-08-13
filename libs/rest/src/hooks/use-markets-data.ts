@@ -1,4 +1,3 @@
-import { queryClient } from '../query-client';
 import {
   queryOptions,
   useQuery,
@@ -10,12 +9,13 @@ import {
   retrieveMarketsData,
 } from '../queries/markets-data';
 import { Time } from '../utils/datetime';
+import { getQueryClient } from '../rest-config';
 
 function marketsDataOptions(marketId?: string) {
   const params = marketId ? { market: marketId } : undefined;
   return queryOptions({
     queryKey: queryKeys.list(),
-    queryFn: () => retrieveMarketsData(undefined, params),
+    queryFn: () => retrieveMarketsData(params),
     staleTime: Time.MIN,
     // refetchInterval: Time.MIN,
   });
@@ -32,6 +32,7 @@ export function useSuspenseMarketsData() {
 }
 
 export function useMarketData(marketId?: string) {
+  const queryClient = getQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(marketId),
     queryFn: () => {

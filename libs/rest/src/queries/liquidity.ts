@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { restApiUrl } from '../env';
+import { restApiUrl } from '../paths';
 import {
   type v2ListAllLiquidityProvisionsResponse,
   type v2ListLiquidityProvidersResponse,
@@ -30,19 +30,13 @@ const liquidityProvisionsSchema = z.array(
   })
 );
 
-export async function retrieveLiquidityProviders(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveLiquidityProviders(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/liquidity/providers');
 
   const searchParams = parametersSchema.parse(params);
-  const res = await axios.get<v2ListLiquidityProvidersResponse>(
-    `${API}/liquidity/providers`,
-    {
-      params: new URLSearchParams(searchParams),
-    }
-  );
+  const res = await axios.get<v2ListLiquidityProvidersResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
   const providers = compact(
     res.data.liquidityProviders?.edges?.map((e) => e.node?.partyId)
   );
@@ -50,11 +44,8 @@ export async function retrieveLiquidityProviders(
   return providers;
 }
 
-export async function retrieveLiquidityProvisions(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveLiquidityProvisions(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/liquidity/all-provisions');
 
   const searchParams = parametersSchema.parse(params);
 
@@ -63,12 +54,9 @@ export async function retrieveLiquidityProvisions(
     throw new Error('market not found');
   }
 
-  const res = await axios.get<v2ListAllLiquidityProvisionsResponse>(
-    `${API}/liquidity/all-provisions`,
-    {
-      params: new URLSearchParams(searchParams),
-    }
-  );
+  const res = await axios.get<v2ListAllLiquidityProvisionsResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
 
   const data = removePaginationWrapper(res.data.liquidityProvisions?.edges);
   const allCurrentProvisions = compact(
@@ -83,7 +71,7 @@ export async function retrieveLiquidityProvisions(
           !p.partyId ||
           !p.version
         ) {
-          return;
+          return undefined;
         }
         return {
           id: p.id,

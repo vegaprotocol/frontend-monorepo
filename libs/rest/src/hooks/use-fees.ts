@@ -10,8 +10,7 @@ import { Time } from '../utils/datetime';
 export function useLiquidityFees(marketId: string, epoch?: string) {
   const queryResult = useQuery({
     queryKey: liquidityFeesQueryKeys.market(marketId, epoch),
-    queryFn: () =>
-      retrieveLiquidityFees(undefined, { marketId, epochSeq: epoch }),
+    queryFn: () => retrieveLiquidityFees({ marketId, epochSeq: epoch }),
     staleTime: Time.MIN,
   });
 
@@ -21,7 +20,7 @@ export function useLiquidityFees(marketId: string, epoch?: string) {
 export function useMakerFees(marketId: string, epoch?: string) {
   const queryResult = useQuery({
     queryKey: makerFeesQueryKeys.market(marketId, epoch),
-    queryFn: () => retrieveMakerFees(undefined, { marketId, epochSeq: epoch }),
+    queryFn: () => retrieveMakerFees({ marketId, epochSeq: epoch }),
     staleTime: Time.MIN,
   });
 

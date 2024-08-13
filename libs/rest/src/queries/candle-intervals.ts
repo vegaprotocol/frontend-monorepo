@@ -1,4 +1,4 @@
-import { restApiUrl } from '../env';
+import { restApiUrl } from '../paths';
 import { v2ListCandleIntervalsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
@@ -34,20 +34,14 @@ const candleIntervalsSchema = z.array(candleIntervalSchema);
 
 export type CandleIntervals = z.infer<typeof candleIntervalsSchema>;
 
-export async function retrieveCandleIntervals(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveCandleIntervals(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/candle/intervals');
 
   const searchParams = parametersSchema.parse(params);
 
-  const res = await axios.get<v2ListCandleIntervalsResponse>(
-    `${API}/candle/intervals`,
-    {
-      params: new URLSearchParams(searchParams),
-    }
-  );
+  const res = await axios.get<v2ListCandleIntervalsResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
 
   const data = compact(
     res.data.intervalToCandleId?.filter(

@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { restApiUrl } from '../env';
+import { restApiUrl } from '../paths';
 import { type v2ListCandleDataResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
@@ -35,11 +35,8 @@ export type Candle = z.infer<typeof candleSchema>;
 
 const candlesSchema = z.array(candleSchema);
 
-export async function retrieveCandleData(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveCandleData(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/candle');
   let searchParams = parametersSchema.parse(params);
 
   // have to omit optional parameters, otherwise the API results with Bad Request
@@ -55,7 +52,7 @@ export async function retrieveCandleData(
     throw new Error('market not found');
   }
 
-  const res = await axios.get<v2ListCandleDataResponse>(`${API}/candle`, {
+  const res = await axios.get<v2ListCandleDataResponse>(endpoint, {
     params: new URLSearchParams(omit(searchParams, 'marketId')),
   });
 
@@ -65,7 +62,7 @@ export async function retrieveCandleData(
         cd;
 
       // skip any without timestamps
-      if (!start || !lastUpdate) return;
+      if (!start || !lastUpdate) return undefined;
 
       const highPrice = new Decimal(high, market.decimalPlaces);
       const lowPrice = new Decimal(low, market.decimalPlaces);

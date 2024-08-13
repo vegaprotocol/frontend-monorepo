@@ -20,7 +20,7 @@ export function useCandles(
 ) {
   const { data: intervals } = useQuery({
     queryKey: candleIntervalsQueryKeys.single(marketId),
-    queryFn: () => retrieveCandleIntervals(undefined, { marketId }),
+    queryFn: () => retrieveCandleIntervals({ marketId }),
     staleTime: Time.HOUR,
   });
 
@@ -31,7 +31,7 @@ export function useCandles(
   const queryResult = useQuery({
     queryKey: candleDataQueryKeys.single(marketId, interval, from, to),
     queryFn: () =>
-      retrieveCandleData(undefined, {
+      retrieveCandleData({
         candleId: candleId || '',
         marketId,
         fromTimestamp: from,

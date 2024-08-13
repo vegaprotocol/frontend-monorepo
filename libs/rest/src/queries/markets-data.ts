@@ -1,5 +1,4 @@
-import { restApiUrl } from '../env';
-import { queryClient } from '../query-client';
+import { restApiUrl } from '../paths';
 import {
   type v2ListLatestMarketDataResponse,
   vegaCompositePriceType,
@@ -11,6 +10,7 @@ import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { type Markets, queryKeys as marketQueryKeys } from './markets';
+import { getQueryClient } from '../rest-config';
 
 const parametersSchema = z.optional(
   z.object({
@@ -38,11 +38,9 @@ export type MarketData = z.infer<typeof marketDataSchema>;
 const marketsDataSchema = z.map(z.string(), marketDataSchema);
 export type MarketsData = z.infer<typeof marketsDataSchema>;
 
-export async function retrieveMarketsData(
-  apiUrl?: string,
-  params?: MarketsDataQueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveMarketsData(params?: MarketsDataQueryParams) {
+  const queryClient = getQueryClient();
+  const endpoint = restApiUrl('/api/v2/markets/data');
   const searchParams = parametersSchema.parse(params);
 
   const markets = queryClient.getQueryData<Markets>(marketQueryKeys.list());
@@ -50,19 +48,16 @@ export async function retrieveMarketsData(
     throw new Error('markets not cached');
   }
 
-  const res = await axios.get<v2ListLatestMarketDataResponse>(
-    `${API}/markets/data`,
-    {
-      params: new URLSearchParams(searchParams),
-    }
-  );
+  const res = await axios.get<v2ListLatestMarketDataResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
 
   const data = compact(
     res.data.marketsData?.map((d) => {
-      if (!d.market) return;
+      if (!d.market) return undefined;
 
       const market = markets?.get(d.market);
-      if (!market) return;
+      if (!market) return undefined;
 
       const asset = market.quoteAsset;
 

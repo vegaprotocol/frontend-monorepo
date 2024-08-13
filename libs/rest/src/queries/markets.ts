@@ -1,7 +1,5 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-
-import { restApiUrl } from '../env';
-import { queryClient } from '../query-client';
+import { restApiUrl } from '../paths';
 import {
   type v2ListMarketsResponse,
   vegaMarketState,
@@ -15,6 +13,7 @@ import {
   queryKeys as assetQueryKeys,
   erc20AssetSchema,
 } from './assets';
+import { getQueryClient } from '../rest-config';
 
 const marketSchema = z.object({
   id: z.string(),
@@ -36,8 +35,9 @@ export type Markets = z.infer<typeof marketsSchema>;
 /**
  * Retrieves all markets from `/markets` endpoint.
  */
-export const retrieveMarkets = async (apiUrl?: string) => {
-  const API = apiUrl || restApiUrl();
+export const retrieveMarkets = async () => {
+  const queryClient = getQueryClient();
+  const endpoint = restApiUrl('/api/v2/markets');
 
   const assets = queryClient.getQueryData<Assets>(assetQueryKeys.list());
 
@@ -45,7 +45,7 @@ export const retrieveMarkets = async (apiUrl?: string) => {
     throw new Error('assets not cached');
   }
 
-  const res = await axios.get<v2ListMarketsResponse>(`${API}/markets`);
+  const res = await axios.get<v2ListMarketsResponse>(endpoint);
 
   const edges = res.data.markets?.edges;
   const rawMarkets = removePaginationWrapper(edges);
@@ -115,6 +115,7 @@ export const queryKeys = {
 } as const;
 
 export function getMarketFromCache(marketId: string) {
+  const queryClient = getQueryClient();
   const market = queryClient.getQueryData<Market>(queryKeys.single(marketId));
   return market;
 }

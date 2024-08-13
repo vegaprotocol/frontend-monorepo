@@ -5,7 +5,7 @@ import { Time } from '../utils/datetime';
 export function useMarketDepth(marketId: string) {
   const queryResult = useQuery({
     queryKey: queryKeys.single(marketId),
-    queryFn: () => retrieveMarketDepth(undefined, { marketId }),
+    queryFn: () => retrieveMarketDepth({ marketId }),
     staleTime: Time.MIN,
   });
 

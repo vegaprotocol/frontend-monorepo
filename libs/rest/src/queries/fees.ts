@@ -1,6 +1,6 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-import { restApiUrl } from '../env';
+import { restApiUrl } from '../paths';
 import {
   type v2GetFeesStatsResponse,
   type v2ListPaidLiquidityFeesResponse,
@@ -46,11 +46,8 @@ const paidFeesSchema = z.object({
   totalFeesPaid: z.instanceof(Decimal),
 });
 
-export async function retrieveLiquidityFees(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveLiquidityFees(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/liquidity/paidfees');
 
   let searchParams = parametersSchema.parse(params);
   if (searchParams.epochSeq == null) {
@@ -62,16 +59,15 @@ export async function retrieveLiquidityFees(
     throw new Error('market not found');
   }
 
-  const res = await axios.get<v2ListPaidLiquidityFeesResponse>(
-    `${API}/liquidity/paidfees`,
-    { params: new URLSearchParams(searchParams) }
-  );
+  const res = await axios.get<v2ListPaidLiquidityFeesResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
 
   const data = removePaginationWrapper(res.data.paidLiquidityFees?.edges);
 
   const total = compact(
     data.map((d) => {
-      if (!d.totalFeesPaid || !d.asset || !d.market) return;
+      if (!d.totalFeesPaid || !d.asset || !d.market) return undefined;
       return {
         assetId: d.asset,
         marketId: d.market,
@@ -84,9 +80,9 @@ export async function retrieveLiquidityFees(
   const perParty = compact(
     flatten(
       data.map((d) => {
-        if (!d.asset || !d.market || !d.feesPaidPerParty) return;
+        if (!d.asset || !d.market || !d.feesPaidPerParty) return undefined;
         return d.feesPaidPerParty.map((p) => {
-          if (!p.party || !p.amount || !p.quantumAmount) return;
+          if (!p.party || !p.amount || !p.quantumAmount) return undefined;
           return {
             assetId: d.asset,
             marketId: d.market,
@@ -135,11 +131,8 @@ const makerFeesSchema = z.object({
   totalFeesPaid: z.instanceof(Decimal),
 });
 
-export async function retrieveMakerFees(
-  apiUrl: string | undefined,
-  params: QueryParams
-) {
-  const API = apiUrl || restApiUrl();
+export async function retrieveMakerFees(params: QueryParams) {
+  const endpoint = restApiUrl('/api/v2/fees/stats');
 
   let searchParams = parametersSchema.parse(params);
   if (searchParams.epochSeq == null) {
@@ -151,7 +144,7 @@ export async function retrieveMakerFees(
     throw new Error('market not found');
   }
 
-  const res = await axios.get<v2GetFeesStatsResponse>(`${API}/fees/stats`, {
+  const res = await axios.get<v2GetFeesStatsResponse>(endpoint, {
     params: new URLSearchParams(searchParams),
   });
 
@@ -159,7 +152,7 @@ export async function retrieveMakerFees(
 
   const perParty = compact(
     data?.totalMakerFeesReceived?.map((d) => {
-      if (!d.amount || !d.party || !d.quantumAmount) return;
+      if (!d.amount || !d.party || !d.quantumAmount) return undefined;
 
       return {
         assetId: data.asset,
