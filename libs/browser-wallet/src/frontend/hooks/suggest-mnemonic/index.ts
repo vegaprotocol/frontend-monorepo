@@ -3,8 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';
 
-export const SUGGESTED_MNEMONIC_KEY = 'suggested-mnemonic';
-
 /**
  * Suggests a mnemonic to the user and stores it in memory
  * once the user creates the wallet the mnemonic should be cleared from memory

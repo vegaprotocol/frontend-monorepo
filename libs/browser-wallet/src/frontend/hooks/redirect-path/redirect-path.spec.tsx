@@ -5,7 +5,6 @@ import { mockStorage } from '@/test-helpers/mock-storage';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { FULL_ROUTES } from '../../routes/route-names';
-import { SUGGESTED_MNEMONIC_KEY } from '../suggest-mnemonic';
 import { useGetRedirectPath } from '.';
 
 jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
@@ -73,7 +72,6 @@ describe('RedirectPath', () => {
     expect(view.result.current.loading).toBeFalsy();
     expect(view.result.current.path).toBe(FULL_ROUTES.login);
   });
-
 
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('returns create wallet if no wallets exist', async () => {
