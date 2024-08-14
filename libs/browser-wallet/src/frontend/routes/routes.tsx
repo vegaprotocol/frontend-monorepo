@@ -3,8 +3,6 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { usePersistLocation } from '@/hooks/persist-location';
 
 import { Auth } from './auth';
-import { ConnectionDetails } from './auth/connections/details';
-import { Connections } from './auth/connections/home';
 import { Settings } from './auth/settings/home';
 import { TransactionsIndex } from './auth/transactions';
 import { TransactionDetails } from './auth/transactions/details';
@@ -31,10 +29,6 @@ export const Routing = () => {
           <Route path={ROUTES.wallets} element={<WalletsRoot />}>
             <Route index element={<Wallets />} />
             <Route path={':id'} element={<KeyDetails />} />
-          </Route>
-          <Route path={ROUTES.connections} element={<Outlet />}>
-            <Route index element={<Connections />} />
-            <Route path={':id'} element={<ConnectionDetails />} />
           </Route>
           <Route path={ROUTES.settings} element={<Outlet />}>
             <Route index element={<Settings />} />
