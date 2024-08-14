@@ -10,7 +10,6 @@ import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
 import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
-
 export const Auth = () => {
   const { request } = useJsonRpcClient();
   const { network } = useNetwork();
@@ -74,7 +73,7 @@ export const Auth = () => {
   if (loadingWallets || loadingNetworks) return null;
 
   return (
-    <div className="h-full w-full grid grid-rows-[min-content_1fr_min-content] bg-vega-dark-100">
+    <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-vega-dark-100">
       <ModalWrapper />
       <section className="w-full h-full overflow-y-auto">
         <div className="px-5 pt-3">
