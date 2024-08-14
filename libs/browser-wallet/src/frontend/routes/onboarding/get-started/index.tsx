@@ -49,12 +49,6 @@ export const GetStarted = () => {
       >
         I understand
       </Button>
-      {/* <ExternalLink
-        className="text-xs text-white mt-4"
-        href={config.userDataPolicy}
-      >
-        User data policy
-      </ExternalLink> */}
     </StarsWrapper>
   );
 };
