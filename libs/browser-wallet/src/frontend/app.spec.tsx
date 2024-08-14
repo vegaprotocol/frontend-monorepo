@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { type ReactNode } from 'react';
 
-// import { usePing } from '@/hooks/ping';
-// import { usePreventWindowResize } from '@/hooks/prevent-window-resize';
 import { useGlobalsStore } from '@/stores/globals';
 import { mockStore } from '@/test-helpers/mock-store';
 
@@ -15,10 +13,6 @@ jest.mock('@vegaprotocol/browser-wallet-backend', () => ({
   createWalletBackend: jest.fn(),
 }));
 jest.mock('@/stores/globals');
-jest.mock('@/hooks/prevent-window-resize');
-jest.mock('@/hooks/listen-for-popups');
-jest.mock('@/hooks/listen-for-active-tab');
-jest.mock('@/hooks/ping');
 jest.mock('@/contexts/network/network-provider', () => ({
   NetworkProvider: ({ children }: { children: ReactNode }) => (
     <div data-testid="network-provider">{children}</div>
