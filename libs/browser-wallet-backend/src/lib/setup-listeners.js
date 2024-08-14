@@ -7,7 +7,7 @@ export async function install({ networks, settings }) {
     ...config.networks.map((network) => networks.set(network.id, network)),
     settings.set('selectedNetwork', config.defaultNetworkId),
     settings.set('autoOpen', true),
-    settings.set('showHiddenNetworks', false),
+    settings.set('showHiddenNetworks', true),
     settings.set('version', 0),
   ]);
 }
