@@ -12,10 +12,6 @@ import { mockStore } from '@/test-helpers/mock-store';
 
 import { Auth } from './auth';
 
-jest.mock('@/components/page-header', () => ({
-  PageHeader: () => <div data-testid="page-header" />,
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Outlet: () => <div data-testid="outlet" />,
@@ -88,7 +84,6 @@ describe('Auth', () => {
     expect(screen.getByTestId(locators.navBar)).toBeInTheDocument();
     expect(screen.getByTestId('outlet')).toBeInTheDocument();
     expect(screen.getByTestId('modal-wrapper')).toBeInTheDocument();
-    expect(screen.getByTestId('page-header')).toBeInTheDocument();
   });
   it('loads the users wallets, networks, assets and markets', () => {
     const { loadWallets, fetchAssets, fetchMarkets, loadConnections } =

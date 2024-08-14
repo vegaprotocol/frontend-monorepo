@@ -46,7 +46,6 @@ describe('TransactionList', () => {
       },
     ]);
     expect(screen.queryByTestId('empty')).not.toBeInTheDocument();
-    expect(screen.getByTestId('host-image')).toBeInTheDocument();
     expect(
       screen.getByTestId(locators.transactionListItemTransactionType)
     ).toBeInTheDocument();

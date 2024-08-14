@@ -18,7 +18,6 @@ const locators = {
   dAppHostname: 'dapp-hostname',
   errorMessage: 'input-error-text',
   frame: 'frame',
-  pageHeader: 'page-header',
   hideIcon: 'hide-icon',
   modalHeader: 'modal-header',
   mnemonicContainerShown: 'mnemonic-container-shown',

@@ -10,15 +10,10 @@ jest.mock('../transaction-modal', () => ({
   TransactionModal: () => <div data-testid="transaction-modal" />,
 }));
 
-jest.mock('../orientation-splash', () => ({
-  OrientationSplash: () => <div data-testid="orientation-splash" />,
-}));
-
 describe('ModalWrapper', () => {
   it('renders all the modal components', () => {
     render(<ModalWrapper />);
 
-    expect(screen.getByTestId('orientation-splash')).toBeInTheDocument();
     expect(screen.getByTestId('connection-modal')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-modal')).toBeInTheDocument();
   });

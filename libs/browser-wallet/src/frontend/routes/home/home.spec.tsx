@@ -8,10 +8,6 @@ jest.mock('@/hooks/redirect-path', () => ({
   useGetRedirectPath: jest.fn(),
 }));
 
-jest.mock('@/hooks/sentry', () => ({
-  useSentry: jest.fn(),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: () => <div data-testid="navigate" />,

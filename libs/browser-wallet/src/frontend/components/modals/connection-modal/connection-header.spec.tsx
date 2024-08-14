@@ -14,7 +14,6 @@ describe('ModalHeader', () => {
     render(
       <ConnectionHeader hostname="https://www.google.com" title="title" />
     );
-    expect(screen.getByTestId('host-image')).toBeInTheDocument();
     expect(screen.getByTestId('vega-icon')).toBeInTheDocument();
     expect(screen.getByTestId(headerLocators.header)).toHaveTextContent(
       'title'
