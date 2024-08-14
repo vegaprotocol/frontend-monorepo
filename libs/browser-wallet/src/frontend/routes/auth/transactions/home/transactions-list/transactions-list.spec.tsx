@@ -5,7 +5,6 @@ import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../../config/well-known-networks';
 import { locators, TransactionsList } from './transactions-list';
-
 jest.mock('../../transactions-state', () => ({
   VegaTransactionState: () => <div data-testid="transaction-state" />,
 }));
