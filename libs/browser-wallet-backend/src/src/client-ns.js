@@ -1,11 +1,7 @@
-import JSONRPCServer from '../lib/json-rpc-server.js';
 import * as txHelpers from './tx-helpers.js';
 import * as clientValidation from '../validation/client/index.js';
 import NodeRPC from './node-rpc.js';
-// import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../frontend/lib/constants.js';
-// import { isIos } from '../lib/utils.js';
-
-// const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
+import { JSONRPCServer } from '@vegaprotocol/json-rpc';
 
 export const AUTO_CONSENT_TRANSACTION_TYPES = [
   'orderSubmission',

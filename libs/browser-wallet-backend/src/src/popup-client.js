@@ -1,6 +1,6 @@
-import JSONRPCClient from '../lib/json-rpc-client.js';
 import assert from 'nanoassert';
 import { isResponse } from '../lib/json-rpc.js';
+import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 
 /**
  * Popup client

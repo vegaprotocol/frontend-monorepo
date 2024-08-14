@@ -21,7 +21,7 @@ type MessageHandler = (
   context: unknown
 ) => unknown;
 
-export default class JSONRPCServer {
+export class JSONRPCServer {
   static Error = JSONRPCError;
   private _notificationListeners: Set<NotificationHandler>;
   private _dispatch: Map<

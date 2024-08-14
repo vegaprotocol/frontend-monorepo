@@ -8,8 +8,8 @@ import {
 
 type NotificationHandler = (msg: JsonRpcResponse) => unknown;
 
-export default class JSONRPCClient {
-  static Error = JSONRPCError;
+export class JSONRPCClient {
+  static readonly Error = JSONRPCError;
   private _send: (message: JsonRpcMessage) => void;
   private _onnotification: NotificationHandler;
   private inflight: Map<

@@ -7,8 +7,8 @@ import type {
   ConnectionReply,
 } from '@/stores/interaction-store';
 
-// @ts-ignore
-import JSONRPCServer from '../../../lib/json-rpc-server';
+import { JSONRPCServer } from '@vegaprotocol/json-rpc';
+
 // @ts-ignore
 import { PortServer } from '../../../lib/port-server';
 

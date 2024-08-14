@@ -1,5 +1,5 @@
-import JSONRPCClient from '../../lib/json-rpc-client.js';
 import mutex from 'mutexify/promise.js';
+import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 
 const runtime = global.browser?.runtime ?? global.chrome?.runtime;
 

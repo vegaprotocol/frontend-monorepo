@@ -35,6 +35,7 @@
       "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/funding-payments": ["libs/funding-payments/src/index.ts"],
       "@vegaprotocol/i18n": ["libs/i18n/src/index.ts"],
+      "@vegaprotocol/json-rpc": ["libs/json-rpc/src/index.ts"],
       "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
       "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
       "@vegaprotocol/logger": ["libs/logger/src/index.ts"],
@@ -67,8 +68,7 @@
       ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
-      "browser-wallet-backend": ["libs/browser-wallet-backend/src/index.ts"],
-      "json-rpc": ["libs/json-rpc/src/index.ts"]
+      "browser-wallet-backend": ["libs/browser-wallet-backend/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],
