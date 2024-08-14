@@ -68,7 +68,8 @@
       ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
-      "browser-wallet-backend": ["libs/browser-wallet-backend/src/index.ts"]
+      "browser-wallet-backend": ["libs/browser-wallet-backend/src/index.ts"],
+      "v-wallet": ["libs/v-wallet/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],
