@@ -142,9 +142,11 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           <span className="sr-only">{t('Menu')}</span>
           <BurgerIcon />
         </NavbarMobileButton>
-        <div className="hidden lg:block">
-          <VegaWalletConnectButton />
-        </div>
+        {IN_BROWSER_WALLET && (
+          <div className="hidden lg:block">
+            <VegaWalletConnectButton />
+          </div>
+        )}
       </div>
       {menu !== null && (
         <D.Root
