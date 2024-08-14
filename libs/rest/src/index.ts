@@ -1,2 +1,5 @@
 export * from './hooks';
-export { REST_CONFIG } from './rest-config';
+export { isActiveMarket, type Market } from './queries/markets';
+export { Interval } from './queries/candle-intervals';
+
+export { yesterday, toNanoSeconds } from './utils/datetime';

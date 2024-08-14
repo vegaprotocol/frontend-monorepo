@@ -28,6 +28,7 @@ export const Routes = {
   FEES: '/fees',
   REWARDS: '/rewards',
   REWARDS_DETAIL: '/reward',
+  AMM: '/amm',
 } as const;
 
 type ConsoleLinks = {
@@ -66,4 +67,5 @@ export const Links: ConsoleLinks = {
   REWARDS_DETAIL: (searchParams) => {
     return `${Routes.REWARDS_DETAIL}?${searchParams}`;
   },
+  AMM: () => Routes.AMM,
 };
