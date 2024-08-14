@@ -6,7 +6,6 @@ import { NavLink } from 'react-router-dom';
 import { FULL_ROUTES } from '../../routes/route-names';
 import { LeftRightArrows } from '../icons/left-right-arrows';
 import { Settings } from '../icons/settings';
-import { UpDownArrows } from '../icons/up-down-arrows';
 import { Wallet } from '../icons/wallet';
 import locators from '../locators';
 
