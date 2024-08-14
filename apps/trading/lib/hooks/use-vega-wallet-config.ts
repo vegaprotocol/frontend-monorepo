@@ -10,7 +10,11 @@ import {
   mirror,
   stagnet,
 } from '@vegaprotocol/wallet';
-import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
+import {
+  CHAIN_IDS,
+  useEnvironment,
+  useFeatureFlags,
+} from '@vegaprotocol/environment';
 import { useMemo } from 'react';
 import { InBrowserConnector } from 'libs/wallet/src/connectors';
 
@@ -20,6 +24,7 @@ import { InBrowserConnector } from 'libs/wallet/src/connectors';
  */
 export const useVegaWalletConfig = () => {
   const { VEGA_ENV, VEGA_URL, VEGA_WALLET_URL } = useEnvironment();
+  const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
 
   return useMemo(() => {
     if (!VEGA_URL || !VEGA_WALLET_URL) return;
@@ -42,7 +47,9 @@ export const useVegaWalletConfig = () => {
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: [injected, snap, jsonRpc, viewParty, inBrowser],
+      connectors: IN_BROWSER_WALLET
+        ? [injected, snap, jsonRpc, viewParty, inBrowser]
+        : [injected, snap, jsonRpc, viewParty],
     });
 
     return config;
