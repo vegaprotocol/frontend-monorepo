@@ -28,7 +28,6 @@ export const ROUTES = {
   // telemetry: ROUTE_NAMES.telemetry,
   createWallet: ROUTE_NAMES.createWallet,
   importWallet: ROUTE_NAMES.importWallet,
-  networkDetails: ROUTE_NAMES.networks,
   settings: ROUTE_NAMES.settings,
   networksSettings: ROUTE_NAMES.networks,
   wallets: ROUTE_NAMES.wallets,

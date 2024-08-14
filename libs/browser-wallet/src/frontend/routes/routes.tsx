@@ -6,8 +6,6 @@ import { Auth } from './auth';
 import { ConnectionDetails } from './auth/connections/details';
 import { Connections } from './auth/connections/home';
 import { Settings } from './auth/settings/home';
-import { NetworkSettings } from './auth/settings/networks/home';
-import { NetworkDetails } from './auth/settings/networks/network-details';
 import { TransactionsIndex } from './auth/transactions';
 import { TransactionDetails } from './auth/transactions/details';
 import { Transactions } from './auth/transactions/home';
@@ -41,10 +39,6 @@ export const Routing = () => {
           </Route>
           <Route path={ROUTES.settings} element={<Outlet />}>
             <Route index element={<Settings />} />
-            <Route path={ROUTES.networkDetails} element={<Outlet />}>
-              <Route index element={<NetworkSettings />} />
-              <Route path={':id'} element={<NetworkDetails />} />
-            </Route>
           </Route>
           <Route path={ROUTES.transactions} element={<TransactionsIndex />}>
             <Route index element={<Transactions />} />
@@ -57,7 +51,6 @@ export const Routing = () => {
           <Route path={ROUTES.createPassword} element={<CreatePassword />} />
           <Route path={ROUTES.createWallet} element={<CreateWallet />} />
           <Route path={ROUTES.saveMnemonic} element={<SaveMnemonic />} />
-          {/* <Route path={ROUTES.telemetry} element={<Telemetry />} /> */}
           <Route path={ROUTES.importWallet} element={<ImportWallet />} />
         </Route>
         <Route path={ROUTES.login} element={<Login />} />
