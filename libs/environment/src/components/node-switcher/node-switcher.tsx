@@ -15,7 +15,7 @@ import { LayoutRow } from './layout-row';
 import { ApolloWrapper } from './apollo-wrapper';
 import { RowData } from './row-data';
 import { useT } from '../../use-t';
-import { type ApiNode } from '../../utils/validate-environment';
+import { createApiNode } from '../../utils/validate-environment';
 
 export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
   const t = useT();
@@ -29,15 +29,13 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
     })
   );
 
+  const currentHost = API_NODE ? new URL(API_NODE.graphQLApiUrl).hostname : '';
   const [nodeRadio, setNodeRadio] = useState<string>(() => {
-    if (API_NODE) {
-      return API_NODE.graphQLApiUrl;
-    }
+    if (API_NODE) return currentHost;
     return nodes.length > 0 ? '' : CUSTOM_NODE_KEY;
   });
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
-  const [customGraphQLText, setCustomGraphQLText] = useState('');
-  const [customRestApiText, setCustomRestApiText] = useState('');
+  const [customUrl, setCustomUrl] = useState('');
 
   const handleHighestBlock = useCallback((blockHeight: number) => {
     setHighestBlock((curr) => {
@@ -54,10 +52,10 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
   let isDisabled = false;
   if (nodeRadio === '') {
     isDisabled = true;
-  } else if (nodeRadio === API_NODE?.graphQLApiUrl) {
+  } else if (nodeRadio === currentHost) {
     isDisabled = true;
   } else if (nodeRadio === CUSTOM_NODE_KEY) {
-    if (!isValidUrl(customGraphQLText) || !isValidUrl(customRestApiText)) {
+    if (!isValidUrl(customUrl)) {
       isDisabled = true;
     }
   }
@@ -93,13 +91,13 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
               </LayoutRow>
             </div>
             <div>
-              {nodes.map((node, index) => {
+              {nodes.map((apiNode, index) => {
                 return (
-                  <LayoutRow key={node.graphQLApiUrl} dataTestId="node-row">
-                    <ApolloWrapper url={node.graphQLApiUrl}>
+                  <LayoutRow key={apiNode.graphQLApiUrl} dataTestId="node-row">
+                    <ApolloWrapper url={apiNode.graphQLApiUrl}>
                       <RowData
                         id={index.toString()}
-                        url={node.graphQLApiUrl}
+                        url={new URL(apiNode.graphQLApiUrl).hostname}
                         highestBlock={highestBlock}
                         onBlockHeight={handleHighestBlock}
                       />
@@ -108,10 +106,8 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
                 );
               })}
               <CustomRowWrapper
-                graphQLApiUrl={customGraphQLText}
-                setGraphQLApiUrl={setCustomGraphQLText}
-                restApiUrl={customRestApiText}
-                setRestApiUrl={setCustomRestApiText}
+                customUrl={customUrl}
+                setCustomUrl={setCustomUrl}
                 nodeCount={nodes.length}
                 highestBlock={highestBlock}
                 onBlockHeight={handleHighestBlock}
@@ -125,14 +121,13 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
               disabled={isDisabled}
               onClick={() => {
                 if (nodeRadio === CUSTOM_NODE_KEY) {
-                  const apiNode: ApiNode = {
-                    graphQLApiUrl: customGraphQLText,
-                    restApiUrl: customRestApiText,
-                  };
-                  setApiNode(apiNode);
+                  const apiNode = createApiNode(customUrl);
+                  if (apiNode) {
+                    setApiNode(apiNode);
+                  }
                 } else {
                   const apiNode = nodes.find(
-                    (n) => n.graphQLApiUrl === nodeRadio
+                    (n) => nodeRadio === new URL(n.graphQLApiUrl).hostname
                   );
                   if (apiNode) {
                     setApiNode(apiNode);
@@ -152,10 +147,8 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
 };
 
 interface CustomRowWrapperProps {
-  graphQLApiUrl: string;
-  setGraphQLApiUrl: (text: string) => void;
-  restApiUrl: string;
-  setRestApiUrl: (text: string) => void;
+  customUrl: string;
+  setCustomUrl: (text: string) => void;
   nodeCount: number;
   highestBlock: number | null;
   nodeRadio: string;
@@ -163,10 +156,8 @@ interface CustomRowWrapperProps {
 }
 
 const CustomRowWrapper = ({
-  graphQLApiUrl,
-  setGraphQLApiUrl,
-  restApiUrl,
-  setRestApiUrl,
+  customUrl,
+  setCustomUrl,
   nodeCount,
   highestBlock,
   nodeRadio,
@@ -192,30 +183,20 @@ const CustomRowWrapper = ({
             data-testid="custom-node"
             className="flex items-center w-full gap-2"
           >
-            {/** TODO: Better form */}
             <TradingInput
               data-testid="gql-input"
               placeholder="https://"
-              value={graphQLApiUrl}
+              value={customUrl}
               hasError={Boolean(error)}
               onChange={(e) => {
                 setDisplayCustom(false);
-                setGraphQLApiUrl(e.target.value);
+                setCustomUrl(e.target.value);
               }}
             />
-            <TradingInput
-              data-testid="rest-input"
-              placeholder="https://"
-              value={restApiUrl}
-              hasError={Boolean(error)}
-              onChange={(e) => {
-                setDisplayCustom(false);
-                setRestApiUrl(e.target.value);
-              }}
-            />
+
             <ButtonLink
               onClick={() => {
-                if (!isValidUrl(graphQLApiUrl) || !isValidUrl(restApiUrl)) {
+                if (!isValidUrl(customUrl)) {
                   setError('Invalid url');
                   return;
                 }
@@ -229,10 +210,10 @@ const CustomRowWrapper = ({
         )}
       </div>
       {displayCustom ? (
-        <ApolloWrapper url={graphQLApiUrl}>
+        <ApolloWrapper url={customUrl}>
           <RowData
             id={CUSTOM_NODE_KEY}
-            url={graphQLApiUrl}
+            url={customUrl}
             onBlockHeight={onBlockHeight}
             highestBlock={highestBlock}
           />

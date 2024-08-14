@@ -42,9 +42,10 @@ const storeApiNode = (apiNode: ApiNode) => {
   LocalStorage.setItem(STORAGE_KEY, JSON.stringify(apiNode));
 };
 
+type ApiNodes = ApiNode[];
 type Client = ReturnType<typeof createClient>;
 type EnvState = {
-  nodes: ApiNode[];
+  nodes: ApiNodes;
   status: 'default' | 'pending' | 'success' | 'failed';
   error: string | null;
 };
@@ -222,7 +223,7 @@ const testRestApi = async (apiNode: ApiNode) => {
   try {
     const res = await fetch(nodeInfoUrl);
     if (res.ok) {
-      const json = res.json();
+      const json = await res.json();
       nodeInfoSchema.parse(json);
       return true;
     }
@@ -744,6 +745,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
         ]),
         (apiNode) => `${apiNode.graphQLApiUrl}+${apiNode.restApiUrl}`
       );
+
       set({ nodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);

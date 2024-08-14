@@ -421,12 +421,12 @@ describe('useEnvironment', () => {
 
   it('uses env vars from window._env_ if set', async () => {
     const apiNode = {
-      graphQLApiUrl: 'http://foo.bar.com/gql',
-      restApiUrl: 'http://foo.bar.com/rest',
+      graphQLApiUrl: 'http://foo.bar.com/graphql',
+      restApiUrl: 'http://foo.bar.com/',
     };
     // @ts-ignore _env_ is declared in app
     window._env_ = {
-      API_NODE: JSON.stringify(apiNode),
+      API_NODE: 'http://foo.bar.com',
     };
 
     const { result } = setup();
@@ -473,11 +473,11 @@ describe('useEnvironment', () => {
 
   it('allows for undefined VEGA_CONFIG_URL if API_NODE is set', async () => {
     const apiNode = {
-      graphQLApiUrl: 'http://foo.bar.com/gql',
-      restApiUrl: 'http://foo.bar.com/rest',
+      graphQLApiUrl: 'http://foo.bar.com/graphql',
+      restApiUrl: 'http://foo.bar.com/',
     };
 
-    process.env['NX_API_NODE'] = JSON.stringify(apiNode);
+    process.env['NX_API_NODE'] = apiNode.restApiUrl;
     process.env['NX_VEGA_CONFIG_URL'] = undefined;
     const { result } = setup();
     act(() => {
@@ -498,12 +498,12 @@ describe('useEnvironment', () => {
     process.env['NX_API_NODE'] = undefined;
     const nodes = [
       {
-        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
-        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/graphql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/',
       },
       {
-        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
-        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/graphql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/',
       },
     ];
     // @ts-ignore setup mock fetch for config url
@@ -570,12 +570,12 @@ describe('useEnvironment', () => {
     process.env['NX_VEGA_CONFIG_URL'] = configUrl;
     const nodes = [
       {
-        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
-        restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+        graphQLApiUrl: 'https://api.n00.foo.vega.xyz/graphql',
+        restApiUrl: 'https://api.n00.foo.vega.xyz/',
       },
       {
-        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
-        restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+        graphQLApiUrl: 'https://api.n01.foo.vega.xyz/graphql',
+        restApiUrl: 'https://api.n01.foo.vega.xyz/',
       },
     ];
     // @ts-ignore setup mock fetch for config url
@@ -587,10 +587,10 @@ describe('useEnvironment', () => {
     );
 
     const storedNode = {
-      graphQLApiUrl: 'https://api.n00.foo.com/gql',
-      restApiUrl: 'https://api.n00.foo.com/rest',
+      graphQLApiUrl: 'https://api.n00.foo.com/graphql',
+      restApiUrl: 'https://api.n00.foo.com/',
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(storedNode));
+    localStorage.setItem(STORAGE_KEY, 'https://api.n00.foo.com/');
     const { result } = setup();
     await act(async () => {
       result.current.initialize();
@@ -603,14 +603,14 @@ describe('useEnvironment', () => {
 
   it('can update API_NODE', async () => {
     const apiNode = {
-      graphQLApiUrl: 'https://api.n00.foo.vega.xyz/gql',
-      restApiUrl: 'https://api.n00.foo.vega.xyz/rest',
+      graphQLApiUrl: 'https://api.n00.foo.vega.xyz/graphql',
+      restApiUrl: 'https://api.n00.foo.vega.xyz/',
     };
     const newApiNode = {
-      graphQLApiUrl: 'https://api.n01.foo.vega.xyz/gql',
-      restApiUrl: 'https://api.n01.foo.vega.xyz/rest',
+      graphQLApiUrl: 'https://api.n01.foo.vega.xyz/graphql',
+      restApiUrl: 'https://api.n01.foo.vega.xyz/',
     };
-    process.env['NX_API_NODE'] = JSON.stringify(apiNode);
+    process.env['NX_API_NODE'] = apiNode.restApiUrl;
     const { result } = setup();
     await act(async () => {
       result.current.initialize();

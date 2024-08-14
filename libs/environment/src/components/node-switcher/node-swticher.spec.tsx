@@ -57,7 +57,10 @@ describe('NodeSwitcher', () => {
     render(<NodeSwitcher closeDialog={jest.fn()} />);
     nodes.forEach((node) => {
       expect(
-        screen.getByRole('radio', { checked: false, name: node.graphQLApiUrl })
+        screen.getByRole('radio', {
+          checked: false,
+          name: new URL(node.graphQLApiUrl).hostname,
+        })
       ).toBeInTheDocument();
     });
     expect(
@@ -110,7 +113,7 @@ describe('NodeSwitcher', () => {
       expect(
         screen.getByRole('radio', {
           checked: node === selectedNode,
-          name: node.graphQLApiUrl,
+          name: new URL(node.graphQLApiUrl).hostname,
         })
       ).toBeInTheDocument();
     });
@@ -125,7 +128,7 @@ describe('NodeSwitcher', () => {
 
   it('allows setting a custom node', () => {
     const mockSetUrl = jest.fn();
-    const mockUrl = 'https://custom.url';
+    const mockUrl = 'https://custom.url/';
     const nodes = [
       {
         graphQLApiUrl: 'https://n00.api.vega.xyz',
@@ -150,14 +153,7 @@ describe('NodeSwitcher', () => {
       },
     });
 
-    fireEvent.change(screen.getByTestId('rest-input'), {
-      target: {
-        value: mockUrl,
-      },
-    });
-
     expect(screen.getByTestId('gql-input')).toHaveValue(mockUrl);
-    expect(screen.getByTestId('rest-input')).toHaveValue(mockUrl);
 
     expect(screen.getByRole('button', { name: 'Check' })).not.toBeDisabled();
 
@@ -171,7 +167,7 @@ describe('NodeSwitcher', () => {
       screen.getByRole('button', { name: 'Connect to this node' })
     );
     expect(mockSetUrl).toHaveBeenCalledWith({
-      graphQLApiUrl: mockUrl,
+      graphQLApiUrl: mockUrl + 'graphql',
       restApiUrl: mockUrl,
     });
   });

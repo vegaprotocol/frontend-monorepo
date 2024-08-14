@@ -162,11 +162,9 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             load_dotenv()
             vega_env = os.getenv('VEGA_ENV')
 
-            graphQLApiUrl = f"http://localhost:{vega.data_node_rest_port}/graphql"
-            restApiUrl = f"http://localhost:{vega.data_node_rest_port}"
             env = json.dumps(
                 {
-                    "API_NODE": f"{{graphQLApiUrl: '{graphQLApiUrl}', restApiUrl: '{restApiUrl}'}}",
+                    "API_NODE": f"http://localhost:{vega.data_node_rest_port}",
                     "VEGA_WALLET_URL": f"http://localhost:{vega.wallet_port}",
                     "VEGA_ENV": vega_env,
                 }
