@@ -102,6 +102,7 @@ const GOVERNANCE_FLAGS = {
 const EXPERIMENTAL_FLAGS = {
   CROSS_CHAIN_DEPOSITS_ENABLED: z.optional(z.boolean()),
   CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()),
+  IN_BROWSER_WALLET: z.optional(z.boolean()),
 };
 
 export const featureFlagsSchema = z.object({

@@ -7,6 +7,7 @@ import {
   DApp,
   useLinks,
   useEnvNameMapping,
+  useFeatureFlags,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
@@ -45,6 +46,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
+  const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
 
   const status = useWallet((store) => store.status);
 
@@ -82,9 +84,11 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
         <div className="flex items-center">
           <ThemeSwitcher />
           <SettingsPopover />
-          <div className="hidden lg:block">
-            <InBrowserWalletButton />
-          </div>
+          {IN_BROWSER_WALLET && (
+            <div className="hidden lg:block">
+              <InBrowserWalletButton />
+            </div>
+          )}
           {supportedLngs.length > 1 ? (
             <LanguageSelector
               languages={supportedLngs}
@@ -124,9 +128,11 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           <span className="sr-only">{t('Menu')}</span>
           <BurgerIcon />
         </NavbarMobileButton>
-        <div className="hidden lg:block">
-          <VegaWalletConnectButton />
-        </div>
+        {IN_BROWSER_WALLET && (
+          <div className="hidden lg:block">
+            <VegaWalletConnectButton />
+          </div>
+        )}
       </div>
       {menu !== null && (
         <D.Root
