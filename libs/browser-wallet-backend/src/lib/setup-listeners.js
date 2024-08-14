@@ -35,11 +35,11 @@ const createPortMock = (name) => ({
   onDisconnect: {
     addListener: (callback) => {
       // eslint-disable-next-line no-console
-      console.log('onMessage addListener', callback);
+      // console.log('onMessage addListener', callback);
     },
     removeListener: (callback) => {
       // eslint-disable-next-line no-console
-      console.log('onMessage removeListener', callback);
+      // console.log('onMessage removeListener', callback);
     },
   },
 });

@@ -12,6 +12,7 @@ import {
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
+import { InBrowserConnector } from 'libs/wallet/src/connectors';
 
 /**
  * Hook for memoizing the vega wallet config, since we can't be certain of the
@@ -24,6 +25,7 @@ export const useVegaWalletConfig = () => {
     if (!VEGA_URL || !VEGA_WALLET_URL) return;
 
     const injected = new InjectedConnector();
+    const inBrowser = new InBrowserConnector();
 
     const jsonRpc = new JsonRpcConnector({
       url: VEGA_WALLET_URL,
@@ -40,7 +42,7 @@ export const useVegaWalletConfig = () => {
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: [injected, snap, jsonRpc, viewParty],
+      connectors: [injected, snap, jsonRpc, viewParty, inBrowser],
     });
 
     return config;
