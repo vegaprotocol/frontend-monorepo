@@ -16,6 +16,7 @@ import {
   VLogo,
   LanguageSelector,
   ThemeSwitcher,
+  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
@@ -32,9 +33,14 @@ import { supportedLngs } from '../../lib/i18n';
 import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
+import React from 'react';
+import BrowserWallet from '@vegaprotocol/browser-wallet';
+import { InBrowserWalletButton } from '../browser-wallet-button';
 
-type MenuState = 'wallet' | 'nav' | null;
+type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
 type Theme = 'system' | 'yellow';
+
+
 
 export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   const i18n = useI18n();
@@ -78,6 +84,9 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
         <div className="flex items-center">
           <ThemeSwitcher />
           <SettingsPopover />
+          <div className="hidden lg:block">
+            <InBrowserWalletButton />
+          </div>
           {supportedLngs.length > 1 ? (
             <LanguageSelector
               languages={supportedLngs}
@@ -85,6 +94,16 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             />
           ) : null}
         </div>
+        <NavbarMobileButton
+          onClick={() => {
+            setMenu((x) => (x === 'browser-wallet' ? null : 'browser-wallet'));
+          }}
+          data-testid="navbar-mobile-burger"
+        >
+          <div className='flex items-center justify-center w-6 h-6'>
+            <Icon name="lab-test" />
+          </div>
+        </NavbarMobileButton>
         <NavbarMobileButton
           onClick={() => {
             if (status === 'connected') {
@@ -136,6 +155,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             </div>
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
+            {menu === 'browser-wallet' && <BrowserWallet />}
             <div className="p-2 mt-auto flex justify-end">
               <NodeHealthContainer variant="normal" />
             </div>
