@@ -1,20 +1,9 @@
 import trimEnd from 'lodash/trimEnd';
 import path from 'path';
 import { getBaseUrl } from './rest-config';
-import tradingDataApi from '@vegaprotocol/rest-clients/openapi/trading_data_v2.openapi.json';
+import tradingDataApi from '@vegaprotocol/rest-clients/paths/trading_data_v2.json';
 
-export type ApiPath = keyof typeof tradingDataApi.paths;
-
-const apiPathParams = (apiPath: ApiPath) => {
-  const def = tradingDataApi.paths[apiPath].get;
-  if ('parameters' in def) {
-    const parameters = def.parameters
-      .filter((p) => p.in === 'path')
-      .map((p) => p.name);
-    return parameters;
-  }
-  return [];
-};
+export type ApiPath = keyof typeof tradingDataApi;
 
 /**
  * Creates the URL to the REST API endpoint.
@@ -30,7 +19,7 @@ export function restApiUrl(
   const base = trimEnd(baseUrl, '/');
 
   if (apiPath && replacements) {
-    const pathParameters = apiPathParams(apiPath);
+    const pathParameters = tradingDataApi[apiPath] as string[];
     const parameters = Object.keys(replacements);
 
     for (const param of parameters) {
