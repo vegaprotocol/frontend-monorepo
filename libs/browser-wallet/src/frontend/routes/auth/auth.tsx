@@ -43,8 +43,6 @@ export const Auth = () => {
     loading: state.loading,
   }));
 
-  // const isDesktop = useGlobalsStore((state) => !state.isMobile);
-
   useEffect(() => {
     loadWallets(request);
     loadConnections(request);

@@ -10,7 +10,6 @@ import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
 
-// import { FULL_ROUTES } from '../route-names';
 import { Auth } from './auth';
 
 jest.mock('@/components/page-header', () => ({

@@ -12,7 +12,6 @@ const IGNORED_PATHS = new Set([
   FULL_ROUTES.getStarted,
   FULL_ROUTES.createPassword,
   FULL_ROUTES.saveMnemonic,
-  // FULL_ROUTES.telemetry,
   FULL_ROUTES.createWallet,
   FULL_ROUTES.importWallet,
 ]);

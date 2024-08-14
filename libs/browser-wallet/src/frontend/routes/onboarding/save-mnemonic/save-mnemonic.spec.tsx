@@ -36,10 +36,6 @@ describe('Save mnemonic', () => {
     mockClient();
     mockStorage();
   });
-  // afterEach(() => {
-  //   // @ts-ignore
-  //   global.browser = null;
-  // });
   it('renders tile and disclaimer', async () => {
     renderComponent();
     await screen.findByTestId(locators.mnemonicContainerHidden);
