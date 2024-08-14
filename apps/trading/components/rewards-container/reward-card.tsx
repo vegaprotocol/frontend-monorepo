@@ -142,9 +142,7 @@ const GroupCard = ({
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
                 <span>
                   {t('Up to')}{' '}
-                  <span className="font-glitch" data-testid="reward-value">
-                    {rewardAmount}
-                  </span>
+                  <span data-testid="reward-value">{rewardAmount}</span>
                 </span>
 
                 <span data-testid="reward-asset">
@@ -277,10 +275,7 @@ const RewardCard = ({
             <div className="flex flex-col gap-2 items-center text-center">
               {/** AMOUNT */}
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
-                <span className="font-glitch" data-testid="reward-value">
-                  {rewardAmount}
-                </span>
-
+                <span data-testid="reward-value">{rewardAmount}</span>
                 <span data-testid="reward-asset">
                   <AssetSymbol asset={transferAsset as AssetFieldsFragment} />
                 </span>
