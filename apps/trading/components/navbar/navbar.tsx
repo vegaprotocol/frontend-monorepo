@@ -41,6 +41,8 @@ import { BrowserWallet } from '../browser-wallet';
 type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
 type Theme = 'system' | 'yellow';
 
+
+
 export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   const i18n = useI18n();
   const t = useT();
@@ -110,6 +112,16 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             </div>
           </NavbarMobileButton>
         )}
+        <NavbarMobileButton
+          onClick={() => {
+            setMenu((x) => (x === 'browser-wallet' ? null : 'browser-wallet'));
+          }}
+          data-testid="navbar-mobile-burger"
+        >
+          <div className='flex items-center justify-center w-6 h-6'>
+            <Icon name="lab-test" />
+          </div>
+        </NavbarMobileButton>
         <NavbarMobileButton
           onClick={() => {
             if (status === 'connected') {
