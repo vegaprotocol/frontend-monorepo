@@ -5,9 +5,6 @@ import { locators as headerLocators } from '@/components/header';
 import locators from '../../locators';
 import { ConnectionHeader } from './connection-header';
 
-jest.mock('../../host-image', () => ({
-  HostImage: () => <div data-testid="host-image"></div>,
-}));
 jest.mock('../../icons/vega-icon', () => ({
   VegaIcon: () => <div data-testid="vega-icon"></div>,
 }));

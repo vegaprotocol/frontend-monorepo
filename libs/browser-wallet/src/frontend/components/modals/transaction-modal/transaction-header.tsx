@@ -2,7 +2,6 @@ import { getTitle } from '@/lib/get-title';
 import type { Transaction } from '@/lib/transactions';
 
 import { Header } from '../../header';
-import { HostImage } from '../../host-image';
 import { VegaKey } from '../../keys/vega-key';
 import { SubHeader } from '../../sub-header';
 import { VegaSection } from '../../vega-section';
@@ -30,7 +29,6 @@ export const TransactionHeader = ({
         <SubHeader content="Request from" />
       </div>
       <div className="flex items-center mb-4">
-        <HostImage size={42} hostname={origin} />
         <div data-testid={locators.transactionRequest} className="ml-4">
           {origin}
         </div>
