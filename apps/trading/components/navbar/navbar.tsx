@@ -34,8 +34,8 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
-import BrowserWallet from '@vegaprotocol/browser-wallet';
 import { InBrowserWalletButton } from '../browser-wallet-button';
+import { BrowserWallet } from '../browser-wallet';
 
 type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
 type Theme = 'system' | 'yellow';
