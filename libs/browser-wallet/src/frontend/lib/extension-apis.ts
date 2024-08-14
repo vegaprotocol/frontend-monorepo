@@ -7,6 +7,13 @@ export const getExtensionApi = () => {
     runtime: {
       connect: ({ name }: { name: string }) => {
         return {
+          name,
+          disconnect: () => {},
+          sender: {
+            id: name,
+            url: name,
+            origin: name,
+          },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           postMessage: (message: any) => {
             window.dispatchEvent(new CustomEvent(name, { detail: message }));
@@ -28,10 +35,12 @@ export const getExtensionApi = () => {
                 }
               );
             },
+            removeListener: () => {},
           },
           onDisconnect: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             addListener: (function_: any) => {},
+            removeListener: () => {},
           },
         };
       },

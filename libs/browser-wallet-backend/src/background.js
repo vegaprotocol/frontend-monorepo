@@ -2,7 +2,7 @@ import { NetworkCollection } from './src/network.js';
 import { WalletCollection } from './src/wallets.js';
 import { TransactionsCollection } from './src/transactions.js';
 import { ConnectionsCollection } from './src/connections.js';
-import { PortServer } from './lib/port-server.js';
+
 import { PopupClient } from './src/popup-client.js';
 import { setupListeners } from './lib/setup-listeners.js';
 
@@ -16,7 +16,9 @@ import initAdmin from './src/admin-ns.js';
 import initClient from './src/client-ns.js';
 import config from '../config/beta.js';
 
-const interactor = new PopupClient({});
+import { PortServer } from '@vegaprotocol/json-rpc';
+
+  const interactor = new PopupClient({});
 
 const encryptedStore = new EncryptedStorage(
   new ConcurrentStorage(new StorageLocalMap('wallets')),
