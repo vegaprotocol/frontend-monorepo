@@ -19,7 +19,6 @@ import { CreateWallet } from './onboarding/create-wallet';
 import { GetStarted } from './onboarding/get-started';
 import { ImportWallet } from './onboarding/import-wallet';
 import { SaveMnemonic } from './onboarding/save-mnemonic';
-// import { Telemetry } from './onboarding/telemetry'
 import { FULL_ROUTES, ROUTES } from './route-names';
 
 export const Routing = () => {
