@@ -2,12 +2,12 @@ import React, { useMemo, Suspense } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
-  // useEnvTriggerMapping,
-  // Networks,
-  // NodeSwitcherDialog,
-  // useEnvironment,
-  // useInitializeEnv,
-  // useNodeSwitcherStore,
+  useEnvTriggerMapping,
+  Networks,
+  NodeSwitcherDialog,
+  useEnvironment,
+  useInitializeEnv,
+  useNodeSwitcherStore,
   AppLoader,
 } from '@vegaprotocol/environment';
 import './styles.css';
@@ -69,98 +69,72 @@ const Title = () => {
 //   const { VEGA_ENV } = useEnvironment();
 //   const networkName = envTriggerMapping[VEGA_ENV];
 
-//   const title = useMemo(() => {
-//     if (!pageTitle) return DEFAULT_TITLE;
-//     if (networkName) return `${pageTitle} [${networkName}]`;
-//     return pageTitle;
-//   }, [pageTitle, networkName, DEFAULT_TITLE]);
+  return (
+    <Head>
+      <title>{title}</title>
+    </Head>
+  );
+};
 
-//   return (
-//     <Head>
-//       <title>{title}</title>
-//     </Head>
-//   );
-// };
-
-// function AppBody({ Component }: AppProps) {
-//   const location = useLocation();
-//   const { VEGA_ENV } = useEnvironment();
-//   const gridClasses = classNames(
-//     'grid relative h-full z-0',
-//     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
-//   );
-//   return (
-//     <div className="h-full overflow-hidden">
-//       <Head>
-//         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
-//         <meta name="viewport" content="width=device-width, initial-scale=1" />
-//       </Head>
-//       <Title />
-//       <div className={gridClasses}>
-//         <AnnouncementBanner />
-//         <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
-//         <div data-testid="banners">
-//           <ProtocolUpgradeProposalNotification
-//             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-//           />
-//           <ProtocolUpgradeInProgressNotification />
-//         </div>
-//         <div data-testid={`pathname-${location.pathname}`}>
-//           <Component />
-//         </div>
-//       </div>
-//       <DialogsContainer />
-//       <ToastsManager />
-//       <TransactionHandlers />
-//       <MaybeConnectEagerly />
-//       <PartyActiveOrdersHandler />
-//       <Telemetry />
-//       <div className="hidden lg:block absolute bottom-3 right-3 z-10">
-//         <NodeHealthContainer />
-//       </div>
-//     </div>
-//   );
-// }
-
-// // @ts-ignore - just testing
-// function SafeHydrate({ children }) {
-//   return (
-//     <div suppressHydrationWarning>
-//       {typeof window === 'undefined' ? null : children}
-//     </div>
-//   )
-// }
-
-import dynamic from 'next/dynamic'
-import React from 'react' 
-
-// @ts-ignore - just testing
-// const NoSSRWrapper = props => ( 
-//     <React.Fragment>{props.children}</React.Fragment> 
-// ) 
-export const Test = dynamic(() => import('@vegaprotocol/browser-wallet'), { 
-    ssr: false 
-})
+function AppBody({ Component }: AppProps) {
+  const location = useLocation();
+  const { VEGA_ENV } = useEnvironment();
+  const gridClasses = classNames(
+    'grid relative h-full z-0',
+    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
+  );
+  return (
+    <div className="h-full overflow-hidden">
+      <Head>
+        {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <Title />
+      <div className={gridClasses}>
+        <AnnouncementBanner />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
+        <div data-testid="banners">
+          <ProtocolUpgradeProposalNotification
+            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+          />
+          <ProtocolUpgradeInProgressNotification />
+        </div>
+        <div data-testid={`pathname-${location.pathname}`}>
+          <Component />
+        </div>
+      </div>
+      <DialogsContainer />
+      <ToastsManager />
+      <TransactionHandlers />
+      <MaybeConnectEagerly />
+      <PartyActiveOrdersHandler />
+      <Telemetry />
+      <div className="hidden lg:block absolute bottom-3 right-3 z-10">
+        <NodeHealthContainer />
+      </div>
+    </div>
+  );
+}
 
 function VegaTradingApp(props: AppProps) {
-  // const status = useEnvironment((store) => store.status);
-  // const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
-  //   store.dialogOpen,
-  //   store.setDialogOpen,
-  // ]);
+  const status = useEnvironment((store) => store.status);
+  const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
+    store.dialogOpen,
+    store.setDialogOpen,
+  ]);
 
-  // // Start validation of env vars and determine VEGA_URL
-  // useInitializeEnv();
+  // Start validation of env vars and determine VEGA_URL
+  useInitializeEnv();
 
-  // // Prevent HashRouter from being server side rendered as it
-  // // relies on presence of document object
-  // //
-  // // This is the last point at which we get pregenerated
-  // // HTML so render a ssr friendly loader component
-  // if (status === 'default') {
-  //   return <SSRLoader />;
-  // }
-  if (typeof window === 'undefined') return null
+  // Prevent HashRouter from being server side rendered as it
+  // relies on presence of document object
+  //
+  // This is the last point at which we get pregenerated
+  // HTML so render a ssr friendly loader component
+  if (status === 'default') {
+    return <SSRLoader />;
+  }
+
   return (
     <Suspense fallback={<AppLoader />}>
       <BrowserWalletBackend>
