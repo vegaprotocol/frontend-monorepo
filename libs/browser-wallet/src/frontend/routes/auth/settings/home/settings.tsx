@@ -1,5 +1,3 @@
-// import config from '!/config';
-// import { ExternalLink } from '@/components/external-link';
 import { BasePage } from '@/components/pages/page';
 
 import { DeleteWallet } from './sections/delete-wallet-section';
@@ -12,8 +10,6 @@ export const locators = {
 };
 
 export const Settings = () => {
-  // const isDesktop = useGlobalsStore((state) => !state.isMobile);
-
   return (
     <BasePage dataTestId={locators.settingsPage} title="Settings">
       <ExportRecoveryPhraseSection />
