@@ -31,14 +31,6 @@ jest.mock(
     ({ children }: { children: ReactNode }) =>
       <div data-testid="global-error-boundary">{children}</div>
 );
-jest.mock('@/stores/popover-store', () => ({
-  usePopoverStore: (function_: any) => {
-    return function_({
-      setup: jest.fn(),
-      teardown: jest.fn(),
-    });
-  },
-}));
 
 jest.mock('@/components/global-error-boundary', () => ({
   GlobalErrorBoundary: ({ children }: { children: ReactNode }) => (
