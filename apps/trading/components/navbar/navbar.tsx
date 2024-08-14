@@ -40,8 +40,6 @@ import { InBrowserWalletButton } from '../browser-wallet-button';
 type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
 type Theme = 'system' | 'yellow';
 
-
-
 export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   const i18n = useI18n();
   const t = useT();
@@ -100,7 +98,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           }}
           data-testid="navbar-mobile-burger"
         >
-          <div className='flex items-center justify-center w-6 h-6'>
+          <div className="flex items-center justify-center w-6 h-6">
             <Icon name="lab-test" />
           </div>
         </NavbarMobileButton>
