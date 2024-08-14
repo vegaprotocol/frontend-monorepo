@@ -53,5 +53,5 @@ export const useVegaWalletConfig = () => {
     });
 
     return config;
-  }, [VEGA_ENV, VEGA_URL, VEGA_WALLET_URL]);
+  }, [IN_BROWSER_WALLET, VEGA_ENV, VEGA_URL, VEGA_WALLET_URL]);
 };
