@@ -1,4 +1,5 @@
-const extensionStorage = global.localStorage;
+// eslint-disable-next-line no-undef
+const extensionStorage = globalThis.localStorage;
 
 function abstractStorage(storage) {
   // Based on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea

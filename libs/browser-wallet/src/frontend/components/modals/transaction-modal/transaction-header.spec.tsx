@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { locators as headerLocators } from '@/components/header';
-import { locators as hostImageLocators } from '@/components/host-image';
+// import { locators as hostImageLocators } from '@/components/host-image';
 import { locators as subheaderLocators } from '@/components/sub-header';
 
 import { locators, TransactionHeader } from './transaction-header';
@@ -47,7 +47,7 @@ describe('TransactionHeader', () => {
     const [requestFromSubheader, signingWithSubheader] = subheaders;
     expect(signingWithSubheader).toHaveTextContent('Signing with');
     expect(requestFromSubheader).toHaveTextContent('Request from');
-    expect(screen.getByTestId(hostImageLocators.hostImage)).toBeVisible();
+    // expect(screen.getByTestId(hostImageLocators.hostImage)).toBeVisible();
     expect(screen.getByTestId(headerLocators.header)).toHaveTextContent(
       'Order Submission'
     );

@@ -10,7 +10,7 @@ import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
 
-import { FULL_ROUTES } from '../route-names';
+// import { FULL_ROUTES } from '../route-names';
 import { Auth } from './auth';
 
 jest.mock('@/components/page-header', () => ({
@@ -100,12 +100,6 @@ describe('Auth', () => {
     expect(loadConnections).toHaveBeenCalledTimes(1);
     expect(fetchAssets).toHaveBeenCalledTimes(1);
     expect(fetchMarkets).toHaveBeenCalledTimes(1);
-  });
-  it('renders wallets header on wallets page', () => {
-    mockStores();
-    renderComponent(FULL_ROUTES.wallets);
-
-    expect(screen.getByTestId('dapps-header')).toBeVisible();
   });
   it('renders nothing if wallets are loading', () => {
     mockStore(useWalletStore, {

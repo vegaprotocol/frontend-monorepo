@@ -43,7 +43,6 @@ export const createServer = (
       },
     },
   });
-  // window.server = server;
   const portServer = new PortServer({
     onerror: console.error,
     server,
