@@ -96,16 +96,20 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             />
           ) : null}
         </div>
-        <NavbarMobileButton
-          onClick={() => {
-            setMenu((x) => (x === 'browser-wallet' ? null : 'browser-wallet'));
-          }}
-          data-testid="navbar-mobile-burger"
-        >
-          <div className="flex items-center justify-center w-6 h-6">
-            <Icon name="lab-test" />
-          </div>
-        </NavbarMobileButton>
+        {IN_BROWSER_WALLET && (
+          <NavbarMobileButton
+            onClick={() => {
+              setMenu((x) =>
+                x === 'browser-wallet' ? null : 'browser-wallet'
+              );
+            }}
+            data-testid="navbar-mobile-browser-wallet"
+          >
+            <div className="flex items-center justify-center w-6 h-6">
+              <Icon name="lab-test" />
+            </div>
+          </NavbarMobileButton>
+        )}
         <NavbarMobileButton
           onClick={() => {
             if (status === 'connected') {
@@ -128,11 +132,9 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           <span className="sr-only">{t('Menu')}</span>
           <BurgerIcon />
         </NavbarMobileButton>
-        {IN_BROWSER_WALLET && (
-          <div className="hidden lg:block">
-            <VegaWalletConnectButton />
-          </div>
-        )}
+        <div className="hidden lg:block">
+          <VegaWalletConnectButton />
+        </div>
       </div>
       {menu !== null && (
         <D.Root
