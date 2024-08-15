@@ -11,7 +11,7 @@ export const getExtensionApi = () => {
           disconnect: () => {},
           sender: {
             id: name,
-            url: name,
+            url: `https://${name}.com`,
             origin: name,
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
