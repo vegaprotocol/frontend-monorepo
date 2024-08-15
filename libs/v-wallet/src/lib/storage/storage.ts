@@ -1,36 +1,21 @@
 import { type SyncMapLikeStorage, type MapLikeStorage } from '../utils';
+import { localStorageWrapped } from './local-storage';
 
-const wrappedLocalStorage = {
-  async get(key: string) {
-    const json = localStorage.getItem(key);
-    return json ? JSON.parse(json) : null;
-  },
-  async set(key: string, val: unknown) {
-    return localStorage.setItem(key, JSON.stringify(val, null, '\t'));
-  },
-  async clear() {
-    localStorage.clear();
-  },
-  async delete(key: string) {
-    localStorage.removeItem(key);
-  },
-};
-
-export type AbstractStorage = {
+export type AbstractStorage<T = unknown> = {
   _prefix: string;
 
   isSupported(): boolean;
   permanentClearAll(): void;
 
-  _load(): Promise<Record<string, unknown>>;
+  _load(): Promise<Record<string, T>>;
   has(key: string): Promise<boolean>;
-  get(key: string): Promise<unknown>;
-  set(key: string, value: unknown): Promise<void>;
+  get(key: string): Promise<T>;
+  set(key: string, value: T): Promise<void>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   keys(): Promise<string[]>;
-  values(): Promise<unknown[]>;
-  entries(): Promise<[string, unknown][]>;
+  values(): Promise<T[]>;
+  entries(): Promise<[string, T][]>;
 };
 
 function abstractStorage(storage: MapLikeStorage | SyncMapLikeStorage) {
@@ -103,5 +88,5 @@ function abstractStorage(storage: MapLikeStorage | SyncMapLikeStorage) {
   };
 }
 
-export class StorageLocalMap extends abstractStorage(wrappedLocalStorage) {}
+export class StorageLocalMap extends abstractStorage(localStorageWrapped) {}
 export class StorageSessionMap extends abstractStorage(new Map()) {}

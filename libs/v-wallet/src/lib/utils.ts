@@ -11,3 +11,6 @@ export interface SyncMapLikeStorage {
   clear(): void;
   delete(key: string): void;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Transaction = any;

@@ -9,20 +9,20 @@ import { type AbstractStorage } from './storage';
  * @param {StorageLocalMap} storage
  * @returns {StorageLocalMap}
  */
-export class ConcurrentStorage {
-  private _storage: AbstractStorage;
+export class ConcurrentStorage<T = unknown> {
+  private _storage: AbstractStorage<T>;
   private _lock: ReturnType<typeof mutexifyPromise>;
 
   has: (key: string) => Promise<boolean>;
-  get: (key: string) => Promise<Record<string, unknown>>;
-  set: (key: string, value: Record<string, unknown>) => Promise<this>;
+  get: (key: string) => Promise<T>;
+  set: (key: string, value: T) => Promise<void>;
   delete: (key: string) => Promise<boolean>;
   clear: () => Promise<void>;
   keys: () => Promise<IterableIterator<string>>;
-  values: () => Promise<IterableIterator<Record<string, unknown>>>;
-  entries: () => Promise<IterableIterator<[string, Record<string, unknown>]>>;
+  values: () => Promise<IterableIterator<T>>;
+  entries: () => Promise<IterableIterator<[string, T]>>;
 
-  constructor(storage: AbstractStorage) {
+  constructor(storage: AbstractStorage<T>) {
     this._storage = storage;
     this._lock = mutexifyPromise();
 
@@ -93,7 +93,7 @@ export class ConcurrentStorage {
    * @throws {Error} if fn throws
    * @throws {Error} if lock is already acquired
    */
-  async transaction(fn: (storage: AbstractStorage) => Promise<unknown>) {
+  async transaction<S>(fn: (storage: AbstractStorage<T>) => Promise<S>) {
     const release = await this._lock();
     try {
       return await fn(this._storage);

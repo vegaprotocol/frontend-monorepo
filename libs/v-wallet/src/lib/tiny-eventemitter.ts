@@ -1,10 +1,10 @@
 import { KeyedSet } from './keyed-set';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Listener = (...args: any[]) => void;
+export type Listener = (...args: any[]) => void;
 
 export class TinyEventemitter {
-  private _listeners: KeyedSet;
+  private _listeners: KeyedSet<Listener>;
   constructor() {
     this._listeners = new KeyedSet();
   }
