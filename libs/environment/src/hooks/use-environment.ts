@@ -527,12 +527,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_EXPLORER_VALIDATORS']
       ) as string
     ),
-    IN_BROWSER_WALLET: TRUTHY.includes(
-      windowOrDefault(
-        'NX_IN_BROWSER_WALLET',
-        process.env['NX_IN_BROWSER_WALLET']
-      ) as string
-    ),
   };
 
   const GOVERNANCE_FLAGS = {
@@ -561,6 +555,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       windowOrDefault(
         'NX_CROSS_CHAIN_DEPOSITS_TEST',
         process.env['NX_CROSS_CHAIN_DEPOSITS_TEST']
+      ) as string
+    ),
+    IN_BROWSER_WALLET: TRUTHY.includes(
+      windowOrDefault(
+        'NX_IN_BROWSER_WALLET',
+        process.env['NX_IN_BROWSER_WALLET']
       ) as string
     ),
   };
