@@ -10,13 +10,13 @@ import { ConcurrentStorage } from './storage/concurrent-storage';
 import { type Listener, TinyEventemitter } from './tiny-eventemitter';
 import { type AbstractStorage } from './storage/storage';
 
-interface KeyInfo {
+export interface KeyInfoStore {
   name: string;
   wallet: string;
   publicKey: string;
 }
 
-interface WalletStore {
+export interface WalletStore {
   // TODO this is actually a Uint8Array
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   seed: any[];
@@ -26,7 +26,7 @@ interface WalletStore {
 
 export class WalletCollection {
   store: ConcurrentStorage<WalletStore>;
-  index: ConcurrentStorage<KeyInfo>;
+  index: ConcurrentStorage<KeyInfoStore>;
   sortIndex: ConcurrentStorage;
   _emitter: TinyEventemitter;
 
@@ -36,11 +36,11 @@ export class WalletCollection {
     keySortIndex,
   }: {
     walletsStore: AbstractStorage<WalletStore>;
-    publicKeyIndexStore: AbstractStorage<KeyInfo>;
+    publicKeyIndexStore: AbstractStorage<KeyInfoStore>;
     keySortIndex: AbstractStorage;
   }) {
-    this.store = new ConcurrentStorage<WalletStore>(walletsStore);
-    this.index = new ConcurrentStorage<KeyInfo>(publicKeyIndexStore);
+    this.store = new ConcurrentStorage(walletsStore);
+    this.index = new ConcurrentStorage(publicKeyIndexStore);
     this.sortIndex = new ConcurrentStorage(keySortIndex);
 
     this._emitter = new TinyEventemitter();

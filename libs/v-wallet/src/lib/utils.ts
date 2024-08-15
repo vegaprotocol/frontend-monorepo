@@ -1,13 +1,13 @@
-export interface MapLikeStorage {
-  set(key: string, value: Record<string, unknown>): Promise<void>;
-  get(key: string): Promise<unknown | undefined>;
+export interface MapLikeStorage<T> {
+  set(key: string, value: T): Promise<void>;
+  get(key: string): Promise<T | undefined>;
   clear(): Promise<void>;
   delete(key: string): Promise<void>;
 }
 
-export interface SyncMapLikeStorage {
-  set(key: string, value: Record<string, unknown>): void;
-  get(key: string): unknown | undefined;
+export interface SyncMapLikeStorage<T> {
+  set(key: string, value: T): void;
+  get(key: string): T | undefined;
   clear(): void;
   delete(key: string): void;
 }
