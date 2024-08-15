@@ -1,5 +1,5 @@
 import assert from 'nanoassert';
-import { isResponse } from '../lib/json-rpc.js';
+import { isResponse } from '@vegaprotocol/json-rpc';
 import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 
 /**
