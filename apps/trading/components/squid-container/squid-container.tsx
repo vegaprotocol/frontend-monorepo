@@ -1,5 +1,3 @@
-import { SquidStakingWidget } from '@0xsquid/staking-widget';
-import type { AppConfig } from '@0xsquid/staking-widget/widget/core/types/config';
 import { useT } from '../../lib/use-t';
 import { Intent, Loader, Notification } from '@vegaprotocol/ui-toolkit';
 import {
@@ -51,6 +49,7 @@ export const SquidContainer = () => {
   return <SquidWidget config={config} />;
 };
 
-const SquidWidget = ({ config }: { config: AppConfig }) => {
-  return <SquidStakingWidget config={config} />;
+// eslint-disable-next-line
+const SquidWidget = ({ config }: { config: any }) => {
+  return null;
 };
