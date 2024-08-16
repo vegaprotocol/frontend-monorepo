@@ -57,6 +57,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ARBITRUM_SQUID_RECEIVER_ADDRESS } from './constants';
 import { type ethers } from 'ethers';
+import { FormSecondaryActionLink } from '../form-secondary-action/form-secondary-action';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 type FormFields = z.infer<typeof depositSchema>;
@@ -118,12 +119,19 @@ export const DepositForm = ({
 
   const chainIdVal = useWatch({ name: 'fromChain', control: form.control });
   const amount = useWatch({ name: 'amount', control: form.control });
+  const fromAssetAddress = useWatch({
+    name: 'fromAsset',
+    control: form.control,
+  });
   const toAssetId = useWatch({ name: 'toAsset', control: form.control });
   const tokens = squid.tokens?.filter((t) => {
     if (!chainIdVal) return true;
     if (t.chainId === chainIdVal) return true;
     return false;
   });
+
+  const chain = squid.chains.find((c) => c.chainId === chainIdVal);
+  const fromAsset = tokens?.find((t) => t.address === fromAssetAddress);
   const toAsset = assets?.find((a) => a.id === toAssetId);
 
   // Data relating to the select asset, like balance on address, allowance
@@ -404,27 +412,25 @@ export const DepositForm = ({
               );
             }}
           />
-          {toAsset && !isAssetUSDTArb(toAsset) && (
-            <TradingInputError intent="warning">
-              {t(
-                'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
-              )}
-            </TradingInputError>
-          )}
           {form.formState.errors.fromAsset?.message && (
             <TradingInputError>
               {form.formState.errors.fromAsset.message}
             </TradingInputError>
           )}
         </div>
-        {toAsset && (
+        {fromAsset && chain && (
           <FormSecondaryActionWrapper>
-            <FormSecondaryActionButton
-              onClick={() => openAssetDialog(toAsset.id)}
+            <FormSecondaryActionLink
+              href={
+                new URL(
+                  `address/${fromAsset.address}`,
+                  chain.blockExplorerUrls[0]
+                ).href
+              }
+              target="_blank"
             >
-              {t('View asset details')}
-            </FormSecondaryActionButton>
-            <Faucet asset={toAsset} queryKey={queryKey} />
+              {t('View asset on explorer')}
+            </FormSecondaryActionLink>
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>
