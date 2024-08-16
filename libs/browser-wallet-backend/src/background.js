@@ -18,7 +18,7 @@ import config from '../config/beta.js';
 
 import { PortServer } from '@vegaprotocol/json-rpc';
 
-  const interactor = new PopupClient({});
+const interactor = new PopupClient({});
 
 const encryptedStore = new EncryptedStorage(
   new ConcurrentStorage(new StorageLocalMap('wallets')),
