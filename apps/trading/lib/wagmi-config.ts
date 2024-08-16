@@ -15,6 +15,7 @@ const transports = allChains.reduce((obj, c) => {
 
 export const wagmiConfig = createConfig(
   getDefaultConfig({
+    // @ts-expect-error not all chains in allChains conform to the chain interface
     chains:
       // Provide mainnet chains if on mainnet only
       ENV.VEGA_ENV === Networks.MAINNET
