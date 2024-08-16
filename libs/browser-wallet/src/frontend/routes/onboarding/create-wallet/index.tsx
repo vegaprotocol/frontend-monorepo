@@ -9,6 +9,7 @@ import { FULL_ROUTES } from '../../route-names';
 export const locators = {
   createNewWalletButton: 'create-new-wallet',
   importWalletButton: 'import-wallet',
+  createDerivedWalletButton: 'create-derived-wallet',
 };
 
 export const CreateWallet = () => {
@@ -21,12 +22,23 @@ export const CreateWallet = () => {
       <Header content="Create a wallet" />
       <Button
         autoFocus
+        data-testid={locators.createDerivedWalletButton}
+        onClick={() => {
+          navigate(FULL_ROUTES.createDerivedWallet);
+        }}
+        className="mt-6 mb-4"
+        variant="primary"
+      >
+        Create a wallet from Ethereum wallet
+      </Button>
+      <Button
+        autoFocus
         data-testid={locators.createNewWalletButton}
         onClick={() => {
           navigate(FULL_ROUTES.saveMnemonic);
         }}
         className="mt-6 mb-4"
-        intent={Intent.Primary}
+        variant="primary"
       >
         Create a wallet
       </Button>
