@@ -23,7 +23,6 @@
   "dependencies": {
     "@0xsquid/sdk": "^2.8.23",
     "@0xsquid/squid-types": "^0.1.97",
-    "@0xsquid/staking-widget": "^1.0.6",
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
     "@coinbase/wallet-sdk": "^3.6.5",

@@ -1,9 +1,16 @@
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAccount, useDisconnect, useAccountEffect, useChainId } from 'wagmi';
+import {
+  useAccount,
+  useDisconnect,
+  useAccountEffect,
+  useChainId,
+  useSwitchChain,
+} from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { type Squid } from '@0xsquid/sdk';
+import { ChainType } from '@0xsquid/sdk/dist/types';
 
 import {
   useAssetDetailsDialogStore,
@@ -25,6 +32,7 @@ import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 import {
   ETHEREUM_ADDRESS_REGEX,
   VEGA_ID_REGEX,
+  removeDecimal,
   toBigNum,
 } from '@vegaprotocol/utils';
 
@@ -40,13 +48,22 @@ import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
 import { isAssetUSDTArb } from '../../lib/utils/is-asset-usdt-arb';
 import { AssetOption } from '../asset-option';
+import { useEthersSigner } from './use-ethers-signer';
+import {
+  ArbitrumSquidReceiver,
+  CollateralBridge,
+  Token,
+  prepend0x,
+} from '@vegaprotocol/smart-contracts';
+import { ARBITRUM_SQUID_RECEIVER_ADDRESS } from './constants';
+import { type ethers } from 'ethers';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 type FormFields = z.infer<typeof depositSchema>;
 
 const depositSchema = z.object({
   fromAddress: z.string().regex(ETHEREUM_ADDRESS_REGEX, 'Connect wallet'),
-  chainId: z.string(),
+  fromChain: z.string(),
   fromAsset: z.string(),
   toAsset: z.string().regex(VEGA_ID_REGEX, 'Required'),
   toPubKey: z.string().regex(VEGA_ID_REGEX, 'Invalid key'),
@@ -76,14 +93,14 @@ export const DepositForm = ({
   initialAssetId: string;
   configs: Configs;
 }) => {
-  // eslint-disable-next-line
-  console.log(squid);
   const t = useT();
   const { pubKeys } = useVegaWallet();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
+  const { switchChainAsync } = useSwitchChain();
+  const signer = useEthersSigner();
   const chainId = useChainId();
 
   const form = useForm<FormFields>({
@@ -99,18 +116,18 @@ export const DepositForm = ({
     },
   });
 
-  const chainIdVal = useWatch({ name: 'chainId', control: form.control });
+  const chainIdVal = useWatch({ name: 'fromChain', control: form.control });
   const amount = useWatch({ name: 'amount', control: form.control });
-  const assetId = useWatch({ name: 'toAsset', control: form.control });
+  const toAssetId = useWatch({ name: 'toAsset', control: form.control });
   const tokens = squid.tokens?.filter((t) => {
     if (!chainIdVal) return true;
     if (t.chainId === chainIdVal) return true;
     return false;
   });
-  const asset = assets?.find((a) => a.id === assetId);
+  const toAsset = assets?.find((a) => a.id === toAssetId);
 
   // Data relating to the select asset, like balance on address, allowance
-  const { data, queryKey } = useAssetReadContracts({ asset, configs });
+  const { data, queryKey } = useAssetReadContracts({ asset: toAsset, configs });
 
   const { submitDeposit } = useEvmDeposit({ queryKey });
 
@@ -124,25 +141,153 @@ export const DepositForm = ({
   return (
     <form
       data-testid="deposit-form"
-      onSubmit={form.handleSubmit((fields) => {
-        const asset = assets?.find((a) => a.id === fields.toAsset);
+      onSubmit={form.handleSubmit(async (fields) => {
+        const fromAsset = tokens.find(
+          (t) => t.address === fields.fromAsset && t.chainId === chainIdVal
+        );
+        const toAsset = assets?.find((a) => a.id === fields.toAsset);
 
-        if (!asset || asset.source.__typename !== 'ERC20') {
+        if (!toAsset || toAsset.source.__typename !== 'ERC20') {
           throw new Error('invalid asset');
         }
 
-        const assetChainId = asset.source.chainId;
-        const config = configs.find((c) => c.chain_id === assetChainId);
-        const bridgeAddress = config?.collateral_bridge_contract
+        const config = configs.find(
+          (c) => c.chain_id === toAsset.source.chainId
+        );
+
+        if (!config) {
+          throw new Error(`no bridge for toAsset ${toAsset.id}`);
+        }
+
+        // The default bridgeAddress for the selected toAsset if an arbitrum
+        // to asset is selected will get changed to the squid receiver address
+        let bridgeAddress = config.collateral_bridge_contract
           .address as `0x${string}`;
 
-        submitDeposit({
-          asset,
-          bridgeAddress,
-          amount: fields.amount,
-          toPubKey: fields.toPubKey,
-          requiredConfirmations: config?.confirmations || 1,
-        });
+        if (!fromAsset) {
+          throw new Error('no from asset');
+        }
+
+        if (!signer) {
+          throw new Error('no signer');
+        }
+
+        if (Number(fromAsset.chainId) !== chainId) {
+          await switchChainAsync({ chainId: Number(fromAsset.chainId) });
+        }
+
+        if (fromAsset.address === toAsset.source.contractAddress) {
+          // Same asset, no swap required, use normal ethereum bridge
+          // or normal arbitrum bridge to swap
+          submitDeposit({
+            asset: toAsset,
+            bridgeAddress,
+            amount: fields.amount,
+            toPubKey: fields.toPubKey,
+            requiredConfirmations: config?.confirmations || 1,
+          });
+        } else {
+          // Swapping using squid
+
+          try {
+            const fromAmount = removeDecimal(fields.amount, fromAsset.decimals);
+            const tokenContract = new Token(
+              toAsset.source.contractAddress,
+              signer
+            );
+
+            let approveCallData;
+            let depositCallData;
+
+            if (toAsset.source.chainId === '42161') {
+              bridgeAddress = ARBITRUM_SQUID_RECEIVER_ADDRESS;
+              // its arbitrum, use the arbitrum squid receiver contract
+              approveCallData = tokenContract.encodeApproveData(
+                bridgeAddress,
+                fromAmount
+              );
+              const contract = new ArbitrumSquidReceiver(bridgeAddress);
+              depositCallData = contract.encodeDepositData(
+                toAsset.source.contractAddress,
+                '0',
+                prepend0x(fields.toPubKey),
+                address as string
+              );
+            } else {
+              approveCallData = tokenContract.encodeApproveData(
+                bridgeAddress,
+                fromAmount
+              );
+              const contract = new CollateralBridge(bridgeAddress, signer);
+              depositCallData = contract.encodeDepositData(
+                toAsset.source.contractAddress,
+                '0',
+                prepend0x(fields.toPubKey)
+              );
+            }
+
+            const { route, requestId } = await squid.getRoute({
+              fromAddress: address,
+              fromChain: fields.fromChain,
+              fromToken: fields.fromAsset,
+              fromAmount,
+              toChain: toAsset.source.chainId,
+              toToken: toAsset.source.contractAddress,
+              toAddress: address,
+              // @ts-expect-error slippageConfig is used in v2 but types are incorrect
+              slippageConfig: {
+                autoMode: 1,
+              },
+              quoteOnly: false,
+              enableBoost: true,
+              postHook: {
+                chainType: ChainType.EVM,
+                calls: [
+                  {
+                    chainType: ChainType.EVM,
+                    callType: 1, // SquidCallType.FULL_TOKEN_BALANCE
+                    target: toAsset.source.contractAddress as `0x${string}`,
+                    value: '0', // this will be replaced by the full native balance of the multicall after the swap
+                    callData: approveCallData,
+                    payload: {
+                      tokenAddress: toAsset.source
+                        .contractAddress as `0x${string}`,
+                      inputPos: 1,
+                    },
+                    estimatedGas: '50000',
+                  },
+                  {
+                    chainType: ChainType.EVM,
+                    callType: 1, // SquidCallType.FULL_TOKEN_BALANCE
+                    target: ARBITRUM_SQUID_RECEIVER_ADDRESS,
+                    value: '0',
+                    callData: depositCallData,
+                    payload: {
+                      tokenAddress: toAsset.source
+                        .contractAddress as `0x${string}`,
+                      inputPos: 1,
+                    },
+                    estimatedGas: '50000',
+                  },
+                ],
+                description: 'sample',
+                logoURI:
+                  'https://v2.app.squidrouter.com/images/icons/squid_logo.svg',
+                provider: address as string,
+              },
+            });
+            const tx = (await squid.executeRoute({
+              signer,
+              route,
+            })) as unknown as ethers.providers.TransactionResponse;
+            const txReceipt = await tx.wait();
+
+            // eslint-disable-next-line
+            console.log(requestId, route, tx, txReceipt);
+          } catch (err) {
+            console.error(err);
+          }
+        }
       })}
     >
       <FormGroup label={t('From address')} labelFor="fromAddress">
@@ -197,7 +342,7 @@ export const DepositForm = ({
       </FormGroup>
       <FormGroup label="From chain" labelFor="chain">
         <Controller
-          name="chainId"
+          name="fromChain"
           control={form.control}
           render={({ field }) => {
             return (
@@ -239,10 +384,12 @@ export const DepositForm = ({
                     return (
                       <TradingRichSelectOption
                         value={t.address}
-                        key={t.address}
+                        key={`${t.chainId}-${t.address}`}
                       >
                         <div className="text-sm text-left leading-4">
-                          <div>{t.name}</div>
+                          <div>
+                            {t.name} {t.symbol}
+                          </div>
                           <div className="text-secondary text-xs">
                             {t.address}
                           </div>
@@ -254,7 +401,7 @@ export const DepositForm = ({
               );
             }}
           />
-          {asset && !isAssetUSDTArb(asset) && (
+          {toAsset && !isAssetUSDTArb(toAsset) && (
             <TradingInputError intent="warning">
               {t(
                 'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
@@ -267,14 +414,14 @@ export const DepositForm = ({
             </TradingInputError>
           )}
         </div>
-        {asset && (
+        {toAsset && (
           <FormSecondaryActionWrapper>
             <FormSecondaryActionButton
-              onClick={() => openAssetDialog(asset.id)}
+              onClick={() => openAssetDialog(toAsset.id)}
             >
               {t('View asset details')}
             </FormSecondaryActionButton>
-            <Faucet asset={asset} queryKey={queryKey} />
+            <Faucet asset={toAsset} queryKey={queryKey} />
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>
@@ -343,7 +490,7 @@ export const DepositForm = ({
               );
             }}
           />
-          {asset && !isAssetUSDTArb(asset) && (
+          {toAsset && !isAssetUSDTArb(toAsset) && (
             <TradingInputError intent="warning">
               {t(
                 'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
@@ -356,14 +503,14 @@ export const DepositForm = ({
             </TradingInputError>
           )}
         </div>
-        {asset && (
+        {toAsset && (
           <FormSecondaryActionWrapper>
             <FormSecondaryActionButton
-              onClick={() => openAssetDialog(asset.id)}
+              onClick={() => openAssetDialog(toAsset.id)}
             >
               {t('View asset details')}
             </FormSecondaryActionButton>
-            <Faucet asset={asset} queryKey={queryKey} />
+            <Faucet asset={toAsset} queryKey={queryKey} />
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>
@@ -375,14 +522,14 @@ export const DepositForm = ({
           </TradingInputError>
         )}
 
-        {asset && data && data.balanceOf && (
+        {toAsset && data && data.balanceOf && (
           <FormSecondaryActionWrapper>
             <FormSecondaryActionButton
               onClick={() => {
                 const amount = toBigNum(
                   data.balanceOf || '0',
-                  asset.decimals
-                ).toFixed(asset.decimals);
+                  toAsset.decimals
+                ).toFixed(toAsset.decimals);
                 form.setValue('amount', amount, { shouldValidate: true });
               }}
             >
@@ -391,9 +538,9 @@ export const DepositForm = ({
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>
-      {asset && data && (
+      {toAsset && data && (
         <Approval
-          asset={asset}
+          asset={toAsset}
           amount={amount}
           data={data}
           configs={configs}

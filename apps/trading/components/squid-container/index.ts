@@ -1,1 +1,3 @@
-export { SquidContainer } from './squid-container';
+export const SquidContainer = () => {
+  return null;
+};
