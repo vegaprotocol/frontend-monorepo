@@ -351,9 +351,12 @@ export const DepositForm = ({
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                {squid.chains.map((c) => {
+                {squid.chains.map((c, i) => {
                   return (
-                    <TradingRichSelectOption value={c.chainId} key={c.chainId}>
+                    <TradingRichSelectOption
+                      value={c.chainId}
+                      key={`${c.chainId}-${i}`}
+                    >
                       <div className="text-sm text-left leading-4">
                         <div>{c.networkName}</div>
                         <div className="text-secondary text-xs">
@@ -380,11 +383,11 @@ export const DepositForm = ({
                   value={field.value}
                   onValueChange={field.onChange}
                 >
-                  {tokens.map((t) => {
+                  {tokens.map((t, i) => {
                     return (
                       <TradingRichSelectOption
                         value={t.address}
-                        key={`${t.chainId}-${t.address}`}
+                        key={`${t.chainId}-${t.address}-${i}`}
                       >
                         <div className="text-sm text-left leading-4">
                           <div>
