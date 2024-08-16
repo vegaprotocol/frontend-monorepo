@@ -365,10 +365,18 @@ export const DepositForm = ({
                       value={c.chainId}
                       key={`${c.chainId}-${i}`}
                     >
-                      <div className="text-sm text-left leading-4">
-                        <div>{c.networkName}</div>
-                        <div className="text-secondary text-xs">
-                          {c.chainId}
+                      <div className="w-full flex items-center gap-2 h-10">
+                        <img
+                          src={c.chainIconURI}
+                          width="30"
+                          height="30"
+                          className="rounded-full bg-gs-600 border-gs-600 border-2"
+                        />
+                        <div className="text-sm text-left leading-4">
+                          <div>{c.networkName}</div>
+                          <div className="text-secondary text-xs">
+                            {c.chainId}
+                          </div>
                         </div>
                       </div>
                     </TradingRichSelectOption>
