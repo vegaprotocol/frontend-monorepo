@@ -8,7 +8,6 @@ import { mockStore } from '@/test-helpers/mock-store';
 
 import { testingNetwork } from '../../../../config/well-known-networks';
 import locators from '../../locators';
-import { locators as pageHeaderLocators } from '../../page-header';
 import { ConnectionModal } from './connection-modal';
 import { type ConnectionSuccessProperties } from './connection-success';
 
@@ -63,9 +62,6 @@ describe('ConnectionModal', () => {
     renderComponent();
     expect(
       screen.getByTestId(locators.connectionModalApprove)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(pageHeaderLocators.pageHeader)
     ).toBeInTheDocument();
   });
   it('renders connection success when hasConnected is true', () => {

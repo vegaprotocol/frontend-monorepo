@@ -1,4 +1,3 @@
-// import { captureException } from '@sentry/react'
 import type { ErrorInfo, ReactNode } from 'react';
 import { Component } from 'react';
 
@@ -29,7 +28,6 @@ class GlobalErrorBoundary extends Component<Properties, State> {
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // captureException(error)
     console.error(error);
   }
 

@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 
-import { HostImage } from '@/components/host-image';
 import { ChevronRight } from '@/components/icons/chevron-right';
 import { List } from '@/components/list';
 import { getTitle } from '@/lib/get-title';
@@ -33,7 +32,6 @@ export const TransactionsList = ({
         >
           <div className="flex flex-col w-full mr-2">
             <div className="flex flex-row items-center">
-              <HostImage hostname={transaction.origin} size={20} />
               <div
                 data-testid={locators.transactionListItemTransactionType}
                 className="ml-2 text-white"

@@ -110,16 +110,8 @@ export const TransactionMetadata = ({
         <Tooltip
           description={
             <span style={{ maxWidth: 300 }}>
-              The auto consent setting can be found and changed under{' '}
-              <NavLink
-                className="text-white underline"
-                to={`${FULL_ROUTES.connections}/${encodeURIComponent(
-                  transaction.origin
-                )}`}
-              >
-                Connections
-              </NavLink>
-              .
+              The auto consent setting can be found and changed under
+              Connections.
             </span>
           }
         >

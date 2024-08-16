@@ -1,21 +1,15 @@
-import { Outlet /*, useMatch */ } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 
-// import { DappsHeader } from '@/components/dapps-header';
 import { ModalWrapper } from '@/components/modals';
 import { NavBar } from '@/components/navbar';
-import { PageHeader } from '@/components/page-header';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useNetwork } from '@/contexts/network/network-context';
 import { useAssetsStore } from '@/stores/assets-store';
 import { useConnectionStore } from '@/stores/connections';
-// import { useGlobalsStore } from '@/stores/globals';
 import { useMarketsStore } from '@/stores/markets-store';
 import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
-
-// import { FULL_ROUTES } from '../route-names';
-
 export const Auth = () => {
   const { request } = useJsonRpcClient();
   const { network } = useNetwork();
@@ -49,8 +43,6 @@ export const Auth = () => {
     loading: state.loading,
   }));
 
-  // const isDesktop = useGlobalsStore((state) => !state.isMobile);
-
   useEffect(() => {
     loadWallets(request);
     loadConnections(request);
@@ -79,9 +71,8 @@ export const Auth = () => {
   if (loadingWallets || loadingNetworks) return null;
 
   return (
-    <div className="h-full w-full grid grid-rows-[min-content_1fr_min-content] bg-vega-dark-100">
+    <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-vega-dark-100">
       <ModalWrapper />
-      <PageHeader />
       <section className="w-full h-full overflow-y-auto">
         <div className="px-5 pt-3">
           <Outlet />

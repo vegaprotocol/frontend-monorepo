@@ -557,6 +557,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_CROSS_CHAIN_DEPOSITS_TEST']
       ) as string
     ),
+    IN_BROWSER_WALLET: TRUTHY.includes(
+      windowOrDefault(
+        'NX_IN_BROWSER_WALLET',
+        process.env['NX_IN_BROWSER_WALLET']
+      ) as string
+    ),
   };
 
   const flags = {

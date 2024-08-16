@@ -44,17 +44,4 @@ describe('LockSection', () => {
     );
     expect(mockNavigate).toHaveBeenCalledWith(FULL_ROUTES.login);
   });
-
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('renders feedback description and link', () => {
-    renderComponent();
-
-    const feedbackDescription = screen.getByTestId(
-      locators.settingsFeedbackDescription
-    );
-    const feedbackLink = screen.getByTestId(locators.settingsFeedbackLink);
-    expect(feedbackDescription).toBeInTheDocument();
-    expect(feedbackLink).toBeInTheDocument();
-    expect(feedbackLink).toHaveTextContent('Provide feedback');
-  });
 });

@@ -1,4 +1,4 @@
-import { /* fireEvent, */ render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { useGlobalsStore } from '@/stores/globals';
 import { mockStore } from '@/test-helpers/mock-store';
@@ -24,23 +24,6 @@ describe('ExternalLink component', () => {
       'https://example.com'
     );
   });
-
-  // it('opens link in new tab when clicked', () => {
-  //   mockStore(useGlobalsStore, { isMobile: true });
-  //   // @ts-ignore
-  //   window.chrome = { tabs: { create: jest.fn() } };
-  //   render(
-  //     <ExternalLink href="https://example.com">Example Link</ExternalLink>
-  //   );
-
-  //   const link = screen.getByText('Example Link');
-
-  //   fireEvent.click(link);
-
-  //   expect(window.chrome.tabs.create).toHaveBeenCalledWith({
-  //     url: 'https://example.com',
-  //   });
-  // });
 
   it('renders MobileLink component when isMobile is true', () => {
     mockStore(useGlobalsStore, { isMobile: true });
