@@ -2,11 +2,7 @@ import { JSONRPCServer } from '@vegaprotocol/json-rpc';
 import * as adminValidation from '../validation/admin/index.js';
 import pkg from '../../package.json';
 import { toBase64, string as fromString } from '@vegaprotocol/crypto/buf';
-// import { createWindow } from './windows.js';
-// import createKeepAlive from '../../lib/mv3-keep-alive.js';
 import * as txHelpers from './tx-helpers.js';
-
-// const windows = globalThis.browser?.windows ?? globalThis.chrome?.windows;
 
 function doValidate(validator, params) {
   if (!validator(params)) {
@@ -211,6 +207,13 @@ export default function init({
         }
 
         return null;
+      },
+
+      async 'admin.create_derived_mnemonic'(params) {
+        return await wallets.generateDerivedMnemonic({
+          hexStr: params.signedData,
+          salt: 'hedgehog',
+        });
       },
 
       async 'admin.list_wallets'(params) {
