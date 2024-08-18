@@ -44,7 +44,6 @@ const client = new JSONRPCClient({
   onnotification: (msg: unknown) => {
     // eslint-disable-next-line no-console
     console.log('onntification', msg);
-    //   events.emit(msg.method, msg.params);
   },
 });
 
