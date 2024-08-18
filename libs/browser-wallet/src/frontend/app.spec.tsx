@@ -9,9 +9,6 @@ import App from './app';
 jest.mock('javascript-time-ago', () => ({
   addDefaultLocale: jest.fn(),
 }));
-jest.mock('@vegaprotocol/browser-wallet-backend', () => ({
-  createWalletBackend: jest.fn(),
-}));
 jest.mock('@/stores/globals');
 jest.mock('@/contexts/network/network-provider', () => ({
   NetworkProvider: ({ children }: { children: ReactNode }) => (
