@@ -3,6 +3,7 @@ import {
   JsonRpcConnector,
   SnapConnector,
   ViewPartyConnector,
+  InBrowserConnector,
   createConfig,
   fairground,
   validatorsTestnet,
@@ -16,7 +17,6 @@ import {
   useFeatureFlags,
 } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
-import { InBrowserConnector } from 'libs/wallet/src/connectors';
 
 /**
  * Hook for memoizing the vega wallet config, since we can't be certain of the
