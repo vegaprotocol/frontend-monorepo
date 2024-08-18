@@ -1,5 +1,4 @@
 import mutexifyPromise from 'mutexify/promise';
-
 /**
  * Storage proxy that wraps all methods in a mutex to prevent concurrent access
  * to the underlying storage. It also provides a transaction method to run
@@ -8,7 +7,12 @@ import mutexifyPromise from 'mutexify/promise';
  * @param {StorageLocalMap} storage
  * @returns {StorageLocalMap}
  */
-export default class ConcurrentStorage {
+class ConcurrentStorage {
+  /**
+   * @type {function(): Promise<() => void>}
+   */
+  _lock;
+
   constructor(storage) {
     this._storage = storage;
     this._lock = mutexifyPromise();
@@ -87,3 +91,5 @@ export default class ConcurrentStorage {
     }
   }
 }
+
+export default ConcurrentStorage;
