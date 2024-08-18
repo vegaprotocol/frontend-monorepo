@@ -60,26 +60,41 @@ export class InBrowserConnector implements Connector {
   }
 
   async disconnectWallet(): Promise<void> {
-    return client.request('client.disconnect_wallet', null);
+    await client.request('client.disconnect_wallet', null);
   }
 
   async getChainId(): Promise<{ chainId: string }> {
-    return client.request('client.get_chain_id', null);
+    const res = (await client.request(
+      'client.get_chain_id',
+      null
+    )) as unknown as {
+      chainId: string;
+    };
+    return res;
   }
 
   async listKeys(): Promise<Array<{ publicKey: string; name: string }>> {
-    const res = await client.request('client.list_keys', null);
+    const res = (await client.request('client.list_keys', null)) as unknown as {
+      keys: Array<{ publicKey: string; name: string }>;
+    };
     return res.keys;
   }
 
   async isConnected(): Promise<{ connected: boolean }> {
-    return client.request('client.is_connected', null);
+    const res = (await client.request(
+      'client.is_connected',
+      null
+    )) as unknown as {
+      connected: boolean;
+    };
+    return res;
   }
 
   async sendTransaction(
     params: TransactionParams
   ): Promise<TransactionResponse> {
-    return client.request('client.send_transaction', params);
+    const res = await client.request('client.send_transaction', params);
+    return res as TransactionResponse;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
