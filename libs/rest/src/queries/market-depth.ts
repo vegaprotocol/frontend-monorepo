@@ -1,5 +1,5 @@
 import { restApiUrl } from '../paths';
-import { vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { type vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';

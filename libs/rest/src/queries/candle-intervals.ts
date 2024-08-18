@@ -1,5 +1,5 @@
 import { restApiUrl } from '../paths';
-import { v2ListCandleIntervalsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { type v2ListCandleIntervalsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import compact from 'lodash/compact';
 import { z } from 'zod';
