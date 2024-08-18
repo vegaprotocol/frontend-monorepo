@@ -25,6 +25,7 @@ import {
   Intent,
   TradingRichSelect,
   TradingRichSelectOption,
+  TradingRichSelectValue,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
@@ -47,7 +48,7 @@ import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
 import { isAssetUSDTArb } from '../../lib/utils/is-asset-usdt-arb';
-import { AssetOption } from '../asset-option';
+import { AssetBalance, AssetOption } from '../asset-option';
 import { useEthersSigner } from './use-ethers-signer';
 import {
   ArbitrumSquidReceiver,
@@ -90,7 +91,7 @@ export const DepositForm = ({
   configs,
 }: {
   squid: Squid;
-  assets: Array<AssetERC20 & { balance: string }>;
+  assets: Array<AssetERC20>;
   initialAssetId: string;
   configs: Configs;
 }) => {
@@ -124,8 +125,9 @@ export const DepositForm = ({
     control: form.control,
   });
   const toAssetId = useWatch({ name: 'toAsset', control: form.control });
+
   const tokens = squid.tokens?.filter((t) => {
-    if (!chainIdVal) return true;
+    if (!chainIdVal) return false;
     if (t.chainId === chainIdVal) return true;
     return false;
   });
@@ -359,14 +361,13 @@ export const DepositForm = ({
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                {squid.chains.map((c, i) => {
+                {squid.chains.map((c) => {
                   return (
-                    <TradingRichSelectOption
-                      value={c.chainId}
-                      key={`${c.chainId}-${i}`}
-                    >
+                    <TradingRichSelectOption value={c.chainId} key={c.chainId}>
                       <div className="w-full flex items-center gap-2 h-10">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
+                          alt={t('Logo for {{name}}', { name: c.networkName })}
                           src={c.chainIconURI}
                           width="30"
                           height="30"
@@ -386,6 +387,11 @@ export const DepositForm = ({
             );
           }}
         />
+        {form.formState.errors.fromChain?.message && (
+          <TradingInputError>
+            {form.formState.errors.fromChain.message}
+          </TradingInputError>
+        )}
       </FormGroup>
       <FormGroup label="From asset" labelFor="asset">
         <div className="flex flex-col gap-1">
@@ -398,19 +404,61 @@ export const DepositForm = ({
                   placeholder="Select asset"
                   value={field.value}
                   onValueChange={field.onChange}
+                  valueElement={
+                    fromAsset && (
+                      <TradingRichSelectValue placeholder="Select asset">
+                        <div className="w-full flex items-center gap-2 h-10">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            alt={t('Logo for {{name}}', {
+                              name: fromAsset.name,
+                            })}
+                            src={fromAsset.logoURI}
+                            width="30"
+                            height="30"
+                            className="rounded-full bg-gs-600 border-gs-600 border-2"
+                          />
+                          <div className="text-sm text-left leading-4">
+                            <div>
+                              {fromAsset.name} {fromAsset.symbol}
+                            </div>
+                            <div className="text-secondary text-xs">
+                              {fromAsset.address}
+                            </div>
+                          </div>
+                          <div className="ml-auto text-sm">
+                            <AssetBalance
+                              chainId={fromAsset.chainId}
+                              address={fromAsset.address}
+                            />
+                          </div>
+                        </div>
+                      </TradingRichSelectValue>
+                    )
+                  }
                 >
-                  {tokens.map((t, i) => {
+                  {tokens.map((token) => {
                     return (
                       <TradingRichSelectOption
-                        value={t.address}
-                        key={`${t.chainId}-${t.address}-${i}`}
+                        value={token.address}
+                        key={`${token.chainId}-${token.address}`}
                       >
-                        <div className="text-sm text-left leading-4">
-                          <div>
-                            {t.name} {t.symbol}
-                          </div>
-                          <div className="text-secondary text-xs">
-                            {t.address}
+                        <div className="w-full flex items-center gap-2 h-10">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            alt={t('Logo for {{name}}', { name: token.name })}
+                            src={token.logoURI}
+                            width="30"
+                            height="30"
+                            className="rounded-full bg-gs-600 border-gs-600 border-2"
+                          />
+                          <div className="text-sm text-left leading-4">
+                            <div>
+                              {token.name} {token.symbol}
+                            </div>
+                            <div className="text-secondary text-xs">
+                              {token.address}
+                            </div>
                           </div>
                         </div>
                       </TradingRichSelectOption>

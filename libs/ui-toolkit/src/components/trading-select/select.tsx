@@ -1,4 +1,4 @@
-import type { SelectHTMLAttributes } from 'react';
+import type { ReactNode, SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { defaultSelectElement } from '../../utils/trading-shared';
@@ -35,6 +35,7 @@ export type TradingRichSelectProps = React.ComponentProps<
   typeof SelectPrimitive.Root
 > & {
   placeholder: string;
+  valueElement?: ReactNode;
   hasError?: boolean;
   id?: string;
   'data-testid'?: string;
@@ -42,42 +43,58 @@ export type TradingRichSelectProps = React.ComponentProps<
 export const TradingRichSelect = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   TradingRichSelectProps
->(({ id, children, placeholder, hasError, ...props }, forwardedRef) => {
-  return (
-    <SelectPrimitive.Root {...props} defaultOpen={false}>
-      <SelectPrimitive.Trigger
-        data-testid={props['data-testid'] || 'rich-select-trigger'}
-        className={[
-          defaultSelectElement(hasError, props.disabled),
-          'relative rounded-md pl-2 pr-8 text-left h-10',
-          'max-w-full overflow-hidden break-all',
-          '[&_>span]:flex-1',
-        ].join(' ')}
-        id={id}
-        ref={forwardedRef}
-      >
-        <SelectPrimitive.Value placeholder={placeholder} />
-        <SelectPrimitive.Icon className="absolute right-2">
-          <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-      <SelectPrimitive.Portal>
-        <SelectPrimitive.Content
-          className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
-          position="item-aligned"
-          align="start"
-          side="bottom"
+>(
+  (
+    { id, children, valueElement, placeholder, hasError, ...props },
+    forwardedRef
+  ) => {
+    return (
+      <SelectPrimitive.Root {...props} defaultOpen={false}>
+        <SelectPrimitive.Trigger
+          data-testid={props['data-testid'] || 'rich-select-trigger'}
+          className={[
+            defaultSelectElement(hasError, props.disabled),
+            'relative rounded-md pl-2 pr-8 text-left h-10',
+            'max-w-full overflow-hidden break-all',
+            '[&_>span]:flex-1',
+          ].join(' ')}
+          id={id}
+          ref={forwardedRef}
         >
-          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-gs-100">
-            <VegaIcon name={VegaIconNames.CHEVRON_UP} />
-          </SelectPrimitive.ScrollUpButton>
-          <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-gs-100">
+          {valueElement || <SelectPrimitive.Value placeholder={placeholder} />}
+          <SelectPrimitive.Icon className="absolute right-2">
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </SelectPrimitive.ScrollDownButton>
-        </SelectPrimitive.Content>
-      </SelectPrimitive.Portal>
-    </SelectPrimitive.Root>
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+        <SelectPrimitive.Portal>
+          <SelectPrimitive.Content
+            className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
+            position="item-aligned"
+            align="start"
+            side="bottom"
+          >
+            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-gs-100">
+              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+            </SelectPrimitive.ScrollUpButton>
+            <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
+            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-gs-100">
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+            </SelectPrimitive.ScrollDownButton>
+          </SelectPrimitive.Content>
+        </SelectPrimitive.Portal>
+      </SelectPrimitive.Root>
+    );
+  }
+);
+
+export const TradingRichSelectValue = forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Value>,
+  React.ComponentProps<typeof SelectPrimitive.Value>
+>(({ children, placeholder }, ref) => {
+  return (
+    <SelectPrimitive.Value ref={ref} placeholder={placeholder}>
+      {children}
+    </SelectPrimitive.Value>
   );
 });
 

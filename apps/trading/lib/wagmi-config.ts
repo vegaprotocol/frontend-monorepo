@@ -6,7 +6,17 @@ import { ENV, Networks } from '@vegaprotocol/environment';
 import { TRANSPORTS } from '@vegaprotocol/web3';
 import { type HttpTransport } from 'viem';
 
-const allChains = Object.values(chains);
+// Create an array of all available chains with arbitrum and
+// normal ethereum mainnet first. These will be the default chains
+const allChains = [
+  chains.arbitrum,
+  chains.mainnet,
+  ...Object.values(chains).filter((c) => {
+    if (c.id === chains.arbitrum.id) return false;
+    if (c.id === chains.mainnet.id) return false;
+    return true;
+  }),
+];
 
 const transports = allChains.reduce((obj, c) => {
   obj[c.id] = http();
