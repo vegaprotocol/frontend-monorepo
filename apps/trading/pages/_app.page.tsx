@@ -58,17 +58,11 @@ const Title = () => {
   const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
-
-// const Title = () => {
-//   const t = useT();
-//   const DEFAULT_TITLE = t('Welcome to Vega trading!');
-//   const { pageTitle } = usePageTitleStore((store) => ({
-//     pageTitle: store.pageTitle,
-//   }));
-//   const envTriggerMapping = useEnvTriggerMapping();
-//   const { VEGA_ENV } = useEnvironment();
-//   const networkName = envTriggerMapping[VEGA_ENV];
-
+  const title = useMemo(() => {
+    if (!pageTitle) return DEFAULT_TITLE;
+    if (networkName) return `${pageTitle} [${networkName}]`;
+    return pageTitle;
+  }, [pageTitle, networkName, DEFAULT_TITLE]);
   return (
     <Head>
       <title>{title}</title>
