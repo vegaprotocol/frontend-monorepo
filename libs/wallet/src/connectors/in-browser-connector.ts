@@ -7,6 +7,30 @@ import {
   type Connector,
 } from '../types';
 import { JSONRPCClient } from '@vegaprotocol/json-rpc';
+import {
+  chainIdError,
+  connectError,
+  ConnectorError,
+  disconnectError,
+  isConnectedError,
+  listKeysError,
+  sendTransactionError,
+  userRejectedError,
+} from '../errors';
+
+interface InjectedError {
+  message: string;
+  code: number;
+  data:
+    | {
+        message: string;
+        code: number;
+      }
+    | string[]
+    | string;
+}
+
+const USER_REJECTED_CODE = -4;
 
 const client = new JSONRPCClient({
   idPrefix: 'vega.in-page-',
@@ -24,6 +48,7 @@ const client = new JSONRPCClient({
   },
 });
 
+// TODO this is a bit too magic. This should be done at the correct time, not just randomly
 if (typeof window !== 'undefined') {
   window.addEventListener('content-script-response', (event) => {
     const msg = (event as CustomEvent).detail;
@@ -52,49 +77,90 @@ export class InBrowserConnector implements Connector {
         chainId,
       });
       return { success: true };
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-      return { success: false };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
+      throw connectError();
     }
   }
 
   async disconnectWallet(): Promise<void> {
-    await client.request('client.disconnect_wallet', null);
+    try {
+      await client.request('client.disconnect_wallet', null);
+    } catch (err) {
+      throw disconnectError();
+    }
   }
 
   async getChainId(): Promise<{ chainId: string }> {
-    const res = (await client.request(
-      'client.get_chain_id',
-      null
-    )) as unknown as {
-      chainId: string;
-    };
-    return res;
+    try {
+      const res = (await client.request(
+        'client.get_chain_id',
+        null
+      )) as unknown as {
+        chainId: string;
+      };
+      return res;
+    } catch (err) {
+      throw chainIdError();
+    }
   }
 
   async listKeys(): Promise<Array<{ publicKey: string; name: string }>> {
-    const res = (await client.request('client.list_keys', null)) as unknown as {
-      keys: Array<{ publicKey: string; name: string }>;
-    };
-    return res.keys;
+    try {
+      const res = (await client.request(
+        'client.list_keys',
+        null
+      )) as unknown as {
+        keys: Array<{ publicKey: string; name: string }>;
+      };
+      return res.keys;
+    } catch (err) {
+      throw listKeysError();
+    }
   }
 
   async isConnected(): Promise<{ connected: boolean }> {
-    const res = (await client.request(
-      'client.is_connected',
-      null
-    )) as unknown as {
-      connected: boolean;
-    };
-    return res;
+    try {
+      const res = (await client.request(
+        'client.is_connected',
+        null
+      )) as unknown as {
+        connected: boolean;
+      };
+      return res;
+    } catch (err) {
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
+      throw isConnectedError();
+    }
   }
 
   async sendTransaction(
     params: TransactionParams
   ): Promise<TransactionResponse> {
-    const res = await client.request('client.send_transaction', params);
-    return res as TransactionResponse;
+    try {
+      const res = await client.request('client.send_transaction', params);
+      return res as TransactionResponse;
+    } catch (err) {
+      if (this.isInjectedError(err)) {
+        if (err.code === USER_REJECTED_CODE) {
+          throw userRejectedError();
+        }
+
+        throw sendTransactionError(JSON.stringify(err.data));
+      }
+
+      throw sendTransactionError();
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -109,5 +175,19 @@ export class InBrowserConnector implements Connector {
     // throw new Error('Method not implemented.');
     // TODO fix
     // console.log('NOOP, event listener not implemented yet');
+  }
+
+  private isInjectedError(obj: unknown): obj is InjectedError {
+    if (
+      obj !== undefined &&
+      obj !== null &&
+      typeof obj === 'object' &&
+      'code' in obj &&
+      'message' in obj &&
+      'data' in obj
+    ) {
+      return true;
+    }
+    return false;
   }
 }
