@@ -6,14 +6,6 @@ import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { NetworkProvider } from '@/contexts/network/network-provider';
 import { Routing } from './routes';
-import dynamic from 'next/dynamic';
-
-export const BrowserWallet = dynamic(
-  () => import('@vegaprotocol/browser-wallet-backend'),
-  {
-    ssr: false,
-  }
-);
 
 export const locators = {
   appWrapper: 'app-wrapper',
