@@ -98,7 +98,6 @@ export const VegaWalletConnectButton = ({
               isReadOnly={isReadOnly}
             />
             <TradingDropdownSeparator />
-            <TradingDropdownSeparator />
             {!isReadOnly && (
               <TradingDropdownItem
                 data-testid="wallet-transfer"
