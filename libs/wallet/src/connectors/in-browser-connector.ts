@@ -6,8 +6,7 @@ import {
   type VegaWalletEvent,
   type Connector,
 } from '../types';
-// @ts-ignore -- need to rewrite this JS client file to TS at a later date
-import { JSONRPCClient } from './json-rpc-client';
+import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 
 const client = new JSONRPCClient({
   idPrefix: 'vega.in-page-',
