@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["es5", "dom", "es2021"],
     "strict": true,
     "jsx": "react-jsx",
