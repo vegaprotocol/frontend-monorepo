@@ -1,9 +1,23 @@
+export interface JsonRpcMessage<T = unknown> {
+  method: string;
+  params: T;
+  jsonrpc: '2.0';
+  id: string;
+}
+
+export interface JsonRpcResponse<T = unknown> {
+  error?: JSONRPCError;
+  result: T;
+  jsonrpc: '2.0';
+  id: string;
+}
+
 /**
  * Validate whether a message is a JSON-RPC notification (ie no id)
  * @param {object} message
  * @returns {boolean}
  */
-export function isNotification(message) {
+export function isNotification(message: JsonRpcMessage | JsonRpcResponse) {
   return (
     message?.jsonrpc === '2.0' && 'method' in message && message?.id == null
   );
@@ -14,10 +28,11 @@ export function isNotification(message) {
  * @param {object} message
  * @returns {boolean}
  */
-export function isRequest(message) {
+export function isRequest(message: JsonRpcMessage | JsonRpcResponse) {
   return (
     message?.jsonrpc === '2.0' &&
-    typeof message?.method === 'string' &&
+    'method' in message &&
+    typeof message.method === 'string' &&
     message?.id != null
   );
 }
@@ -27,7 +42,7 @@ export function isRequest(message) {
  * @param {object} message
  * @returns {boolean}
  */
-export function isResponse(message) {
+export function isResponse(message: JsonRpcMessage | JsonRpcResponse) {
   return (
     message?.jsonrpc === '2.0' &&
     message?.id != null &&
@@ -45,7 +60,10 @@ export function isResponse(message) {
  * @returns {JSONRPCError}
  */
 export class JSONRPCError extends Error {
-  constructor(message, code, data) {
+  code: number;
+  data: Record<string, unknown>;
+
+  constructor(message: string, code: number, data: Record<string, unknown>) {
     super(message);
     this.code = code;
     this.data = data;

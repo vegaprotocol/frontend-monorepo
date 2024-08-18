@@ -1,3 +1,4 @@
+import { JSONRPCServer, PortServer } from '@vegaprotocol/json-rpc';
 import { getExtensionApi } from '@/lib/extension-apis';
 import { log } from '@/lib/logging';
 import { ServerRpcMethods } from '@/lib/server-rpc-methods';
@@ -6,11 +7,6 @@ import type {
   ConnectionMessage,
   ConnectionReply,
 } from '@/stores/interaction-store';
-
-// @ts-ignore
-import JSONRPCServer from '../../../lib/json-rpc-server';
-// @ts-ignore
-import { PortServer } from '../../../lib/port-server';
 
 const maybeCloseWindow = () => {
   const url = new URL(window.location.href);
@@ -46,7 +42,7 @@ export const createServer = (
   const portServer = new PortServer({
     onerror: console.error,
     server,
-    onconnect: () => {},
+    onconnect: async () => {},
   });
   portServer.listen(backgroundPort);
   return server;

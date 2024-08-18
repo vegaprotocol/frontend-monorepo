@@ -1,9 +1,10 @@
 import {
   JSONRPCError,
+  type JsonRpcMessage,
   isNotification,
   isRequest,
   isResponse,
-} from './json-rpc.js';
+} from './json-rpc';
 
 const Errors = {
   JSONRPC_PARSE_ERROR: { code: -32700, message: 'Parse error' },
@@ -12,27 +13,47 @@ const Errors = {
   JSONRPC_METHOD_NOT_FOUND: { code: -32601, message: 'Method not found' },
 };
 
-export default class JSONRPCServer {
+type NotificationHandler = (msg: JsonRpcMessage) => unknown;
+
+type MessageHandler = (
+  method: string,
+  params: unknown,
+  context: unknown
+) => unknown;
+
+export class JSONRPCServer {
   static Error = JSONRPCError;
+  private _notificationListeners: Set<NotificationHandler>;
+  private _dispatch: Map<
+    string,
+    (params: unknown, context: unknown) => unknown
+  >;
+  onnotification: MessageHandler;
+  onerror: (ex: unknown, req: JsonRpcMessage, context: unknown) => unknown;
 
   constructor({
     methods,
-    onnotification = (method, params, context) => {},
-    onerror = (ex, req, context) => {},
+    onnotification,
+    onerror,
+  }: {
+    methods: Record<string, (params: unknown, context: unknown) => unknown>;
+    onnotification?: MessageHandler;
+    onerror?: (ex: unknown, req: JsonRpcMessage, context: unknown) => unknown;
   }) {
-    this.onerror = onerror;
-    this.onnotification = onnotification;
+    const NOOP = () => {};
+    this.onerror = onerror ?? NOOP;
+    this.onnotification = onnotification ?? NOOP;
     this._dispatch = new Map(Object.entries(methods));
 
     this._notificationListeners = new Set();
   }
 
-  notify(method, params) {
+  notify(method: string, params: unknown) {
     const msg = {
       jsonrpc: '2.0',
       method,
       params,
-    };
+    } as JsonRpcMessage;
 
     for (const listener of this._notificationListeners) {
       try {
@@ -43,19 +64,21 @@ export default class JSONRPCServer {
     }
   }
 
-  listenNotifications(listener) {
+  listenNotifications(listener: NotificationHandler) {
     this._notificationListeners.add(listener);
 
     return () => this._notificationListeners.delete(listener);
   }
 
-  async onrequest(req, context) {
+  async onrequest(req: JsonRpcMessage, context: unknown) {
     // Will match Arrays also but those will be caught below
-    if (req == null || typeof req !== 'object')
+    if (req == null || typeof req !== 'object') {
       return { jsonrpc: '2.0', error: Errors.JSONRPC_PARSE_ERROR };
+    }
 
-    if (isNotification(req))
+    if (isNotification(req)) {
       return this.onnotification(req.method, req.params, context);
+    }
 
     // Ignore responses
     if (isResponse(req)) return;
@@ -84,8 +107,9 @@ export default class JSONRPCServer {
         result: await method(req.params, context),
       };
     } catch (ex) {
-      if (ex instanceof JSONRPCServer.Error)
+      if (ex instanceof JSONRPCServer.Error) {
         return { jsonrpc: '2.0', error: ex.toJSON(), id: req.id };
+      }
 
       this.onerror(ex, req, context);
       return {

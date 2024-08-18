@@ -1,38 +1,59 @@
-import { JSONRPCError, isNotification, isResponse } from './json-rpc.js';
+import {
+  JSONRPCError,
+  type JsonRpcMessage,
+  type JsonRpcResponse,
+  isNotification,
+  isResponse,
+} from './json-rpc';
 
-export default class JSONRPCClient {
-  static Error = JSONRPCError;
+type NotificationHandler = (msg: JsonRpcResponse) => unknown;
+
+export class JSONRPCClient {
+  static readonly Error = JSONRPCError;
+  private _send: (message: JsonRpcMessage) => void;
+  private _onnotification: NotificationHandler;
+  private inflight: Map<
+    string,
+    [(value: unknown) => void, (reason?: unknown) => void]
+  >;
+  private id: number;
+  private _idPrefix: string;
 
   constructor({
     send,
-    onnotification = (_) => {},
+    onnotification,
     idPrefix = Math.random().toString(36),
+  }: {
+    send?: (message: JsonRpcMessage) => void;
+    onnotification?: NotificationHandler;
+    idPrefix?: string;
   }) {
-    this._send = send;
-    this._onnotification = onnotification ?? (() => {});
+    const NOOP = () => {};
+    this._send = send ?? NOOP;
+    this._onnotification = onnotification ?? NOOP;
     this.inflight = new Map();
     this.id = 0;
     this._idPrefix = idPrefix;
   }
 
-  notify(method, params) {
+  notify(method: string, params: unknown) {
     const msg = {
       jsonrpc: '2.0',
       method,
       params,
-    };
+    } as JsonRpcMessage;
 
     this._send(msg);
   }
 
-  async request(method, params) {
+  async request(method: string, params: unknown) {
     const id = this._idPrefix + ++this.id;
     const msg = {
       jsonrpc: '2.0',
       id,
       method,
       params,
-    };
+    } as JsonRpcMessage;
 
     return new Promise((resolve, reject) => {
       this.inflight.set(id, [resolve, reject]);
@@ -46,7 +67,7 @@ export default class JSONRPCClient {
    * @param {any} data
    * @returns
    */
-  async onmessage(data) {
+  async onmessage(data: JsonRpcResponse) {
     if (data == null) return; // invalid response
 
     if (isNotification(data)) return this._onnotification(data); // JSON-RPC notifications are not supported for now
@@ -71,5 +92,6 @@ export default class JSONRPCClient {
     }
 
     p[0](data.result);
+    return;
   }
 }
