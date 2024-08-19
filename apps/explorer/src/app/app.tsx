@@ -24,7 +24,7 @@ const splashLoading = (
 );
 
 function App() {
-  const { VEGA_URL } = useEnvironment();
+  const { API_NODE } = useEnvironment();
   const [nodeSwitcherOpen, setNodeSwitcherOpen] = useNodeSwitcherStore(
     (store) => [store.dialogOpen, store.setDialogOpen]
   );
@@ -35,7 +35,9 @@ function App() {
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={
-              <NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />
+              <NodeFailure
+                title={t(`Node: ${API_NODE?.graphQLApiUrl} is unsuitable`)}
+              />
             }
           >
             <Suspense fallback={splashLoading}>

@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request';
 import { selfDelegate } from '../capsule/self-delegate';
 import { requestGQL, setGraphQLEndpoint } from '../capsule/request';
+import { storedApiNodeSchema } from '@vegaprotocol/environment';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -14,11 +15,16 @@ declare global {
 
 export const addValidatorsSelfDelegate = () => {
   Cypress.Commands.add('validatorsSelfDelegate', () => {
+    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    if (!apiNode) {
+      throw new Error('API_NODE not configured');
+    }
+
     const config = {
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
-      vegaUrl: Cypress.env('VEGA_URL'),
+      vegaUrl: apiNode.graphQLApiUrl,
       faucetUrl: Cypress.env('FAUCET_URL'),
     };
     setGraphQLEndpoint(config.vegaUrl);

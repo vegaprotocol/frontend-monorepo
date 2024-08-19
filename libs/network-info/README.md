@@ -6,7 +6,7 @@ This library was generated with [Nx](https://nx.dev).
 
 The environment variables needed to be present for any app consuming this library.
 
-`NX_VEGA_URL` OR `NX_VEGA_CONFIG_URL` - either the network configuration url or a url to a node to directly connect to
+`NX_API_NODE` OR `NX_VEGA_CONFIG_URL` - either the network configuration url or a url to a node to directly connect to
 
 `NX_VEGA_NETWORKS` - JSON object with key-value pairs for environments and their deployed URLs
 

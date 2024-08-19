@@ -15,27 +15,27 @@ import { LayoutRow } from './layout-row';
 import { ApolloWrapper } from './apollo-wrapper';
 import { RowData } from './row-data';
 import { useT } from '../../use-t';
+import { createApiNode } from '../../utils/validate-environment';
 
 export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
   const t = useT();
-  const { nodes, setUrl, status, VEGA_ENV, VEGA_URL } = useEnvironment(
+  const { nodes, setApiNode, status, VEGA_ENV, API_NODE } = useEnvironment(
     (store) => ({
       status: store.status,
       nodes: store.nodes,
-      setUrl: store.setUrl,
+      setApiNode: store.setApiNode,
       VEGA_ENV: store.VEGA_ENV,
-      VEGA_URL: store.VEGA_URL,
+      API_NODE: store.API_NODE,
     })
   );
 
+  const currentHost = API_NODE ? new URL(API_NODE.graphQLApiUrl).hostname : '';
   const [nodeRadio, setNodeRadio] = useState<string>(() => {
-    if (VEGA_URL) {
-      return VEGA_URL;
-    }
+    if (API_NODE) return currentHost;
     return nodes.length > 0 ? '' : CUSTOM_NODE_KEY;
   });
   const [highestBlock, setHighestBlock] = useState<number | null>(null);
-  const [customUrlText, setCustomUrlText] = useState('');
+  const [customUrl, setCustomUrl] = useState('');
 
   const handleHighestBlock = useCallback((blockHeight: number) => {
     setHighestBlock((curr) => {
@@ -52,10 +52,10 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
   let isDisabled = false;
   if (nodeRadio === '') {
     isDisabled = true;
-  } else if (nodeRadio === VEGA_URL) {
+  } else if (nodeRadio === currentHost) {
     isDisabled = true;
   } else if (nodeRadio === CUSTOM_NODE_KEY) {
-    if (!isValidUrl(customUrlText)) {
+    if (!isValidUrl(customUrl)) {
       isDisabled = true;
     }
   }
@@ -91,13 +91,13 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
               </LayoutRow>
             </div>
             <div>
-              {nodes.map((node, index) => {
+              {nodes.map((apiNode, index) => {
                 return (
-                  <LayoutRow key={node} dataTestId="node-row">
-                    <ApolloWrapper url={node}>
+                  <LayoutRow key={apiNode.graphQLApiUrl} dataTestId="node-row">
+                    <ApolloWrapper url={apiNode.graphQLApiUrl}>
                       <RowData
                         id={index.toString()}
-                        url={node}
+                        url={new URL(apiNode.graphQLApiUrl).hostname}
                         highestBlock={highestBlock}
                         onBlockHeight={handleHighestBlock}
                       />
@@ -106,9 +106,9 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
                 );
               })}
               <CustomRowWrapper
-                inputText={customUrlText}
-                setInputText={setCustomUrlText}
-                nodes={nodes}
+                customUrl={customUrl}
+                setCustomUrl={setCustomUrl}
+                nodeCount={nodes.length}
                 highestBlock={highestBlock}
                 onBlockHeight={handleHighestBlock}
                 nodeRadio={nodeRadio}
@@ -121,9 +121,17 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
               disabled={isDisabled}
               onClick={() => {
                 if (nodeRadio === CUSTOM_NODE_KEY) {
-                  setUrl(customUrlText);
+                  const apiNode = createApiNode(customUrl);
+                  if (apiNode) {
+                    setApiNode(apiNode);
+                  }
                 } else {
-                  setUrl(nodeRadio);
+                  const apiNode = nodes.find(
+                    (n) => nodeRadio === new URL(n.graphQLApiUrl).hostname
+                  );
+                  if (apiNode) {
+                    setApiNode(apiNode);
+                  }
                 }
                 closeDialog();
               }}
@@ -139,18 +147,18 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
 };
 
 interface CustomRowWrapperProps {
-  inputText: string;
-  setInputText: (text: string) => void;
-  nodes: string[];
+  customUrl: string;
+  setCustomUrl: (text: string) => void;
+  nodeCount: number;
   highestBlock: number | null;
   nodeRadio: string;
   onBlockHeight: (blockHeight: number) => void;
 }
 
 const CustomRowWrapper = ({
-  inputText,
-  setInputText,
-  nodes,
+  customUrl,
+  setCustomUrl,
+  nodeCount,
   highestBlock,
   nodeRadio,
   onBlockHeight,
@@ -158,12 +166,12 @@ const CustomRowWrapper = ({
   const t = useT();
   const [displayCustom, setDisplayCustom] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;
+  const showInput = nodeRadio === CUSTOM_NODE_KEY || nodeCount <= 0;
 
   return (
     <LayoutRow dataTestId="custom-row">
       <div className="flex w-full mb-2">
-        {nodes.length > 0 && (
+        {nodeCount > 0 && (
           <TradingRadio
             id="node-url-custom"
             value={CUSTOM_NODE_KEY}
@@ -176,17 +184,19 @@ const CustomRowWrapper = ({
             className="flex items-center w-full gap-2"
           >
             <TradingInput
+              data-testid="gql-input"
               placeholder="https://"
-              value={inputText}
+              value={customUrl}
               hasError={Boolean(error)}
               onChange={(e) => {
                 setDisplayCustom(false);
-                setInputText(e.target.value);
+                setCustomUrl(e.target.value);
               }}
             />
+
             <ButtonLink
               onClick={() => {
-                if (!isValidUrl(inputText)) {
+                if (!isValidUrl(customUrl)) {
                   setError('Invalid url');
                   return;
                 }
@@ -200,10 +210,10 @@ const CustomRowWrapper = ({
         )}
       </div>
       {displayCustom ? (
-        <ApolloWrapper url={inputText}>
+        <ApolloWrapper url={customUrl}>
           <RowData
             id={CUSTOM_NODE_KEY}
-            url={inputText}
+            url={customUrl}
             onBlockHeight={onBlockHeight}
             highestBlock={highestBlock}
           />

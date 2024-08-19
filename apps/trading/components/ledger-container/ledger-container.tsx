@@ -9,7 +9,7 @@ import { useT } from '../../lib/use-t';
 
 export const LedgerContainer = () => {
   const t = useT();
-  const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
+  const API_NODE = useEnvironment((store) => store.API_NODE);
   const { pubKey } = useVegaWallet();
   const { data, loading } = usePartyAssetsQuery({
     variables: { partyId: pubKey || '' },
@@ -31,7 +31,7 @@ export const LedgerContainer = () => {
     );
   }
 
-  if (!VEGA_URL) {
+  if (!API_NODE) {
     return (
       <Splash>
         <p>{t('Environment not configured')}</p>
@@ -56,6 +56,10 @@ export const LedgerContainer = () => {
   }
 
   return (
-    <LedgerExportForm partyId={pubKey} vegaUrl={VEGA_URL} assets={assets} />
+    <LedgerExportForm
+      partyId={pubKey}
+      vegaUrl={API_NODE.graphQLApiUrl}
+      assets={assets}
+    />
   );
 };

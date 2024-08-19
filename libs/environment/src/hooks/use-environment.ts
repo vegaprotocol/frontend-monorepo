@@ -16,32 +16,45 @@ import {
 } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
-import { envSchema } from '../utils/validate-environment';
 import { tomlConfigSchema } from '../utils/validate-configuration';
 import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
 import first from 'lodash/first';
 import { canMeasureResponseTime, measureResponseTime } from '../utils/time';
 import compact from 'lodash/compact';
+import trimEnd from 'lodash/trimEnd';
+import { z } from 'zod';
+import {
+  envSchema,
+  storedApiNodeSchema,
+  type ApiNode,
+} from '../utils/validate-environment';
 
-type Client = ReturnType<typeof createClient>;
-type ClientCollection = {
-  [node: string]: Client;
+const VERSION = 2;
+export const STORAGE_KEY = `vega_api_node_${VERSION}`;
+
+const getStoredApiNode = () => {
+  const value = LocalStorage.getItem(STORAGE_KEY);
+  return storedApiNodeSchema.parse(value);
 };
+const storeApiNode = (apiNode: ApiNode) => {
+  LocalStorage.setItem(STORAGE_KEY, JSON.stringify(apiNode));
+};
+
+type ApiNodes = ApiNode[];
+type Client = ReturnType<typeof createClient>;
 type EnvState = {
-  nodes: string[];
+  nodes: ApiNodes;
   status: 'default' | 'pending' | 'success' | 'failed';
   error: string | null;
 };
 type Actions = {
-  setUrl: (url: string) => void;
+  setApiNode: (apiNode: ApiNode) => void;
   initialize: () => Promise<void>;
 };
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
-
-const VERSION = 2;
-export const STORAGE_KEY = `vega_url_${VERSION}`;
 
 const QUERY_TIMEOUT = 3000;
 const SUBSCRIPTION_TIMEOUT = 3000;
@@ -54,9 +67,11 @@ const raceAgainst = (timeout: number): Promise<false> =>
   });
 
 /**
- * Fetch and validate a vega node configuration
+ * Fetch and validate a vega node configuration,
+ * this will return only the hosts that have both GraphQL and REST endpoints
+ * configured.
  */
-const fetchConfig = async (url?: string) => {
+const fetchConfig = async (url?: string): Promise<ApiNode[]> => {
   if (!url) return [];
   const res = await fetch(url);
   const content = await res.text();
@@ -64,34 +79,52 @@ const fetchConfig = async (url?: string) => {
   const tomlResults = tomlConfigSchema.parse(parsed);
   const {
     API: {
-      GraphQL: { Hosts },
+      GraphQL: { Hosts: gqlHosts },
+      REST: { Hosts: restHosts },
     },
   } = tomlResults;
-  return Hosts;
+
+  const gs = gqlHosts.map((u) => new URL(u));
+  const rs = restHosts.map((u) => new URL(u));
+
+  const hosts: ApiNode[] = compact(
+    gs.map((u) => {
+      const restApiUrl = rs.find((r) => r.host === u.host);
+      if (!restApiUrl) return undefined;
+      return { graphQLApiUrl: u.toString(), restApiUrl: restApiUrl.toString() };
+    })
+  );
+
+  return hosts;
 };
 
 /**
  * Find a suitable nodes by running a test query and test
  * subscription, against a list of clients, first to resolve wins
  */
-const findHealthyNodes = async (nodes: string[]) => {
-  const clients: ClientCollection = {};
-  nodes.forEach((url) => {
-    clients[url] = createClient({
-      url,
-      cacheConfig: undefined,
-      retry: false,
-      connectToDevTools: false,
-    });
+const findHealthyNodes = async (apiNodes: ApiNode[]) => {
+  const clients = apiNodes.map((apiNode) => {
+    return {
+      apiNode,
+      apolloClient: createClient({
+        url: apiNode.graphQLApiUrl,
+        cacheConfig: undefined,
+        retry: false,
+        connectToDevTools: false,
+      }),
+    };
   });
-  const tests = Object.entries(clients).map((args) => testNode(...args));
+
+  const tests = clients.map(({ apiNode, apolloClient }) =>
+    testNode(apolloClient, apiNode)
+  );
   try {
     const nodes = await Promise.all(tests);
     const responsiveNodes = nodes
-      .filter(([, q, s]) => q && s)
-      .map(([url, q]) => {
+      .filter(([, q, s, r]) => q && s && r)
+      .map(([apiNode, q]) => {
         return {
-          url,
+          apiNode,
           ...q,
         };
       });
@@ -119,22 +152,24 @@ type QueryTestResult = {
 type SubscriptionTestResult = true;
 type NodeTestResult = [
   /** url */
-  string,
+  ApiNode,
   Maybe<QueryTestResult>,
-  Maybe<SubscriptionTestResult>
+  Maybe<SubscriptionTestResult>,
+  Maybe<boolean>
 ];
 /**
  * Test a node for suitability for connection
  */
 const testNode = async (
-  url: string,
-  client: Client
+  client: Client,
+  apiNode: ApiNode
 ): Promise<NodeTestResult> => {
   const results = await Promise.all([
-    testQuery(client, url),
+    testQuery(client, apiNode),
     testSubscription(client),
+    testRestApi(apiNode),
   ]);
-  return [url, ...results];
+  return [apiNode, ...results];
 };
 
 /**
@@ -142,7 +177,7 @@ const testNode = async (
  */
 const testQuery = (
   client: Client,
-  url: string
+  apiNode: ApiNode
 ): Promise<Maybe<QueryTestResult>> => {
   const test: Promise<Maybe<QueryTestResult>> = new Promise((resolve) =>
     client
@@ -164,8 +199,8 @@ const testQuery = (
             blockHeight: Number(result.data.statistics.blockHeight),
             vegaTime: new Date(result.data.statistics.vegaTime),
             // only after a request has been sent we can retrieve the response time
-            responseTime: canMeasureResponseTime(url)
-              ? measureResponseTime(url) || Infinity
+            responseTime: canMeasureResponseTime(apiNode.graphQLApiUrl)
+              ? measureResponseTime(apiNode.graphQLApiUrl) || Infinity
               : Infinity,
           } as QueryTestResult;
           resolve(res);
@@ -176,6 +211,27 @@ const testQuery = (
       .catch(() => resolve(false))
   );
   return Promise.race([test, raceAgainst(QUERY_TIMEOUT)]);
+};
+
+const testRestApi = async (apiNode: ApiNode) => {
+  const nodeInfoSchema = z.object({
+    commitHash: z.string(),
+    version: z.string(),
+  });
+  const nodeInfoUrl = `${trimEnd(apiNode.restApiUrl, '/')}/api/v2/info`;
+
+  try {
+    const res = await fetch(nodeInfoUrl);
+    if (res.ok) {
+      const json = await res.json();
+      nodeInfoSchema.parse(json);
+      return true;
+    }
+  } catch {
+    // NOOP
+  }
+
+  return false;
 };
 
 /**
@@ -224,15 +280,22 @@ const compileEnvVars = () => {
     process.env['NX_VEGA_ENV']
   ) as Networks;
 
-  let vegaUrl = LocalStorage.getItem(STORAGE_KEY);
-
-  if (!isValidUrl(vegaUrl)) {
-    vegaUrl = windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']) as string;
+  let apiNode = getStoredApiNode();
+  const isApiNodeValid =
+    apiNode &&
+    isValidUrl(apiNode.graphQLApiUrl) &&
+    isValidUrl(apiNode.restApiUrl);
+  if (!isApiNodeValid) {
+    const an = windowOrDefault(
+      'API_NODE',
+      process.env['NX_API_NODE'] as string
+    );
+    apiNode = storedApiNodeSchema.parse(an);
     LocalStorage.removeItem(STORAGE_KEY);
   }
 
   const env: Environment = {
-    VEGA_URL: vegaUrl,
+    API_NODE: apiNode,
     VEGA_ENV,
     VEGA_CONFIG_URL: windowOrDefault(
       'VEGA_CONFIG_URL',
@@ -646,9 +709,9 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
   nodes: [],
   status: 'default',
   error: null,
-  setUrl: (url) => {
-    set({ VEGA_URL: url, status: 'success', error: null });
-    LocalStorage.setItem(STORAGE_KEY, url);
+  setApiNode: (apiNode: ApiNode) => {
+    set({ API_NODE: apiNode, status: 'success', error: null });
+    storeApiNode(apiNode);
   },
   initialize: async () => {
     set({ status: 'pending' });
@@ -673,29 +736,35 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     // Set the node url if available, but then continue with
     // getting node config
-    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
-      state.setUrl(state.VEGA_URL);
+    if (
+      state.API_NODE &&
+      isValidUrl(state.API_NODE.graphQLApiUrl) &&
+      isValidUrl(state.API_NODE.restApiUrl)
+    ) {
+      state.setApiNode(state.API_NODE);
     }
 
     // Start fetching nodes in the background
-    let nodes: string[] = [];
+    let nodes: ApiNode[] = [];
 
     try {
-      nodes = uniq(
+      nodes = uniqBy(
         compact([
           // url from state (if set via env var)
-          state.VEGA_URL,
+          state.API_NODE,
           // urls from network configuration
           ...(await fetchConfig(state.VEGA_CONFIG_URL)),
-        ])
+        ]),
+        (apiNode) => `${apiNode.graphQLApiUrl}+${apiNode.restApiUrl}`
       );
+
       set({ nodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
     // We have a node and nodes have been fetched for the network switcher
-    if (state.VEGA_URL) {
+    if (state.API_NODE) {
       return;
     }
 
@@ -713,7 +782,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     const healthyNodes = await findHealthyNodes(nodes);
     const bestNode = first(healthyNodes);
     if (bestNode) {
-      state.setUrl(bestNode.url);
+      state.setApiNode(bestNode.apiNode);
       return;
     }
 
@@ -731,7 +800,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
  * VEGA_CONFIG_URL
  *
  * This can be omitted if you intend to only use a single node,
- * in those cases be sure to set NX_VEGA_URL
+ * in those cases be sure to set NX_API_NODE
  */
 export const useInitializeEnv = () => {
   const { initialize, status } = useEnvironment((store) => ({

@@ -1,11 +1,69 @@
 import z from 'zod';
 import { Networks } from '../types';
 
+/**
+ * Creates a URL to the GrapQL API.
+ * Conventionally the GQL pathname is `/graphql`
+ */
+const createGraphQLApiUrl = (url: string) => {
+  const u = new URL(url);
+  u.pathname = 'graphql';
+  return u.toString();
+};
+
+/**
+ * Create a URL to the REST API.
+ * Conventionally the REST API pathname is empty.
+ */
+const createRestApiUrl = (url: string) => {
+  const u = new URL(url);
+  u.pathname = '';
+  return u.toString();
+};
+
+export const apiNodeSchema = z.object({
+  graphQLApiUrl: z.string(),
+  restApiUrl: z.string(),
+});
+
+/**
+ * Transforms a URL into the `ApiNode` as per the URL conventions.
+ * Example:
+ *  Input: `"https://api.n00.data-node.vega.dev:1234/"`
+ *  Output: ```
+ *    {
+ *      graphQLApiUrl: "https://api.n00.data-node.vega.dev:1234/graphql",
+ *      restApiUrl: "https://api.n00.data-node.vega.dev:1234/"
+ *    }
+ *  ```
+ */
+export const createApiNode = (value: string | null | undefined) => {
+  if (value) {
+    try {
+      const apiNode = apiNodeSchema.parse({
+        graphQLApiUrl: createGraphQLApiUrl(value),
+        restApiUrl: createRestApiUrl(value),
+      });
+      return apiNode;
+    } catch {
+      // NOOP
+    }
+  }
+  return undefined;
+};
+
+export const storedApiNodeSchema = z
+  .string()
+  .optional()
+  .nullable()
+  .transform(createApiNode);
+export type ApiNode = z.infer<typeof apiNodeSchema>;
+
 // combine schema above with custom rule to ensure either
-// VEGA_URL or VEGA_CONFIG_URL are provided
+// API_NODE or VEGA_CONFIG_URL are provided
 export const envSchema = z
   .object({
-    VEGA_URL: z.optional(z.string()),
+    API_NODE: z.optional(apiNodeSchema),
     VEGA_WALLET_URL: z.optional(z.string()),
     VEGA_CONFIG_URL: z.optional(z.string()),
     GIT_BRANCH: z.optional(z.string()),
@@ -58,11 +116,11 @@ export const envSchema = z
   })
   .refine(
     (data) => {
-      return !(!data.VEGA_URL && !data.VEGA_CONFIG_URL);
+      return !(!data.API_NODE && !data.VEGA_CONFIG_URL);
     },
     {
       message:
-        'Must provide either NX_VEGA_CONFIG_URL or NX_VEGA_URL in the environment.',
+        'Must provide either NX_VEGA_CONFIG_URL or NX_API_NODE in the environment.',
     }
   );
 

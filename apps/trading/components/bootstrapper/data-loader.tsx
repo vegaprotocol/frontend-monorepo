@@ -1,7 +1,7 @@
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 /**
  * Fetch necessary data on startup

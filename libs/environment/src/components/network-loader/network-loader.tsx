@@ -18,20 +18,20 @@ export function NetworkLoader({
   children,
   cache,
 }: NetworkLoaderProps) {
-  const { status, VEGA_URL } = useEnvironment((store) => ({
+  const { status, API_NODE } = useEnvironment((store) => ({
     status: store.status,
-    VEGA_URL: store.VEGA_URL,
+    API_NODE: store.API_NODE,
   }));
 
   const client = useMemo(() => {
-    if (status === 'success' && VEGA_URL) {
+    if (status === 'success' && API_NODE) {
       return createClient({
-        url: VEGA_URL,
+        url: API_NODE.graphQLApiUrl,
         cacheConfig: cache,
       });
     }
     return undefined;
-  }, [VEGA_URL, status, cache]);
+  }, [status, API_NODE, cache]);
 
   if (status === 'failed') {
     // eslint-disable-next-line react/jsx-no-useless-fragment

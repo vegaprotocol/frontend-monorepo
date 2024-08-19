@@ -40,7 +40,7 @@ There are a few different configuration options offered for this app:
 | **Flag**                            | **Purpose**                                                                                                                                          |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NX_SENTRY_DSN`                     | The sentry endpoint to report to. Should be off in dev but set in live.                                                                              |
-| `NX_VEGA_URL`                       | The GraphQL query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node)                                                 |
+| `NX_API_NODE`                       | The GraphQL query and REST API endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node)                                    |
 | `NX_DEX_STAKING_DISABLED`           | Disable the dex liquidity page an show a coming soon message                                                                                         |
 | `NX_FAIRGROUND`                     | Change styling to be themed as the fairground version of the website                                                                                 |
 | `NX_INFURA_ID`                      | Infura fallback for if the user does not have a web3 compatible browser                                                                              |

@@ -51,6 +51,7 @@
       "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
       "@vegaprotocol/proposals": ["libs/proposals/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
+      "@vegaprotocol/rest": ["libs/rest/src/index.ts"],
       "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.ts"
