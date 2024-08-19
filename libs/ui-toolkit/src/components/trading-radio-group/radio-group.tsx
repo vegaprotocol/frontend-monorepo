@@ -75,9 +75,8 @@ export const TradingRadio = ({
   const itemClasses = cn(
     'flex justify-center items-center',
     'w-3 h-3 rounded-full border',
-    'border-gs-300 dark:border-gs-700 ',
-    'aria-checked:border-gs-400',
-    'disabled:border-gs-600',
+    'border-gs-300 dark:border-gs-700',
+    'aria-checked:border-gs-400 aria-checked:dark:border-gs-600',
     'bg-surface-2 '
   );
   const indicatorClasses = cn(

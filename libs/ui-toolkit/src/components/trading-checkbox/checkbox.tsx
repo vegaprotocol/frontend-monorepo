@@ -23,9 +23,8 @@ export const TradingCheckbox = ({
   const rootClasses = cn(
     'relative flex justify-center items-center w-3 h-3',
     'border rounded-sm overflow-hidden',
-    'border-gs-300 dark:border-gs-700 ',
-    'aria-checked:border-gs-400',
-    'disabled:border-gs-600',
+    'border-gs-300 dark:border-gs-700',
+    'aria-checked:border-gs-400 aria-checked:dark:border-gs-600',
     'bg-surface-2 '
   );
 
@@ -44,7 +43,7 @@ export const TradingCheckbox = ({
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-gs-50"
+              className="absolute w-[8px] h-[2px] bg-surface-0-fg"
             />
           ) : (
             <VegaIcon name={VegaIconNames.TICK} size={10} />

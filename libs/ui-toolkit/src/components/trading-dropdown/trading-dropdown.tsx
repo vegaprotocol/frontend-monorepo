@@ -162,7 +162,7 @@ export const TradingDropdownSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={cn('bg-gs-500  mx-2 my-1 h-px', className)}
+    className={cn('bg-gs-300 dark:bg-gs-700  mx-2 my-1 h-px', className)}
   />
 ));
 TradingDropdownSeparator.displayName = 'DropdownMenuSeparator';

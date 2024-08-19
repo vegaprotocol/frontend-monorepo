@@ -92,7 +92,7 @@ const Toggle = ({
     <ToggleGroup.Root
       type="single"
       value={mode}
-      className="inline-flex rounded bg-surface-3"
+      className="inline-flex rounded bg-gs-300 dark:bg-gs-700"
     >
       <ToggleGroup.Item
         value={MarginMode.MARGIN_MODE_CROSS_MARGIN}
