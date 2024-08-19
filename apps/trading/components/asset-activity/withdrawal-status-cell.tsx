@@ -14,7 +14,7 @@ import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
 import { useModal } from 'connectkit';
 import {
-  TradingButton as Button,
+  Button,
   Intent,
   VegaIcon,
   VegaIconNames,
