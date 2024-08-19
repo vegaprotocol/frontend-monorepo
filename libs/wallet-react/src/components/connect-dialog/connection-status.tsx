@@ -9,7 +9,7 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
     return (
       <>
         <h3 className="text-lg">{t('Connecting...')}</h3>
-        <p className="text-secondary">
+        <p className="text-surface-0-fg-muted">
           {t('Approve the connection from your wallet app.')}
         </p>
       </>

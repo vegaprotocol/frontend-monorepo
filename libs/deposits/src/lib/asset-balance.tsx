@@ -58,7 +58,7 @@ export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
   const balance = getBalance(assetData.id)?.balanceOnEth?.toString();
 
   if (!balance) {
-    return <span className="text-xs text-muted">0</span>;
+    return <span className="text-xs text-surface-0-fg-muted">0</span>;
   }
 
   return <Balance balance={balance} symbol={assetData.symbol} />;

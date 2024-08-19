@@ -199,7 +199,7 @@ const TeamPage = ({
               </button>
             </CopyWithTooltip>
           </div>
-          <div className="flex gap-2 items-baseline text-xs text-muted font-alt calt">
+          <div className="flex gap-2 items-baseline text-xs text-surface-1-fg-muted font-alt calt">
             {closedIndicator}
             <div className="">
               {t('Created at')}:{' '}
@@ -483,16 +483,18 @@ const RefereeLink = ({
             'You can set your pubkey alias by using the key selector in the top right corner.'
           )}
         >
-          <button className="text-muted text-xs">
+          <button className="text-surface-1-fg-muted text-xs">
             <VegaIcon name={VegaIconNames.QUESTION_MARK} size={14} />
           </button>
         </Tooltip>
       )}
       {alias && (
-        <span className="text-muted text-xs">{truncateMiddle(pubkey)}</span>
+        <span className="text-surface-1-fg-muted text-xs">
+          {truncateMiddle(pubkey)}
+        </span>
       )}
       {isCreator && (
-        <span className="text-muted text-xs border border-gs-300   rounded px-1 py-[1px]">
+        <span className="text-surface-1-fg-muted text-xs border border-gs-300   rounded px-1 py-[1px]">
           {t('Owner')}
         </span>
       )}

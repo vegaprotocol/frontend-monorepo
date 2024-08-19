@@ -22,7 +22,7 @@ export const DatagridRow = ({
 }: HTMLAttributes<HTMLDivElement> & { label: ReactNode; value: ReactNode }) => {
   return (
     <div {...props} className="flex justify-between gap-1">
-      <dt className="text-muted">{label}</dt>
+      <dt className="text-surface-1-fg-muted">{label}</dt>
       <dd className="text-right font-mono">{value}</dd>
     </div>
   );

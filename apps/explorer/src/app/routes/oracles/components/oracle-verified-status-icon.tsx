@@ -32,7 +32,9 @@ export const OracleVerifiedStatusIcon = ({
       )}
     >
       <Icon size={5} name={icon as IconName} />
-      <p className="ml-1 text-sm text-gs-100 align-text-middle">{message}</p>
+      <p className="ml-1 text-sm text-surface-1-fg align-text-middle">
+        {message}
+      </p>
     </div>
   );
 };

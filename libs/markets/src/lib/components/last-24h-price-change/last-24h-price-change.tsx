@@ -56,7 +56,7 @@ export const Last24hPriceChange = ({
         {showChangeValue && (
           <span
             data-testid="price-change"
-            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-surface-0-fg-muted text-xs"
           >
             ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
             )

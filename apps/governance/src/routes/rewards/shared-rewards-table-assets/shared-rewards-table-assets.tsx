@@ -48,11 +48,11 @@ const ColumnHeader = ({
   className,
 }: ColumnHeaderProps) => (
   <div className={className}>
-    <h2 className="mb-1 text-sm text-gs-100">{title}</h2>
+    <h2 className="mb-1 text-sm text-surface-1-fg">{title}</h2>
     {tooltipContent && (
       <Tooltip description={tooltipContent}>
         <button>
-          <Icon name={'info-sign'} className="text-gs-100" />
+          <Icon name={'info-sign'} className="text-surface-1-fg" />
         </button>
       </Tooltip>
     )}

@@ -94,7 +94,7 @@ const classes = {
   indicatorIncomplete:
     'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gs-700 text-center leading-5',
   textIncomplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gs-100',
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-surface-1-fg',
 };
 
 interface WithdrawalProgressIndicatorProps {

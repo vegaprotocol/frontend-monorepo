@@ -182,7 +182,7 @@ const DepositForm = ({
                   <input
                     value={address}
                     readOnly
-                    className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
+                    className="appearance-none bg-transparent text-sm w-full focus:outline-none"
                     tabIndex={-1}
                   />
                   <FormSecondaryActionWrapper>
@@ -290,7 +290,7 @@ const DepositForm = ({
                         >
                           <div className="leading-4">
                             <div>{k.name}</div>
-                            <div className="text-xs text-secondary">
+                            <div className="text-xs text-surface-0-fg-muted">
                               {truncateMiddle(k.publicKey)}
                             </div>
                           </div>

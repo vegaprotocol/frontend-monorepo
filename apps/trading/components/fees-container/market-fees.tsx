@@ -68,17 +68,17 @@ const useFeesTableColumnDefs = (): ColDef[] => {
         },
         {
           field: 'liquidityFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'infraFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'makerFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],

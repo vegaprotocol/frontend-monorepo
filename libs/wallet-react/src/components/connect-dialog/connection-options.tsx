@@ -135,7 +135,7 @@ export const ConnectionOptionDefault = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="first-letter:capitalize">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     );
@@ -181,7 +181,7 @@ export const ConnectionOptionInjected = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     ) : (
@@ -194,7 +194,7 @@ export const ConnectionOptionInjected = ({
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionLinkWithDescription>
     );
@@ -241,7 +241,7 @@ export const ConnectionOptionSnap = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     ) : (
@@ -250,7 +250,7 @@ export const ConnectionOptionSnap = ({
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionLinkWithDescription>
     );

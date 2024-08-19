@@ -39,7 +39,7 @@ export const AssetMarkets = ({ asset, decimals, symbol }: AssetMarketProps) => {
             return (
               market.marketId &&
               market.balance !== '0' && (
-                <TableRow className="py-1 border-b border-gs-600">
+                <TableRow className="py-1 border-b border-gs-300 dark:border-gs-700">
                   <TableCell className="py-1">
                     <MarketLink id={market.marketId} />
                   </TableCell>

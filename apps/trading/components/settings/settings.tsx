@@ -112,11 +112,11 @@ export const Settings = () => {
         <dl className="text-sm grid grid-cols-2 gap-1">
           {process.env.GIT_TAG && (
             <>
-              <dt className="text-muted">{t('Version')}</dt>
+              <dt className="text-surface-1-fg-muted">{t('Version')}</dt>
               <dd>{process.env.GIT_TAG}</dd>
             </>
           )}
-          <dt className="text-muted">{t('Git commit hash')}</dt>
+          <dt className="text-surface-1-fg-muted">{t('Git commit hash')}</dt>
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
@@ -145,7 +145,9 @@ const SettingsGroup = ({
         <label className="text-sm" id={label}>
           {label}
         </label>
-        {helpText && <p className="text-xs text-muted">{helpText}</p>}
+        {helpText && (
+          <p className="text-xs text-surface-1-fg-muted">{helpText}</p>
+        )}
       </div>
       <div aria-describedby={label}>{children}</div>
     </div>

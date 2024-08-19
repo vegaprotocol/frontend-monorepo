@@ -14,7 +14,7 @@ export const WithdrawalsIndicator = () => {
         count: ready.length * 3,
       })}
     >
-      <span className="p-1 text-2xs leading-none rounded bg-surface-3  text-default">
+      <span className="p-1 text-2xs leading-none rounded bg-surface-3">
         {ready.length}
       </span>
     </Tooltip>

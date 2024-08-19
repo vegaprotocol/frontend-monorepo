@@ -93,7 +93,7 @@ export const Table = forwardRef<
               className={cn(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
                 // collapsed (mobile) row divider
-                'first:border-t-0 max-md:border-t border-gs-500  first:mt-0 mt-1':
+                'first:border-t-0 max-md:border-t border-gs-300 dark:border-gs-700  first:mt-0 mt-1':
                   !noCollapse,
               })}
               onClick={() => {
@@ -125,7 +125,7 @@ export const Table = forwardRef<
                   {!noCollapse && !noHeader && displayName && (
                     <span
                       aria-hidden
-                      className="px-0 font-mono text-xs md:hidden text-gs-100 "
+                      className="px-0 font-mono text-xs md:hidden text-surface-1-fg "
                     >
                       {displayName}
                     </span>

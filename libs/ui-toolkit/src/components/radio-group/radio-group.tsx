@@ -63,7 +63,7 @@ export const Radio = ({ id, value, label, disabled }: RadioProps) => {
   const itemClasses = cn(
     'flex justify-center items-center',
     'w-[15px] h-[15px] rounded-full border',
-    'border-gs-600 bg-gs-200'
+    'border-gs-300 dark:border-gs-700 bg-surface-2'
   );
   const indicatorClasses = cn(
     'block w-[13px] h-[13px] border-4 rounded-full',

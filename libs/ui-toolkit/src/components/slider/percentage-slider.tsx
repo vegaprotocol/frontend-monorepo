@@ -84,7 +84,7 @@ export const PercentageSlider = ({
                     }
                   : undefined
               }
-              className="absolute translate-x-[-50%] text-xs mt-1 text-gs-100 "
+              className="absolute translate-x-[-50%] text-xs mt-1 text-surface-1-fg "
               style={{
                 left: `${v}%`,
               }}

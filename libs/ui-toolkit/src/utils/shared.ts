@@ -1,19 +1,19 @@
 import { cn } from './cn';
 
-export const defaultSelectElement = (hasError?: boolean, disabled?: boolean) =>
-  cn(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');
+export const defaultSelectElement = (hasError?: boolean) =>
+  cn(defaultFormElement(hasError), 'pr-10 min-h-8 py-1');
 
-export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
+export const defaultFormElement = (hasError?: boolean) =>
   cn(
     'flex items-center w-full text-sm',
     'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
     'border',
-    'focus:border-gs-400',
+    'focus:border-gs-300 dark:border-gs-700',
+    'disabled:opacity-40',
     {
-      'bg-surface-2 ': !disabled && !hasError,
-      'bg-transparent': disabled || hasError,
-      'border-gs-600 ': disabled,
-      'border-vega-red-500': !disabled && hasError,
-      'border-gs-500 ': !disabled && !hasError,
+      'bg-surface-2': !hasError,
+      'bg-transparent': hasError,
+      'border-vega-red-500': hasError,
+      'border-gs-300 dark:border-gs-700': !hasError,
     }
   );

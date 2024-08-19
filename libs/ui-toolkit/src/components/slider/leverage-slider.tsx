@@ -20,7 +20,7 @@ export const LeverageSlider = (
         <SliderPrimitive.Track className="relative grow h-[4px]">
           <span className="bg-surface-2  absolute left-2 right-2 top-0 bottom-0"></span>
           <SliderPrimitive.Range className="absolute h-full">
-            <span className="absolute left-2 right-0 h-full bg-gs-100 "></span>
+            <span className="absolute left-2 right-0 h-full bg-gs-500"></span>
           </SliderPrimitive.Range>
           <span className="absolute top-[-3px] left-[8px] right-[8px]">
             {step &&
@@ -72,7 +72,7 @@ export const LeverageSlider = (
                   props.onValueChange && props.onValueChange([labelValue])
                 }
                 key={labelValue}
-                className="absolute translate-x-[-50%] text-xs mt-1 text-gs-100 "
+                className="absolute translate-x-[-50%] text-xs mt-1 text-surface-1-fg "
                 style={{
                   left,
                 }}

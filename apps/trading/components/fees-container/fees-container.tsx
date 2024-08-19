@@ -141,7 +141,7 @@ export const FeesContainer = () => {
                 />
               ) : (
                 <p
-                  className="text-muted pt-3 text-sm"
+                  className="text-surface-1-fg-muted pt-3 text-sm"
                   data-testid="no-volume-discount"
                 >
                   {t('No volume discount program active')}
@@ -165,7 +165,7 @@ export const FeesContainer = () => {
                 />
               ) : (
                 <p
-                  className="text-muted pt-3 text-sm"
+                  className="text-surface-1-fg-muted pt-3 text-sm"
                   data-testid="no-referral-program"
                 >
                   {t('No referral program active')}
@@ -281,7 +281,7 @@ export const TradingFees = ({
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
         <CardTable>
-          <tr className="text-default" data-testid="total-fee-before-discount">
+          <tr data-testid="total-fee-before-discount">
             <CardTableTH>{t('Taker fee before discount')}</CardTableTH>
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
@@ -481,7 +481,7 @@ const VolumeTiers = ({
   const t = useT();
   if (!tiers.length) {
     return (
-      <p className="text-muted text-sm">
+      <p className="text-surface-1-fg-muted text-sm">
         {t('No volume discount program active')}
       </p>
     );
@@ -570,7 +570,9 @@ const ReferralTiers = ({
 
   if (!tiers.length) {
     return (
-      <p className="text-muted text-sm">{t('No referral program active')}</p>
+      <p className="text-surface-1-fg-muted text-sm">
+        {t('No referral program active')}
+      </p>
     );
   }
 
@@ -624,7 +626,7 @@ const ReferralTiers = ({
             <YourTier testId={`your-referral-tier-${i}`} />
           ) : referralVolumeInWindow >= requiredVolume &&
             epochsInSet < tier.minimumEpochs ? (
-            <span className="text-muted text-xs">
+            <span className="text-surface-1-fg-muted text-xs">
               Unlocks in {tier.minimumEpochs - epochsInSet} epochs
             </span>
           ) : null;
@@ -673,7 +675,7 @@ const ReferrerInfo = ({ code }: { code?: string }) => {
   const t = useT();
 
   return (
-    <div className="text-gs-200 pt-3 text-sm">
+    <div className="text-surface-2-fg pt-3 text-sm">
       <p className="mb-1">
         {t('Connected key is owner of the referral set')}
         {code && (

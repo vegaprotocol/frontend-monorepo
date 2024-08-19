@@ -124,7 +124,7 @@ Explorer.args = {
       <ThemeSwitcher />
       {/* JUST A PLACEHOLDER */}
       <div className="border rounded px-2 py-1 text-xs w-60 flex items-center gap-1">
-        <Icon name="search" size={3} className="text-gs-200" />
+        <Icon name="search" size={3} className="text-surface-2-fg" />
         <input
           className="w-full bg-transparent outline-none"
           placeholder="Enter block number or transaction hash"

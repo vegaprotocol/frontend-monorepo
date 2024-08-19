@@ -52,7 +52,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
             <span key={m} className="w-3 relative">
               <button
                 type="button"
-                className={cn('absolute text-xs text-muted', {
+                className={cn('absolute text-xs text-surface-1-fg-muted', {
                   'left-1/2 -translate-x-1/2': isMiddle,
                   'left-0': i === 0,
                   'right-0': i === markers.length - 1,

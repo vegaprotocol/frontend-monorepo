@@ -62,7 +62,7 @@ const ProposalTypeTags = ({
       <div data-testid="proposal-type">
         <ProposalInfoLabel variant="secondary">
           <span>{t('Batch Proposal')}</span>
-          <span className="bg-gs-600 rounded-full px-1 text-center">
+          <span className="bg-surface-3 rounded-full px-1 text-center">
             {proposal.subProposals?.length || 0}
           </span>
         </ProposalInfoLabel>
@@ -717,7 +717,7 @@ export const CancelTransferSummary = ({
 };
 
 const Badge = ({ children }: { children: ReactNode }) => (
-  <div className="rounded px-1 py-[2px] text-xs items-center gap-1 inline-flex bg-gs-300 text-gs-50">
+  <div className="rounded px-1 py-[2px] text-xs items-center gap-1 inline-flex bg-surface-3 text-gs-50">
     {children}
   </div>
 );

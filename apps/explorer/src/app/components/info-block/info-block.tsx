@@ -10,7 +10,7 @@ export const InfoBlock = ({ title, subtitle, tooltipInfo }: InfoBlockProps) => {
   return (
     <div className="flex flex-col text-center	">
       <h3 className="text-4xl">{title}</h3>
-      <p className="text-gs-100">
+      <p className="text-surface-1-fg">
         {subtitle}
         {tooltipInfo ? (
           <Tooltip description={tooltipInfo} align="center">

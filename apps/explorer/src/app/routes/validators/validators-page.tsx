@@ -57,7 +57,7 @@ const Rate = ({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded h-[9px] flex w-full bg-gs-100',
+        'overflow-hidden rounded h-[9px] flex w-full bg-surface-3',
         { 'pl-[9px]': asPoint },
         {
           'bg-gradient-to-l to-vega-orange-500 dark:to-vega-orange-550 from-gs-100':

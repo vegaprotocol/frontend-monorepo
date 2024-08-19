@@ -209,7 +209,7 @@ const Step = ({
   return (
     <li
       className={cn('flex', {
-        'text-gs-200 ': complete,
+        'text-surface-2-fg ': complete,
       })}
     >
       <div className="flex justify-center w-5">

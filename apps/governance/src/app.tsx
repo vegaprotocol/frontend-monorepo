@@ -144,7 +144,7 @@ const Web3Container = ({
                     <TemplateSidebar sidebar={[<EthWallet />, <VegaWallet />]}>
                       <AppRouter />
                     </TemplateSidebar>
-                    <footer className="p-4 break-all border-t border-gs-600">
+                    <footer className="p-4 break-all text-surface-0-fg-muted border-t border-gs-700">
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
@@ -205,7 +205,7 @@ const AppContainer = () => {
     <Router>
       <ScrollToTop />
       <AppStateProvider>
-        <div className="min-h-full text-white grid">
+        <div className="min-h-full grid">
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={

@@ -82,7 +82,7 @@ export const RewardHoarderBonus = ({
                             tier: index + 1,
                           })}
                         </span>
-                        <span className="text-muted text-xs">
+                        <span className="text-surface-1-fg-muted text-xs">
                           {formatNumber(tier.minimum_quantum_balance)} {qUSD}
                         </span>
                       </span>
@@ -136,11 +136,11 @@ export const RewardHoarderBonus = ({
             return (
               <div
                 key={index}
-                className="bg-gs-0 shadow-card rounded-[100px] grow"
+                className="bg-surface-0 shadow-card rounded-[100px] grow"
               >
                 <div
                   className={cn(
-                    'relative w-full rounded-[100px] bg-gs-200',
+                    'relative w-full rounded-[100px] bg-surface-2',
                     progressBarHeight
                   )}
                 >

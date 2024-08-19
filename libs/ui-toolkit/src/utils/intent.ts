@@ -11,13 +11,13 @@ export enum Intent {
 export const getIntentBorder = (intent = Intent.None) => {
   return {
     border: true,
-    'border-intent-none': intent === Intent.None,
-    'border-intent-primary': intent === Intent.Primary,
-    'border-intent-secondary': intent === Intent.Secondary,
-    'border-intent-info': intent === Intent.Info,
-    'border-intent-danger': intent === Intent.Danger,
-    'border-intent-warning': intent === Intent.Warning,
-    'border-intent-success': intent === Intent.Success,
+    'border-intent-none-outline': intent === Intent.None,
+    'border-intent-primary-outline': intent === Intent.Primary,
+    'border-intent-secondary-outline': intent === Intent.Secondary,
+    'border-intent-info-outline': intent === Intent.Info,
+    'border-intent-danger-outline': intent === Intent.Danger,
+    'border-intent-warning-outline': intent === Intent.Warning,
+    'border-intent-success-outline': intent === Intent.Success,
   };
 };
 

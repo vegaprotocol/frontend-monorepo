@@ -5,7 +5,7 @@ import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 import type { ReactNode } from 'react';
-import type { Intent } from '../../utils/intent';
+import { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
@@ -28,7 +28,7 @@ export function Dialog({
   onInteractOutside,
   title,
   icon,
-  intent,
+  intent = Intent.None,
   size = 'small',
   dataTestId = 'dialog-content',
   description,

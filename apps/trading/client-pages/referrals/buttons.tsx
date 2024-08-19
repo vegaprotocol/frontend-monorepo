@@ -18,7 +18,7 @@ const RAINBOW_TAB_STYLE = cn(
 
 const DISABLED_RAINBOW_TAB_STYLE = cn(
   'pointer-events-none',
-  'text-gs-100 ',
+  'text-surface-1-fg ',
   'data-[state="active"]:text-white',
   '[&.active]:text-white'
 );
@@ -26,8 +26,8 @@ const DISABLED_RAINBOW_TAB_STYLE = cn(
 const TAB_STYLE = cn(
   'inline-block',
   'bg-transparent',
-  'text-gs-200 ',
-  'hover:text-gs-100 ',
+  'text-surface-2-fg ',
+  'hover:text-surface-1-fg ',
   'data-[state="active"]:text-black dark:data-[state="active"]:text-white',
   'data-[state="active"]:border-b-2 data-[state="active"]:border-b-black dark:data-[state="active"]:border-b-white',
   '[&.active]:text-black dark:[&.active]:text-white',

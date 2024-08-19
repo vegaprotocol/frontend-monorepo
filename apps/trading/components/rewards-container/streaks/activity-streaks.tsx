@@ -105,7 +105,7 @@ export const ActivityStreak = ({
                             tier: index + 1,
                           })}
                         </span>
-                        <span className="text-muted text-xs">
+                        <span className="text-surface-1-fg-muted text-xs">
                           {t('numberEpochs', '{{count}} epochs', {
                             count: tier.minimum_activity_streak,
                           })}
@@ -164,7 +164,7 @@ export const ActivityStreak = ({
             return (
               <div
                 key={index}
-                className="bg-gs-0 shadow-card rounded-[100px] grow"
+                className="bg-surface-0 shadow-card rounded-[100px] grow"
               >
                 <div
                   className={cn(

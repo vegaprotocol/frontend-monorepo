@@ -129,7 +129,7 @@ export const MiniSelect = ({
         <SelectPrimitive.Value placeholder={placeholder}>
           {trigger}
         </SelectPrimitive.Value>
-        <SelectPrimitive.Icon className="text-muted">
+        <SelectPrimitive.Icon className="text-surface-0-fg-muted">
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>

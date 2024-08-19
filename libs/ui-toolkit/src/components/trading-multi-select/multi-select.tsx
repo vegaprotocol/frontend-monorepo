@@ -80,7 +80,11 @@ export const PseudoCheckbox = ({
   checked?: boolean | 'indeterminate';
 }) => (
   <div
-    className={cn('w-4 h-4', 'relative', 'rounded-sm border-gs-500  border')}
+    className={cn(
+      'w-4 h-4',
+      'relative',
+      'rounded-sm border-gs-300 dark:border-gs-700  border'
+    )}
   >
     {checked && (
       <VegaIcon

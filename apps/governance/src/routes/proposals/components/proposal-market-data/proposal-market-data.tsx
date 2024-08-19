@@ -86,7 +86,7 @@ export const ProposalMarketData = ({
   });
 
   let details: ReactNode = (
-    <div className="text-muted text-center text-sm">
+    <div className="text-surface-0-fg-muted text-center text-sm">
       {marketDataLoading ? t('Loading') : t('Could not retrieve data')}
     </div>
   );

@@ -6,7 +6,7 @@ const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 export const Th = ({ children, ...props }: { children?: ReactNode }) => {
   return (
     <th
-      className={cn(cellClass, 'text-secondary leading-none py-3')}
+      className={cn(cellClass, 'text-surface-0-fg-muted leading-none py-3')}
       {...props}
     >
       {children}

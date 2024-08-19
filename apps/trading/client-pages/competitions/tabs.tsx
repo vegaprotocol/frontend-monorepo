@@ -23,7 +23,7 @@ export const TabsTrigger = (
     <TabsPrimitive.Trigger
       {...props}
       className={cn(
-        'relative top-px uppercase border-b-2 py-4 border-transparent text-muted',
+        'relative top-px uppercase border-b-2 py-4 border-transparent text-surface-1-fg-muted',
         'data-[state=active]:border-vega-yellow data-[state=active]:text-gs-50'
       )}
     />

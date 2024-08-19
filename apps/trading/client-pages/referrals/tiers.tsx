@@ -77,7 +77,7 @@ const StakingTier = ({
           <Tag color={getTierColor(tier, max)}>
             {t('Multiplier')} {referralRewardMultiplier}x
           </Tag>
-          <p className="mt-1 text-sm text-gs-100 ">
+          <p className="mt-1 text-sm text-surface-1-fg ">
             <Trans
               defaults="Stake a minimum of <0>{{minimum}}</0> $VEGA tokens"
               values={{ minimum }}
@@ -158,7 +158,7 @@ export const TiersContainer = () => {
       )}
 
       {/* Meta */}
-      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-gs-100  font-alt calt">
+      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-surface-1-fg  font-alt calt">
         {details?.id && (
           <span>
             {t('Proposal ID:')}{' '}
@@ -190,7 +190,7 @@ export const TiersContainer = () => {
         {/* Benefit tiers */}
         <div className="flex flex-col mb-5">
           <h3 className="text-2xl calt">{t('Benefit tiers')}</h3>
-          <p className="text-sm text-gs-200 ">
+          <p className="text-sm text-surface-2-fg ">
             {t(
               'Members of a referral group can access the increasing commission and discount benefits defined in the program based on their combined running volume.'
             )}
@@ -217,7 +217,7 @@ export const TiersContainer = () => {
         {/* Staking tiers */}
         <div className="flex flex-col mb-5">
           <h3 className="text-2xl calt">{t('Staking multipliers')}</h3>
-          <p className="text-sm text-gs-200 ">
+          <p className="text-sm text-surface-2-fg ">
             {t(
               'Referrers can access the commission multipliers defined in the program by staking VEGA tokens in the amounts shown.'
             )}

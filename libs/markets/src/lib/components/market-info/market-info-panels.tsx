@@ -515,7 +515,7 @@ const SuccessionLineItem = ({
         </div>
         {isCurrent && (
           <Tooltip description={t('This market')}>
-            <div className="text-gs-200  cursor-help">
+            <div className="text-surface-2-fg  cursor-help">
               <VegaIcon name={VegaIconNames.BULLET} size={16} />
             </div>
           </Tooltip>
@@ -1059,7 +1059,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
             <div aria-hidden className="w-full text-center text-[10px]">
               <div
                 data-testid="bounds-percent-price"
-                className="border-b-[2px] border-dashed border-gs-500 w-full h-1/2 translate-y-[1px]"
+                className="border-b-[2px] border-dashed border-gs-300 dark:border-gs-700 w-full h-1/2 translate-y-[1px]"
               >
                 {probability}
               </div>

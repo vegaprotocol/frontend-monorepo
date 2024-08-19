@@ -226,7 +226,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     <>
       <div
         data-testid="referral-apply-code-form"
-        className="bg-surface-2 mx-auto md:w-2/3 max-w-md rounded-lg p-8"
+        className="bg-surface-1 mx-auto md:w-2/3 max-w-md rounded-lg p-8"
       >
         <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}

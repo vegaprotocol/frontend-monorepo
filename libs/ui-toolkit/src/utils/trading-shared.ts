@@ -12,6 +12,6 @@ export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
       'bg-transparent': disabled || hasError,
       'border-gs-600 ': disabled,
       'border-vega-red-500': !disabled && hasError,
-      'border-gs-500 ': !disabled && !hasError,
+      'border-gs-300 dark:border-gs-700 ': !disabled && !hasError,
     }
   );

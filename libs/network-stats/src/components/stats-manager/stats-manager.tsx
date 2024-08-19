@@ -76,7 +76,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             <div data-testid="stats-title">{title}</div>
             {description && (
               <Tooltip description={description} align="center">
-                <div className="absolute top-1 right-2 text-gs-200 cursor-help">
+                <div className="absolute top-1 right-2 text-surface-2-fg cursor-help">
                   <Icon name="info-sign" size={3} />
                 </div>
               </Tooltip>

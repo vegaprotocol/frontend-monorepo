@@ -118,7 +118,7 @@ const GroupCard = ({
           <div
             className={cn(
               'flex justify-between gap-2',
-              'pb-3 border-b-[0.5px]  border-gs-500'
+              'pb-3 border-b-[0.5px]  border-gs-300 dark:border-gs-700'
             )}
           >
             {/** ENTITY SCOPE */}
@@ -156,7 +156,7 @@ const GroupCard = ({
                 <>
                   <DistributionStrategyIcon strategy={distributionStrategy} />
                   <span
-                    className="text-muted text-xs"
+                    className="text-surface-1-fg-muted text-xs"
                     data-testid="distribution-strategy"
                   >
                     {DistributionStrategyMapping[distributionStrategy]}
@@ -172,7 +172,7 @@ const GroupCard = ({
               {DispatchMetricLabels[dispatchMetric]}
             </h4>
             {/** DISPATCH METRIC DESCRIPTION */}
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t(DispatchMetricDescription[dispatchMetric])}
             </p>
           </div>
@@ -257,14 +257,17 @@ const RewardCard = ({
           <div
             className={cn(
               'flex justify-between gap-4',
-              'pb-4 border-b-[0.5px]  border-gs-500'
+              'pb-4 border-b-[0.5px]  border-gs-300 dark:border-gs-700'
             )}
           >
             {/** ENTITY SCOPE */}
             <div className="flex flex-col gap-2 items-center text-center">
               <EntityIcon entityScope={dispatchStrategy.entityScope} />
               {dispatchStrategy.entityScope && (
-                <span className="text-muted text-xs" data-testid="entity-scope">
+                <span
+                  className="text-surface-1-fg-muted text-xs"
+                  data-testid="entity-scope"
+                >
                   {EntityScopeLabelMapping[dispatchStrategy.entityScope] ||
                     t('Unspecified')}
                 </span>
@@ -311,7 +314,9 @@ const RewardCard = ({
               {/** ENDS IN or STARTS IN */}
               {startsIn ? (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Starts in')} </span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Starts in')}{' '}
+                  </span>
                   <span data-testid="starts-in" data-startsin={startsIn}>
                     {t('numberEpochs', '{{count}} epochs', {
                       count: startsIn,
@@ -320,7 +325,9 @@ const RewardCard = ({
                 </span>
               ) : endsIn !== undefined ? (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Ends in')} </span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Ends in')}{' '}
+                  </span>
                   <span data-testid="ends-in" data-endsin={endsIn}>
                     {endsIn > 0
                       ? t('numberEpochs', '{{count}} epochs', {
@@ -332,7 +339,9 @@ const RewardCard = ({
               ) : null}
               {/** WINDOW LENGTH */}
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Assessed over')}</span>
+                <span className="text-surface-1-fg-muted text-xs">
+                  {t('Assessed over')}
+                </span>
                 <span data-testid="assessed-over">
                   {t('numberEpochs', '{{count}} epochs', {
                     count: dispatchStrategy.windowLength,
@@ -342,7 +351,9 @@ const RewardCard = ({
               {/** PAYS EVERY */}
               {dispatchStrategy.transferInterval && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Pays every')}</span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Pays every')}
+                  </span>
                   <span data-testid="pays-every">
                     {t('numberEpochs', '{{count}} epochs', {
                       count: dispatchStrategy.transferInterval,
@@ -353,7 +364,9 @@ const RewardCard = ({
               {/** CAPPED AT */}
               {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Capped at')}</span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Capped at')}
+                  </span>
                   <Tooltip
                     description={t(
                       'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
@@ -373,7 +386,7 @@ const RewardCard = ({
 
             {/** DISPATCH METRIC DESCRIPTION */}
             {dispatchStrategy?.dispatchMetric && (
-              <p className="text-muted text-sm">
+              <p className="text-surface-1-fg-muted text-sm">
                 {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
               </p>
             )}
@@ -381,7 +394,7 @@ const RewardCard = ({
 
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
-            <div className="pt-4 border-t-[0.5px]  border-gs-500">
+            <div className="pt-4 border-t-[0.5px]  border-gs-300 dark:border-gs-700">
               <RewardRequirements
                 dispatchStrategy={dispatchStrategy}
                 dispatchAsset={dispatchAsset}
@@ -533,7 +546,7 @@ const RewardRequirements = ({
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
       {/** SCOPE */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {entityLabel
             ? t('{{entity}} scope', {
                 entity: entityLabel,
@@ -550,7 +563,7 @@ const RewardRequirements = ({
 
       {/** STAKING REQUIREMENT */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {t('Staked VEGA')}
         </dt>
         <dd
@@ -583,7 +596,7 @@ const RewardRequirements = ({
 
       {/** AVERAGE POSITION REQUIREMENT */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {t('Average position')}
         </dt>
         <Tooltip
@@ -1107,7 +1120,7 @@ const DistributionDelay = ({ value = 0 }: { value?: number | string }) => {
         )}
       />
       <span
-        className="text-muted text-xs whitespace-nowrap"
+        className="text-surface-1-fg-muted text-xs whitespace-nowrap"
         data-testid="locked-for"
       >
         {typeof value === 'number'

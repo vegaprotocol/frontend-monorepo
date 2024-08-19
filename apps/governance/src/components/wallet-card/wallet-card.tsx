@@ -314,7 +314,7 @@ const CurrencyValue = ({
           {integers}
           {separator}
         </span>
-        <span className="text-gs-100">{decimalsPlaces}</span>
+        <span className="text-surface-1-fg">{decimalsPlaces}</span>
       </div>
     </div>
   );

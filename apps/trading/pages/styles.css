@@ -194,23 +194,8 @@ body,
   @apply tracking-tighter;
 }
 
-.text-default {
-  @apply text-gs-50;
-}
-
-.text-secondary {
-  @apply text-gs-100;
-}
-
-.text-muted {
-  @apply text-gs-100;
-}
-
 .border-default {
-  @apply border-gs-100;
-}
-.dark .border-default {
-  @apply border-gs-900;
+  @apply border-gs-300 dark:border-gs-700;
 }
 
 /**

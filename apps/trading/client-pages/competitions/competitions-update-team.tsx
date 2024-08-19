@@ -48,7 +48,7 @@ export const CompetitionsUpdateTeam = () => {
             <VegaIcon
               name={VegaIconNames.CHEVRON_LEFT}
               size={12}
-              className="text-gs-100 "
+              className="text-surface-1-fg "
             />{' '}
             <span className="group-hover:underline">
               {t('Go back to the team profile')}

@@ -91,7 +91,7 @@ export const renderGroupedParams = (
     'pt-6 text-3xl underline': level === 1,
     'pt-3 text-2xl': level === 2,
     'pt-2 text-lg': level === 3,
-    'pt-2 text-default': level === 4,
+    'pt-2': level === 4,
   });
 
   return Object.entries(group).map(([key, value]) => {

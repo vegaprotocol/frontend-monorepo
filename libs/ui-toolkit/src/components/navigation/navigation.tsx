@@ -172,7 +172,7 @@ export const NavigationContent = ({
           'navigation-content',
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
-          'border rounded border-gs-400',
+          'border rounded border-gs-300 dark:border-gs-700',
           'bg-surface-1'
         )}
       >
@@ -214,7 +214,7 @@ export const NavigationLink = ({
           <>
             <span
               className={cn({
-                'text-gs-50': isActive,
+                'text-surface-0-fg': isActive,
               })}
             >
               {children as ReactNode}
@@ -281,7 +281,7 @@ export const Navigation = ({
       className={cn(
         'h-12',
         'group flex gap-4 items-center',
-        'border-b px-3 relative border-b-gs-600'
+        'border-b px-3 relative border-gs-300 dark:border-gs-700'
       )}
       data-testid="navigation"
     >
@@ -289,7 +289,7 @@ export const Navigation = ({
       <div
         className={cn(
           'navbar',
-          'flex gap-4 h-12 items-center text-lg text-gs-200'
+          'flex gap-4 h-12 items-center text-lg text-surface-0-fg-muted'
         )}
       >
         {children}

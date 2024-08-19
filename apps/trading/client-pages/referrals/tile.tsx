@@ -51,7 +51,7 @@ export const StatTile = ({
   }
   return (
     <Tile>
-      <h3 data-testid={testId} className="mb-1 text-sm text-gs-100  calt">
+      <h3 data-testid={testId} className="mb-1 text-sm text-surface-1-fg  calt">
         {title}
       </h3>
       <div
@@ -61,7 +61,9 @@ export const StatTile = ({
         {children}
       </div>
       {description && (
-        <div className="text-sm text-left text-gs-100 ">{description}</div>
+        <div className="text-sm text-left text-surface-1-fg ">
+          {description}
+        </div>
       )}
     </Tile>
   );
@@ -71,7 +73,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   const t = useT();
   return (
     <Tile>
-      <h3 className="mb-1 text-sm text-gs-100  calt">{title}</h3>
+      <h3 className="mb-1 text-sm text-surface-1-fg  calt">{title}</h3>
       <div className="text-xs text-gs-300  leading-[3rem]">
         {t('No active program')}
       </div>

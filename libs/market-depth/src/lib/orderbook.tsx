@@ -162,7 +162,7 @@ export const OrderbookMid = ({
         {spread && !spread.startsWith('-') && (
           <span
             title={t('Spread')}
-            className="font-mono text-xs text-muted"
+            className="font-mono text-xs text-surface-0-fg-muted"
             data-testid="spread"
           >
             ({addDecimalsFormatNumber(spread, decimalPlaces)})

@@ -59,7 +59,7 @@ export const TransactionSteps = ({
   if (result?.txHash) {
     aStepDescription = (
       <a
-        className="text-muted inline-flex gap-1 items-center hover:underline"
+        className="text-surface-1-fg-muted inline-flex gap-1 items-center hover:underline"
         href={explorerLink(EXPLORER_TX.replace(':hash', result.txHash))}
         title={t('View on explorer')}
       >

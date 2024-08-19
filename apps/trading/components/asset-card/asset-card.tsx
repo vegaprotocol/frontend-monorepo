@@ -49,7 +49,7 @@ export const AssetCard = ({
         <span className="flex items-end grow text-lg min-w-0">
           <span className="shrink-0">{asset.symbol}</span>
           {asset.source.__typename === 'ERC20' && (
-            <small className="grow text-muted ml-0.5 truncate tracking-tight">
+            <small className="grow text-surface-1-fg-muted ml-0.5 truncate tracking-tight">
               {getExternalChainShortLabel(asset.source.chainId)}
             </small>
           )}

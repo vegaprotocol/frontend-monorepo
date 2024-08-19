@@ -23,7 +23,10 @@ export const Balance = ({
       {balance} {symbol}
     </div>
   ) : (
-    <div className="text-muted text-xs" data-testid="asset-balance">
+    <div
+      className="text-surface-0-fg-muted text-xs"
+      data-testid="asset-balance"
+    >
       -
     </div>
   );

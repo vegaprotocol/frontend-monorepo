@@ -94,7 +94,9 @@ export const CardStat = ({
     <p className="leading-none">
       {description ? <Tooltip description={description}>{val}</Tooltip> : val}
       {text && (
-        <small className="text-muted mt-0.5 block text-xs">{text}</small>
+        <small className="text-surface-1-fg-muted mt-0.5 block text-xs">
+          {text}
+        </small>
       )}
     </p>
   );
@@ -102,7 +104,7 @@ export const CardStat = ({
 
 export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
   return (
-    <table {...props} className="text-muted mt-0.5 w-full text-xs">
+    <table {...props} className="text-surface-1-fg-muted mt-0.5 w-full text-xs">
       <tbody>{props.children}</tbody>
     </table>
   );

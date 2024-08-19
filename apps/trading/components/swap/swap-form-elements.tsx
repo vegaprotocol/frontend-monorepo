@@ -44,7 +44,7 @@ export const AssetInput = ({
 
   return (
     <div
-      className="focus-within:bg-gs-600 bg-surface-2 py-2 px-4 rounded-lg border-gs-500 border flex flex-col gap-1 cursor-pointer"
+      className="focus-within:bg-gs-600 bg-surface-2 py-2 px-4 rounded-lg border-gs-300 dark:border-gs-700 border flex flex-col gap-1 cursor-pointer"
       data-testid={testId}
       role="button"
       // No need for tabindex as the input can be tabbed to
@@ -52,7 +52,7 @@ export const AssetInput = ({
       onClick={() => inputRef.current?.focus()}
       onKeyUp={(e) => e.code === 'Enter' && inputRef.current?.focus()}
     >
-      <label htmlFor={inputName} className="text-sm text-secondary">
+      <label htmlFor={inputName} className="text-sm text-surface-0-fg-muted">
         {label}
       </label>
       <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export const AssetInput = ({
           testId={`${testId}-dropdown`}
         />
       </div>
-      <div className="flex justify-end items-center text-secondary text-sm pb-1">
+      <div className="flex justify-end items-center text-surface-0-fg-muted text-sm pb-1">
         {step && amount && amount < step ? (
           <span className="text-warning pb-1">
             {t('Amount cannot be lower than {{step}}', { step })}
@@ -98,7 +98,7 @@ export const AssetInput = ({
 export const SwapButton = ({ onClick }: { onClick: () => void }) => (
   <button
     type="button"
-    className="flex justify-center p-2 w-fit rounded-full bg-surface-2 self-center -my-5 z-10 hover:bg-surface-1 hover: border-gs-500 border"
+    className="flex justify-center p-2 w-fit rounded-full bg-surface-2 self-center -my-5 z-10 hover:bg-surface-1 hover: border-gs-300 dark:border-gs-700 border"
     onClick={onClick}
     data-testid="swap-button"
   >
@@ -120,7 +120,10 @@ export const PriceImpactInput = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="price-tolerance" className="text-secondary text-sm">
+      <label
+        htmlFor="price-tolerance"
+        className="text-surface-0-fg-muted text-sm"
+      >
         {t('Price impact tolerance')}
       </label>
       <div className="flex items-center gap-2 flex-wrap">
@@ -195,7 +198,7 @@ export const DropdownAsset = ({
       trigger={
         <DropdownMenuTrigger asChild>
           <button
-            className="flex gap-4 items-center py-2 pl-2 pr-4 border border-gs-500 rounded-full h-12"
+            className="flex gap-4 items-center py-2 pl-2 pr-4 border border-gs-300 dark:border-gs-700 rounded-full h-12"
             data-testid={`${testId}-trigger`}
           >
             {asset ? (

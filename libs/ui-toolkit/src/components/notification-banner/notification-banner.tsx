@@ -10,7 +10,7 @@ interface NotificationBannerProps {
   onClose?: () => void;
   className?: string;
 }
-
+// TODO: Fix intent colors here
 export const NotificationBanner = ({
   intent = Intent.None,
   children,

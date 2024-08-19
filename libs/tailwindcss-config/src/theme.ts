@@ -18,7 +18,7 @@ export const theme = {
     'button-lg': 'var(--button-border-radius-lg)',
   },
   borderWidth: {
-    button: 'var(--button-border-width)',
+    999: 'var(--button-border-width)',
   },
   colors: {
     gs: {

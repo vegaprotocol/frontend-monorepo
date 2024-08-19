@@ -96,7 +96,7 @@ export const RewardDetailContainer = (props: {
   });
   const total = BigNumber.sum.apply(null, amounts);
 
-  const labelClasses = 'text-sm text-muted';
+  const labelClasses = 'text-sm text-surface-1-fg-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
   const asset = first.transfer.asset;
@@ -154,7 +154,7 @@ export const RewardDetailContainer = (props: {
             ]
           }
         </HeaderPage>
-        <p className="text-muted text-4xl">
+        <p className="text-surface-1-fg-muted text-4xl">
           {formatNumber(total)} <span className="calt">{asset.symbol}</span>
         </p>
       </header>

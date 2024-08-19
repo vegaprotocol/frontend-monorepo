@@ -31,7 +31,7 @@ export const Popover = ({
         <PopoverPrimitive.Content
           data-testid="popover-content"
           align={align}
-          className="rounded bg-surface-2 text-default border border-gs-300 dark:border-gs-700"
+          className="rounded bg-surface-2 border border-gs-300 dark:border-gs-700"
           sideOffset={sideOffset}
           alignOffset={alignOffset}
         >

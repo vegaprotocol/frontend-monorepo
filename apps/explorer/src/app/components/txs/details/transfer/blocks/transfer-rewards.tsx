@@ -154,7 +154,7 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
       </ul>
       <div className="px-6 pt-1 pb-5">
         {rankTable && rankTable.length > 0 ? (
-          <table className="border-collapse border border-gs-600 ">
+          <table className="border-collapse border border-gs-300 dark:border-gs-700 ">
             <thead>
               <tr>
                 <th className="border border-gs-700 bg-gs-700 px-3">
@@ -169,10 +169,10 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
               {rankTable.map((row, i) => {
                 return (
                   <tr key={`rank-${i}`}>
-                    <td className="border border-gs-600 text-center">
+                    <td className="border border-gs-300 dark:border-gs-700 text-center">
                       {row.startRank}
                     </td>
-                    <td className="border border-gs-600 text-center">
+                    <td className="border border-gs-300 dark:border-gs-700 text-center">
                       {row.shareRatio}
                     </td>
                   </tr>

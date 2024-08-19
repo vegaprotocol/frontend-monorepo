@@ -9,8 +9,8 @@ import { useT } from '../../use-t';
 const itemClass = cn(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-gs-400',
-  'focus:bg-gs-400',
+  'hover:bg-surface-3',
+  'focus:bg-surface-3',
   'select-none',
   'whitespace-nowrap'
 );
@@ -75,8 +75,8 @@ export const TradingDropdownContent = forwardRef<
       ref={forwardedRef}
       className={cn(
         'bg-surface-2 ',
-        'border-gs-500  border',
-        'text-default z-20 rounded p-2'
+        'border-gs-300 dark:border-gs-700 border',
+        'z-20 rounded p-2'
       )}
       align={align}
       sideOffset={sideOffset}
@@ -199,7 +199,9 @@ export const TradingDropdownCopyItem = ({
       >
         <VegaIcon name={VegaIconNames.COPY} size={16} />
         {text}
-        {copied && <span className="text-xs text-gs-100">{t('Copied')}</span>}
+        {copied && (
+          <span className="text-xs text-surface-1-fg">{t('Copied')}</span>
+        )}
       </TradingDropdownItem>
     </CopyToClipboard>
   );

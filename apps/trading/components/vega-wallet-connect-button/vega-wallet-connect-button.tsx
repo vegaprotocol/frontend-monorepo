@@ -213,7 +213,7 @@ const KeypairItem = ({
           {copied && <span className="text-xs">{t('Copied')}</span>}
         </div>
         <div
-          className={cn('flex-1 mr-2 text-secondary text-sm')}
+          className={cn('flex-1 mr-2 text-surface-0-fg-muted text-sm')}
           data-testid={`key-${pk.publicKey}`}
         >
           {!isReadOnly && (

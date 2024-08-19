@@ -127,7 +127,7 @@ export const TeamCard = ({
         </div>
 
         <dl className="w-full pt-4 border-t border-gs-700 ">
-          <dt className="mb-1 text-sm text-muted">
+          <dt className="mb-1 text-sm text-surface-1-fg-muted">
             {t('Last {{games}} games result', {
               replace: { games: lastGames.length || '' },
             })}

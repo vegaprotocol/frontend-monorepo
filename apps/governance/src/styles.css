@@ -34,16 +34,87 @@
 
     /* grayscale */
     --gs-0: var(--color-white);
-    --gs-50: 220 222 227;
-    --gs-100: 148 150 155;
-    --gs-200: 124 126 131;
-    --gs-300: 98 100 105;
-    --gs-400: 68 70 75;
-    --gs-500: 50 51 57;
-    --gs-600: 41 43 48;
-    --gs-700: 32 34 39;
-    --gs-800: 23 25 30;
-    --gs-900: 5 6 12;
+    --gs-50: 250 250 250;
+    --gs-50-hex: #fafafa;
+    --gs-100: 244 244 245;
+    --gs-100-hex: #f4f4f5;
+    --gs-200: 228 228 231;
+    --gs-200-hex: #e4e4e7;
+    --gs-300: 212 212 216;
+    --gs-300-hex: #d4d4d8;
+    --gs-400: 161 161 170;
+    --gs-400-hex: #a1a1aa;
+    --gs-500: 113 113 122;
+    --gs-500-hex: #71717a;
+    --gs-600: 82 82 91;
+    --gs-600-hex: #52525b;
+    --gs-700: 63 63 70;
+    --gs-700-hex: #3f3f46;
+    --gs-800: 39 39 42;
+    --gs-800-hex: #27272a;
+    --gs-900: 24 24 27;
+    --gs-900-hex: #18181b;
+    --gs-950: 9 9 11;
+    --gs-950-hex: #09090b;
+
+    /* Semantic colors
+     *
+     * - surface: standard background and foreground colors
+     * - intent: base bg color, eg buttons
+     * - intent-outline: borders
+     * - intent-foreground: card text color
+     * - intent-background: card bg color
+     * - intent-from: 'from' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     * - intent-to: 'to' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     */
+
+    --surface-0: var(--color-black);
+    --surface-0-fg: var(--gs-50);
+    --surface-0-fg-muted: var(--gs-800);
+    --surface-1: var(--gs-950);
+    --surface-1-fg: var(--gs-50);
+    --surface-1-fg-muted: var(--gs-400);
+    --surface-2: var(--gs-900);
+    --surface-2-fg: var(--gs-50);
+    --surface-2-fg-muted: var(--gs-400);
+    --surface-3: var(--gs-800);
+    --surface-3-fg: var(--gs-50);
+    --surface-3-fg-muted: var(--gs-600);
+
+    --intent-none: transparent;
+    --intent-none-outline: var(--gs-700);
+    --intent-none-foreground: var(--gs-50);
+    --intent-none-background: var(--gs-800);
+
+    --intent-primary: var(--color-blue);
+    --intent-primary-outline: var(--color-blue);
+    --intent-primary-foreground: var(--color-white);
+    --intent-primary-background: var(--color-blue-700);
+
+    --intent-secondary: var(--color-blue);
+    --intent-secondary-outline: var(--color-blue);
+    --intent-secondary-foreground: var(--color-white);
+    --intent-secondary-background: var(--color-blue-700);
+
+    --intent-danger: var(--color-red);
+    --intent-danger-outline: var(--color-red);
+    --intent-danger-foreground: var(--color-white);
+    --intent-danger-background: var(--color-red-700);
+
+    --intent-info: var(--color-blue);
+    --intent-info-outline: var(--color-blue);
+    --intent-info-foreground: var(--color-white);
+    --intent-info-background: var(--color-blue-700);
+
+    --intent-warning: var(--color-orange);
+    --intent-warning-outline: var(--color-orange);
+    --intent-warning-foreground: var(--color-white);
+    --intent-warning-background: var(--color-orange-700);
+
+    --intent-success: var(--color-green);
+    --intent-success-outline: var(--color-green);
+    --intent-success-foreground: var(--color-white);
+    --intent-success-background: var(--color-green-700);
 
     /* Fonts */
     --font-sans: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -55,47 +126,6 @@
     --font-alt: AlphaLyrae, 'Helvetica Neue', -apple-system, BlinkMacSystemFont,
       'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
       'Segoe UI Symbol', 'Noto Color Emoji';
-
-    /* Semantic (intent) colors
-     *
-     * - intent: base bg color, eg buttons
-     * - intent-outline: borders
-     * - intent-foreground: card text color
-     * - intent-background: card bg color */
-    --intent-none: transparent;
-    --intent-none-outline: var(--gs-500);
-    --intent-none-foreground: var(--gs-50);
-    --intent-none-background: var(--gs-700);
-
-    --intent-primary: var(--color-blue);
-    --intent-primary-outline: var(--color-blue);
-    --intent-primary-foreground: var(--color-white);
-    --intent-primary-background: var(--color-blue-300);
-
-    --intent-secondary: var(--color-blue);
-    --intent-secondary-outline: var(--color-blue);
-    --intent-secondary-foreground: var(--color-white);
-    --intent-secondary-background: var(--color-blue-300);
-
-    --intent-danger: var(--color-red);
-    --intent-danger-outline: var(--color-red);
-    --intent-danger-foreground: var(--color-white);
-    --intent-danger-background: var(--color-red-300);
-
-    --intent-info: var(--color-blue);
-    --intent-info-outline: var(--color-blue);
-    --intent-info-foreground: var(--color-white);
-    --intent-info-background: var(--color-blue-300);
-
-    --intent-warning: var(--color-orange);
-    --intent-warning-outline: var(--color-orange);
-    --intent-warning-foreground: var(--color-white);
-    --intent-warning-background: var(--color-orange-300);
-
-    --intent-success: var(--color-green);
-    --intent-success-outline: var(--color-green);
-    --intent-success-foreground: var(--color-white);
-    --intent-success-background: var(--color-green-300);
 
     /* Buttons */
     --button-border-width: 1px;
@@ -118,7 +148,7 @@
     @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-2 text-gs-100;
+    @apply mb-2;
   }
 }
 
@@ -152,12 +182,12 @@
 /* Dark variables */
 .ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.gs.400);
+  --ag-border-color: theme(colors.gs.700);
   --ag-header-background-color: theme(colors.black);
   --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.gs.400);
+  --ag-header-column-separator-color: theme(colors.gs.700);
   --ag-row-border-color: theme(colors.gs.900);
-  --ag-row-hover-color: theme(colors.gs.700);
+  --ag-row-hover-color: theme(colors.gs.900);
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {

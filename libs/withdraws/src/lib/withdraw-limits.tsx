@@ -222,7 +222,7 @@ const GasPrice = ({
           <span className={cn(expensiveClassNames, 'text-xs')}>{range}</span>
         </Tooltip>
 
-        <span className="text-muted text-xs">
+        <span className="text-surface-0-fg-muted text-xs">
           ~{formatNumber(basePriceQUSD, 2)} - {formatNumber(maxPriceQUSD, 2)}{' '}
           qUSD
         </span>

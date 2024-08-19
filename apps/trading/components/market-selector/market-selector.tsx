@@ -220,7 +220,7 @@ const MarketList = ({
         className={cn(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
           'bg-surface-2',
-          'p-2 mx-2 border-b border-default text-xs text-secondary'
+          'p-2 mx-2 border-b border-default text-xs text-surface-0-fg-muted'
         )}
       >
         <div className="col-span-4 sm:col-span-5" role="columnheader">

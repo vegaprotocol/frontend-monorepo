@@ -69,7 +69,7 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
   return (
     <div className="mb-2">
       <dl className="flex items-center">
-        <dt className="text-xs text-gs-200 ">
+        <dt className="text-xs text-surface-2-fg ">
           {AccountTypeMapping[data.type]}
           {data.market &&
             ` (${data.market.tradableInstrument.instrument.code})`}
@@ -122,7 +122,7 @@ export const AccountCard = ({
           <span className="grow ml-2 text-lg min-w-0">
             <span>{asset.name}</span>
             {asset.source.__typename === 'ERC20' && (
-              <small className="grow text-muted ml-0.5 truncate tracking-tight">
+              <small className="grow text-surface-0-fg-muted ml-0.5 truncate tracking-tight">
                 {getExternalChainShortLabel(asset.source.chainId)}
               </small>
             )}

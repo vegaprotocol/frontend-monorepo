@@ -75,7 +75,7 @@ export const TradingRadio = ({
   const itemClasses = cn(
     'flex justify-center items-center',
     'w-3 h-3 rounded-full border',
-    'border-gs-500 ',
+    'border-gs-300 dark:border-gs-700 ',
     'aria-checked:border-gs-400',
     'disabled:border-gs-600',
     'bg-surface-2 '
@@ -96,7 +96,7 @@ export const TradingRadio = ({
       >
         <RadioGroupPrimitive.Indicator className={indicatorClasses} />
       </RadioGroupPrimitive.Item>
-      <span className={disabled ? 'text-gs-200 ' : 'cursor-pointer'}>
+      <span className={disabled ? 'text-surface-2-fg ' : 'cursor-pointer'}>
         {label}
       </span>
     </label>

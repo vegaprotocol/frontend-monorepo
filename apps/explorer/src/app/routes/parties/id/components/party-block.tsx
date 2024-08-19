@@ -8,7 +8,7 @@ export interface PartyBlockProps {
 
 export function PartyBlock({ children, title, action }: PartyBlockProps) {
   return (
-    <div className="border-2 min-h-[138px] border-gs-600  p-5 mt-5">
+    <div className="border-2 min-h-[138px] border-gs-300 dark:border-gs-700  p-5 mt-5">
       <div
         className="flex flex-col md:flex-row gap-1 justify-between content-start mb-2"
         data-testid="page-title"
