@@ -22,7 +22,7 @@ export const TradingDialog = ({
     <DialogPrimitives.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay
-          className="fixed inset-0 bg-surface-2/80 z-20"
+          className="fixed inset-0 bg-surface-0/80 z-20"
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content
@@ -43,9 +43,8 @@ export const TradingDialog = ({
               className={cn(
                 'border rounded-md',
                 'p-8',
-                'border-gs-600 ',
-                'bg-surface-2',
-                'text-gs-50 '
+                'border-gs-300 dark:border-gs-700',
+                'bg-surface-0 text-bg-surface-fg'
               )}
             >
               <div className={cn('flex justify-between items-center')}>

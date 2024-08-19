@@ -53,7 +53,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={cn(
-                'px-5 py-3 text-xs font-normal',
+                'px-5 py-3 text-xs text-surface-1-fg-muted',
                 INNER_BORDER_STYLE,
                 headerClassName
               )}

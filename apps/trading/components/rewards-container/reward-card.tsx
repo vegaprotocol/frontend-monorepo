@@ -111,7 +111,7 @@ const GroupCard = ({
         <div
           className={cn(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-surface-1-900  h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-surface-1  h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
