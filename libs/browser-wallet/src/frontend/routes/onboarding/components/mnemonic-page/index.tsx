@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { HiddenContainer } from '@/components/hidden-container';
 import { OnboardingPage } from '@/components/pages/onboarding-page';
-import { clearMnemonic } from '@/hooks/suggest-mnemonic';
 
 import { FULL_ROUTES } from '../../../route-names';
 import { SaveMnemonicForm } from './save-mnemonic-form';
@@ -46,7 +45,6 @@ export const MnemonicPage = ({ mnemonic }: { mnemonic: string | null }) => {
     <OnboardingPage
       name="Secure your wallet"
       backLocation={FULL_ROUTES.createWallet}
-      onBack={clearMnemonic}
     >
       <>
         <p data-testid={locators.saveMnemonicDescription} className="pb-6">
