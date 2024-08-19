@@ -881,6 +881,7 @@ const EntityScopeIconMap: Record<EntityScope, VegaIconNames> = {
 const DistStrategyIconMap: Record<DistributionStrategy, VegaIconNames> = {
   [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: VegaIconNames.MEDAL,
   [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: VegaIconNames.CLOCK,
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK_LOTTERY]: VegaIconNames.DICE,
 };
 
 const EntityIcon = ({

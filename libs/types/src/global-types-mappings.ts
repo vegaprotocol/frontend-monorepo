@@ -808,11 +808,14 @@ export enum DistributionStrategyMapping {
   DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',
   /** Rewards funded using the rank strategy */
   DISTRIBUTION_STRATEGY_RANK = 'Rank',
+  /** Rewards funded using the lottery strategy */
+  DISTRIBUTION_STRATEGY_RANK_LOTTERY = 'Lottery',
 }
 
 export enum DistributionStrategyDescriptionMapping {
   DISTRIBUTION_STRATEGY_PRO_RATA = "Rewards funded using the pro-rata strategy are distributed pro-rata by each party's reward score scaled by any active multipliers they have.",
   DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy.',
+  DISTRIBUTION_STRATEGY_RANK_LOTTERY = 'Rewards funded using the lottery strategy',
 }
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
