@@ -1,7 +1,7 @@
 import {
-  InjectedConnector,
-  JsonRpcConnector,
-  SnapConnector,
+  // InjectedConnector,
+  // JsonRpcConnector,
+  // SnapConnector,
   ViewPartyConnector,
   InBrowserConnector,
   createConfig,
@@ -14,7 +14,7 @@ import {
 import {
   CHAIN_IDS,
   useEnvironment,
-  useFeatureFlags,
+  // useFeatureFlags,
 } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
 
@@ -29,12 +29,12 @@ export const useVegaWalletConfig = () => {
   return useMemo(() => {
     if (!API_NODE || !VEGA_WALLET_URL) return;
 
-    const injected = new InjectedConnector();
+    // const injected = new InjectedConnector();
     const inBrowser = new InBrowserConnector();
 
-    const jsonRpc = new JsonRpcConnector({
-      url: VEGA_WALLET_URL,
-    });
+    // const jsonRpc = new JsonRpcConnector({
+    //   url: VEGA_WALLET_URL,
+    // });
 
     const snap = new SnapConnector({
       node: new URL(API_NODE.graphQLApiUrl).origin,
@@ -47,9 +47,7 @@ export const useVegaWalletConfig = () => {
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: IN_BROWSER_WALLET
-        ? [injected, snap, jsonRpc, viewParty, inBrowser]
-        : [injected, snap, jsonRpc, viewParty],
+      connectors: [inBrowser, viewParty],
     });
 
     return config;
