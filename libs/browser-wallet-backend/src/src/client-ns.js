@@ -120,9 +120,6 @@ export default function init({
           if (network.hidden && hiddenNetworksEnabled !== true) {
             throw new JSONRPCServer.Error(...Errors.DEVELOPMENT_CHAIN_ID);
           }
-          // if (action.openPopup && isIos()) {
-          //   action.openPopup();
-          // }
           const reply = await interactor.reviewConnection({
             origin: context.origin,
             chainId: params.chainId,
@@ -198,9 +195,6 @@ export default function init({
           !isLocked;
         let approved = canBeAutoApproved;
         if (!canBeAutoApproved) {
-          // if (action.openPopup && isIos()) {
-          //   action.openPopup();
-          // }
           approved = await interactor.reviewTransaction({
             transaction: params.transaction,
             publicKey: params.publicKey,

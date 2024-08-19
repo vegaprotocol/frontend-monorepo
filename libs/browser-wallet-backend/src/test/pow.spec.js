@@ -46,22 +46,4 @@ describe('pow', () => {
     const solver = await webworker();
     expect(solver).toBe(false);
   });
-
-  // TODO needs to be fixed
-  // it('webworker solver should be function if workers are available', async () => {
-  //   expect(global.Worker).toBe(undefined);
-  //   // expect(global.navigator).toBe(undefined);
-
-  //   global.Worker = class {};
-  //   global.navigator = {
-  //     hardwareConcurrency: 1,
-  //   };
-
-  //   const solver = await webworker();
-  //   expect(solver).not.toBe(false);
-  //   expect(typeof solver).toBe('function');
-
-  //   delete global.Worker;
-  //   delete global.navigator;
-  // });
 });
