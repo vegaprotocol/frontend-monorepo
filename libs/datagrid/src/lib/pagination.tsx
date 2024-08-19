@@ -26,7 +26,7 @@ export const Pagination = ({
   }
 
   return (
-    <div className="border-default flex items-center justify-between border-t p-1">
+    <div className="border-gs-300 dark:border-gs-700 flex items-center justify-between border-t p-1">
       <div className="text-xs">
         {false}
         {showRetentionMessage &&

@@ -73,7 +73,7 @@ export const Assets = () => {
           {t('Swap')}
         </NavLink>
       </nav>
-      <div className="pt-4 border-t md:p-6 md:border md:rounded-xl border-default">
+      <div className="pt-4 border-t md:p-6 md:border md:rounded-xl border-gs-300 dark:border-gs-700">
         <Outlet />
       </div>
     </div>

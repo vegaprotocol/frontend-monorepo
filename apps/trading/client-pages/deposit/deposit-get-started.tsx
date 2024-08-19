@@ -26,7 +26,7 @@ export const DepositGetStarted = () => {
   }
 
   return (
-    <div className="pt-6 border-t border-default">
+    <div className="pt-6 border-t border-gs-300 dark:border-gs-700">
       <div className={wrapperClasses}>
         <h3 className="text-lg">{t('Get started')}</h3>
         <GetStartedCheckList />

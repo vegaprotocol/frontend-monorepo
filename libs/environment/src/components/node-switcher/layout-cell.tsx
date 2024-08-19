@@ -31,7 +31,7 @@ export const LayoutCell = ({
           <span
             /* separator */
             aria-hidden
-            className="border-b border-dashed border-default w-full h-[9px]"
+            className="border-b border-dashed border-gs-300 dark:border-gs-700 w-full h-[9px]"
           />
         </>
       )}

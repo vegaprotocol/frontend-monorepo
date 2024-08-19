@@ -112,10 +112,10 @@ const PortfolioSmall = () => {
       <div>
         <PortfolioActionTabs />
       </div>
-      <div className="h-[300px] border-t border-default">
+      <div className="h-[300px] border-t border-gs-300 dark:border-gs-700">
         <PortfolioTopTabs />
       </div>
-      <div className="h-[300px] border-t border-default">
+      <div className="h-[300px] border-t border-gs-300 dark:border-gs-700">
         <PortfolioBottomTabs />
       </div>
     </div>

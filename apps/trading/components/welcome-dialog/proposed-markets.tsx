@@ -63,7 +63,7 @@ export const ProposedMarkets = () => {
   const tokenLink = useLinks(DApp.Governance);
   return useMemo(
     () => (
-      <div className="mt-7 pt-8 border-t border-default">
+      <div className="mt-7 pt-8 border-t border-gs-300 dark:border-gs-700">
         {newMarkets.length > 0 ? (
           <>
             <h2 className="uppercase text-2xl">{t('Proposed markets')}</h2>

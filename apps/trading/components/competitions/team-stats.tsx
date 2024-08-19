@@ -164,7 +164,9 @@ export const StatSection = ({ children }: { children: ReactNode }) => {
 };
 
 export const StatSectionSeparator = () => {
-  return <div className="hidden md:block border-r border-default" />;
+  return (
+    <div className="hidden md:block border-r border-gs-300 dark:border-gs-700" />
+  );
 };
 
 export const StatList = ({ children }: { children: ReactNode }) => {

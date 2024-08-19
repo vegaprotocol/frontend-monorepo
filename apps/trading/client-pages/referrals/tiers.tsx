@@ -65,7 +65,7 @@ const StakingTier = ({
     <div
       className={cn(
         'overflow-hidden',
-        'border border-default rounded-md w-full',
+        'border border-gs-300 dark:border-gs-700 rounded-md w-full',
         'flex flex-row',
         'bg-surface-0',
         GRADIENT,

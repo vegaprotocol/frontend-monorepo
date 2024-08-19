@@ -27,18 +27,18 @@ interface ColumnHeaderProps {
 }
 
 const headerGridItemStyles = (last = false) =>
-  cn('border-r border-b border-default', 'py-3 px-5', {
+  cn('border-r border-b border-gs-300 dark:border-gs-700', 'py-3 px-5', {
     'border-r-0': last,
   });
 
 export const rowGridItemStyles = (last = false) =>
-  cn('relative', 'border-r border-b border-default', {
+  cn('relative', 'border-r border-b border-gs-300 dark:border-gs-700', {
     'border-r-0': last,
   });
 
 const gridStyles = cn(
   'grid grid-cols-[repeat(4,minmax(100px,auto))] max-w-full overflow-auto',
-  `border-t border-default`,
+  `border-t border-gs-300 dark:border-gs-700`,
   'text-sm'
 );
 

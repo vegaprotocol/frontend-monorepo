@@ -307,7 +307,7 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
+      <div className="border-t border-gs-300 dark:border-gs-700">
         <OrderbookControls
           lastTradedPrice={lastTradedPrice}
           resolution={resolution}

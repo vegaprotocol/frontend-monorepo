@@ -147,7 +147,7 @@ const FullScreenPopover = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          className="w-screen bg-surface-1  border-y border-default"
+          className="w-screen bg-surface-1  border-y border-gs-300 dark:border-gs-700"
           sideOffset={0}
         >
           {children}

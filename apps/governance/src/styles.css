@@ -152,12 +152,6 @@
   }
 }
 
-@layer components {
-  .border-default {
-    @apply border-gs-400;
-  }
-}
-
 /* AG GRID - Do not edit without updating other global stylesheets for each app */
 
 .vega-ag-grid .ag-root-wrapper {

@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn';
-import { getIntentBackground } from '../../utils/intent';
+import { getIntentColor } from '../../utils/intent';
 import { Intent } from '../../utils/intent';
 
 interface ProgressBarProps {
@@ -34,7 +34,7 @@ export const ProgressBar = ({
           { 'rounded-sm': compact },
           intent === undefined || intent === Intent.None
             ? 'bg-surface-0'
-            : getIntentBackground(intent ?? Intent.None)
+            : getIntentColor(intent ?? Intent.None)
         )}
         style={{ width: `${Math.max(0, value ?? 0)}%` }}
       ></div>

@@ -179,7 +179,7 @@ export const StopLimit = (props: FormProps) => {
             </AdvancedControls>
           </>
         )}
-        <hr className="border-default" />
+        <hr className="border-gs-300 dark:border-gs-700" />
         <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton text={t('Place limit stop order')} />
@@ -189,7 +189,7 @@ export const StopLimit = (props: FormProps) => {
         </Datagrid>
         {oco && (
           <>
-            <hr className="border-default" />
+            <hr className="border-gs-300 dark:border-gs-700" />
             <Datagrid heading={<Data.StopSummary oco />}>
               {sizeMode === 'contracts' ? (
                 <Data.Notional name="ocoNotional" />

@@ -340,7 +340,7 @@ export const RewardHistoryTable = ({
           </Button>
         </div>
       </div>
-      <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
+      <div className="border rounded-lg md:rounded-sm overflow-hidden border-gs-300 dark:border-gs-700">
         <AgGrid
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}

@@ -220,7 +220,7 @@ const MarketList = ({
         className={cn(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
           'bg-surface-2',
-          'p-2 mx-2 border-b border-default text-xs text-surface-0-fg-muted'
+          'p-2 mx-2 border-b border-gs-300 dark:border-gs-700 text-xs text-surface-0-fg-muted'
         )}
       >
         <div className="col-span-4 sm:col-span-5" role="columnheader">
@@ -241,7 +241,9 @@ const MarketList = ({
         <div className="hidden sm:flex col-span-2" role="columnheader" />
       </div>
       {filterSummary ? (
-        <div className="text-xs border-b border-default">{filterSummary}</div>
+        <div className="text-xs border-b border-gs-300 dark:border-gs-700">
+          {filterSummary}
+        </div>
       ) : null}
       <div ref={listRef}>
         <List

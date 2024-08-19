@@ -46,7 +46,7 @@ export const Navbar = () => {
 
   const rootClasses = cn(
     'flex gap-3 h-10 pr-1',
-    'border-b border-default',
+    'border-b border-gs-300 dark:border-gs-700',
     'bg-surface-1 text-surface-1-fg-muted'
   );
   return (
@@ -118,7 +118,7 @@ export const Navbar = () => {
           <D.Content
             className={cn(
               'lg:hidden',
-              'border-default bg-surface-1 text-surface-1-fg-muted fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col'
+              'border-gs-300 dark:border-gs-700 bg-surface-1 text-surface-1-fg-muted fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col'
             )}
             data-testid="navbar-menu-content"
           >

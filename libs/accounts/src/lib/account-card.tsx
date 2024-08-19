@@ -111,7 +111,7 @@ export const AccountCard = ({
   return (
     <section
       data-testid="account-card"
-      className={cn('m-1 rounded border-default', {
+      className={cn('m-1 rounded border-gs-300 dark:border-gs-700', {
         'bg-surface-2 hover:bg-surface-3': !(expandable && expanded),
         'bg-surface-2': expandable && expanded,
       })}

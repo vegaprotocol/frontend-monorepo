@@ -31,7 +31,7 @@ export const TicketTypeSelect = ({
 
   return (
     <ToggleGroup.Root
-      className="flex border-b border-default"
+      className="flex border-b border-gs-300 dark:border-gs-700"
       type="single"
       value={type}
       onValueChange={(type) => {

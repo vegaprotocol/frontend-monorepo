@@ -189,7 +189,7 @@ export const CompetitionsGame = () => {
       {gameId && (
         <section>
           <Tabs defaultValue="scores">
-            <div className="flex justify-between items-center border-b border-default">
+            <div className="flex justify-between items-center border-b border-gs-300 dark:border-gs-700">
               <TabsList>
                 <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
                 <TabsTrigger value="history">{t('Score history')}</TabsTrigger>

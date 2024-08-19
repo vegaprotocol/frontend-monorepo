@@ -51,7 +51,7 @@ export const Notification = ({
       data-testid={testId || 'notification'}
       className={cn(
         'flex items-start gap-2',
-        'rounded py-2 px-3',
+        'rounded py-2 px-3 border',
         getIntentBorder(intent),
         getIntentBackground(intent)
       )}

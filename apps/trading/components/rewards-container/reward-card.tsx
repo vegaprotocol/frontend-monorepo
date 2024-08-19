@@ -179,7 +179,7 @@ const GroupCard = ({
           <div>
             {/** REQUIREMENTS */}
             {dispatchStrategy && (
-              <div className="pt-4 border-t border-default">
+              <div className="pt-4 border-t border-gs-300 dark:border-gs-700">
                 <RewardRequirements
                   dispatchStrategy={dispatchStrategy}
                   dispatchAsset={transferAsset}

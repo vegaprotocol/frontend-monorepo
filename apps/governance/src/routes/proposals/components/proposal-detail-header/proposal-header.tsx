@@ -330,10 +330,10 @@ const ProposalDetails = ({
   if (proposal.__typename === 'BatchProposal' && proposal.subProposals) {
     details = (
       <div>
-        <h3 className="text-xl border-b border-default pb-3 mb-3">
+        <h3 className="text-xl border-b border-gs-300 dark:border-gs-700 pb-3 mb-3">
           Proposals in batch
         </h3>
-        <ul className="flex flex-col gap-2 border-b border-default pb-3 mb-3">
+        <ul className="flex flex-col gap-2 border-b border-gs-300 dark:border-gs-700 pb-3 mb-3">
           {proposal.subProposals.map((p, i) => {
             if (!p?.terms) return null;
             return (

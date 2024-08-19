@@ -21,7 +21,7 @@ export const MultiSelect = ({
           'relative',
           'text-sm px-3 py-1.5 pr-6 h-8',
           'flex items-center justify-between border rounded gap-1',
-          'border-default bg-surface-2',
+          'border-gs-300 dark:border-gs-700 bg-surface-2',
           'text-surface-2-fg'
         )}
       >
@@ -40,7 +40,7 @@ export const MultiSelect = ({
         sideOffset={5}
         className={cn(
           'bg-surface-2',
-          'border border-default',
+          'border border-gs-300 dark:border-gs-700',
           'relative z-20 rounded p-2'
         )}
       >

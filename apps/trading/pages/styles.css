@@ -194,10 +194,6 @@ body,
   @apply tracking-tighter;
 }
 
-.border-default {
-  @apply border-gs-300 dark:border-gs-700;
-}
-
 /**
  * ALLOTMENT
  */

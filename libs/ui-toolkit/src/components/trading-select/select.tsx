@@ -63,7 +63,7 @@ export const TradingRichSelect = forwardRef<
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-surface-2 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
           position="item-aligned"
           align="start"
           side="bottom"
@@ -135,7 +135,7 @@ export const MiniSelect = ({
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-surface-2 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
           position="popper"
           align="start"
           side="bottom"

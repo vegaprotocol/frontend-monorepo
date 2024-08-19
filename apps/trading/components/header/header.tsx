@@ -62,7 +62,7 @@ export const HeaderTitle = ({ children }: { children: ReactNode }) => {
   return (
     <h1
       data-testid="header-title"
-      className="flex gap-4 items-center whitespace-nowrap xl:pr-4 xl:border-r border-default"
+      className="flex gap-4 items-center whitespace-nowrap xl:pr-4 xl:border-r border-gs-300 dark:border-gs-700"
     >
       {children}
     </h1>
