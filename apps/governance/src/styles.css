@@ -244,7 +244,7 @@
 .jsondiffpatch-added .jsondiffpatch-value pre,
 .jsondiffpatch-modified .jsondiffpatch-right-value pre,
 .jsondiffpatch-textdiff-added {
-  background: theme(colors.vega.green[650]) !important;
+  background: theme(colors.green[650]) !important;
   color: theme(colors.white) !important;
 }
 
@@ -252,11 +252,11 @@
 .jsondiffpatch-deleted pre,
 .jsondiffpatch-modified .jsondiffpatch-left-value pre,
 .jsondiffpatch-textdiff-deleted {
-  background: theme(colors.vega.pink[650]) !important;
+  background: theme(colors.pink[650]) !important;
   color: theme(colors.white) !important;
 }
 
 .jsondiffpatch-moved .jsondiffpatch-moved-destination {
-  background: theme(colors.vega.yellow[350]) !important;
+  background: theme(colors.yellow[350]) !important;
   color: theme(colors.vega.dark[200]) !important;
 }
