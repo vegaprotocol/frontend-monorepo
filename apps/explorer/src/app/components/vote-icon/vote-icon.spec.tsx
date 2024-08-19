@@ -43,6 +43,6 @@ describe('Vote TX icon', () => {
       <VoteIcon vote={false} useVoteColour={false} />
     );
     expect(monochromeNo.container.children[0]).not.toHaveClass('bg-pink-550');
-    expect(monochromeNo.container.children[0]).toHaveClass('bg-gs-200');
+    expect(monochromeNo.container.children[0]).toHaveClass('bg-surface-3');
   });
 });

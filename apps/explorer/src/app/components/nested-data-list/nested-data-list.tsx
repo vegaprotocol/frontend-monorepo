@@ -103,7 +103,7 @@ const NestedDataListItem = ({
               onClick={toggleVisible}
             >
               <span className="">{title}</span>
-              <small className="px-1 text-sm rounded bg-gs-200">
+              <small className="px-1 text-sm rounded bg-surface-3">
                 {isArr ? 'array' : typeof value}
               </small>
               <Icon

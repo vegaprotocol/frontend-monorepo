@@ -1,5 +1,5 @@
 import type { Toast } from '@vegaprotocol/ui-toolkit';
-import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
+import { Intent, ToastHeading, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useCallback, useEffect } from 'react';
 import { TelemetryApproval } from './telemetry-approval';
@@ -40,9 +40,7 @@ export const Telemetry = () => {
         intent: Intent.Primary,
         content: (
           <>
-            <h3 className="mb-1 text-sm uppercase">
-              {t('Improve vega console')}
-            </h3>
+            <ToastHeading>{t('Improve vega console')}</ToastHeading>
             <TelemetryApproval
               telemetryValue={telemetryValue}
               setTelemetryValue={setTelemetryApprovalAndClose}

@@ -14,7 +14,7 @@ export interface VoteIconProps {
 
 function getBgColour(useVoteColour: boolean, vote: boolean) {
   if (useVoteColour === false) {
-    return 'bg-gs-200';
+    return 'bg-surface-3';
   }
 
   return vote ? 'bg-green-550' : 'bg-pink-550';

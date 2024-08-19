@@ -163,17 +163,17 @@ export function getLabelForTransfer(
   if (transfer.toAccountType === 'ACCOUNT_TYPE_NETWORK_TREASURY') {
     return {
       type,
-      colours: 'text-green dark:text-green bg-gs-200',
+      colours: 'text-green dark:text-green bg-surface-3',
     };
   } else if (transfer.recurring) {
     return {
       type,
-      colours: 'text-yellow dark:text-yellow bg-gs-200',
+      colours: 'text-yellow dark:text-yellow bg-surface-3',
     };
   }
   return {
     type,
-    colours: 'text-white bg-gs-200',
+    colours: 'text-white bg-surface-3',
   };
 }
 

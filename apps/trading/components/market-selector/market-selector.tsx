@@ -345,9 +345,9 @@ const List = ({
 const Skeleton = () => {
   return (
     <div className="px-2 mb-2">
-      <div className="p-4 rounded-lg bg-gs-100">
-        <div className="w-full h-3 mb-2 bg-gs-200" />
-        <div className="w-2/3 h-3 bg-gs-200" />
+      <div className="p-4 rounded-lg bg-surface-2">
+        <div className="w-full h-3 mb-2 bg-surface-3" />
+        <div className="w-2/3 h-3 bg-surface-3" />
       </div>
     </div>
   );

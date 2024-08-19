@@ -168,7 +168,7 @@ export const ActivityStreak = ({
               >
                 <div
                   className={cn(
-                    'relative w-full rounded-[100px] bg-gs-200',
+                    'relative w-full rounded-[100px] bg-surface-2',
                     progressBarHeight
                   )}
                 >

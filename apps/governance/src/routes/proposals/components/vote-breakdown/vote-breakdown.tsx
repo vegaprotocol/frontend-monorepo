@@ -46,7 +46,7 @@ const VoteProgress = ({
 }: VoteProgressProps) => {
   const containerClasses = cn(
     'relative h-2 rounded-md overflow-hidden',
-    colourfulBg ? 'bg-red' : 'bg-gs-200'
+    colourfulBg ? 'bg-red' : 'bg-surface-200'
   );
 
   const progressClasses = cn(

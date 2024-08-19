@@ -8,16 +8,17 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useState,
   useRef,
   type HTMLAttributes,
   type HtmlHTMLAttributes,
-  type ReactNode,
 } from 'react';
-import { Intent } from '../../utils/intent';
+import {
+  getIntentBackground,
+  getIntentColor,
+  Intent,
+} from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
-import { useT } from '../../use-t';
 
 export type ToastContent = JSX.Element | undefined;
 
@@ -76,80 +77,6 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     );
   }
 );
-
-type CollapsiblePanelProps = {
-  actions?: ReactNode;
-};
-export const CollapsiblePanel = forwardRef<
-  HTMLDivElement,
-  CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
->(({ children, className, actions, ...props }, ref) => {
-  const t = useT();
-  const [collapsed, setCollapsed] = useState(true);
-  return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      data-panel
-      ref={ref}
-      data-test
-      className={cn(
-        'relative',
-        'mt-[10px] rounded p-2',
-        'font-mono text-[12px] font-normal leading-[16px]',
-        '[&>h4]:font-bold',
-        'overflow-auto',
-        {
-          'h-[64px] overflow-hidden': collapsed,
-          'pb-4': !collapsed,
-        },
-        className
-      )}
-      aria-expanded={!collapsed}
-      onDoubleClick={(e) => {
-        e.preventDefault();
-        setCollapsed(!collapsed);
-      }}
-      {...props}
-    >
-      {children}
-      {collapsed && (
-        <div
-          data-panel-curtain
-          className={cn(
-            'bg-gradient-to-b from-transparent to-inherit',
-            'pointer-events-none absolute bottom-0 left-0 h-8 w-full'
-          )}
-        ></div>
-      )}
-      <div
-        data-panel-actions
-        className={cn(
-          'absolute bottom-0 right-0',
-          'p-2',
-          'rounded-tl',
-          'flex gap-1 align-middle'
-        )}
-      >
-        {actions}
-        <button
-          className="cursor-pointer"
-          onClick={(e) => {
-            e.preventDefault();
-            setCollapsed(!collapsed);
-          }}
-          title={collapsed ? t('Expand') : t('Collapse')}
-          aria-label={collapsed ? t('Expand') : t('Collapse')}
-        >
-          {collapsed ? (
-            <Icon name="expand-all" size={3} />
-          ) : (
-            <Icon name="collapse-all" size={3} />
-          )}
-        </button>
-      </div>
-    </div>
-  );
-});
 
 export const ToastHeading = forwardRef<
   HTMLHeadingElement,
@@ -245,13 +172,7 @@ export const Toast = ({
         'text-black dark:text-white',
         'text-sm leading-[19px]',
         // background
-        {
-          'bg-gs-100 ': intent === Intent.None,
-          'bg-blue-300 dark:bg-blue-700': intent === Intent.Primary,
-          'bg-green-300 dark:bg-green-700': intent === Intent.Success,
-          'bg-orange-300 dark:bg-orange-700': intent === Intent.Warning,
-          'bg-red-300 dark:bg-red-700': intent === Intent.Danger,
-        },
+        getIntentBackground(intent),
         // panel's colours
         {
           '[&_[data-panel]]:bg-gs-200': intent === Intent.None,
@@ -273,18 +194,6 @@ export const Toast = ({
           '[&_[data-panel]]:to-orange-350 [&_[data-panel]]:dark:to-orange-650':
             intent === Intent.Warning,
           '[&_[data-panel]]:to-red-350 [&_[data-panel]]:dark:to-red-650':
-            intent === Intent.Danger,
-        },
-        // panel's actions
-        {
-          '[&_[data-panel-actions]]:bg-gs-200': intent === Intent.None,
-          '[&_[data-panel-actions]]:bg-blue-400 [&_[data-panel-actions]]:dark:bg-blue-600':
-            intent === Intent.Primary,
-          '[&_[data-panel-actions]]:bg-green-400 [&_[data-panel-actions]]:dark:bg-green-600':
-            intent === Intent.Success,
-          '[&_[data-panel-actions]]:bg-orange-400 [&_[data-panel-actions]]:dark:bg-orange-600':
-            intent === Intent.Warning,
-          '[&_[data-panel-actions]]:bg-red-400 [&_[data-panel-actions]]:dark:bg-red-600':
             intent === Intent.Danger,
         },
         // panels's progress bar colours
@@ -327,18 +236,7 @@ export const Toast = ({
         <div
           data-testid="toast-accent"
           className={cn(
-            {
-              // gray
-              'bg-gs-200 text-gs-400': intent === Intent.None,
-              // blue
-              'bg-blue-500 text-blue-600': intent === Intent.Primary,
-              // green
-              'bg-green-500 text-green-600': intent === Intent.Success,
-              // orange
-              'bg-orange-500 text-orange-600': intent === Intent.Warning,
-              // red
-              'bg-red-500 text-red-600': intent === Intent.Danger,
-            },
+            getIntentColor(intent),
             'w-8 p-2',
             'flex justify-center'
           )}
