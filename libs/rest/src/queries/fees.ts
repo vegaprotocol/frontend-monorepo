@@ -13,6 +13,7 @@ import omit from 'lodash/omit';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
+import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
   marketId: z.string(),
@@ -46,7 +47,10 @@ const paidFeesSchema = z.object({
   totalFeesPaid: z.instanceof(Decimal),
 });
 
-export async function retrieveLiquidityFees(params: QueryParams) {
+export async function retrieveLiquidityFees(
+  params: QueryParams,
+  queryClient: QueryClient
+) {
   const endpoint = restApiUrl('/api/v2/liquidity/paidfees');
 
   let searchParams = parametersSchema.parse(params);
@@ -54,7 +58,7 @@ export async function retrieveLiquidityFees(params: QueryParams) {
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = getMarketFromCache(searchParams.marketId);
+  const market = getMarketFromCache(queryClient, searchParams.marketId);
   if (!market) {
     throw new Error('market not found');
   }
@@ -131,7 +135,10 @@ const makerFeesSchema = z.object({
   totalFeesPaid: z.instanceof(Decimal),
 });
 
-export async function retrieveMakerFees(params: QueryParams) {
+export async function retrieveMakerFees(
+  params: QueryParams,
+  queryClient: QueryClient
+) {
   const endpoint = restApiUrl('/api/v2/fees/stats');
 
   let searchParams = parametersSchema.parse(params);
@@ -139,7 +146,7 @@ export async function retrieveMakerFees(params: QueryParams) {
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = getMarketFromCache(searchParams.marketId);
+  const market = getMarketFromCache(queryClient, searchParams.marketId);
   if (!market) {
     throw new Error('market not found');
   }

@@ -13,6 +13,7 @@ import maxBy from 'lodash/maxBy';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
+import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
   marketId: z.string(),
@@ -44,12 +45,16 @@ export async function retrieveLiquidityProviders(params: QueryParams) {
   return providers;
 }
 
-export async function retrieveLiquidityProvisions(params: QueryParams) {
+export async function retrieveLiquidityProvisions(
+  params: QueryParams,
+  client: QueryClient
+) {
   const endpoint = restApiUrl('/api/v2/liquidity/all-provisions');
 
   const searchParams = parametersSchema.parse(params);
 
-  const market = getMarketFromCache(searchParams.marketId);
+  const market = getMarketFromCache(client, searchParams.marketId);
+
   if (!market) {
     throw new Error('market not found');
   }

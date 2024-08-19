@@ -4,6 +4,7 @@ import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
+import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
   marketId: z.string(),
@@ -26,10 +27,13 @@ const marketDepthSchema = z.object({
   sequenceNumber: z.string(),
 });
 
-export async function retrieveMarketDepth(params: QueryParams) {
+export async function retrieveMarketDepth(
+  params: QueryParams,
+  queryClient: QueryClient
+) {
   const searchParams = parametersSchema.parse(params);
 
-  const market = getMarketFromCache(searchParams.marketId);
+  const market = getMarketFromCache(queryClient, searchParams.marketId);
   if (!market) {
     throw new Error('market not found');
   }

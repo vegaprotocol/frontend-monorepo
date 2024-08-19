@@ -1,7 +1,7 @@
 import trimEnd from 'lodash/trimEnd';
 import path from 'path';
-import { getBaseUrl } from './rest-config';
 import tradingDataApi from '@vegaprotocol/rest-clients/paths/trading_data_v2.json';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export type ApiPath = keyof typeof tradingDataApi;
 
@@ -53,4 +53,13 @@ export function webSocketApiUrl(
   const url = new URL(restApiUrl(apiPath, replacements));
   url.protocol = 'wss:';
   return url.toString();
+}
+
+function getBaseUrl() {
+  const bu = useEnvironment.getState().API_NODE?.restApiUrl;
+  if (!bu) {
+    throw new Error('Base URL is not defined');
+  }
+
+  return bu;
 }

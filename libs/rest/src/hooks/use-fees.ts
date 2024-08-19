@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   liquidityFeesQueryKeys,
   makerFeesQueryKeys,
@@ -8,9 +8,10 @@ import {
 import { Time } from '../utils/datetime';
 
 export function useLiquidityFees(marketId: string, epoch?: string) {
+  const client = useQueryClient();
   const queryResult = useQuery({
     queryKey: liquidityFeesQueryKeys.market(marketId, epoch),
-    queryFn: () => retrieveLiquidityFees({ marketId, epochSeq: epoch }),
+    queryFn: () => retrieveLiquidityFees({ marketId, epochSeq: epoch }, client),
     staleTime: Time.MIN,
   });
 
@@ -18,9 +19,10 @@ export function useLiquidityFees(marketId: string, epoch?: string) {
 }
 
 export function useMakerFees(marketId: string, epoch?: string) {
+  const client = useQueryClient();
   const queryResult = useQuery({
     queryKey: makerFeesQueryKeys.market(marketId, epoch),
-    queryFn: () => retrieveMakerFees({ marketId, epochSeq: epoch }),
+    queryFn: () => retrieveMakerFees({ marketId, epochSeq: epoch }, client),
     staleTime: Time.MIN,
   });
 

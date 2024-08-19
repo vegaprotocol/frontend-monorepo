@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import {
   queryKeys as candleDataQueryKeys,
@@ -18,6 +18,7 @@ export function useCandles(
   fromTimestamp?: number,
   toTimestamp?: number
 ) {
+  const client = useQueryClient();
   const { data: intervals } = useQuery({
     queryKey: candleIntervalsQueryKeys.single(marketId),
     queryFn: () => retrieveCandleIntervals({ marketId }),
@@ -31,12 +32,15 @@ export function useCandles(
   const queryResult = useQuery({
     queryKey: candleDataQueryKeys.single(marketId, interval, from, to),
     queryFn: () =>
-      retrieveCandleData({
-        candleId: candleId || '',
-        marketId,
-        fromTimestamp: from,
-        toTimestamp: to,
-      }),
+      retrieveCandleData(
+        {
+          candleId: candleId || '',
+          marketId,
+          fromTimestamp: from,
+          toTimestamp: to,
+        },
+        client
+      ),
 
     enabled: !!candleId,
     staleTime: Time.HOUR,

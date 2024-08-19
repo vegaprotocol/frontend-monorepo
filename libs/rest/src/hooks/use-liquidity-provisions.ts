@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   queryKeys,
   retrieveLiquidityProviders,
@@ -7,9 +7,10 @@ import {
 import { Time } from '../utils/datetime';
 
 export function useLiquidityProvisions(marketId: string) {
+  const client = useQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.market(marketId),
-    queryFn: () => retrieveLiquidityProvisions({ marketId }),
+    queryFn: () => retrieveLiquidityProvisions({ marketId }, client),
     staleTime: Time.DAY,
   });
 

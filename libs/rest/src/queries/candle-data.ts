@@ -10,6 +10,7 @@ import { Decimal } from '../utils';
 import { fromNanoSeconds } from '../utils/datetime';
 import type { Interval } from './candle-intervals';
 import { getMarketFromCache } from './markets';
+import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
   candleId: z.string(),
@@ -35,7 +36,10 @@ export type Candle = z.infer<typeof candleSchema>;
 
 const candlesSchema = z.array(candleSchema);
 
-export async function retrieveCandleData(params: QueryParams) {
+export async function retrieveCandleData(
+  params: QueryParams,
+  queryClient: QueryClient
+) {
   const endpoint = restApiUrl('/api/v2/candle');
   let searchParams = parametersSchema.parse(params);
 
@@ -47,7 +51,7 @@ export async function retrieveCandleData(params: QueryParams) {
     searchParams = omit(searchParams, 'toTimestamp');
   }
 
-  const market = getMarketFromCache(searchParams.marketId);
+  const market = getMarketFromCache(queryClient, searchParams.marketId);
   if (!market) {
     throw new Error('market not found');
   }
