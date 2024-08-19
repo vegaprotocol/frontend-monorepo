@@ -1,7 +1,6 @@
 import type { GraphQLError } from 'graphql';
 import type { RouteHandler } from 'cypress/types/net-stubbing';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
-import { storedApiNodeSchema } from '@vegaprotocol/environment';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -44,7 +43,7 @@ const extractVariables = (req: CyHttpMessages.IncomingHttpRequest): object => {
 
 export function addMockStatistics() {
   Cypress.Commands.add('mockStatistics', (handler: RouteHandler) => {
-    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    const apiNode = Cypress.env('API_NODE');
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
@@ -58,7 +57,7 @@ export function addMockStatistics() {
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
-    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    const apiNode = Cypress.env('API_NODE');
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }

@@ -1,4 +1,3 @@
-import { storedApiNodeSchema } from '@vegaprotocol/environment';
 import { Server, WebSocket } from 'mock-socket';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +15,7 @@ declare global {
   }
 }
 
-const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+const apiNode = Cypress.env('API_NODE');
 const mockSocketServer = apiNode
   ? new Server(apiNode.graphQLApiUrl.replace('http', 'ws'))
   : null;
