@@ -28,10 +28,12 @@ export const ProductSelector = ({
   const buttons = [MarketType.PERPETUAL, MarketType.FUTURE, MarketType.SPOT];
 
   const getStyles = (selected: boolean) =>
-    cn('text-sm px-3 py-1.5 rounded hover:text-surface-3-fg ', {
-      'bg-surface-3  text-surface-3-fg': selected,
-      'text-surface-3-fg-muted': !selected,
-    });
+    cn(
+      'text-sm px-3 py-1.5 rounded text-surface-3-fg-muted hover:text-surface-3-fg',
+      {
+        'bg-surface-3 text-surface-3-fg': selected,
+      }
+    );
 
   return (
     <div className="flex mb-2">

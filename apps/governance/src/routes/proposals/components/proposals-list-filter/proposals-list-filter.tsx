@@ -351,7 +351,7 @@ export const Filters = ({ count }: { count?: number }) => {
             <li
               key={'id'}
               className={cn(
-                'bg-vega-blue-550 text-xs px-1 py-[2px] rounded',
+                'bg-blue-550 text-xs px-1 py-[2px] rounded',
                 'flex items-center gap-1'
               )}
             >

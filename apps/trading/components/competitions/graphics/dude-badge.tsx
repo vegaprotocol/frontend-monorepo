@@ -6,11 +6,11 @@ import { DudeWithFlag } from './dude-with-flag';
  */
 
 export const BADGE_GRADIENT_VARIANT_A =
-  'bg-gradient-to-r from-vega-blue-500 via-vega-purple-500 to-vega-pink-500';
+  'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500';
 export const BADGE_GRADIENT_VARIANT_B =
-  'bg-gradient-to-r from-vega-purple-500 via-vega-green-500 to-vega-blue-500';
+  'bg-gradient-to-r from-purple-500 via-green-500 to-blue-500';
 export const BADGE_GRADIENT_VARIANT_C =
-  'bg-gradient-to-r from-vega-blue-500 via-vega-purple-500 to-vega-green-500';
+  'bg-gradient-to-r from-blue-500 via-purple-500 to-green-500';
 
 /** Badge */
 

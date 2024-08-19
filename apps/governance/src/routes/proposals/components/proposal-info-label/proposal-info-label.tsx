@@ -8,10 +8,10 @@ export type ProposalInfoLabelVariant =
   | 'highlight';
 
 const base = 'rounded px-1 py-[2px] text-xs flex items-center gap-1';
-const primary = 'bg-vega-green text-black';
+const primary = 'bg-green text-black';
 const secondary = 'bg-gs-600 text-gs-50';
 const tertiary = 'bg-gs-500 text-gs-50';
-const highlight = 'bg-vega-yellow text-black';
+const highlight = 'bg-yellow text-black';
 
 const getClassname = (variant: ProposalInfoLabelVariant) => {
   return cn(base, {

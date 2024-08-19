@@ -9,9 +9,9 @@ const RAINBOW_TAB_STYLE = cn(
   'bg-surface-2',
   'hover:bg-gs-400',
   'data-[state="active"]:text-white data-[state="active"]:bg-rainbow',
-  'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
+  'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-pink-500 dark:data-[state="active"]:hover:bg-pink-500',
   '[&.active]:text-white [&.active]:bg-rainbow',
-  '[&.active]:hover:bg-none [&.active]:hover:bg-vega-pink-500 dark:[&.active]:hover:bg-vega-pink-500',
+  '[&.active]:hover:bg-none [&.active]:hover:bg-pink-500 dark:[&.active]:hover:bg-pink-500',
   'px-5 py-3',
   'first:rounded-tl-lg last:rounded-tr-lg'
 );

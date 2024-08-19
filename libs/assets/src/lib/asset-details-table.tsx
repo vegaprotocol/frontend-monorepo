@@ -68,10 +68,8 @@ const Diff = ({
   newValue: ReactNode;
 }) => (
   <span className="flex gap-1">
-    <span className="line-through bg-vega-red-300 dark:bg-vega-red-600">
-      {oldValue}
-    </span>
-    <span className="bg-vega-green-300 dark:bg-vega-green-600">{newValue}</span>
+    <span className="line-through bg-red-300 dark:bg-red-600">{oldValue}</span>
+    <span className="bg-green-300 dark:bg-green-600">{newValue}</span>
   </span>
 );
 

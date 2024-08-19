@@ -122,8 +122,11 @@ export const MarketSelector = ({
         <ProductSelector
           marketTypes={marketTypes}
           onSelect={(marketType) => {
-            if (marketType) setMarketTypes([marketType]);
-            else setMarketTypes([]);
+            if (marketType) {
+              setMarketTypes([marketType]);
+            } else {
+              setMarketTypes([]);
+            }
           }}
         />
         <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
@@ -137,7 +140,6 @@ export const MarketSelector = ({
               type="text"
               placeholder={t('Search')}
               data-testid="search-term"
-              className="w-full"
               prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
             />
           </div>
@@ -219,7 +221,6 @@ const MarketList = ({
       <div
         className={cn(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
-          'bg-surface-2',
           'p-2 mx-2 border-b border-gs-300 dark:border-gs-700 text-xs text-surface-0-fg-muted'
         )}
       >

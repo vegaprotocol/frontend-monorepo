@@ -20,7 +20,7 @@ export const Rank = ({
         {
           'text-yellow-300': variant === 'gold',
           'text-gs-500': variant === 'silver',
-          'text-vega-orange-500': variant === 'bronze',
+          'text-orange-500': variant === 'bronze',
           'text-black dark:text-white': variant === undefined,
         },
         className

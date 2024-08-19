@@ -16,14 +16,14 @@ export const VoteProgress = ({
       />
       <div className="w-full h-2">
         <div
-          className="absolute left-0 bg-vega-green h-1"
+          className="absolute left-0 bg-green h-1"
           data-testid="vote-progress-bar-for"
           style={{
             width: `${progress}%`,
           }}
         />
         <div
-          className="absolute right-0 bg-vega-pink h-1"
+          className="absolute right-0 bg-pink h-1"
           data-testid="vote-progress-bar-against"
           style={{
             width: `${100 - progress.toNumber()}%`,

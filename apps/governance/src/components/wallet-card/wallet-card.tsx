@@ -290,7 +290,7 @@ const CurrencyValue = ({
         size="xs"
         href={transferAssetLink(assetId)}
         target="_blank"
-        className="px-2 py-1 leading-none text-xs bg-vega-yellow text-black rounded"
+        className="px-2 py-1 leading-none text-xs bg-yellow text-black rounded"
       >
         {t('Redeem')}
       </AnchorButton>

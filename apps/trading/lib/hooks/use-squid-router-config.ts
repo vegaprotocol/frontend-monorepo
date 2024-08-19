@@ -327,10 +327,10 @@ export const useSquidRouterConfig = (): {
 };
 
 const style = {
-  error: theme.colors.danger,
-  warning: theme.colors.warning,
-  success: theme.colors.success,
-  primary: theme.colors.vega.blue.DEFAULT, // main button color
+  error: theme.colors.intent.danger,
+  warning: theme.colors.intent.warning,
+  success: theme.colors.intent.success,
+  primary: theme.colors.blue, // main button color
   roundedBtn: '0.25rem',
   roundedBox: '0px',
   roundedDropDown: '5px',

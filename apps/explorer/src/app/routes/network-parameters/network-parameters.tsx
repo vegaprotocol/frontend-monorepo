@@ -143,7 +143,7 @@ export const NetworkParameterRow = ({
       inline={!isSyntaxRow}
       id={key}
       className={
-        'group focus:bg-vega-pink focus:text-white dark:focus:bg-vega-yellow dark:focus:text-black'
+        'group focus:bg-pink focus:text-white dark:focus:bg-yellow dark:focus:text-black'
       }
     >
       {key}

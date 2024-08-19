@@ -2,6 +2,7 @@ import * as DropdownPrimitive from '@radix-ui/react-dropdown-menu';
 import { cn } from '../../utils/cn';
 import { forwardRef, type ReactNode } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
+import { Button } from '../button';
 
 type MultiSelectProps = React.ComponentProps<typeof DropdownPrimitive.Root> & {
   trigger?: ReactNode;
@@ -16,22 +17,10 @@ export const MultiSelect = ({
 }: MultiSelectProps) => (
   <DropdownPrimitive.Root {...props} defaultOpen={false}>
     <DropdownPrimitive.Trigger asChild>
-      <button
-        className={cn(
-          'relative',
-          'text-sm px-3 py-1.5 pr-6 h-8',
-          'flex items-center justify-between border rounded gap-1',
-          'border-gs-300 dark:border-gs-700 bg-surface-2',
-          'text-surface-2-fg'
-        )}
-      >
+      <Button size="sm" className="justify-between">
         <span className="whitespace-nowrap">{trigger || placeholder}</span>
-        <VegaIcon
-          size={12}
-          className="absolute right-1"
-          name={VegaIconNames.CHEVRON_DOWN}
-        />
-      </button>
+        <VegaIcon size={12} name={VegaIconNames.CHEVRON_DOWN} />
+      </Button>
     </DropdownPrimitive.Trigger>
     <DropdownPrimitive.Portal>
       <DropdownPrimitive.Content
@@ -39,7 +28,7 @@ export const MultiSelect = ({
         align="start"
         sideOffset={5}
         className={cn(
-          'bg-surface-2',
+          'bg-surface-1 text-surface-1-fg',
           'border border-gs-300 dark:border-gs-700',
           'relative z-20 rounded p-2'
         )}
@@ -88,7 +77,7 @@ export const PseudoCheckbox = ({
   >
     {checked && (
       <VegaIcon
-        className="text-gs-900 absolute top-0 left-0"
+        className="absolute top-0 left-0"
         name={VegaIconNames.TICK}
         size={14}
       />

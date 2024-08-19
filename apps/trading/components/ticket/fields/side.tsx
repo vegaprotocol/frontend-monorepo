@@ -35,9 +35,9 @@ export const Side = (props: {
               className={cn(
                 'absolute top-0 left-0 rounded w-1/2 h-full transition-transform',
                 {
-                  'bg-vega-green-600 dark:bg-vega-green-650':
+                  'bg-green-600 dark:bg-green-650':
                     field.value === ESide.SIDE_BUY,
-                  'bg-vega-red-500 dark:bg-vega-red-600 translate-x-full':
+                  'bg-red-500 dark:bg-red-600 translate-x-full':
                     field.value === ESide.SIDE_SELL,
                 }
               )}

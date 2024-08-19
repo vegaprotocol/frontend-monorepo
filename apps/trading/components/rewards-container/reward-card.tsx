@@ -54,19 +54,11 @@ import flatten from 'lodash/flatten';
 import sum from 'lodash/sum';
 
 const Tick = () => (
-  <VegaIcon
-    name={VegaIconNames.TICK}
-    size={12}
-    className="text-vega-green-500"
-  />
+  <VegaIcon name={VegaIconNames.TICK} size={12} className="text-green-500" />
 );
 
 const Cross = () => (
-  <VegaIcon
-    name={VegaIconNames.CROSS}
-    size={12}
-    className="text-vega-red-500"
-  />
+  <VegaIcon name={VegaIconNames.CROSS} size={12} className="text-red-500" />
 );
 
 /** Eligibility requirements for rewards */
@@ -796,14 +788,14 @@ const CardColourStyles: Record<
   { gradientClassName: string; mainClassName: string; btn: string }
 > = {
   [CardColour.BLUE]: {
-    gradientClassName: 'from-vega-blue-500 to-vega-green-400',
-    mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-blue-500 from-50% to-vega-green-400 !text-white',
+    gradientClassName: 'from-blue-500 to-green-400',
+    mainClassName: 'from-blue-400 dark:from-blue-600 to-20%',
+    btn: '!bg-gradient-to-br from-blue-500 from-50% to-green-400 !text-white',
   },
   [CardColour.GREEN]: {
-    gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
-    mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-green-500 from-50% to-vega-yellow-400 !text-black',
+    gradientClassName: 'from-green-500 to-yellow-500',
+    mainClassName: 'from-green-400 dark:from-green-600 to-20%',
+    btn: '!bg-gradient-to-br from-green-500 from-50% to-yellow-400 !text-black',
   },
   [CardColour.GREY]: {
     gradientClassName: 'from-gs-500 to-gs-200',
@@ -811,30 +803,30 @@ const CardColourStyles: Record<
     btn: '!bg-gradient-to-br from-50% to-gs-200 !text-white',
   },
   [CardColour.ORANGE]: {
-    gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
-    mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-orange-500 from-50% to-vega-pink-600 !text-black',
+    gradientClassName: 'from-orange-500 to-pink-400',
+    mainClassName: 'from-orange-400 dark:from-orange-600 to-20%',
+    btn: '!bg-gradient-to-br from-orange-500 from-50% to-pink-600 !text-black',
   },
   [CardColour.PINK]: {
-    gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
-    mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-pink-500 from-50% to-vega-purple-600 !text-white',
+    gradientClassName: 'from-pink-500 to-purple-400',
+    mainClassName: 'from-pink-400 dark:from-pink-600 to-20%',
+    btn: '!bg-gradient-to-br from-pink-500 from-50% to-purple-600 !text-white',
   },
   [CardColour.PURPLE]: {
-    gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-    mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-purple-500 from-50% to-vega-blue-600 !text-white',
+    gradientClassName: 'from-purple-500 to-blue-400',
+    mainClassName: 'from-purple-400 dark:from-purple-600 to-20%',
+    btn: '!bg-gradient-to-br from-purple-500 from-50% to-blue-600 !text-white',
   },
   [CardColour.WHITE]: {
     gradientClassName:
-      'from-gs-600 dark:from-gs-900 to-vega-yellow-500 dark:to-vega-yellow-400',
+      'from-gs-600 dark:from-gs-900 to-yellow-500 dark:to-yellow-400',
     mainClassName: 'from-white dark:from-gs-100 to-20%',
-    btn: '!bg-gradient-to-br from-white from-50% to-vega-yellow-500 !text-black',
+    btn: '!bg-gradient-to-br from-white from-50% to-yellow-500 !text-black',
   },
   [CardColour.YELLOW]: {
-    gradientClassName: 'from-vega-yellow-500 to-vega-orange-400',
-    mainClassName: 'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-yellow-500 from-50% to-vega-orange-400 !text-black',
+    gradientClassName: 'from-yellow-500 to-orange-400',
+    mainClassName: 'from-yellow-400 dark:from-yellow-600 to-20%',
+    btn: '!bg-gradient-to-br from-yellow-500 from-50% to-orange-400 !text-black',
   },
 };
 

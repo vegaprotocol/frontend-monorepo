@@ -88,7 +88,7 @@ export const ConnectionOptions = ({
           </ul>
           {error && error.code !== ConnectorErrors.userRejected.code && (
             <p
-              className="text-danger text-sm first-letter:uppercase"
+              className="text-intent-danger text-sm first-letter:uppercase"
               data-testid="connection-error"
             >
               {error.message}

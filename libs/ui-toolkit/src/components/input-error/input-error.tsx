@@ -25,7 +25,7 @@ export const InputError = ({
     },
     {
       'text-warning': intent === 'warning',
-      'text-danger': intent === 'danger',
+      'text-intent-danger': intent === 'danger',
     }
   );
   return (

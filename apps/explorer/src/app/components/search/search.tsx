@@ -169,7 +169,7 @@ export const SearchForm = () => {
               { 'pr-8': searchQuery.length > 1 },
               'border rounded border-gs-200 ',
               {
-                'border-vega-pink dark:border-vega-pink': Boolean(
+                'border-pink dark:border-pink': Boolean(
                   formState.errors.search
                 ),
               }

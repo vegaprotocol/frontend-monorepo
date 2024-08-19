@@ -236,7 +236,7 @@ export const DepositForm = ({
                   </div>
 
                   {wrongChain ? (
-                    <p className="text-xs text-vega-red-500 flex items-center gap-1">
+                    <p className="text-xs text-red-500 flex items-center gap-1">
                       <VegaIcon name={VegaIconNames.WARNING} size={12} />
                       {t('Switch network in your wallet to {{chain}}', {
                         chain: getChainName(Number(selectedAssetChainId)),

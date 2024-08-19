@@ -39,9 +39,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     }
     case 'viewParty': {
       return (
-        <span
-          className={cn(defaultWrapperClasses, 'bg-vega-blue-500 text-gs-50')}
-        >
+        <span className={cn(defaultWrapperClasses, 'bg-blue-500 text-gs-50')}>
           <VegaIcon name={VegaIconNames.EYE} size={20} />
         </span>
       );

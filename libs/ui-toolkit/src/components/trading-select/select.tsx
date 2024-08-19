@@ -91,7 +91,7 @@ export const TradingRichSelectOption = forwardRef<
       'relative text-sm w-full p-2 h-14 overflow-hidden',
       'cursor-pointer outline-none',
       'hover:bg-surface-1 focus:bg-surface-1',
-      'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
+      'data-selected:bg-blue-300 dark:data-selected:bg-blue-600',
       className,
     ].join(' ')}
     {...props}
@@ -164,7 +164,7 @@ export const MiniSelectOption = forwardRef<
       'relative text-sm w-full p-2',
       'cursor-pointer outline-none ',
       'hover:bg-surface-1 focus:bg-surface-1',
-      'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
+      'data-selected:bg-blue-300 dark:data-selected:bg-blue-600',
       className,
     ].join(' ')}
     {...props}

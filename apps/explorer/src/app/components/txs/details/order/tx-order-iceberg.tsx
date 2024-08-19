@@ -34,11 +34,11 @@ export const TxOrderIcebergDetails = ({
 }: TxDetailsOrderIcebergDetailsProps) => {
   return (
     <div
-      className="inline-block iceberg bg-vega-blue-300 border-vega-blue-350 border-[1px] text-[70%] font-mono py-[2px] pl-2 pr-3 height-[1em] leading-[1em] cursor-pointer"
+      className="inline-block iceberg bg-blue-300 border-blue-350 border-[1px] text-[70%] font-mono py-[2px] pl-2 pr-3 height-[1em] leading-[1em] cursor-pointer"
       style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
     >
       <Tooltip description={t('Iceberg: Minimum visible size')}>
-        <span className="align-bottom text-vega-orange-650">
+        <span className="align-bottom text-orange-650">
           {marketId ? (
             <SizeInMarket
               size={iceberg.minimumVisibleSize}
@@ -50,12 +50,12 @@ export const TxOrderIcebergDetails = ({
         </span>
       </Tooltip>
       <Tooltip description={t('Iceberg: Total size')}>
-        <span className="text-sm text-vega-blue-600 mx-3">
+        <span className="text-sm text-blue-600 mx-3">
           {marketId ? <SizeInMarket size={size} marketId={marketId} /> : size}
         </span>
       </Tooltip>
       <Tooltip description={t('Iceberg: Visible peak')}>
-        <span className="align-top text-vega-yellow-600">
+        <span className="align-top text-yellow-600">
           {marketId ? (
             <SizeInMarket size={iceberg.peakSize} marketId={marketId} />
           ) : (

@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof NotificationBanner> = (args) => {
       >
         <div className="uppercase ">
           The network will upgrade to v0.68.5 in{' '}
-          <span className="text-vega-orange-500">9234</span> blocks
+          <span className="text-orange-500">9234</span> blocks
         </div>
         <div>
           Trading activity will be interrupted, manage your risk appropriately.

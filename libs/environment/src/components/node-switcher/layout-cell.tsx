@@ -38,7 +38,7 @@ export const LayoutCell = ({
       <span
         data-testid={dataTestId}
         className={cn('font-mono text-xs lg:text-sm', {
-          'text-danger': !isLoading && hasError,
+          'text-intent-danger': !isLoading && hasError,
           'text-surface-0-fg-muted': isLoading,
         })}
       >

@@ -98,7 +98,7 @@ export const JoinButton = ({
         <Button intent={Intent.None} disabled={true}>
           <span className="flex items-center gap-2">
             {t('Owner')}{' '}
-            <span className="text-vega-green-600 dark:text-vega-green">
+            <span className="text-green-600 dark:text-green">
               <VegaIcon name={VegaIconNames.TICK} />
             </span>
           </span>
@@ -151,7 +151,7 @@ export const JoinButton = ({
       <Button intent={Intent.None} disabled={true}>
         <span className="flex items-center gap-2">
           {t('Joined')}{' '}
-          <span className="text-vega-green-600 dark:text-vega-green">
+          <span className="text-green-600 dark:text-green">
             <VegaIcon name={VegaIconNames.TICK} />
           </span>
         </span>

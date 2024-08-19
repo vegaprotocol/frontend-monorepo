@@ -4,7 +4,7 @@ export const positiveClassNames =
   'text-market-green-600 dark:text-market-green';
 export const negativeClassNames = 'text-market-red dark:text-market-red';
 
-export const zeroClassNames = 'text-vega-orange dark:text-vega-orange';
+export const zeroClassNames = 'text-orange dark:text-orange';
 
 const isPositive = ({ value }: { value: string | bigint | number }) =>
   !!value &&

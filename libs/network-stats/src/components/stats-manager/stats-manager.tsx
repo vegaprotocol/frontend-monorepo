@@ -58,9 +58,9 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             },
             {
               'bg-transparent border-gs-200': good === undefined,
-              'bg-vega-pink-300 dark:bg-vega-pink-700 border-vega-pink-500 dark:border-vega-pink-500':
+              'bg-pink-300 dark:bg-pink-700 border-pink-500 dark:border-pink-500':
                 good !== undefined && !good,
-              'bg-vega-green-300 dark:bg-vega-green-700 border-vega-green-500 dark:border-vega-green-500':
+              'bg-green-300 dark:bg-green-700 border-green-500 dark:border-green-500':
                 good !== undefined && good,
             }
           )}
@@ -69,8 +69,8 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             <div
               className={cn('w-2 h-2 rounded-full', {
                 'bg-gs-200': good === undefined,
-                'bg-vega-pink dark:bg-vega-pink': good !== undefined && !good,
-                'bg-vega-green dark:bg-vega-green': good !== undefined && good,
+                'bg-pink dark:bg-pink': good !== undefined && !good,
+                'bg-green dark:bg-green': good !== undefined && good,
               })}
             ></div>
             <div data-testid="stats-title">{title}</div>

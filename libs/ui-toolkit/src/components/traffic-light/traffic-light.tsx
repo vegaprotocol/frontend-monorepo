@@ -17,7 +17,7 @@ export const TrafficLight = ({
   const slippageClassName = cn({
     'text-darkerGreen dark:text-lightGreen': value < q1,
     'text-amber': value >= q1 && value < q2,
-    'text-vega-pink': value >= q2,
+    'text-pink': value >= q2,
   });
 
   return <div className={slippageClassName}>{children || value}</div>;

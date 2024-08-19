@@ -14,7 +14,7 @@ export const ProposalFormSubmit = ({
   const { t } = useTranslation();
   return (
     <div className="mb-6">
-      <div className="mb-4 font-bold uppercase text-vega-orange">
+      <div className="mb-4 font-bold uppercase text-orange">
         {!pubKey && t('connectWalletToSubmitProposal')}
       </div>
       <VegaWalletContainer>

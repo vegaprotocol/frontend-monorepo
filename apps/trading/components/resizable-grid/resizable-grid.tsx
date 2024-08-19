@@ -11,7 +11,7 @@ export const ResizableGridPanelChild = ({
   children: ReactNode;
 }) => {
   return (
-    <section className="h-full p-1">
+    <section className="h-full p-0.5">
       <div className="h-full bg-surface-1 ">{children}</div>
     </section>
   );

@@ -149,9 +149,9 @@ const GasPrice = ({
       !withdrawalAmountQUSD.isLessThanOrEqualTo(0) &&
       withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD);
     const expensiveClassNames = {
-      'text-vega-red-500':
+      'text-red-500':
         isExpensive && withdrawalAmountQUSD.isLessThanOrEqualTo(basePriceQUSD),
-      'text-vega-orange-500':
+      'text-orange-500':
         isExpensive &&
         withdrawalAmountQUSD.isGreaterThan(basePriceQUSD) &&
         withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD),

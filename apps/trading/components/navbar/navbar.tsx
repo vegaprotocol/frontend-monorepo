@@ -46,7 +46,6 @@ export const Navbar = () => {
 
   const rootClasses = cn(
     'flex gap-3 h-10 pr-1',
-    'border-b border-gs-300 dark:border-gs-700',
     'bg-surface-1 text-surface-1-fg-muted'
   );
   return (

@@ -190,7 +190,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
         📈 + 🥪
       </button>
       <button
-        className="bg-vega-pink-200 dark:bg-vega-pink-800 p-2 mr-2"
+        className="bg-pink-200 dark:bg-pink-800 p-2 mr-2"
         onClick={() => closeAll()}
       >
         🧽

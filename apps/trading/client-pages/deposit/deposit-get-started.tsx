@@ -16,8 +16,8 @@ export const DepositGetStarted = () => {
   const step = useGetOnboardingStep();
   const wrapperClasses = cn(
     'flex flex-col py-4 px-6 gap-4 rounded',
-    'bg-vega-blue-300 dark:bg-vega-blue-700',
-    'border border-vega-blue-350 dark:border-vega-blue-650'
+    'bg-blue-300 dark:bg-blue-700',
+    'border border-blue-350 dark:border-blue-650'
   );
 
   // Dont show unless still onboarding

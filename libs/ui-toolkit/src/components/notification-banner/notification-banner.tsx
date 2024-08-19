@@ -3,7 +3,7 @@ import { toastIconMapping } from '../toast';
 import {
   getIntentBackground,
   getIntentBorder,
-  getIntentColor,
+  getIntentText,
   Intent,
 } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
@@ -38,7 +38,7 @@ export const NotificationBanner = ({
         <Icon
           name={toastIconMapping[intent]}
           size={4}
-          className={cn('mr-2', getIntentColor(intent))}
+          className={cn('mr-2', getIntentText(intent))}
         />
       )}
       <div className="grow py-2">{children}</div>

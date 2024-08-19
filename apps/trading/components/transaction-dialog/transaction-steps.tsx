@@ -45,11 +45,11 @@ export const TransactionSteps = ({
   if (status === TxStatus.Rejected) {
     if (error) {
       aStepDescription = (
-        <span className="text-vega-red-500 break-all">{error}</span>
+        <span className="text-red-500 break-all">{error}</span>
       );
     } else {
       aStepDescription = (
-        <span className="text-vega-red-500">
+        <span className="text-red-500">
           {t('Transaction rejected by user')}
         </span>
       );
@@ -70,15 +70,11 @@ export const TransactionSteps = ({
   }
 
   if (status === TxStatus.Confirmed && confirmedLabel) {
-    bStepDescription = (
-      <span className="text-vega-green-500">{confirmedLabel}</span>
-    );
+    bStepDescription = <span className="text-green-500">{confirmedLabel}</span>;
   }
 
   if (status === TxStatus.Failed && error) {
-    bStepDescription = (
-      <span className="text-vega-red-500 break-all">{error}</span>
-    );
+    bStepDescription = <span className="text-red-500 break-all">{error}</span>;
   }
 
   let resetButtonLabel = resetLabel;

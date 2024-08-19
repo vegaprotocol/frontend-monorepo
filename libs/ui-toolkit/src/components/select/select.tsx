@@ -113,7 +113,7 @@ export const Option = forwardRef<
       'pr-12',
       'w-full',
       'text-sm',
-      'data-selected:bg-vega-yellow dark:data-selected:text-black dark:data-selected:bg-vega-yellow',
+      'data-selected:bg-yellow dark:data-selected:text-black dark:data-selected:bg-yellow',
       className
     )}
     {...props}

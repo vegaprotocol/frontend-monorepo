@@ -7,14 +7,14 @@ import {
   VegaIconNames,
   Button,
   Intent,
-  TradingDropdown,
-  TradingDropdownTrigger,
-  TradingDropdownContent,
-  TradingDropdownRadioGroup,
-  TradingDropdownSeparator,
-  TradingDropdownItem,
-  TradingDropdownRadioItem,
-  TradingDropdownItemIndicator,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuRadioItem,
+  DropdownMenuItemIndicator,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
@@ -53,10 +53,10 @@ export const VegaWalletConnectButton = ({
 
   if (status === 'connected') {
     return (
-      <TradingDropdown
+      <DropdownMenu
         open={dropdownOpen}
         trigger={
-          <TradingDropdownTrigger
+          <DropdownMenuTrigger
             data-testid="manage-vega-wallet"
             onClick={() => {
               refreshKeys();
@@ -79,10 +79,10 @@ export const VegaWalletConnectButton = ({
                 <>{'Select key'}</>
               )}
             </Button>
-          </TradingDropdownTrigger>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent
+        <DropdownMenuContent
           onInteractOutside={() => setDropdownOpen(false)}
           sideOffset={12}
           side="bottom"
@@ -97,9 +97,9 @@ export const VegaWalletConnectButton = ({
               onSelect={selectPubKey}
               isReadOnly={isReadOnly}
             />
-            <TradingDropdownSeparator />
+            <DropdownMenuSeparator />
             {!isReadOnly && (
-              <TradingDropdownItem
+              <DropdownMenuItem
                 data-testid="wallet-transfer"
                 role="link"
                 onClick={() => {
@@ -108,14 +108,14 @@ export const VegaWalletConnectButton = ({
                 }}
               >
                 {t('Transfer')}
-              </TradingDropdownItem>
+              </DropdownMenuItem>
             )}
-            <TradingDropdownItem data-testid="disconnect" onClick={disconnect}>
+            <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
               {t('Disconnect')}
-            </TradingDropdownItem>
+            </DropdownMenuItem>
           </div>
-        </TradingDropdownContent>
-      </TradingDropdown>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
@@ -157,7 +157,7 @@ const KeypairRadioGroup = ({
   });
 
   return (
-    <TradingDropdownRadioGroup value={pubKey} onValueChange={onSelect}>
+    <DropdownMenuRadioGroup value={pubKey} onValueChange={onSelect}>
       {pubKeys.map((pk) => {
         const profile = data?.partiesProfilesConnection?.edges.find(
           (e) => e.node.partyId === pk.publicKey
@@ -172,7 +172,7 @@ const KeypairRadioGroup = ({
           />
         );
       })}
-    </TradingDropdownRadioGroup>
+    </DropdownMenuRadioGroup>
   );
 };
 
@@ -192,7 +192,7 @@ const KeypairItem = ({
   const setOpen = useProfileDialogStore((store) => store.setOpen);
 
   return (
-    <TradingDropdownRadioItem value={pk.publicKey}>
+    <DropdownMenuRadioItem value={pk.publicKey}>
       <div>
         <div className="flex items-center gap-2">
           <span>{pk.name ? pk.name : t('Unnamed key')}</span>
@@ -230,7 +230,7 @@ const KeypairItem = ({
           )}
         </div>
       </div>
-      <TradingDropdownItemIndicator />
-    </TradingDropdownRadioItem>
+      <DropdownMenuItemIndicator />
+    </DropdownMenuRadioItem>
   );
 };

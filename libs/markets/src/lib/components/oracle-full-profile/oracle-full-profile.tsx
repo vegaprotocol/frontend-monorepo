@@ -37,10 +37,10 @@ export const OracleProfileTitle = ({
           className={cn(
             {
               'text-gs-50': intent === Intent.None,
-              'text-vega-blue': intent === Intent.Primary,
-              'text-vega-green dark:text-vega-green': intent === Intent.Success,
+              'text-blue': intent === Intent.Primary,
+              'text-green dark:text-green': intent === Intent.Success,
               'dark:text-yellow text-yellow-600': intent === Intent.Warning,
-              'text-vega-red': intent === Intent.Danger,
+              'text-red': intent === Intent.Danger,
             },
             'flex items-start p-1 align-text-bottom'
           )}

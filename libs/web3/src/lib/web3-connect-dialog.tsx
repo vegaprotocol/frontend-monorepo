@@ -77,7 +77,7 @@ const ConnectButton = ({
   return (
     <button
       className={cn('flex items-center gap-2 p-2 rounded hover:bg-surface-2', {
-        '!bg-vega-yellow text-black hover:active:!bg-vega-yellow': isActivating,
+        '!bg-yellow text-black hover:active:!bg-yellow': isActivating,
       })}
       data-testid={`web3-connector-${info.name}`}
       title={info.alt}
@@ -145,12 +145,7 @@ function getConnectorInfo(connector: Connector, t: ReturnType<typeof useT>) {
   }
   if (connector instanceof WalletConnectLegacy) {
     return {
-      icon: (
-        <WalletConnectIcon
-          width={32}
-          fillColor={theme.colors.vega.light[200]}
-        />
-      ),
+      icon: <WalletConnectIcon width={32} fillColor={theme.colors.gs[500]} />,
       name: 'WalletConnectLegacy',
       text: t('WalletConnect Legacy'),
       alt: t('WalletConnect v1'),

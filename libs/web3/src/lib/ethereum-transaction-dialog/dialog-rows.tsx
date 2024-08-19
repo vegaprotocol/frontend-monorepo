@@ -48,7 +48,7 @@ export const TxRow = ({
         <Link
           href={`${ETHERSCAN_URL}/tx/${txHash}`}
           title={t('View transaction on Etherscan')}
-          className="text-vega-pink dark:text-vega-yellow"
+          className="text-pink dark:text-yellow"
           target="_blank"
         >
           {t('View on Etherscan')}
@@ -66,10 +66,7 @@ export const TxRow = ({
       >
         <span>{t('Ethereum transaction complete')}</span>
         {txHash && (
-          <BlockExplorerLink
-            tx={txHash}
-            className="text-vega-pink dark:text-vega-yellow"
-          >
+          <BlockExplorerLink tx={txHash} className="text-pink dark:text-yellow">
             {t('View transaction on Etherscan')}
           </BlockExplorerLink>
         )}

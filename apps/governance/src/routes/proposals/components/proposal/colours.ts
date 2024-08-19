@@ -16,20 +16,16 @@ const getColour = (indicator: number, max = COLOURS.length) => {
 
 export const getStyle = (indicator: number, max = COLOURS.length) =>
   cn({
-    'bg-vega-yellow-400 before:bg-vega-yellow-400':
+    'bg-yellow-400 before:bg-yellow-400':
       'yellow' === getColour(indicator, max),
-    'bg-vega-green-400 before:bg-vega-green-400':
-      'green' === getColour(indicator, max),
-    'bg-vega-blue-400 before:bg-vega-blue-400':
-      'blue' === getColour(indicator, max),
-    'bg-vega-purple-400 before:bg-vega-purple-400':
+    'bg-green-400 before:bg-green-400': 'green' === getColour(indicator, max),
+    'bg-blue-400 before:bg-blue-400': 'blue' === getColour(indicator, max),
+    'bg-purple-400 before:bg-purple-400':
       'purple' === getColour(indicator, max),
-    'bg-vega-pink-400 before:bg-vega-pink-400':
-      'pink' === getColour(indicator, max),
-    'bg-vega-orange-400 before:bg-vega-orange-400':
+    'bg-pink-400 before:bg-pink-400': 'pink' === getColour(indicator, max),
+    'bg-orange-400 before:bg-orange-400':
       'orange' === getColour(indicator, max),
-    'bg-vega-red-400 before:bg-vega-red-400':
-      'red' === getColour(indicator, max),
+    'bg-red-400 before:bg-red-400': 'red' === getColour(indicator, max),
     'bg-gs-600 before:bg-gs-600': 'none' === getColour(indicator, max),
   });
 

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import {
   VegaIcon,
   VegaIconNames,
-  TradingDropdown,
-  TradingDropdownTrigger,
-  TradingDropdownContent,
-  TradingDropdownItem,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
@@ -48,11 +48,11 @@ export const OrderbookControls = ({
       >
         <VegaIcon size={12} name={VegaIconNames.PLUS} />
       </button>
-      <TradingDropdown
+      <DropdownMenu
         open={isOpen}
         onOpenChange={(open) => setOpen(open)}
         trigger={
-          <TradingDropdownTrigger data-testid="resolution">
+          <DropdownMenuTrigger data-testid="resolution">
             <button
               className="flex items-center justify-between px-2 gap-1"
               style={{
@@ -74,21 +74,21 @@ export const OrderbookControls = ({
               />
               {formatResolution(resolution, decimalPlaces)}
             </button>
-          </TradingDropdownTrigger>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align="start">
+        <DropdownMenuContent align="start">
           {resolutions.map((r) => (
-            <TradingDropdownItem
+            <DropdownMenuItem
               key={r}
               onClick={() => setResolution(r)}
               className="justify-end"
             >
               {formatResolution(r, decimalPlaces)}
-            </TradingDropdownItem>
+            </DropdownMenuItem>
           ))}
-        </TradingDropdownContent>
-      </TradingDropdown>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <button
         onClick={decreaseResolution}
         disabled={resolutions.indexOf(resolution) <= 0}

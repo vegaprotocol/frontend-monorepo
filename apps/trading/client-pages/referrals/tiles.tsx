@@ -117,7 +117,7 @@ export const StakingMultiplierTile = ({
   const description = (
     <span
       className={cn({
-        'text-vega-red': !isEligible,
+        'text-red': !isEligible,
       })}
     >
       {t('{{amount}} $VEGA staked', {

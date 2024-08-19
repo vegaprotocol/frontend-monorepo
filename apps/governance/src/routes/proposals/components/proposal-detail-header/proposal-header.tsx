@@ -417,7 +417,7 @@ const VoteStateText = ({
     case ProposalState.STATE_OPEN: {
       return (
         <p {...props}>
-          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+          <span className={nowToCloseInHours < 6 ? 'text-orange' : ''}>
             {t('{{time}} left to vote', {
               time: formatDistanceToNowStrict(new Date(closingDatetime)),
             })}
@@ -532,7 +532,7 @@ const BatchProposalStateText = ({
     case ProposalState.STATE_OPEN: {
       return (
         <p {...props}>
-          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+          <span className={nowToCloseInHours < 6 ? 'text-orange' : ''}>
             {t('{{time}} left to vote', {
               time: formatDistanceToNowStrict(new Date(closingDatetime)),
             })}

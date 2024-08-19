@@ -3,10 +3,10 @@ import {
   BottomDrawerContent,
   Intent,
   Button,
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItem,
-  TradingDropdownTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -77,38 +77,38 @@ export const MarketActionDrawer = () => {
           </>
         )}
         <div className="flex-1">
-          <TradingDropdown
+          <DropdownMenu
             trigger={
-              <TradingDropdownTrigger>
+              <DropdownMenuTrigger>
                 <Button fill={true}>...</Button>
-              </TradingDropdownTrigger>
+              </DropdownMenuTrigger>
             }
           >
-            <TradingDropdownContent>
-              <TradingDropdownItem
+            <DropdownMenuContent>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Deposit)}
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Withdraw)}
               >
                 <VegaIcon name={VegaIconNames.WITHDRAW} /> {t('Withdraw')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Transfer)}
               >
                 <VegaIcon name={VegaIconNames.TRANSFER} /> {t('Transfer')}
-              </TradingDropdownItem>
-              <TradingDropdownItem onClick={() => setDrawer(DrawerView.Info)}>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDrawer(DrawerView.Info)}>
                 <VegaIcon name={VegaIconNames.BREAKDOWN} />{' '}
                 {t('Market specification')}
-              </TradingDropdownItem>
-            </TradingDropdownContent>
-          </TradingDropdown>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <TradeDrawer drawer={drawer} setDrawer={setDrawer} />

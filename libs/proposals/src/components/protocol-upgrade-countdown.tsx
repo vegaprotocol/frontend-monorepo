@@ -30,7 +30,7 @@ export const ProtocolUpgradeCountdown = ({
 
   if (!data) return null;
 
-  const emphasis = 'text-vega-orange-500 dark:text-vega-orange-500';
+  const emphasis = 'text-orange-500 dark:text-orange-500';
 
   let countdown;
   switch (mode) {
@@ -53,7 +53,7 @@ export const ProtocolUpgradeCountdown = ({
             {convertToCountdownString(time, '0:00:00:00')}
           </span>
         ) : (
-          <span className="text-vega-orange-600 lowercase italic">
+          <span className="text-orange-600 lowercase italic">
             {t('estimating...')}
           </span>
         );
@@ -71,8 +71,8 @@ export const ProtocolUpgradeCountdown = ({
         className={cn(
           'flex h-8 flex-nowrap items-center gap-1 px-2 py-1 text-xs lg:px-4',
           'rounded border',
-          'border-vega-orange-500 dark:border-vega-orange-500',
-          'bg-vega-orange-300 dark:bg-vega-orange-700'
+          'border-orange-500 dark:border-orange-500',
+          'bg-orange-300 dark:bg-orange-700'
         )}
       >
         <VegaIcon name={VegaIconNames.EXCLAMATION_MARK} size={12} />{' '}

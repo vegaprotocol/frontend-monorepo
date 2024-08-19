@@ -43,21 +43,21 @@ export const VestingTable = ({
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-locked">
           <span>
-            <VestingTableIndicatorSquare colour="vega-pink" />
+            <VestingTableIndicatorSquare colour="pink" />
             {t('Locked')}
           </span>
           {formatNumber(locked)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-unlocked">
           <span>
-            <VestingTableIndicatorSquare colour="vega-green" />
+            <VestingTableIndicatorSquare colour="green" />
             {t('Unlocked')}
           </span>
           {formatNumber(vested)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-staked">
           <span>
-            <VestingTableIndicatorSquare colour="vega-yellow" />
+            <VestingTableIndicatorSquare colour="yellow" />
             {t('Associated')}
           </span>
           {formatNumber(associated)}
@@ -65,17 +65,17 @@ export const VestingTable = ({
       </KeyValueTable>
       <div className="flex border-white border">
         <div
-          className="bg-vega-pink h-4"
+          className="bg-pink h-4"
           style={{ flex: lockedPercentage.toNumber() }}
         />
         <div
-          className="bg-vega-green h-4"
+          className="bg-green h-4"
           style={{ flex: vestedPercentage.toNumber() }}
         />
       </div>
       <div className="flex h-1 mt-1">
         <div
-          className="bg-vega-yellow h-1"
+          className="bg-yellow h-1"
           style={{ flex: stakedPercentage.toNumber() }}
         />
         <div

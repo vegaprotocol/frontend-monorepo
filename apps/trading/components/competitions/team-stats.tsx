@@ -146,7 +146,7 @@ export const FavoriteGame = ({
         <Pill className="inline-flex items-center gap-1 bg-transparent text-sm">
           <VegaIcon
             name={VegaIconNames.STAR}
-            className="text-vega-yellow-400 relative top-[-1px]"
+            className="text-yellow-400 relative top-[-1px]"
           />{' '}
           {favoriteMetricLabel}
         </Pill>

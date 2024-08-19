@@ -3,8 +3,8 @@ import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
-const BID_COLOR = theme.colors.vega.green.DEFAULT;
-const ASK_COLOR = theme.colors.vega.pink.DEFAULT;
+const BID_COLOR = theme.colors.green.DEFAULT;
+const ASK_COLOR = theme.colors.pink.DEFAULT;
 export interface CumulativeVolProps {
   ask?: number;
   bid?: number;

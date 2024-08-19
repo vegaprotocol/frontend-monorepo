@@ -138,7 +138,7 @@ export const CodeTile = ({
             <>
               {t('Copy shareable apply code link')}
               {': '}
-              <a className="text-vega-blue-500 underline" href={applyCodeLink}>
+              <a className="text-blue-500 underline" href={applyCodeLink}>
                 {truncate(applyCodeLink, { length: 32 })}
               </a>
             </>

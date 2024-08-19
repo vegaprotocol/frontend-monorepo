@@ -44,7 +44,7 @@ export const AssetInput = ({
 
   return (
     <div
-      className="focus-within:bg-gs-600 bg-surface-2 py-2 px-4 rounded-lg border-gs-300 dark:border-gs-700 border flex flex-col gap-1 cursor-pointer"
+      className="focus-within:bg-surface-3 bg-surface-2 py-2 px-4 rounded-lg border-gs-300 dark:border-gs-700 border flex flex-col gap-1 cursor-pointer"
       data-testid={testId}
       role="button"
       // No need for tabindex as the input can be tabbed to
@@ -198,7 +198,7 @@ export const DropdownAsset = ({
       trigger={
         <DropdownMenuTrigger asChild>
           <button
-            className="flex gap-4 items-center py-2 pl-2 pr-4 border border-gs-300 dark:border-gs-700 rounded-full h-12"
+            className="flex text-sm gap-4 items-center py-2 pl-2 pr-4 border border-gs-300 dark:border-gs-700 rounded-full h-12"
             data-testid={`${testId}-trigger`}
           >
             {asset ? (

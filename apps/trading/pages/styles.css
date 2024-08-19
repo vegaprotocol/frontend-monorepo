@@ -84,20 +84,20 @@
     --surface-0: var(--color-white);
     --surface-0-fg: var(--gs-950);
     --surface-0-fg-muted: var(--gs-200);
-    --surface-1: var(--gs-50);
-    --surface-1-fg: var(--gs-950);
+    --surface-1: var(--gs-100);
+    --surface-1-fg: var(--gs-900);
     --surface-1-fg-muted: var(--gs-600);
-    --surface-2: var(--gs-100);
-    --surface-2-fg: var(--gs-950);
+    --surface-2: var(--gs-200);
+    --surface-2-fg: var(--gs-900);
     --surface-2-fg-muted: var(--gs-600);
-    --surface-3: var(--gs-200);
-    --surface-3-fg: var(--gs-950);
+    --surface-3: var(--gs-300);
+    --surface-3-fg: var(--gs-900);
     --surface-3-fg-muted: var(--gs-400);
 
-    --intent-none: var(--gs-200);
-    --intent-none-outline: var(--gs-200);
+    --intent-none: var(--gs-300);
+    --intent-none-outline: var(--gs-300);
     --intent-none-foreground: var(--gs-950);
-    --intent-none-background: var(--gs-200);
+    --intent-none-background: var(--gs-300);
 
     --intent-primary: var(--color-blue);
     --intent-primary-outline: var(--color-blue);
@@ -156,18 +156,18 @@
     --surface-0: var(--color-black);
     --surface-0-fg: var(--gs-50);
     --surface-0-fg-muted: var(--gs-800);
-    --surface-1: var(--gs-950);
-    --surface-1-fg: var(--gs-50);
+    --surface-1: var(--gs-900);
+    --surface-1-fg: var(--gs-100);
     --surface-1-fg-muted: var(--gs-400);
-    --surface-2: var(--gs-900);
-    --surface-2-fg: var(--gs-50);
+    --surface-2: var(--gs-800);
+    --surface-2-fg: var(--gs-100);
     --surface-2-fg-muted: var(--gs-400);
-    --surface-3: var(--gs-800);
+    --surface-3: var(--gs-700);
     --surface-3-fg: var(--gs-50);
-    --surface-3-fg-muted: var(--gs-600);
+    --surface-3-fg-muted: var(--gs-400);
 
-    --intent-none: var(--gs-800);
-    --intent-none-outline: var(--gs-800);
+    --intent-none: var(--gs-700);
+    --intent-none-outline: var(--gs-700);
     --intent-none-foreground: var(--gs-50);
     --intent-none-background: var(--gs-700);
 
@@ -230,8 +230,8 @@ html [data-theme='light'] {
 
   --pennant-color-macd-divergence-buy: theme(colors.market.green.600);
   --pennant-color-macd-divergence-sell: theme(colors.market.red.DEFAULT);
-  --pennant-color-macd-signal: theme(colors.vega.blue.DEFAULT);
-  --pennant-color-macd-macd: theme(colors.vega.yellow.500);
+  --pennant-color-macd-signal: theme(colors.blue.DEFAULT);
+  --pennant-color-macd-macd: theme(colors.yellow.500);
 
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 

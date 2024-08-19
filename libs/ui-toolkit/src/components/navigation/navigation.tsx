@@ -147,7 +147,7 @@ export const NavigationTrigger = ({
         aria-hidden="true"
         className={cn(
           'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-          'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+          'bg-yellow-550 dark:bg-yellow-500',
           { hidden: !isActive }
         )}
       ></div>
@@ -223,7 +223,7 @@ export const NavigationLink = ({
               aria-hidden="true"
               className={cn(
                 'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-                'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+                'bg-yellow-550 dark:bg-yellow-500',
                 { hidden: !isActive }
               )}
             ></div>

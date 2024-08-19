@@ -6,10 +6,10 @@ import {
   VegaIcon,
   VegaIconNames,
   ProgressBar,
-  TradingDropdown,
-  TradingDropdownItem,
-  TradingDropdownContent,
-  TradingDropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -187,26 +187,26 @@ export const AccountCard = ({
       </div>
       {!isReadOnly && expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 p-3 pt-0">
-          <TradingDropdown
+          <DropdownMenu
             trigger={
-              <TradingDropdownTrigger asChild>
+              <DropdownMenuTrigger asChild>
                 <ActionButton
                   label={t('Deposit')}
                   icon={VegaIconNames.DEPOSIT}
                 />
-              </TradingDropdownTrigger>
+              </DropdownMenuTrigger>
             }
           >
-            <TradingDropdownContent side="bottom" align="start">
-              <TradingDropdownItem
+            <DropdownMenuContent side="bottom" align="start">
+              <DropdownMenuItem
                 data-testid="account-action-deposit"
                 onClick={() => {
                   actions.onClickDeposit?.(asset.id);
                 }}
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 data-testid="account-action-cross-deposit"
                 onClick={() => {
                   actions.onClickCrossChainDeposit?.(asset.id);
@@ -214,9 +214,9 @@ export const AccountCard = ({
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} />{' '}
                 {t('Cross-chain deposit')}
-              </TradingDropdownItem>
-            </TradingDropdownContent>
-          </TradingDropdown>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <ActionButton
             data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}

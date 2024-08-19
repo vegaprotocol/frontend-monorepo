@@ -17,7 +17,7 @@ function getBgColour(useVoteColour: boolean, vote: boolean) {
     return 'bg-gs-200';
   }
 
-  return vote ? 'bg-vega-green-550' : 'bg-vega-pink-550';
+  return vote ? 'bg-green-550' : 'bg-pink-550';
 }
 
 function getFillColour(useVoteColour: boolean, vote: boolean) {
@@ -25,7 +25,7 @@ function getFillColour(useVoteColour: boolean, vote: boolean) {
     return 'white';
   }
 
-  return vote ? 'vega-green-300' : 'vega-pink-300';
+  return vote ? 'green-300' : 'pink-300';
 }
 
 function getTextColour(useVoteColour: boolean, vote: boolean) {
@@ -33,7 +33,7 @@ function getTextColour(useVoteColour: boolean, vote: boolean) {
     return 'white';
   }
 
-  return vote ? 'vega-green-200' : 'vega-pink-200';
+  return vote ? 'green-200' : 'pink-200';
 }
 
 /**

@@ -6,7 +6,7 @@ type DudeWithFlagProps = {
   className?: string;
 };
 
-const DEFAULT_FLAG_COLOR = theme.colors.vega.green[500];
+const DEFAULT_FLAG_COLOR = theme.colors.green[500];
 
 export const DudeWithFlag = ({
   flagColor = DEFAULT_FLAG_COLOR,
