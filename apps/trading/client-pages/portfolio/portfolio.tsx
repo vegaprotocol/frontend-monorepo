@@ -143,7 +143,7 @@ const PortfolioAssets = () => {
             type="text"
             placeholder={t('Search')}
             data-testid="search-term"
-            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-surface-1 "
+            className="bg-surface-1 pr-8"
             prependElement={
               <VegaIcon className="fill-gs-300 " name={VegaIconNames.SEARCH} />
             }
