@@ -17,11 +17,8 @@ export const LeverageSlider = (
         {...props}
         className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
       >
-        <SliderPrimitive.Track className="relative grow h-[4px]">
-          <span className="bg-surface-2  absolute left-2 right-2 top-0 bottom-0"></span>
-          <SliderPrimitive.Range className="absolute h-full">
-            <span className="absolute left-2 right-0 h-full bg-gs-500"></span>
-          </SliderPrimitive.Range>
+        <SliderPrimitive.Track className="relative grow h-[4px] bg-surface-2">
+          <SliderPrimitive.Range className="absolute h-full bg-gs-500" />
           <span className="absolute top-[-3px] left-[8px] right-[8px]">
             {step &&
               new Array(Math.floor(props.max / step) + 1)
@@ -41,8 +38,8 @@ export const LeverageSlider = (
                       className={cn(
                         'absolute translate-x-[-50%] block w-[10px] h-[10px] rounded-full',
                         {
-                          'bg-gs-500 ': !lowerThanValue,
-                          'bg-gs-50': !!lowerThanValue,
+                          'bg-surface-3 ': !lowerThanValue,
+                          'bg-gs-500': !!lowerThanValue,
                         }
                       )}
                       style={{
