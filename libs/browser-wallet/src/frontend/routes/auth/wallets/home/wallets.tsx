@@ -5,7 +5,6 @@ import { BasePage } from '@/components/pages/page';
 import { SignMessageDialog } from '@/components/sign-message-dialog';
 import { useWalletStore } from '@/stores/wallets';
 
-import { DepositAssetsCallout } from './deposit-assets-callout';
 import { WalletsPageKeyList } from './wallets-page-key-list';
 
 export const locators = {
@@ -29,7 +28,6 @@ export const Wallets = () => {
             onSignMessage={setSelectedPubkey}
             wallet={wallet}
           />
-          <DepositAssetsCallout />
           <SignMessageDialog
             open={!!selectedPubkey}
             onClose={() => setSelectedPubkey(null)}

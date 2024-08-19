@@ -2,9 +2,8 @@ import { NetworkCollection } from './src/network.js';
 import { WalletCollection } from './src/wallets.js';
 import { TransactionsCollection } from './src/transactions.js';
 import { ConnectionsCollection } from './src/connections.js';
-import { PortServer } from '../frontend/lib/port-server.js';
+
 import { PopupClient } from './src/popup-client.js';
-// import { createNotificationWindow } from './src/windows.js';
 import { setupListeners } from './lib/setup-listeners.js';
 
 import { StorageLocalMap, StorageSessionMap } from './lib/storage.js';
@@ -17,13 +16,9 @@ import initAdmin from './src/admin-ns.js';
 import initClient from './src/client-ns.js';
 import config from '../config/beta.js';
 
-// const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
-// const action = globalThis.browser?.browserAction ?? globalThis.chrome?.action;
+import { PortServer } from '@vegaprotocol/json-rpc';
 
-const interactor = new PopupClient({
-  onbeforerequest: setPending,
-  onafterrequest: setPending,
-});
+const interactor = new PopupClient({});
 
 const encryptedStore = new EncryptedStorage(
   new ConcurrentStorage(new StorageLocalMap('wallets')),
@@ -151,36 +146,4 @@ wallets.on('rename_key', async () => {
   }
 });
 
-setupListeners(
-  networks,
-  settings,
-  clientPorts,
-  popupPorts,
-  interactor,
-  connections,
-  keySortIndex,
-  wallets
-);
-
-async function setPending() {
-  // const pending = interactor.totalPending();
-  // Early return as there is not much else to do
-  // if (pending === 0) {
-  //   action.setBadgeText({ text: '' });
-  //   return;
-  // }
-  // try {
-  //   if (
-  //     pending > 0 &&
-  //     popupPorts.ports.size < 1 &&
-  //     (await settings.get('autoOpen'))
-  //   ) {
-  //     // await createNotificationWindow();
-  //   }
-  // } catch (_) {
-  //   // NOOP
-  // }
-  // action.setBadgeText({
-  //   text: pending.toString(),
-  // });
-}
+setupListeners(networks, settings, clientPorts, popupPorts, interactor);

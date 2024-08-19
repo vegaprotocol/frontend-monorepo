@@ -66,11 +66,10 @@ describe('NavBar', () => {
     renderNav();
     expect(screen.getByTestId('nav-bar')).toBeInTheDocument();
     expect(screen.getByTestId('nav-bar')).toHaveClass('bg-black');
-    expect(screen.getAllByTestId('nav-button')).toHaveLength(4);
-    const [wallets, connections, transactions, settings] =
+    expect(screen.getAllByTestId('nav-button')).toHaveLength(3);
+    const [wallets, transactions, settings] =
       screen.getAllByTestId('nav-button');
     expect(wallets).toHaveTextContent('Wallets');
-    expect(connections).toHaveTextContent('Connections');
     expect(transactions).toHaveTextContent('Transactions');
     expect(settings).toHaveTextContent('Settings');
   });

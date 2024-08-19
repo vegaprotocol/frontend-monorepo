@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { useInteractionStore } from '@/stores/interaction-store';
 import { mockStore } from '@/test-helpers/mock-store';
 
-import genericLocators from '../../locators';
 import { TransactionModal } from '.';
 import { locators } from './transaction-modal';
 
@@ -43,10 +42,6 @@ jest.mock('./transaction-header', () => ({
 }));
 
 jest.mock('@/stores/interaction-store');
-
-jest.mock('../../page-header', () => ({
-  PageHeader: () => <div data-testid="page-header" />,
-}));
 
 jest.mock('./sections/enriched-details', () => ({
   EnrichedDetails: () => <div data-testid="enriched-details" />,
@@ -105,7 +100,6 @@ describe('TransactionModal', () => {
     expect(screen.getByTestId('transaction-header')).toBeVisible();
     expect(screen.getByTestId('transaction-footer')).toBeVisible();
     expect(screen.getByTestId('auto-approval-notification')).toBeVisible();
-    expect(screen.getByTestId(genericLocators.pageHeader)).toBeVisible();
     expect(screen.getByTestId(locators.transactionWrapper)).toBeVisible();
     expect(screen.getByTestId(locators.transactionTimeAgo)).toHaveTextContent(
       'Received just now'

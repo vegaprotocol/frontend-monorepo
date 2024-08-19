@@ -15,7 +15,6 @@ import { useWalletStore } from '@/stores/wallets';
 import { mockClient } from '@/test-helpers/mock-client';
 
 import { Wallets } from '.';
-import { locators as depositAssetsCalloutLocators } from './deposit-assets-callout';
 import { locators as walletPageKeyListLocators } from './wallets-page-key-list';
 
 // This mimics the loading of and loading state both of which are handled higher up the component tree
@@ -47,9 +46,6 @@ const renderComponent = () => {
 };
 
 describe('Wallets', () => {
-  const informationText =
-    'Choose a market on Vega Console, connect your wallet and follow the prompts to deposit the funds needed to trade';
-
   it('renders the wallet page', async () => {
     // 1106-KEYS-005 There is a link from a key to the Block Explorer filtered transaction view
     renderComponent();
@@ -70,21 +66,6 @@ describe('Wallets', () => {
     expect(screen.getByTestId(vegaKeyLocators.keyName)).toHaveTextContent(
       'Key 1'
     );
-    expect(
-      screen.getByTestId(walletPageKeyListLocators.walletsCreateKey)
-    ).toHaveTextContent('Create new key/pair');
-    expect(
-      screen.getByTestId(depositAssetsCalloutLocators.walletsAssetHeader)
-    ).toHaveTextContent('Connect to console to deposit funds');
-    expect(
-      screen.getByTestId(depositAssetsCalloutLocators.walletAssetDescription)
-    ).toHaveTextContent(informationText);
-    expect(
-      screen.getByTestId(depositAssetsCalloutLocators.walletsDepositLink)
-    ).toHaveTextContent('Vega Console dapp');
-    expect(
-      screen.getByTestId(depositAssetsCalloutLocators.walletsDepositLink)
-    ).toHaveAttribute('href', 'https://console.fairground.wtf');
   });
 
   it('allows you to create another key', async () => {

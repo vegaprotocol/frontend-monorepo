@@ -5,10 +5,6 @@ import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../../config/well-known-networks';
 import { locators, TransactionsList } from './transactions-list';
-
-jest.mock('@/components/host-image', () => ({
-  HostImage: () => <div data-testid="host-image" />,
-}));
 jest.mock('../../transactions-state', () => ({
   VegaTransactionState: () => <div data-testid="transaction-state" />,
 }));
@@ -50,7 +46,6 @@ describe('TransactionList', () => {
       },
     ]);
     expect(screen.queryByTestId('empty')).not.toBeInTheDocument();
-    expect(screen.getByTestId('host-image')).toBeInTheDocument();
     expect(
       screen.getByTestId(locators.transactionListItemTransactionType)
     ).toBeInTheDocument();

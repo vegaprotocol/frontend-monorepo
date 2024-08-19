@@ -8264,6 +8264,11 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
   integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
 
+"@types/nanoassert@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@types/nanoassert/-/nanoassert-2.0.3.tgz#9cd037922e1ca51b66c0a72a33c2a7bbd2367faa"
+  integrity sha512-qokZFN/zwtt5//j4wvBtrPgwJ2m1otr/KFTXKwd1RQL4e0YmUuz6BurmmGMiMdUbb3P5en3USx0mh2a7yn6URg==
+
 "@types/node-fetch@^2.5.7", "@types/node-fetch@^2.6.4":
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.11.tgz#9b39b78665dae0e82a08f02f4967d62c66f95d24"
@@ -8805,10 +8810,10 @@
     compare "^2.0.0"
     nanoassert "^2.0.0"
 
-"@vegaprotocol/enums@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.2.tgz#8382e0b0e359f3e5045f26e22a607910cfb06684"
-  integrity sha512-XRS82UW0tVeVlvjD39uPp9MoFPuo+DYoxtpVjlif0mQNn74vfuhQus8UniGRCCCj7CyvXQx3hnM3xyzGwxqPaw==
+"@vegaprotocol/enums@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.3.tgz#167a810c76c3f799e677ce40ffd71727e670da41"
+  integrity sha512-mcovDhh46qeUP61Myoni97cpHCmdmHONBVbYV2s3P/sxciNx5tjF3ZthtnfgRCNOHfMQ75CjSX2NzE5DDd8EMQ==
 
 "@vegaprotocol/protos@^0.21.0":
   version "0.21.0"

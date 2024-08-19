@@ -28,7 +28,8 @@ export type ConnectorType =
   | 'jsonRpc'
   | 'snap'
   | 'viewParty'
-  | 'mock';
+  | 'mock'
+  | 'in-browser-wallet';
 
 export interface Connector {
   readonly id: ConnectorType;

@@ -247,6 +247,7 @@ export const AssetActivityDatagrid = ({
         rowData={rowData}
         pinnedTopRowData={pinnedTopRowData}
         overlayNoRowsTemplate={t('No data')}
+        rowClass="ag-highlight-pinned"
       />
       <Pagination
         count={rowData.length}

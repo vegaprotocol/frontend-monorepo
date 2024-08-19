@@ -19,6 +19,7 @@ export const OnboardingPage = ({
   return (
     <BasePage
       title={name}
+      // TODO: this can probably be deleted
       onBack={onBack}
       className="pt-14 px-5 h-full pb-8 overflow-y-auto"
       backLocation={backLocation}

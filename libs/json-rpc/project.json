@@ -1,0 +1,36 @@
+{
+  "name": "json-rpc",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/json-rpc/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/json-rpc",
+        "main": "libs/json-rpc/src/index.ts",
+        "tsConfig": "libs/json-rpc/tsconfig.lib.json",
+        "assets": ["libs/json-rpc/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/json-rpc/**/*.ts",
+          "libs/json-rpc/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/json-rpc/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
