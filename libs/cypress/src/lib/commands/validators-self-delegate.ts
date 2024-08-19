@@ -1,7 +1,6 @@
 import { gql } from 'graphql-request';
 import { selfDelegate } from '../capsule/self-delegate';
 import { requestGQL, setGraphQLEndpoint } from '../capsule/request';
-import { storedApiNodeSchema } from '@vegaprotocol/environment';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,7 +14,7 @@ declare global {
 
 export const addValidatorsSelfDelegate = () => {
   Cypress.Commands.add('validatorsSelfDelegate', () => {
-    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    const apiNode = Cypress.env('API_NODE');
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
