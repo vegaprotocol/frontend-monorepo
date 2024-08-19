@@ -12,7 +12,7 @@ export const ResizableGridPanelChild = ({
 }) => {
   return (
     <section className="h-full p-1">
-      <div className="h-full bg-gs-800 ">{children}</div>
+      <div className="h-full bg-surface-1 ">{children}</div>
     </section>
   );
 };

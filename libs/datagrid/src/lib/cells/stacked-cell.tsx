@@ -20,7 +20,7 @@ export const StackedCell = ({
       {secondary && (
         <div
           data-testid="stack-cell-secondary"
-          className={cn(rowClass, 'text-xs text-muted')}
+          className={cn(rowClass, 'text-xs text-surface-2-fg-muted')}
         >
           {secondary}
         </div>

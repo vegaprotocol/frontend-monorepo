@@ -136,7 +136,7 @@ export const TeamCard = ({
             {lastGames.length === 0 && t('None available')}
             {lastGames.map((game, i) => (
               <Tooltip key={i} description={DispatchMetricLabels[game.metric]}>
-                <button className="cursor-help text-sm bg-gs-700  px-2 py-1 rounded-full">
+                <button className="cursor-help text-sm bg-surface-2  px-2 py-1 rounded-full">
                   <RankLabel rank={game.rank} />
                 </button>
               </Tooltip>

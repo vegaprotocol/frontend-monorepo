@@ -26,7 +26,7 @@ export const TradingCheckbox = ({
     'border-gs-500 ',
     'aria-checked:border-gs-400',
     'disabled:border-gs-600',
-    'bg-gs-700 '
+    'bg-surface-2 '
   );
 
   return (

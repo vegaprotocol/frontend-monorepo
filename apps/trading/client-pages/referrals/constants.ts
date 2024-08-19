@@ -1,7 +1,7 @@
 import { type ApolloError } from '@apollo/client';
 import { getUserLocale } from '@vegaprotocol/utils';
 
-export const BORDER_COLOR = 'border-gs-500 ';
+export const BORDER_COLOR = 'border-gs-500';
 export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
 
 // TODO: Update the links to use the correct referral related pages

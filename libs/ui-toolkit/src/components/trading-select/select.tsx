@@ -63,7 +63,7 @@ export const TradingRichSelect = forwardRef<
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-default rounded overflow-hidden shadow-lg"
           position="item-aligned"
           align="start"
           side="bottom"
@@ -90,7 +90,7 @@ export const TradingRichSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2 h-14 overflow-hidden',
       'cursor-pointer outline-none',
-      'hover:bg-gs-800 focus:bg-gs-800',
+      'hover:bg-surface-1 focus:bg-surface-1',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
       className,
     ].join(' ')}
@@ -135,7 +135,7 @@ export const MiniSelect = ({
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-default rounded overflow-hidden shadow-lg"
           position="popper"
           align="start"
           side="bottom"
@@ -163,7 +163,7 @@ export const MiniSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2',
       'cursor-pointer outline-none ',
-      'hover:bg-gs-800 focus:bg-gs-800',
+      'hover:bg-surface-1 focus:bg-surface-1',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
       className,
     ].join(' ')}

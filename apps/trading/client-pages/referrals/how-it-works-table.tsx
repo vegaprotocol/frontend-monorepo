@@ -5,7 +5,7 @@ export const HowItWorksTable = () => {
   const t = useT();
   return (
     <Table
-      className="bg-none bg-gs-800 "
+      className="bg-none bg-surface-1 "
       noHeader
       noCollapse
       columns={[{ name: 'number', className: 'pr-0' }, { name: 'step' }]}

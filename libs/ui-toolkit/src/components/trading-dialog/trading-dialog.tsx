@@ -22,7 +22,7 @@ export const TradingDialog = ({
     <DialogPrimitives.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay
-          className="fixed inset-0 bg-gs-900/80 z-20"
+          className="fixed inset-0 bg-surface-2/80 z-20"
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content
@@ -44,7 +44,7 @@ export const TradingDialog = ({
                 'border rounded-md',
                 'p-8',
                 'border-gs-600 ',
-                'bg-gs-900',
+                'bg-surface-2',
                 'text-gs-50 '
               )}
             >

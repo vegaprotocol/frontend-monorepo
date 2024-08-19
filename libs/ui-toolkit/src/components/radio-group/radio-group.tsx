@@ -67,7 +67,7 @@ export const Radio = ({ id, value, label, disabled }: RadioProps) => {
   );
   const indicatorClasses = cn(
     'block w-[13px] h-[13px] border-4 rounded-full',
-    'bg-gs-900',
+    'bg-surface-2',
     'border-gs-0'
   );
   return (

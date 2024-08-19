@@ -10,7 +10,7 @@ export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
     'border',
     'focus:border-gs-400',
     {
-      'bg-gs-700 ': !disabled && !hasError,
+      'bg-surface-2 ': !disabled && !hasError,
       'bg-transparent': disabled || hasError,
       'border-gs-600 ': disabled,
       'border-vega-red-500': !disabled && hasError,

@@ -22,7 +22,7 @@ export const ProgressBar = ({
       className={cn(
         'relative',
         {
-          'bg-gs-700': !compact,
+          'bg-surface-2': !compact,
         },
         className
       )}

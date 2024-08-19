@@ -23,7 +23,7 @@ export const TicketTypeSelect = ({
 }) => {
   const t = useT();
   const toggleClasses =
-    'flex-1 -mb-px px-0.5 py-1.5 border-b-2 border-b-transparent text-secondary';
+    'flex-1 -mb-px px-0.5 py-1.5 border-b-2 border-b-transparent';
 
   const stopOptions = useStopOptions();
   const toggles = useToggles();
@@ -44,10 +44,7 @@ export const TicketTypeSelect = ({
           value={itemValue}
           key={itemValue}
           data-testid={`order-type-${itemValue}`}
-          className={cn(
-            toggleClasses,
-            'data-[state=on]:border-b-gs-400 data-[state=on]:text-gs-50'
-          )}
+          className={cn(toggleClasses, 'data-[state=on]:border-b-gs-400')}
         >
           {label}
         </ToggleGroup.Item>

@@ -8,7 +8,7 @@ export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
     'flex items-center w-full text-sm',
     'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
     {
-      'bg-gs-700 ': !disabled && !hasError,
+      'bg-surface-2 ': !disabled && !hasError,
       'bg-transparent': disabled || hasError,
       'border-gs-600 ': disabled,
       'border-vega-red-500': !disabled && hasError,

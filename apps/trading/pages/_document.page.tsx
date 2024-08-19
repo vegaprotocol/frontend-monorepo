@@ -36,7 +36,7 @@ export default function Document() {
           // and delivered via IPFS we override this to show a server side render loading animation until the
           // js is downloaded and react takes over rendering
           style={{ display: 'block' }}
-          className="bg-white dark:bg-black text-gs-50 font-sans"
+          className="bg-surface-0 text-surface-0-fg font-sans"
         >
           <Main />
           <NextScript />

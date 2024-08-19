@@ -1,8 +1,8 @@
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-gs-500 ';
-export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
+export const BORDER_COLOR = 'border-gs-300 dark:border-gs-700';
+export const GRADIENT = 'bg-gradient-to-b from-surface-2 to-transparent';
 
 export const Box = ({
   children,

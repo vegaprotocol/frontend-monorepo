@@ -65,7 +65,7 @@ export const Search = () => {
             'search-dropdown',
             'p-2 min-w-[290px] z-20',
             'text-gs-300',
-            'bg-gs-900',
+            'bg-surface-2',
             'border rounded border-gs-200 ',
             'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]'
           )}
@@ -186,7 +186,7 @@ export const SearchForm = () => {
             className={cn(
               '[nav_&]:border [nav_&]:rounded [nav_&]:border-gs-300 [nav_&]:dark:border-gs-300',
               '[.search-dropdown_&]:border [.search-dropdown_&]:rounded [.search-dropdown_&]:border-gs-300 [.search-dropdown_&]:dark:border-gs-300',
-              'bg-gs-900',
+              'bg-surface-2',
               'absolute top-[100%] flex-1 w-full pb-2 px-2 text-black dark:text-white'
             )}
           >

@@ -173,7 +173,7 @@ export const NavigationContent = ({
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
           'border rounded border-gs-400',
-          'bg-gs-800'
+          'bg-surface-1'
         )}
       >
         {children}

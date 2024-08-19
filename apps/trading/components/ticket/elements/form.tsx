@@ -46,7 +46,7 @@ export const InputLabel = ({
 }) => {
   return (
     <>
-      <span className="text-default">{label}</span> {symbol}
+      <span className="text-surface-2-fg">{label}</span> {symbol}
     </>
   );
 };

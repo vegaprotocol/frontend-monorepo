@@ -83,9 +83,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-gs-100">
-    {useLabelText({ isCurrent, isAvailable })}
-  </span>
+  <span>{useLabelText({ isCurrent, isAvailable })}</span>
 );
 
 type NetworkSwitcherProps = {
@@ -128,7 +126,7 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           data-testid="network-switcher"
           className={cn(
-            'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-100 whitespace-nowrap',
+            'flex justify-between items-center text-sm py-1 px-2 rounded border border-default whitespace-nowrap',
             className
           )}
         >

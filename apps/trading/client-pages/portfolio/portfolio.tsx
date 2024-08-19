@@ -127,7 +127,7 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="flex justify-between bg-gs-700 ">
+      <div className="flex justify-between bg-surface-2 ">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
           className={cn('transition-all w-1/3 p-1 relative', {
@@ -143,7 +143,7 @@ const PortfolioAssets = () => {
             type="text"
             placeholder={t('Search')}
             data-testid="search-term"
-            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-gs-800 "
+            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-surface-1 "
             prependElement={
               <VegaIcon className="fill-gs-300 " name={VegaIconNames.SEARCH} />
             }

@@ -49,7 +49,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
-        <div className="flex items-center justify-end gap-1 p-1 bg-gs-800  border-b border-default shrink-0">
+        <div className="flex items-center justify-end gap-1 p-1 bg-surface-1  border-b border-default shrink-0">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
             <Popover

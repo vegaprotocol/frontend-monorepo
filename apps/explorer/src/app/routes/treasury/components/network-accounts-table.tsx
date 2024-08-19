@@ -36,7 +36,7 @@ export const NetworkAccountsTable = () => {
                 className="basis-1/2 md:basis-1/4"
                 key={`${a.assetId}-${a.balance}`}
               >
-                <div className="rounded overflow-hidden shadow-lg bg-gs-900">
+                <div className="rounded overflow-hidden shadow-lg bg-surface-2">
                   <div className="text-center p-6 bg-gs-800 border-b border-gs-500">
                     <p className="mt-3" data-testid="name">
                       <AssetLink assetId={a.assetId} />

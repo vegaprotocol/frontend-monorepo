@@ -135,13 +135,11 @@ export const RowData = ({
         <div className="break-all flex gap-2" data-testid="node">
           <TradingRadio id={`node-url-${id}`} value={url} label={url} />
           {url.length > 0 && url !== 'custom' && (
-            <span className="text-muted">
-              <CopyWithTooltip text={url}>
-                <button>
-                  <VegaIcon name={VegaIconNames.COPY} />
-                </button>
-              </CopyWithTooltip>
-            </span>
+            <CopyWithTooltip text={url}>
+              <button>
+                <VegaIcon name={VegaIconNames.COPY} />
+              </button>
+            </CopyWithTooltip>
           )}
         </div>
       )}

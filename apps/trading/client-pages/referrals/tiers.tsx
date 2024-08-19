@@ -22,7 +22,7 @@ import { Trans } from 'react-i18next';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
-    className={cn('bg-gs-800  rounded-lg animate-pulse', {
+    className={cn('bg-surface-1  rounded-lg animate-pulse', {
       'w-full h-20': variant === 'large',
     })}
   ></div>
@@ -65,9 +65,9 @@ const StakingTier = ({
     <div
       className={cn(
         'overflow-hidden',
-        'border rounded-md w-full',
+        'border border-default rounded-md w-full',
         'flex flex-row',
-        'bg-gs-900',
+        'bg-surface-0',
         GRADIENT,
         BORDER_COLOR
       )}
@@ -103,7 +103,7 @@ export const TiersContainer = () => {
 
   if ((!loading && !details) || error) {
     return (
-      <div className="bg-gs-800  text-black dark:text-white rounded-lg p-6 mt-1 mb-20 text-sm text-center">
+      <div className="bg-surface-1  text-black dark:text-white rounded-lg p-6 mt-1 mb-20 text-sm text-center">
         <Trans
           defaults="There are currently no active referral programs. Check the <0>Governance App</0> to see if there are any proposals in progress and vote."
           components={[
@@ -179,7 +179,7 @@ export const TiersContainer = () => {
       {/* Container */}
       <div
         className={cn(
-          'md:bg-gs-800',
+          'md:bg-surface-1',
           'md:',
           'md:text-black',
           'md:dark:text-white',
@@ -205,7 +205,7 @@ export const TiersContainer = () => {
               data={benefitTiers.map((bt) => ({
                 ...bt,
                 tierElement: (
-                  <div className="rounded-full bg-gs-900  p-1 w-8 h-8 text-center">
+                  <div className="rounded-full p-1 w-8 h-8 text-center">
                     {bt.tier}
                   </div>
                 ),
@@ -308,7 +308,7 @@ const TiersTable = ({
           ),
         },
       ]}
-      className="bg-gs-0"
+      className="bg-white dark:bg-black"
       data={data.map((d) => ({
         ...d,
         className: cn(getTierGradient(d.tier, data.length)),

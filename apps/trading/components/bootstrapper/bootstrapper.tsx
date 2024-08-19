@@ -94,12 +94,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
 
   const ERR_DATA_LOADER = (
     <Trans
-      i18nKey="It appears that the connection to the node <0>{{VEGA_URL}}</0> does not return necessary data, try switching to another node."
-      components={[
-        <span key="vega" className="text-muted">
-          {VEGA_URL}
-        </span>,
-      ]}
+      i18nKey="It appears that the connection to the node {{VEGA_URL}} does not return necessary data, try switching to another node."
       values={{
         VEGA_URL,
       }}

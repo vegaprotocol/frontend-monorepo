@@ -11,7 +11,7 @@ export const MarketSelectorButton = forwardRef<
     {...props}
     className={cn(
       'flex items-center justify-between px-2 border rounded gap-1',
-      'border-gs-600  bg-gs-700 ',
+      'border-gs-600  bg-surface-2 ',
       'text-secondary data-[state=open]:text-gs-50'
     )}
     ref={ref}

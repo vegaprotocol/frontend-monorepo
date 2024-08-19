@@ -24,7 +24,7 @@ export const DudeBadge = ({
   return (
     <div
       className={cn(
-        'w-24 h-24 rounded-full bg-gs-900 relative',
+        'w-24 h-24 rounded-full bg-surface-2 relative',
         'rotate-12',
         {
           [BADGE_GRADIENT_VARIANT_A]: variant === 'A',

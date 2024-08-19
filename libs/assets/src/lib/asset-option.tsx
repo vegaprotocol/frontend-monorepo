@@ -79,7 +79,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
           >
             <span
               className={cn(
-                'bg-gs-900 ',
+                'bg-surface-2 ',
                 'text-black dark:text-white text-xs',
                 'py-px px-0.5 rounded-sm'
               )}

@@ -112,8 +112,8 @@ export const AccountCard = ({
     <section
       data-testid="account-card"
       className={cn('m-1 rounded border-default', {
-        'bg-gs-700 hover:bg-gs-600': !(expandable && expanded),
-        'bg-gs-600 ': expandable && expanded,
+        'bg-surface-2 hover:bg-surface-3': !(expandable && expanded),
+        'bg-surface-2': expandable && expanded,
       })}
     >
       <div className="relative p-3">
@@ -177,7 +177,7 @@ export const AccountCard = ({
         {expandable && (
           <button
             type="button"
-            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-gs-800 before:-z-10"
+            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-surface-1 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
             data-testid="expand-account-card"
           >

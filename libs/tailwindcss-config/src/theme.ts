@@ -34,6 +34,29 @@ export const theme = {
       '700': 'rgb(var(--gs-700) / <alpha-value>)',
       '800': 'rgb(var(--gs-800) / <alpha-value>)',
       '900': 'rgb(var(--gs-900) / <alpha-value>)',
+      '950': 'rgb(var(--gs-950) / <alpha-value>)',
+    },
+    surface: {
+      '0': {
+        DEFAULT: 'rgb(var(--surface-0) / <alpha-value>)',
+        fg: 'rgb(var(--surface-0-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-1-fg-muted) / <alpha-value>)',
+      },
+      '1': {
+        DEFAULT: 'rgb(var(--surface-1) / <alpha-value>)',
+        fg: 'rgb(var(--surface-1-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-1-fg-muted) / <alpha-value>)',
+      },
+      '2': {
+        DEFAULT: 'rgb(var(--surface-2) / <alpha-value>)',
+        fg: 'rgb(var(--surface-2-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-2-fg-muted) / <alpha-value>)',
+      },
+      '3': {
+        DEFAULT: 'rgb(var(--surface-3) / <alpha-value>)',
+        fg: 'rgb(var(--surface-3-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-3-fg-muted) / <alpha-value>)',
+      },
     },
     intent: {
       none: {

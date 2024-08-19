@@ -490,7 +490,7 @@ const VolumeTiers = ({
   return (
     <div>
       <SimpleTable
-        className="bg-gs-0"
+        className="bg-surface-0"
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
@@ -577,7 +577,7 @@ const ReferralTiers = ({
   return (
     <div>
       <SimpleTable
-        className="bg-gs-0"
+        className="bg-surface-0"
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {

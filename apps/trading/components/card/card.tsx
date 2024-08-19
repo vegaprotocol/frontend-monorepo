@@ -30,7 +30,7 @@ export const Card = ({
         {
           'p-4': size === 'md',
           'p-7': size === 'lg',
-          'bg-gs-800 ': !minimal,
+          'bg-surface-2': !minimal,
         },
         className
       )}
@@ -59,8 +59,8 @@ export const Card = ({
 export const CardLoader = () => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="bg-gs-600  h-5 w-full" />
-      <div className="bg-gs-600  h-6 w-3/4" />
+      <div className="bg-surface-3 h-5 w-full" />
+      <div className="bg-surface-3 h-6 w-3/4" />
     </div>
   );
 };
@@ -110,7 +110,10 @@ export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
 
 export const CardTableTH = (props: HTMLProps<HTMLTableHeaderCellElement>) => {
   return (
-    <th {...props} className={cn('text-left font-normal', props.className)} />
+    <th
+      {...props}
+      className={cn('text-left text-surface-2-fg-muted', props.className)}
+    />
   );
 };
 

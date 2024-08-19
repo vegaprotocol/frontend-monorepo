@@ -27,14 +27,12 @@ export const LayoutCell = ({
     <div className={cn(classes)}>
       {label && (
         <>
-          <span className="lg:hidden text-xs text-gs-200  whitespace-nowrap">
-            {label}
-          </span>
+          <span className="lg:hidden text-xs whitespace-nowrap">{label}</span>
           <span
             /* separator */
             aria-hidden
-            className="border-b border-dashed border-b-gs-400 w-full h-[9px]"
-          ></span>
+            className="border-b border-dashed border-default w-full h-[9px]"
+          />
         </>
       )}
       <span

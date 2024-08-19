@@ -78,7 +78,7 @@ export const TradingRadio = ({
     'border-gs-500 ',
     'aria-checked:border-gs-400',
     'disabled:border-gs-600',
-    'bg-gs-700 '
+    'bg-surface-2 '
   );
   const indicatorClasses = cn(
     'block w-2.5 h-2.5 border-2 rounded-full',

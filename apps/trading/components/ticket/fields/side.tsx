@@ -22,7 +22,7 @@ export const Side = (props: {
       render={({ field }) => {
         return (
           <RadioGroup.Root
-            className="relative flex h-10 leading-10 bg-gs-700  rounded"
+            className="relative flex h-10 leading-10 bg-surface-2 rounded"
             type="single"
             {...field}
             onValueChange={(value) => {
@@ -49,8 +49,7 @@ export const Side = (props: {
                 data-testid={`order-side-${value}`}
                 className={cn(
                   'flex gap-2 justify-center items-center flex-1 relative text-sm rounded transition-colors',
-                  'data-[state=off]:hover:bg-gs-500',
-                  'data-[state=off]:text-gs-200',
+                  'data-[state=off]:hover:bg-surface-3',
                   'data-[state=on]:text-white'
                 )}
               >

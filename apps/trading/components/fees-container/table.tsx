@@ -40,6 +40,6 @@ export const Table = ({ children }: { children: ReactNode }) => {
 
 export const THead = ({ children }: { children: ReactNode }) => {
   return (
-    <thead className="border-b bg-gs-700  border-gs-600 ">{children}</thead>
+    <thead className="border-b bg-surface-2  border-gs-600 ">{children}</thead>
   );
 };

@@ -59,7 +59,9 @@ export const MarketListTable = ({ filterSummary, ...props }: Props) => {
       columnDefs={columnDefs}
       components={components}
       rowHeight={60}
-      rowClass={'!border-b !last:border-b-0 mb-1 border-gs-600 '}
+      rowClass={
+        '!border-b !last:border-b-0 mb-1 border-gs-200 dark:border-gs-800'
+      }
       headerHeight={40}
       domLayout="autoHeight"
       autoSizeStrategy={{

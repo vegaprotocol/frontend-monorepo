@@ -10,18 +10,17 @@ interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
   className?: string;
 }
 
+// TODO: update to use intent colors
 const getClasses = (size: Size, intent: Intent, className?: string) => {
   return cn(
     'rounded-sm leading-none flex-inline items-center',
     {
       'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
-      'bg-gs-500 ': intent === Intent.None,
+      'bg-gs-300 dark:bg-gs-700': intent === Intent.None,
       'bg-vega-blue-500 dark:bg-vega-blue-500': intent === Intent.Info,
       'bg-vega-orange-350 dark:bg-vega-orange-650': intent === Intent.Warning,
       'bg-vega-red-350 dark:bg-vega-red-650': intent === Intent.Danger,
       'bg-vega-green-350 dark:bg-vega-green-650': intent === Intent.Success,
-      'text-gs-100 ': intent !== Intent.Primary,
-      'text-gs-900 ': intent === Intent.Primary,
     },
     {
       'text-lg py-1 px-2': size === 'lg',

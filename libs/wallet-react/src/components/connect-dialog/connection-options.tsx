@@ -119,9 +119,9 @@ interface ConnectionOptionProps {
 }
 
 const CONNECTION_OPTION_CLASSES =
-  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-gs-800';
+  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1';
 const CONNECTION_OPTION_CLASSES_DESC =
-  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-gs-800';
+  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-surface-1';
 
 export const ConnectionOptionDefault = ({
   id,

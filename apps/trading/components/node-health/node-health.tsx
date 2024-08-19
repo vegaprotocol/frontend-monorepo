@@ -53,7 +53,7 @@ export const NodeHealthContainer = ({
       <button
         className={cn('flex justify-center items-center gap-2', {
           'h-4 p-1 rounded hover:bg-gs-200 text-xs': variant === 'normal',
-          'flex w-4 h-4 p-1 bg-gs-500  rounded': variant === 'compact',
+          'flex w-4 h-4 p-1 rounded': variant === 'compact',
         })}
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"

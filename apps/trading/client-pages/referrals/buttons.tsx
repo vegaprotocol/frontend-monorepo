@@ -6,8 +6,8 @@ import { NavLink } from 'react-router-dom';
 
 const RAINBOW_TAB_STYLE = cn(
   'inline-block',
-  'bg-gs-500 ',
-  'hover:bg-gs-400 ',
+  'bg-surface-2',
+  'hover:bg-gs-400',
   'data-[state="active"]:text-white data-[state="active"]:bg-rainbow',
   'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
   '[&.active]:text-white [&.active]:bg-rainbow',

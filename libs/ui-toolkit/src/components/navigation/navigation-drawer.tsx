@@ -100,7 +100,7 @@ export const NavigationDrawerContent = ({
           // border
           'border-l-gs-200',
           // background
-          'bg-gs-900'
+          'bg-surface-2'
         )}
         style={style}
       >

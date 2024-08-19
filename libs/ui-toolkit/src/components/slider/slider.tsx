@@ -40,7 +40,7 @@ export const SliderTrack = ({
   className,
   ...props
 }: SliderTrackProps) => {
-  const defaultStyles = 'bg-gs-700  relative grow h-[4px]';
+  const defaultStyles = 'bg-surface-2  relative grow h-[4px]';
   return (
     <SliderPrimitive.Track className={cn(defaultStyles, className)} {...props}>
       {children}

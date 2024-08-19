@@ -76,7 +76,7 @@ const ConnectButton = ({
   const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   return (
     <button
-      className={cn('flex items-center gap-2 p-2 rounded ', 'hover:bg-gs-100', {
+      className={cn('flex items-center gap-2 p-2 rounded hover:bg-gs-100', {
         '!bg-vega-yellow text-black hover:active:!bg-vega-yellow': isActivating,
       })}
       data-testid={`web3-connector-${info.name}`}

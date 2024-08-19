@@ -32,7 +32,7 @@ const getClassName = (
     // colours
     'enabled:hover:brightness-90  dark:enabled:hover:brightness-110',
     {
-      'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline border-button text-gs-50':
+      'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline border-button':
         intent === Intent.None,
       'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline border-button':
         intent === Intent.Primary,

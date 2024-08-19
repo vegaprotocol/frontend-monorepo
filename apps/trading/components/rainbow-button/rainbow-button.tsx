@@ -25,7 +25,7 @@ export const RainbowButton = ({
   >
     <div
       className={cn({
-        'bg-gs-800  text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
+        'bg-surface-1  text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
           variant === 'border',
       })}
     >

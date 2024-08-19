@@ -21,6 +21,18 @@ export const getIntentBorder = (intent = Intent.None) => {
   };
 };
 
+export const getIntentColor = (intent?: Intent) => {
+  return {
+    'bg-intent-none': intent === Intent.None,
+    'bg-intent-primary': intent === Intent.Primary,
+    'bg-intent-secondary': intent === Intent.Secondary,
+    'bg-intent-info': intent === Intent.Info,
+    'bg-intent-danger': intent === Intent.Danger,
+    'bg-intent-warning': intent === Intent.Warning,
+    'bg-intent-success': intent === Intent.Success,
+  };
+};
+
 export const getIntentBackground = (intent?: Intent) => {
   return {
     'bg-intent-none-background': intent === Intent.None,

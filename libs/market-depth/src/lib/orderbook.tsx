@@ -121,7 +121,7 @@ export const OrderbookMid = ({
     <div className="flex py-[1px]">
       <div
         className={cn('flex grow items-center justify-center text-base gap-2', {
-          'bg-gs-800 ':
+          'bg-surface-1 ':
             isMarketInAuction &&
             bestAskPrice &&
             bestBidPrice &&

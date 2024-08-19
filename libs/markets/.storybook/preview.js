@@ -42,7 +42,7 @@ export const globalTypes = {
 };
 
 const StoryWrapper = ({ children, fill }) => {
-  const classes = cn('p-4', 'bg-gs-900', 'text-gs-50', {
+  const classes = cn('p-4', 'bg-surface-2', 'text-gs-50', {
     'w-screen h-screen': fill,
   });
   return <div className={classes}>{children}</div>;

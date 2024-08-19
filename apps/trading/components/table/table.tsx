@@ -2,8 +2,8 @@ import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-gs-500 ';
-export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
+export const BORDER_COLOR = 'border-gs-300 dark:border-gs-700';
+export const GRADIENT = 'bg-gradient-to-b from-surface-2 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
@@ -53,7 +53,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={cn(
-                'px-5 py-3 text-xs  text-gs-100  font-normal',
+                'px-5 py-3 text-xs font-normal',
                 INNER_BORDER_STYLE,
                 headerClassName
               )}
@@ -62,7 +62,7 @@ export const Table = forwardRef<
                 <span>{displayName}</span>
                 {tooltip ? (
                   <Tooltip description={tooltip}>
-                    <button className="text-gs-400  no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
+                    <button className="no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
                       <VegaIcon size={12} name={VegaIconNames.INFO} />
                     </button>
                   </Tooltip>

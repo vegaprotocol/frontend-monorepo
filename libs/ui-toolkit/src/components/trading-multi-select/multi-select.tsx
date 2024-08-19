@@ -21,8 +21,8 @@ export const MultiSelect = ({
           'relative',
           'text-sm px-3 py-1.5 pr-6 h-8',
           'flex items-center justify-between border rounded gap-1',
-          'border-gs-600  bg-gs-700 ',
-          'text-secondary data-[state=open]:text-gs-50'
+          'border-default bg-surface-2',
+          'text-surface-2-fg'
         )}
       >
         <span className="whitespace-nowrap">{trigger || placeholder}</span>
@@ -39,9 +39,9 @@ export const MultiSelect = ({
         align="start"
         sideOffset={5}
         className={cn(
-          'bg-gs-700 ',
-          'border-gs-500  border',
-          'relative text-default z-20 rounded p-2'
+          'bg-surface-2',
+          'border border-default',
+          'relative z-20 rounded p-2'
         )}
       >
         {children}
@@ -59,7 +59,7 @@ export const MultiSelectOption = forwardRef<
     className={cn(
       'relative flex gap-2 items-center rounded-sm p-1 text-sm',
       'cursor-default hover:cursor-pointer',
-      'text-secondary hover:text-gs-50',
+      'text-surface-2-fg',
       'select-none',
       'whitespace-nowrap'
     )}

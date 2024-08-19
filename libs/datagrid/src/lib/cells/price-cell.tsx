@@ -25,7 +25,7 @@ export const PriceCell = memo(
       return onClick ? (
         <button
           onClick={() => onClick(value)}
-          className="hover:bg-gs-800 text-right"
+          className="hover:bg-surface-1 text-right"
         >
           <NumericCell
             value={value}

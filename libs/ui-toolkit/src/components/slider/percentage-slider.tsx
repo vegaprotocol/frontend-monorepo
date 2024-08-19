@@ -29,7 +29,7 @@ export const PercentageSlider = ({
         className="relative flex items-center select-none touch-none h-4 w-full"
       >
         <SliderPrimitive.Track className=" relative grow h-[4px]">
-          <span className="bg-gs-700  absolute left-2 right-2 top-0 bottom-0"></span>
+          <span className="bg-surface-2  absolute left-2 right-2 top-0 bottom-0"></span>
           <SliderPrimitive.Range className="absolute h-full">
             <span className="absolute left-2 right-0 h-full bg-gs-100 "></span>
           </SliderPrimitive.Range>

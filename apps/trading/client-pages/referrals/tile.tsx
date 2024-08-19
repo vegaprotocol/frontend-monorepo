@@ -23,7 +23,7 @@ export const Tile = ({
         'overflow-hidden relative',
         'p-3 md:p-6',
         'rounded-lg',
-        'bg-gs-800 ',
+        'bg-surface-1 ',
         className
       )}
     >

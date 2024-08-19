@@ -373,7 +373,7 @@ export const RewardPot = ({
   if (!pubKey) {
     return (
       <div className="pt-4">
-        <p className="text-muted text-sm">{t('Not connected')}</p>
+        <p className="text-sm">{t('Not connected')}</p>
       </div>
     );
   }
@@ -467,7 +467,7 @@ export const RewardPot = ({
           </div>
         </>
       ) : (
-        <p className="text-muted text-sm">{t('No rewards')}</p>
+        <p className="text-surface-2-fg-muted text-sm">{t('No rewards')}</p>
       )}
     </div>
   );
@@ -527,7 +527,7 @@ export const Multipliers = ({
   if (!pubKey) {
     return (
       <div className="pt-4">
-        <p className="text-muted text-sm">{t('Not connected')}</p>
+        <p className="text-surface-2-fg-muted text-sm">{t('Not connected')}</p>
       </div>
     );
   }

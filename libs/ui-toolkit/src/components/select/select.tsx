@@ -75,7 +75,7 @@ export const RichSelect = forwardRef<
             className={cn(
               'relative',
               'z-20',
-              'bg-gs-900',
+              'bg-surface-2',
               'border border-gs-600 focus:border-gs-0 rounded',
               'overflow-hidden',
               'shadow-lg'
@@ -108,7 +108,7 @@ export const Option = forwardRef<
       'relative',
       'text-black dark:text-white',
       'cursor-pointer outline-none',
-      'hover:bg-gs-800 focus:bg-gs-800',
+      'hover:bg-surface-1 focus:bg-surface-1',
       'pl-2 py-2',
       'pr-12',
       'w-full',

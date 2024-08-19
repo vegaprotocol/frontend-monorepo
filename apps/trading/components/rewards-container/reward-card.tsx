@@ -111,7 +111,7 @@ const GroupCard = ({
         <div
           className={cn(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-surface-1-900  h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
@@ -127,7 +127,7 @@ const GroupCard = ({
                 <>
                   <EntityIcon entityScope={entityScope} />
                   <span
-                    className="text-muted text-xs"
+                    className="text-surface-1-fg-muted text-xs"
                     data-testid="entity-scope"
                   >
                     {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
@@ -251,7 +251,7 @@ const RewardCard = ({
         <div
           className={cn(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4 flex flex-col gap-4'
+            'bg-gradient-to-b bg-surface-2  h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
@@ -794,7 +794,7 @@ const CardColourStyles: Record<
   },
   [CardColour.GREY]: {
     gradientClassName: 'from-gs-500 to-gs-200',
-    mainClassName: 'from-gs-400 to-20%',
+    mainClassName: 'from-surface-1 to-20%',
     btn: '!bg-gradient-to-br from-50% to-gs-200 !text-white',
   },
   [CardColour.ORANGE]: {
@@ -861,7 +861,7 @@ const CardIcon = ({
 }) => {
   return (
     <Tooltip description={<span>{tooltip}</span>}>
-      <span className="flex items-center p-2 rounded-full border border-gs-300">
+      <span className="flex items-center p-2 rounded-full border border-gs-700 dark:border-gs-300">
         <VegaIcon name={iconName} size={size} />
       </span>
     </Tooltip>

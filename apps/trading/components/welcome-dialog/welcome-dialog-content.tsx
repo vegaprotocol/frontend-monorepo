@@ -76,7 +76,7 @@ const ListItemContent = ({
       <div className="pt-1 shrink-0">{icon}</div>
       <div>
         <h3 className="mb-2 text-lg leading-snug">{title}</h3>
-        <p className="text-sm text-secondary">{text}</p>
+        <p className="text-sm text-surface-0-fg-muted">{text}</p>
       </div>
     </li>
   );

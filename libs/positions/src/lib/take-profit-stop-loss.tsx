@@ -472,7 +472,7 @@ const StopOrder = ({
   const t = useT();
   return (
     <div
-      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5  bg-gs-800 mb-0.5"
+      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5  bg-surface-1 mb-0.5"
       data-testid="stop-order"
     >
       <span>

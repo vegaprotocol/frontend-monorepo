@@ -10,8 +10,8 @@ import { useT } from '../../use-t';
 const itemClass = cn(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-gs-900',
-  'focus:bg-gs-900',
+  'hover:bg-surface-2',
+  'focus:bg-surface-2',
   'select-none',
   'whitespace-nowrap'
 );
@@ -64,7 +64,7 @@ export const DropdownMenuContent = forwardRef<
 >(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
     ref={forwardedRef}
-    className="bg-gs-800 border-gs-400 z-20 min-w-[290px] rounded border p-2 text-gs-0"
+    className="bg-surface-1 border-gs-400 z-20 min-w-[290px] rounded border p-2 text-gs-0"
     align="start"
     sideOffset={sideOffset}
     {...contentProps}
@@ -162,7 +162,7 @@ export const DropdownMenuSubContent = forwardRef<
 >(({ className, ...subContentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.SubContent
     ref={forwardedRef}
-    className={cn('p-2 bg-gs-800 rounded border border-gs-400', className)}
+    className={cn('p-2 bg-surface-1 rounded border border-gs-400', className)}
     {...subContentProps}
   />
 ));
