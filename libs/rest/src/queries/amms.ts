@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { type Market, queryKeys as marketQueryKeys } from './markets';
+import { getMarketFromCache } from './markets';
 import type { QueryClient } from '@tanstack/react-query';
 
 const ammStatusSchema = z.nativeEnum(v1AMMStatus);
@@ -48,7 +48,7 @@ const ammsSchema = z.array(ammSchema);
 export type AMM = z.infer<typeof ammSchema>;
 export type AMMs = z.infer<typeof ammsSchema>;
 
-export const retrieveAMMs = (
+export const retrieveAMMs = async (
   queryClient: QueryClient,
   params?: AMMsQueryParams
 ) => {
@@ -56,59 +56,59 @@ export const retrieveAMMs = (
 
   const searchParams = parametersSchema.parse(params);
 
-  return axios
-    .get<v2ListAMMsResponse>(endpoint, {
-      params: new URLSearchParams(searchParams),
-    })
-    .then((res) => {
-      const edges = res.data.amms?.edges;
-      const rawAMMs = removePaginationWrapper(edges);
+  const res = await axios.get<v2ListAMMsResponse>(endpoint, {
+    params: new URLSearchParams(searchParams),
+  });
 
-      const amms = rawAMMs.map((a) => {
-        const market = queryClient.getQueryData<Market>(
-          marketQueryKeys.single(a.marketId)
-        );
+  const edges = res.data.amms?.edges;
+  const rawAMMs = removePaginationWrapper(edges);
 
-        if (!market) {
-          throw new Error('market for amm not found');
-        }
+  const amms = rawAMMs.map((a) => {
+    if (!a.marketId) {
+      throw new Error('missing marketId');
+    }
 
-        const asset = market.quoteAsset;
+    const market = getMarketFromCache(queryClient, a.marketId);
 
-        const data = {
-          id: a.id,
-          marketId: a.marketId,
-          partyId: a.partyId,
-          ammPartyId: a.ammPartyId,
+    if (!market) {
+      throw new Error('market for amm not found');
+    }
 
-          commitment: new Decimal(a.commitment || 0, asset.decimals),
-          proposedFee: a.proposedFee,
-          status: a.status,
-          statusReason: a.statusReason,
+    const asset = market.quoteAsset;
 
-          // concentrated liquidity parameters:
-          base: new Decimal(a.parameters?.base, asset.decimals),
-          upperBound: new Decimal(a.parameters?.upperBound, asset.decimals),
-          leverageAtUpperBound: new Decimal(
-            a.parameters?.leverageAtUpperBound,
-            asset.decimals
-          ),
-          lowerBound: new Decimal(a.parameters?.lowerBound, asset.decimals),
-          leverageAtLowerBound: new Decimal(
-            a.parameters?.leverageAtLowerBound,
-            asset.decimals
-          ),
+    const data = {
+      id: a.id,
+      marketId: a.marketId,
+      partyId: a.partyId,
+      ammPartyId: a.ammPartyId,
 
-          market: {
-            code: market.code,
-          },
-        };
+      commitment: new Decimal(a.commitment || 0, asset.decimals),
+      proposedFee: a.proposedFee,
+      status: a.status,
+      statusReason: a.statusReason,
 
-        return data;
-      });
+      // concentrated liquidity parameters:
+      base: new Decimal(a.parameters?.base, asset.decimals),
+      upperBound: new Decimal(a.parameters?.upperBound, asset.decimals),
+      leverageAtUpperBound: new Decimal(
+        a.parameters?.leverageAtUpperBound,
+        asset.decimals
+      ),
+      lowerBound: new Decimal(a.parameters?.lowerBound, asset.decimals),
+      leverageAtLowerBound: new Decimal(
+        a.parameters?.leverageAtLowerBound,
+        asset.decimals
+      ),
 
-      return ammsSchema.parse(amms);
-    });
+      market: {
+        code: market.code,
+      },
+    };
+
+    return data;
+  });
+
+  return ammsSchema.parse(amms);
 };
 
 export const queryKeys = {

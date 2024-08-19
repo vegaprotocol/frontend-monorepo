@@ -1,6 +1,0 @@
-{
-  "name": "@vegaprotocol/rest",
-  "version": "0.0.1",
-  "type": "module",
-  "module": "./index.js"
-}
