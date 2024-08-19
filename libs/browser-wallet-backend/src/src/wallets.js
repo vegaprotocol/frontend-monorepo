@@ -183,11 +183,8 @@ export class WalletCollection {
 
   async generateDerivedMnemonic({ hexStr, salt }) {
     const messageBytes = hex(hexStr);
-    console.log(messageBytes);
     const bytes = await sha256(concat(string(salt), messageBytes));
-    console.log(bytes);
     const checksumedEntropy = await checksum(bytes);
-    console.log(checksumedEntropy);
     const words = await toMnemonic(checksumedEntropy);
     return {
       derivedMnemonic: words,
