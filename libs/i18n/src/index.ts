@@ -4,7 +4,6 @@ import en_accounts from './locales/en/accounts.json';
 import en_assets from './locales/en/assets.json';
 import en_candles_chart from './locales/en/candles-chart.json';
 import en_datagrid from './locales/en/datagrid.json';
-import en_deposits from './locales/en/deposits.json';
 import en_environment from './locales/en/environment.json';
 import en_fills from './locales/en/fills.json';
 import en_funding_payments from './locales/en/funding-payments.json';
@@ -26,7 +25,6 @@ export const locales = {
     assets: en_assets,
     'candles-chart': en_candles_chart,
     datagrid: en_datagrid,
-    deposits: en_deposits,
     environment: en_environment,
     fills: en_fills,
     'funding-payments': en_funding_payments,
