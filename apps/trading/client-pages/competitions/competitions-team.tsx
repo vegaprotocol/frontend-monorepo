@@ -151,12 +151,12 @@ const TeamPage = ({
   const createdAt = new Date(team.createdAt);
 
   const closedIndicator = team.closed ? (
-    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300 dark:border-gs-700 px-1 pt-px flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.LOCK} size={10} />
       <span>{t('Private')}</span>
     </div>
   ) : (
-    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300 dark:border-gs-700 px-1 pt-px flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.GLOBE} size={10} />
       <span>{t('Public')}</span>
     </div>
@@ -203,13 +203,13 @@ const TeamPage = ({
             {closedIndicator}
             <div className="">
               {t('Created at')}:{' '}
-              <span className="text-gs-600 ">{formatDate(createdAt)}</span> (
-              {t('epoch')}: {team.createdAtEpoch})
+              <span className="text-surface-1-fg">{formatDate(createdAt)}</span>{' '}
+              ({t('epoch')}: {team.createdAtEpoch})
             </div>
             <div>
               <span>
                 {t('ID')}:{' '}
-                <span className="text-gs-600 ">
+                <span className="text-surface-1-fg">
                   {truncateMiddle(team.teamId)}
                 </span>{' '}
               </span>
