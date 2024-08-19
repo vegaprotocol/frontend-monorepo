@@ -159,7 +159,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
       <span className="flex gap-1 items-center">
         <Button
           intent={Intent.Secondary}
-          size="extra-small"
+          size="xs"
           onClick={() => {
             if (ethWalletStatus === 'disconnected') {
               modal.setOpen(true);
