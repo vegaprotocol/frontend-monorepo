@@ -2,7 +2,7 @@ import {
   TradingInput as Input,
   InputError,
   Loader,
-  TradingDialog,
+  Dialog,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { cn } from '@vegaprotocol/ui-toolkit';
@@ -304,10 +304,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         </div>
       ) : null}
 
-      <TradingDialog
+      <Dialog
         title={t('Apply a referral code')}
         open={dialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setDialogOpen(open);
         }}
       >
@@ -322,7 +322,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           }}
           resetLabel={t('Back to referrals')}
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

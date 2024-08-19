@@ -8,7 +8,7 @@ import {
   Tooltip,
   AnchorButton,
   Button,
-  TradingDialog,
+  Dialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -153,10 +153,10 @@ export const CreateCodeForm = () => {
         </Link>
       </p>
 
-      <TradingDialog
+      <Dialog
         title={t('Create a referral code')}
         open={dialogOpen}
-        onOpenChange={() => setDialogOpen(false)}
+        onChange={() => setDialogOpen(false)}
       >
         <CreateCodeDialog
           onSubmit={onSubmit}
@@ -164,11 +164,11 @@ export const CreateCodeForm = () => {
             setDialogOpen(false);
           }}
         />
-      </TradingDialog>
+      </Dialog>
 
-      <TradingDialog
+      <Dialog
         open={txDialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setTxDialogOpen(open);
         }}
         title={t('Create a referral code')}
@@ -201,7 +201,7 @@ export const CreateCodeForm = () => {
             )
           }
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

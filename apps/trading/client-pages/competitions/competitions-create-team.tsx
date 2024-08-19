@@ -4,7 +4,7 @@ import {
   Intent,
   AnchorButton,
   Button,
-  TradingDialog,
+  Dialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -61,16 +61,10 @@ export const CompetitionsCreateTeam = () => {
         <Box className="flex flex-col gap-4">
           <Link
             to={Links.COMPETITIONS()}
-            className="text-xs inline-flex items-center gap-1 group"
+            className="underline underline-offset-4 inline-flex items-center gap-1"
           >
-            <VegaIcon
-              name={VegaIconNames.CHEVRON_LEFT}
-              size={12}
-              className="text-surface-1-fg "
-            />{' '}
-            <span className="group-hover:underline">
-              {t('Go back to the competitions')}
-            </span>
+            <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />{' '}
+            <span>{t('Go back to the competitions')}</span>
           </Link>
           <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">{title}</h1>
           {canShowForm ? (
@@ -192,9 +186,9 @@ const CreateTeamFormContainer = ({
             : undefined
         }
       />
-      <TradingDialog
+      <Dialog
         open={dialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setDialogOpen(open);
         }}
         title={t('Create a team')}
@@ -240,7 +234,7 @@ const CreateTeamFormContainer = ({
             )
           }
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

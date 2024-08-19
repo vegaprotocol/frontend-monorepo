@@ -1,6 +1,6 @@
 import {
   Button,
-  TradingDialog,
+  Dialog,
   Intent,
   Tooltip,
   VegaIcon,
@@ -40,10 +40,10 @@ export const JoinTeam = ({
         isReadOnly={isReadOnly}
         onJoin={setConfirmDialog}
       />
-      <TradingDialog
+      <Dialog
         title={confirmDialog === 'switch' ? t('Switch team') : t('Join team')}
         open={confirmDialog !== undefined}
-        onOpenChange={() => setConfirmDialog(undefined)}
+        onChange={() => setConfirmDialog(undefined)}
       >
         {confirmDialog !== undefined && (
           <DialogContent
@@ -54,7 +54,7 @@ export const JoinTeam = ({
             refetch={refetch}
           />
         )}
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

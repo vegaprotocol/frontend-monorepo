@@ -32,7 +32,7 @@ export const TradingFormGroup = ({
     },
     className
   );
-  const labelClasses = cn('block mb-1 text-xs text-surface-0-fg-muted', {
+  const labelClasses = cn('block mb-1 text-xs text-surface-1-fg', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
     'text-surface-1-fg-muted': disabled,
