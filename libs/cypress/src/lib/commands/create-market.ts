@@ -1,4 +1,3 @@
-import { storedApiNodeSchema } from '@vegaprotocol/environment';
 import { createMarket } from '../capsule/create-market';
 
 declare global {
@@ -13,7 +12,7 @@ declare global {
 
 export const addCreateMarket = () => {
   Cypress.Commands.add('createMarket', () => {
-    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+    const apiNode = Cypress.env('API_NODE');
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
