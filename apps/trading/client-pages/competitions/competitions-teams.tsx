@@ -4,7 +4,7 @@ import { useT } from '../../lib/use-t';
 import { useTeams } from '../../lib/hooks/use-teams';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import {
-  Input,
+  TradingInput as Input,
   Loader,
   VegaIcon,
   VegaIconNames,
@@ -28,19 +28,17 @@ export const CompetitionsTeams = () => {
         <p>{t('Choose a team to get involved')}</p>
       </HeaderHero>
 
-      <div className="mb-6 flex justify-end">
-        <div className="w-full md:w-60 h-10 relative">
-          <span className="absolute z-10 pointer-events-none opacity-90 top-[5px] left-[5px]">
-            <VegaIcon name={VegaIconNames.SEARCH} size={18} />
-          </span>
+      <div className="flex justify-end">
+        <div className="w-full md:w-60">
           <Input
             ref={inputRef}
-            className="opacity-90 text-right"
+            className="bg-surface-2/60"
             placeholder={t('Name')}
             onKeyUp={() => {
               const value = inputRef.current?.value;
               if (value != filter) setFilter(value);
             }}
+            prependElement={<VegaIcon name={VegaIconNames.SEARCH} size={18} />}
           />
         </div>
       </div>
