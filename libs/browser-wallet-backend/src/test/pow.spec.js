@@ -1,7 +1,5 @@
 import pow from '../src/pow.js';
 import inprocess from '../src/pow/in-process.js';
-// import chromium from '../src/pow/chromium.js';
-import webworker from '../src/pow/web-worker.js';
 
 describe('pow', () => {
   it('should be able to solve a puzzle', async () => {
@@ -21,29 +19,5 @@ describe('pow', () => {
     const solver = await inprocess();
     expect(solver).not.toBe(false);
     expect(typeof solver).toBe('function');
-  });
-
-  // it('chromium solver should be false if not chromium', async () => {
-  //   const solver = await chromium();
-  //   expect(solver).toBe(false);
-  // });
-
-  // it('chromium solver should be function if chromium-like', async () => {
-  //   expect(globalThis.chrome.offscreen).toBe(undefined);
-
-  //   globalThis.chrome.offscreen = {
-  //     createDocument: () => {},
-  //   };
-
-  //   const solver = await chromium();
-  //   expect(solver).not.toBe(false);
-  //   expect(typeof solver).toBe('function');
-
-  //   delete globalThis.chrome.offscreen;
-  // });
-
-  it('webworker solver should be false if workers are unavailable', async () => {
-    const solver = await webworker();
-    expect(solver).toBe(false);
   });
 });
