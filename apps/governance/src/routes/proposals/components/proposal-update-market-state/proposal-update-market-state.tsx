@@ -61,7 +61,7 @@ export const ProposalUpdateMarketState = ({
               </KeyValueTableRow>
               <KeyValueTableRow>
                 {t('State')}
-                <span className="bg-vega-green-650 px-1">
+                <span className="bg-green-650 px-1">
                   {MarketUpdateTypeMapping[change.updateType]}
                 </span>
               </KeyValueTableRow>

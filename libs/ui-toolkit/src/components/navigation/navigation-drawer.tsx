@@ -94,13 +94,13 @@ export const NavigationDrawerContent = ({
         className={cn(
           'drawer-content',
           'relative h-full overflow-auto border-l',
-          'font-alpha px-4 pb-8',
+          'px-4 pb-8',
           // text
           'text-gs-300',
           // border
           'border-l-gs-200',
           // background
-          'bg-gs-900'
+          'bg-surface-2'
         )}
         style={style}
       >

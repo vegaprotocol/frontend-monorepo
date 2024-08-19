@@ -18,7 +18,7 @@ export const SettingsPopover = () => {
   return (
     <Popover
       trigger={
-        <span className="flex items-center justify-center w-7 h-7 hover:bg-gs-500  rounded-full">
+        <span className="flex items-center justify-center w-7 h-7 hover:bg-surface-3  rounded-full">
           <VegaIcon name={VegaIconNames.COG} size={18} />
         </span>
       }
@@ -38,7 +38,7 @@ export const Settings = () => {
 
   return (
     <section className="flex flex-col gap-3 p-4 w-96">
-      <h2 className="font-alpha calt uppercase">{t('Settings')}</h2>
+      <h2 className="font-alt calt uppercase">{t('Settings')}</h2>
       <SettingsGroup label={t('Dark mode')}>
         <Switch
           name="settings-theme-switch"
@@ -112,11 +112,11 @@ export const Settings = () => {
         <dl className="text-sm grid grid-cols-2 gap-1">
           {process.env.GIT_TAG && (
             <>
-              <dt className="text-muted">{t('Version')}</dt>
+              <dt className="text-surface-1-fg-muted">{t('Version')}</dt>
               <dd>{process.env.GIT_TAG}</dd>
             </>
           )}
-          <dt className="text-muted">{t('Git commit hash')}</dt>
+          <dt className="text-surface-1-fg-muted">{t('Git commit hash')}</dt>
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
@@ -145,7 +145,9 @@ const SettingsGroup = ({
         <label className="text-sm" id={label}>
           {label}
         </label>
-        {helpText && <p className="text-xs text-muted">{helpText}</p>}
+        {helpText && (
+          <p className="text-xs text-surface-1-fg-muted">{helpText}</p>
+        )}
       </div>
       <div aria-describedby={label}>{children}</div>
     </div>

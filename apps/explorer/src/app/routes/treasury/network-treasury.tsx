@@ -17,7 +17,7 @@ export const NetworkTreasury = () => {
   return (
     <section>
       <RouteTitle data-testid="block-header">{t(`Treasury`)}</RouteTitle>
-      <details className="w-full md:w-3/5 cursor-pointer shadow-lg p-5 dark:border-l-2 dark:border-vega-green">
+      <details className="w-full md:w-3/5 cursor-pointer shadow-lg p-5 dark:border-l-2 dark:border-green">
         <summary>{t('About the Network Treasury')}</summary>
         <section className="mt-4 b-1 border-grey">
           <p className="mb-2">

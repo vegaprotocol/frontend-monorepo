@@ -37,7 +37,7 @@ export const TimeInForce = ({
               {...tooltipProps}
               description={<TooltipContent options={options} />}
             >
-              <label className="text-secondary" htmlFor={field.name}>
+              <label className="text-surface-1-fg-muted" htmlFor={field.name}>
                 {t('TIF')}
               </label>
             </Tooltip>

@@ -44,12 +44,9 @@ export const Navbar = () => {
 
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
-  const navTextClasses = 'text-gs-200 ';
   const rootClasses = cn(
-    navTextClasses,
     'flex gap-3 h-10 pr-1',
-    'border-b border-default',
-    'bg-gs-800 '
+    'bg-surface-1 text-surface-1-fg-muted'
   );
   return (
     <N.Root className={rootClasses}>
@@ -114,14 +111,13 @@ export const Navbar = () => {
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 z-20 bg-gs-900/50 lg:hidden"
+            className="fixed inset-0 z-20 bg-surface-2/50 lg:hidden"
             data-testid="navbar-menu-overlay"
           />
           <D.Content
             className={cn(
               'lg:hidden',
-              'border-default bg-gs-700  fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
-              navTextClasses
+              'border-gs-300 dark:border-gs-700 bg-surface-1 text-surface-1-fg-muted fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col'
             )}
             data-testid="navbar-menu-content"
           >
@@ -274,7 +270,7 @@ const NavbarTrigger = ({
         'w-full lg:h-full lg:w-auto',
         'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
         'text-lg lg:text-sm',
-        'hover:text-gs-100 '
+        'hover:text-surface-1-fg'
       )}
     >
       {children}
@@ -305,7 +301,7 @@ const NavbarLink = ({
         className={cn(
           'block flex-col justify-center lg:flex lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-gs-100 '
+          'hover:text-surface-1-fg'
         )}
         onClick={onClick}
       >
@@ -323,7 +319,7 @@ const NavbarLink = ({
                   'inline-flex gap-1 items-center lg:border-0',
                   borderClasses,
                   {
-                    'text-gs-50 ': isActive,
+                    'text-surface-1-fg ': isActive,
                   }
                 )}
               >
@@ -365,8 +361,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       className={cn(
         'navbar-content group',
         'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
-        'lg:bg-gs-700 lg:',
-        'border-gs-500  lg:rounded lg:border'
+        'bg-surface-2 border-gs-300 dark:border-gs-700 lg:rounded lg:border'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
@@ -393,7 +388,7 @@ const NavbarLinkExternal = ({
         className={cn(
           'flex items-center gap-2 lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-gs-100 '
+          'hover:text-surface-1-fg'
         )}
         onClick={onClick}
         target="_blank"
@@ -420,7 +415,7 @@ const BurgerIcon = () => (
 const NavbarListDivider = () => {
   return (
     <div className="px-6 py-2 lg:px-0" role="separator">
-      <div className="bg-gs-500  h-px w-full lg:h-full lg:w-px" />
+      <div className="bg-surface-3  h-px w-full lg:h-full lg:w-px" />
     </div>
   );
 };
@@ -433,9 +428,8 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     <button
       {...props}
       className={cn(
-        'flex h-8 w-8 items-center rounded p-1 lg:hidden ',
-        'hover:bg-gs-500 ',
-        'hover:text-gs-50 '
+        'flex h-8 w-8 items-center rounded p-1 lg:hidden',
+        'hover:text-surface-1-fg'
       )}
     />
   );

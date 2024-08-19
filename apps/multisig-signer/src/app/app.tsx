@@ -29,7 +29,7 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 const pageWrapperClasses = cn(
   'min-h-screen w-screen',
   'grid grid-rows-[auto,1fr]',
-  'bg-gs-900',
+  'bg-surface-2',
   'text-gs-50'
 );
 

@@ -77,7 +77,7 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
               }
 
               return (
-                <tr className="border-t border-gs-600">
+                <tr className="border-t border-gs-300 dark:border-gs-700">
                   <td className="px-4 text-right">
                     <AssetBalance
                       assetId={asset.id}

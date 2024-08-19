@@ -23,6 +23,7 @@ export * from './language-selector';
 export * from './link';
 export * from './loader';
 export * from './lozenge';
+export * from './multi-select';
 export * from './navigation';
 export * from './notification';
 export * from './notification-banner';
@@ -48,8 +49,6 @@ export * from './tiny-scroll';
 export * from './toast';
 export * from './toggle';
 export * from './tooltip';
-export * from './traffic-light';
-export * from './vega-icons';
 export * from './vega-logo';
 export * from './viewing-as-user';
 export * from './pill';
@@ -59,11 +58,8 @@ export * from './epoch-countdown';
 
 // Trading specific components
 export * from './trading-checkbox';
-export * from './trading-dialog';
-export * from './trading-dropdown';
 export * from './trading-form-group';
 export * from './trading-input-error';
 export * from './trading-input';
-export * from './trading-multi-select';
 export * from './trading-radio-group';
 export * from './trading-select';

@@ -1,6 +1,6 @@
 import { cn } from '../utils/cn';
 import type { ComponentStory } from '@storybook/react';
-type Args = { type: string; alternatives: string; isAlpha: boolean };
+type Args = { type: string; alternatives: string; isAltFont: boolean };
 const sizeArr = [
   'text-3xl',
   'text-2xl',
@@ -11,7 +11,7 @@ const sizeArr = [
   'text-sm',
   'text-xs',
 ];
-const TextSample = ({ alternatives, isAlpha, type }: Args) => {
+const TextSample = ({ alternatives, isAltFont, type }: Args) => {
   return (
     <div className="m-4 flex h-16">
       <div className="text-small flex flex-col mr-16 justify-end w-32">
@@ -20,7 +20,7 @@ const TextSample = ({ alternatives, isAlpha, type }: Args) => {
       <div
         className={cn(
           'flex-grow flex flex-col justify-end text-left items-start',
-          { 'font-alpha calt': isAlpha },
+          { 'font-alt calt': isAltFont },
           [alternatives, type]
         )}
       >
@@ -45,8 +45,8 @@ export default {
   title: 'Primitives/Typography',
   component: Template,
   argTypes: {
-    isAlpha: {
-      name: 'Alpha Lyrae font',
+    isAltFont: {
+      name: 'Alternative font',
       options: [true, false],
       control: { type: 'radio' },
     },
@@ -60,6 +60,6 @@ export default {
 
 export const Default = Template;
 Default.args = {
-  isAlpha: true,
+  isAltFont: true,
   alternatives: 'none',
 };

@@ -14,7 +14,7 @@ export const HeaderHero = (props: {
         <AnimatedDudeWithWire />
       </div>
       <div className="sm:w-1/2">
-        <h1 className="text-3xl lg:text-6xl leading-[1em] font-alpha calt mb-2 lg:mb-10">
+        <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
           {props.title}
         </h1>
         <div className="flex flex-col gap-3 text-lg">{props.children}</div>

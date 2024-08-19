@@ -83,7 +83,7 @@ export const WithdrawalFeedback = ({
       {isAvailable ? (
         <ActionButton withdrawal={withdrawal} submitWithdraw={submitWithdraw} />
       ) : (
-        <p className="text-danger">
+        <p className="text-intent-danger">
           {t('Available to withdraw in {{availableTimestamp}}', {
             availableTimestamp: formatDistanceToNow(availableTimestamp),
           })}
@@ -117,7 +117,7 @@ const ActionButton = ({
     const chainName = getChainName(chainId);
     return (
       <>
-        <p className="text-danger mb-2">
+        <p className="text-intent-danger mb-2">
           {t('This app only works on {{chainName}}. Please change chain.', {
             chainName,
           })}

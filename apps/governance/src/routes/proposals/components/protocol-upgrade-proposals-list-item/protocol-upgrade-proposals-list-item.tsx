@@ -54,7 +54,7 @@ export const ProtocolUpgradeProposalsListItem = ({
           <SubHeading title={`Vega release ${proposal.vegaReleaseTag}`} />
         </div>
 
-        <div className="flex items-center gap-4 text-gs-200">
+        <div className="flex items-center gap-4 text-surface-2-fg">
           <div
             data-testid="protocol-upgrade-proposal-release-tag"
             className="mb-2"

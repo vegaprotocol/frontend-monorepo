@@ -8,16 +8,17 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useState,
   useRef,
   type HTMLAttributes,
   type HtmlHTMLAttributes,
-  type ReactNode,
 } from 'react';
-import { Intent } from '../../utils/intent';
+import {
+  getIntentBackground,
+  getIntentColor,
+  Intent,
+} from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
-import { useT } from '../../use-t';
 
 export type ToastContent = JSX.Element | undefined;
 
@@ -76,80 +77,6 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     );
   }
 );
-
-type CollapsiblePanelProps = {
-  actions?: ReactNode;
-};
-export const CollapsiblePanel = forwardRef<
-  HTMLDivElement,
-  CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
->(({ children, className, actions, ...props }, ref) => {
-  const t = useT();
-  const [collapsed, setCollapsed] = useState(true);
-  return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      data-panel
-      ref={ref}
-      data-test
-      className={cn(
-        'relative',
-        'mt-[10px] rounded p-2',
-        'font-mono text-[12px] font-normal leading-[16px]',
-        '[&>h4]:font-bold',
-        'overflow-auto',
-        {
-          'h-[64px] overflow-hidden': collapsed,
-          'pb-4': !collapsed,
-        },
-        className
-      )}
-      aria-expanded={!collapsed}
-      onDoubleClick={(e) => {
-        e.preventDefault();
-        setCollapsed(!collapsed);
-      }}
-      {...props}
-    >
-      {children}
-      {collapsed && (
-        <div
-          data-panel-curtain
-          className={cn(
-            'bg-gradient-to-b from-transparent to-inherit',
-            'pointer-events-none absolute bottom-0 left-0 h-8 w-full'
-          )}
-        ></div>
-      )}
-      <div
-        data-panel-actions
-        className={cn(
-          'absolute bottom-0 right-0',
-          'p-2',
-          'rounded-tl',
-          'flex gap-1 align-middle'
-        )}
-      >
-        {actions}
-        <button
-          className="cursor-pointer"
-          onClick={(e) => {
-            e.preventDefault();
-            setCollapsed(!collapsed);
-          }}
-          title={collapsed ? t('Expand') : t('Collapse')}
-          aria-label={collapsed ? t('Expand') : t('Collapse')}
-        >
-          {collapsed ? (
-            <Icon name="expand-all" size={3} />
-          ) : (
-            <Icon name="collapse-all" size={3} />
-          )}
-        </button>
-      </div>
-    </div>
-  );
-});
 
 export const ToastHeading = forwardRef<
   HTMLHeadingElement,
@@ -243,70 +170,51 @@ export const Toast = ({
         'w-[320px] overflow-hidden rounded-md',
         'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
         'text-black dark:text-white',
-        'font-alpha text-[14px] leading-[19px]',
+        'text-sm leading-[19px]',
         // background
-        {
-          'bg-gs-100 ': intent === Intent.None,
-          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
-          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
-          'bg-vega-orange-300 dark:bg-vega-orange-700':
-            intent === Intent.Warning,
-          'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
-        },
+        getIntentBackground(intent),
         // panel's colours
         {
           '[&_[data-panel]]:bg-gs-200': intent === Intent.None,
-          '[&_[data-panel]]:bg-vega-blue-350 [&_[data-panel]]:dark:bg-vega-blue-650':
+          '[&_[data-panel]]:bg-blue-350 [&_[data-panel]]:dark:bg-blue-650':
             intent === Intent.Primary,
-          '[&_[data-panel]]:bg-vega-green-350 [&_[data-panel]]:dark:bg-vega-green-650':
+          '[&_[data-panel]]:bg-green-350 [&_[data-panel]]:dark:bg-green-650':
             intent === Intent.Success,
-          '[&_[data-panel]]:bg-vega-orange-350 [&_[data-panel]]:dark:bg-vega-orange-650':
+          '[&_[data-panel]]:bg-orange-350 [&_[data-panel]]:dark:bg-orange-650':
             intent === Intent.Warning,
-          '[&_[data-panel]]:bg-vega-red-350 [&_[data-panel]]:dark:bg-vega-red-650':
+          '[&_[data-panel]]:bg-red-350 [&_[data-panel]]:dark:bg-red-650':
             intent === Intent.Danger,
         },
         {
           '[&_[data-panel]]:to-gs-200': intent === Intent.None,
-          '[&_[data-panel]]:to-vega-blue-350 [&_[data-panel]]:dark:to-vega-blue-650':
+          '[&_[data-panel]]:to-blue-350 [&_[data-panel]]:dark:to-blue-650':
             intent === Intent.Primary,
-          '[&_[data-panel]]:to-vega-green-350 [&_[data-panel]]:dark:to-vega-green-650':
+          '[&_[data-panel]]:to-green-350 [&_[data-panel]]:dark:to-green-650':
             intent === Intent.Success,
-          '[&_[data-panel]]:to-vega-orange-350 [&_[data-panel]]:dark:to-vega-orange-650':
+          '[&_[data-panel]]:to-orange-350 [&_[data-panel]]:dark:to-orange-650':
             intent === Intent.Warning,
-          '[&_[data-panel]]:to-vega-red-350 [&_[data-panel]]:dark:to-vega-red-650':
-            intent === Intent.Danger,
-        },
-        // panel's actions
-        {
-          '[&_[data-panel-actions]]:bg-gs-200': intent === Intent.None,
-          '[&_[data-panel-actions]]:bg-vega-blue-400 [&_[data-panel-actions]]:dark:bg-vega-blue-600':
-            intent === Intent.Primary,
-          '[&_[data-panel-actions]]:bg-vega-green-400 [&_[data-panel-actions]]:dark:bg-vega-green-600':
-            intent === Intent.Success,
-          '[&_[data-panel-actions]]:bg-vega-orange-400 [&_[data-panel-actions]]:dark:bg-vega-orange-600':
-            intent === Intent.Warning,
-          '[&_[data-panel-actions]]:bg-vega-red-400 [&_[data-panel-actions]]:dark:bg-vega-red-600':
+          '[&_[data-panel]]:to-red-350 [&_[data-panel]]:dark:to-red-650':
             intent === Intent.Danger,
         },
         // panels's progress bar colours
         '[&_[data-progress-bar]]:mb-[4px] [&_[data-progress-bar]]:mt-[10px]',
         {
           '[&_[data-progress-bar]]:bg-gs-200': intent === Intent.None,
-          '[&_[data-progress-bar]]:bg-vega-blue-400 [&_[data-progress-bar]]:dark:bg-vega-blue-600':
+          '[&_[data-progress-bar]]:bg-blue-400 [&_[data-progress-bar]]:dark:bg-blue-600':
             intent === Intent.Primary,
-          '[&_[data-progress-bar-value]]:bg-vega-blue-500 [&_[data-progress-bar-value]]:dark:bg-vega-blue-500':
+          '[&_[data-progress-bar-value]]:bg-blue-500 [&_[data-progress-bar-value]]:dark:bg-blue-500':
             intent === Intent.Primary,
-          '[&_[data-progress-bar]]:bg-vega-green-400 [&_[data-progress-bar]]:dark:bg-vega-green-600':
+          '[&_[data-progress-bar]]:bg-green-400 [&_[data-progress-bar]]:dark:bg-green-600':
             intent === Intent.Success,
-          '[&_[data-progress-bar-value]]:bg-vega-green-600 [&_[data-progress-bar-value]]:dark:bg-vega-green-500':
+          '[&_[data-progress-bar-value]]:bg-green-600 [&_[data-progress-bar-value]]:dark:bg-green-500':
             intent === Intent.Success,
-          '[&_[data-progress-bar]]:bg-vega-orange-400 [&_[data-progress-bar]]:dark:bg-vega-orange-600':
+          '[&_[data-progress-bar]]:bg-orange-400 [&_[data-progress-bar]]:dark:bg-orange-600':
             intent === Intent.Warning,
-          '[&_[data-progress-bar-value]]:bg-vega-orange-500 [&_[data-progress-bar-value]]:dark:bg-vega-orange-500':
+          '[&_[data-progress-bar-value]]:bg-orange-500 [&_[data-progress-bar-value]]:dark:bg-orange-500':
             intent === Intent.Warning,
-          '[&_[data-progress-bar]]:bg-vega-pink-400 [&_[data-progress-bar]]:dark:bg-vega-pink-600':
+          '[&_[data-progress-bar]]:bg-pink-400 [&_[data-progress-bar]]:dark:bg-pink-600':
             intent === Intent.Danger,
-          '[&_[data-progress-bar-value]]:bg-vega-red-500 [&_[data-progress-bar-value]]:dark:bg-vega-red-500':
+          '[&_[data-progress-bar-value]]:bg-red-500 [&_[data-progress-bar-value]]:dark:bg-red-500':
             intent === Intent.Danger,
         },
         {
@@ -328,27 +236,14 @@ export const Toast = ({
         <div
           data-testid="toast-accent"
           className={cn(
-            {
-              // gray
-              'bg-gs-200 text-gs-400': intent === Intent.None,
-              // blue
-              'bg-vega-blue-500 text-vega-blue-600': intent === Intent.Primary,
-              // green
-              'bg-vega-green-500 text-vega-green-600':
-                intent === Intent.Success,
-              // orange
-              'bg-vega-orange-500 text-vega-orange-600':
-                intent === Intent.Warning,
-              // red
-              'bg-vega-red-500 text-vega-red-600': intent === Intent.Danger,
-            },
+            getIntentColor(intent),
             'w-8 p-2',
             'flex justify-center'
           )}
         >
           {loader ? (
             <div className="h-[15px] w-[15px]">
-              <Loader size="small" forceTheme="dark" />
+              <Loader size="small" />
             </div>
           ) : (
             <Icon
@@ -373,14 +268,10 @@ export const Toast = ({
               className={cn(
                 {
                   'bg-gs-200': intent === Intent.None,
-                  'bg-vega-blue-400 dark:bg-vega-blue-600':
-                    intent === Intent.Primary,
-                  'bg-vega-green-400 dark:bg-vega-green-600':
-                    intent === Intent.Success,
-                  'bg-vega-orange-400 dark:bg-vega-orange-600':
-                    intent === Intent.Warning,
-                  'bg-vega-red-400 dark:bg-vega-red-600':
-                    intent === Intent.Danger,
+                  'bg-blue-400 dark:bg-blue-600': intent === Intent.Primary,
+                  'bg-green-400 dark:bg-green-600': intent === Intent.Success,
+                  'bg-orange-400 dark:bg-orange-600': intent === Intent.Warning,
+                  'bg-red-400 dark:bg-red-600': intent === Intent.Danger,
                 },
                 'absolute bottom-0 left-0 h-[4px] w-full',
                 'animate-progress'

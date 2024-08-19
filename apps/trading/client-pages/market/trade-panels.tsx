@@ -49,7 +49,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
-        <div className="flex items-center justify-end gap-1 p-1 bg-gs-800  border-b border-default shrink-0">
+        <div className="flex items-center justify-end gap-1 p-1 bg-surface-1  border-b border-gs-300 dark:border-gs-700 shrink-0">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
             <Popover
@@ -75,8 +75,8 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
       <MobileMarketHeader />
 
       {/* Top section */}
-      <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
+      <div className="flex flex-col overflow-hidden bg-surface-1">
+        <div className="flex flex-nowrap overflow-x-auto shrink-0">
           {[
             'chart',
             'orderbook',
@@ -129,7 +129,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
 
       {/* Bottom section */}
       <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
+        <div className="flex flex-nowrap overflow-x-auto shrink-0">
           {[
             'positions',
             'activeOrders',

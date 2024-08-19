@@ -9,7 +9,7 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
     return (
       <>
         <h3 className="text-lg">{t('Connecting...')}</h3>
-        <p className="text-secondary">
+        <p className="text-surface-0-fg-muted">
           {t('Approve the connection from your wallet app.')}
         </p>
       </>
@@ -19,7 +19,7 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
   if (status === 'connected') {
     return (
       <div className="flex items-center gap-3">
-        <VegaIcon name={VegaIconNames.TICK} className="text-vega-green" />
+        <VegaIcon name={VegaIconNames.TICK} className="text-green" />
         <h3 className="text-lg">{t('Successfully connected')}</h3>
       </div>
     );

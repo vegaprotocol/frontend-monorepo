@@ -2,10 +2,10 @@ import { useState } from 'react';
 import {
   VegaIcon,
   VegaIconNames,
-  TradingDropdown,
-  TradingDropdownTrigger,
-  TradingDropdownContent,
-  TradingDropdownItem,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
@@ -43,16 +43,16 @@ export const OrderbookControls = ({
       <button
         onClick={increaseResolution}
         disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-        className="flex items-center px-2 border-r cursor-pointer border-default disabled:cursor-default"
+        className="flex items-center px-2 border-r cursor-pointer border-gs-300 dark:border-gs-700 disabled:cursor-default"
         data-testid="plus-button"
       >
         <VegaIcon size={12} name={VegaIconNames.PLUS} />
       </button>
-      <TradingDropdown
+      <DropdownMenu
         open={isOpen}
         onOpenChange={(open) => setOpen(open)}
         trigger={
-          <TradingDropdownTrigger data-testid="resolution">
+          <DropdownMenuTrigger data-testid="resolution">
             <button
               className="flex items-center justify-between px-2 gap-1"
               style={{
@@ -74,25 +74,25 @@ export const OrderbookControls = ({
               />
               {formatResolution(resolution, decimalPlaces)}
             </button>
-          </TradingDropdownTrigger>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align="start">
+        <DropdownMenuContent align="start">
           {resolutions.map((r) => (
-            <TradingDropdownItem
+            <DropdownMenuItem
               key={r}
               onClick={() => setResolution(r)}
               className="justify-end"
             >
               {formatResolution(r, decimalPlaces)}
-            </TradingDropdownItem>
+            </DropdownMenuItem>
           ))}
-        </TradingDropdownContent>
-      </TradingDropdown>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <button
         onClick={decreaseResolution}
         disabled={resolutions.indexOf(resolution) <= 0}
-        className="flex items-center px-2 cursor-pointer border-x border-default disabled:cursor-default"
+        className="flex items-center px-2 cursor-pointer border-x border-gs-300 dark:border-gs-700 disabled:cursor-default"
         data-testid="minus-button"
       >
         <VegaIcon size={12} name={VegaIconNames.MINUS} />

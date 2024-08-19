@@ -32,10 +32,10 @@ export const TradingFormGroup = ({
     },
     className
   );
-  const labelClasses = cn('block mb-1 text-xs text-secondary', {
+  const labelClasses = cn('block mb-1 text-xs text-surface-1-fg', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
-    'text-muted': disabled,
+    'text-surface-1-fg-muted': disabled,
   });
   return (
     <div data-testid="form-group" className={wrapperClasses}>
@@ -43,7 +43,9 @@ export const TradingFormGroup = ({
         <label htmlFor={labelFor} className={labelClasses}>
           {label}
           {labelDescription && (
-            <div className="font-light mt-1 text-muted">{labelDescription}</div>
+            <div className="font-light mt-1 text-surface-1-fg-muted">
+              {labelDescription}
+            </div>
           )}
         </label>
       )}

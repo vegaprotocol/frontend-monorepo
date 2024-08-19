@@ -282,13 +282,13 @@ export const MarketTable = ({
             key="all"
             id="all"
             className={cn(
-              'border border-default rounded-lg px-3 py-1.5 text-sm h-8',
+              'border border-gs-300 dark:border-gs-700 rounded-lg px-3 py-1.5 text-sm h-8',
               {
-                ' bg-gs-800':
+                'bg-surface-1':
                   marketTypes.length === 0 ||
                   marketTypes.length ===
                     Object.keys(marketTypeFilterOptions).length,
-                'text-muted':
+                'text-surface-1-fg-muted':
                   marketTypes.length > 0 &&
                   marketTypes.length <
                     Object.keys(marketTypeFilterOptions).length,
@@ -306,10 +306,11 @@ export const MarketTable = ({
               <button
                 key={marketType}
                 className={cn(
-                  'border border-default rounded-lg px-3 py-1.5 text-sm',
+                  'border border-gs-300 dark:border-gs-700 rounded-lg px-3 py-1.5 text-sm',
                   {
-                    ' bg-gs-800': isMarketTypeSelected(marketType),
-                    'text-muted': !isMarketTypeSelected(marketType),
+                    'bg-surface-1': isMarketTypeSelected(marketType),
+                    'text-surface-1-fg-muted':
+                      !isMarketTypeSelected(marketType),
                   }
                 )}
                 id={marketType}
@@ -388,7 +389,7 @@ export const MarketTable = ({
             <TradingInput
               prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
               placeholder={t('Search by market')}
-              className="text-sm border !placeholder:text-secondary"
+              className="text-sm"
               onChange={(ev) => {
                 const value = trim(ev.target.value);
                 setSearchTerm(value);
@@ -398,7 +399,7 @@ export const MarketTable = ({
           </div>
         </div>
       </div>
-      <div className="h-full border rounded border-default">
+      <div className="h-full border rounded border-gs-300 dark:border-gs-700">
         <ErrorBoundary feature="all-markets">
           <MarketListTable
             rowData={markets}

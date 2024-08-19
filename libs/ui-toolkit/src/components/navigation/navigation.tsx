@@ -40,7 +40,7 @@ const Logo = ({
           data-testid="nav-app-name"
           className={cn(
             'group-[.nav-size-small]:text-sm',
-            'font-alpha calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
+            'font-alt calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
             'border-l border-l-gs-200 pl-4'
           )}
         >
@@ -147,7 +147,7 @@ export const NavigationTrigger = ({
         aria-hidden="true"
         className={cn(
           'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-          'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+          'bg-yellow-550 dark:bg-yellow-500',
           { hidden: !isActive }
         )}
       ></div>
@@ -172,8 +172,8 @@ export const NavigationContent = ({
           'navigation-content',
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
-          'border rounded border-gs-400',
-          'bg-gs-800'
+          'border rounded border-gs-300 dark:border-gs-700',
+          'bg-surface-1'
         )}
       >
         {children}
@@ -214,7 +214,7 @@ export const NavigationLink = ({
           <>
             <span
               className={cn({
-                'text-gs-50': isActive,
+                'text-surface-0-fg': isActive,
               })}
             >
               {children as ReactNode}
@@ -223,7 +223,7 @@ export const NavigationLink = ({
               aria-hidden="true"
               className={cn(
                 'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-                'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+                'bg-yellow-550 dark:bg-yellow-500',
                 { hidden: !isActive }
               )}
             ></div>
@@ -281,7 +281,7 @@ export const Navigation = ({
       className={cn(
         'h-12',
         'group flex gap-4 items-center',
-        'border-b px-3 relative border-b-gs-600'
+        'border-b px-3 relative border-gs-300 dark:border-gs-700'
       )}
       data-testid="navigation"
     >
@@ -289,7 +289,7 @@ export const Navigation = ({
       <div
         className={cn(
           'navbar',
-          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-200'
+          'flex gap-4 h-12 items-center text-lg text-surface-0-fg-muted'
         )}
       >
         {children}

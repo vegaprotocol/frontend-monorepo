@@ -83,9 +83,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-gs-100">
-    {useLabelText({ isCurrent, isAvailable })}
-  </span>
+  <span>{useLabelText({ isCurrent, isAvailable })}</span>
 );
 
 type NetworkSwitcherProps = {
@@ -128,7 +126,7 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           data-testid="network-switcher"
           className={cn(
-            'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-100 whitespace-nowrap',
+            'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-300 dark:border-gs-700 whitespace-nowrap',
             className
           )}
         >
@@ -202,7 +200,7 @@ export const NetworkSwitcher = ({
           </>
         )}
         <div
-          className="relative flex items-center justify-between mx-2 py-2 border-t border-default pt-2 text-sm"
+          className="relative flex items-center justify-between mx-2 py-2 border-t border-gs-300 dark:border-gs-700 pt-2 text-sm"
           key="propose-network-param"
         >
           <ExternalLink href={tokenLink(TOKEN_NEW_NETWORK_PARAM_PROPOSAL)}>

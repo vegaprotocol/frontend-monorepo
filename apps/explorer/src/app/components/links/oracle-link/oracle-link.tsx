@@ -49,11 +49,11 @@ export const OracleLink = ({
   const bgColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-100 hover:bg-yellow-200 border-yellow-200 dark:bg-yellow-200 text-black'
-      : 'bg-gs-700 hover:bg-gs-800 border-gs-500';
+      : 'bg-surface-2 hover:bg-surface-3 border-gs-300 dark:border-gs-700';
   const indicatorColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-300 hover:bg-yellow-500 dark:bg-yellow-500'
-      : 'bg-gs-300 hover:bg-gs-500';
+      : 'bg-surface-2 hover:bg-surface-3';
 
   const description = (
     <div>

@@ -23,8 +23,8 @@ export const Checkbox = forwardRef<
     'border rounded-sm overflow-hidden',
     {
       'opacity-40 cursor-default': disabled,
-      'border-gs-600 bg-gs-200': !checked,
-      'border-gs-0': checked,
+      'border-gs-600 bg-surface-2': !checked,
+      'border-surface-0': checked,
     }
   );
 
@@ -40,11 +40,11 @@ export const Checkbox = forwardRef<
         disabled={disabled}
         data-testid={name}
       >
-        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-gs-0">
+        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-surface-0">
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-gs-900"
+              className="absolute w-[8px] h-[2px] bg-surface-2"
             />
           ) : (
             <Icon
@@ -57,7 +57,7 @@ export const Checkbox = forwardRef<
       </CheckboxPrimitive.Root>
       <span
         className={cn('text-sm flex-1', {
-          'text-gs-100': disabled,
+          'text-surface-1-fg': disabled,
         })}
       >
         {label}

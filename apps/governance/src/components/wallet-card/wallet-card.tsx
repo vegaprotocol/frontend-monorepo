@@ -290,7 +290,7 @@ const CurrencyValue = ({
         size="xs"
         href={transferAssetLink(assetId)}
         target="_blank"
-        className="px-2 py-1 leading-none text-xs bg-vega-yellow text-black rounded"
+        className="px-2 py-1 leading-none text-xs bg-yellow text-black rounded"
       >
         {t('Redeem')}
       </AnchorButton>
@@ -314,7 +314,7 @@ const CurrencyValue = ({
           {integers}
           {separator}
         </span>
-        <span className="text-gs-100">{decimalsPlaces}</span>
+        <span className="text-surface-1-fg">{decimalsPlaces}</span>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export const StopExpiryStrategy = () => {
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2 text-xs">
-            <label className="text-secondary" htmlFor={field.name}>
+            <label className="text-surface-0-fg-muted" htmlFor={field.name}>
               {t('Stop expiry')}
             </label>
             <MiniSelect

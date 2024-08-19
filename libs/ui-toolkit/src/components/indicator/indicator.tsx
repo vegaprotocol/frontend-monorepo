@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn';
-import { getIntentBackground, getIntentText, Intent } from '../../utils/intent';
+import { getIntentColor, getIntentText, Intent } from '../../utils/intent';
 
 interface IndicatorProps {
   intent?: Intent;
@@ -13,7 +13,7 @@ export const Indicator = ({
   const names = cn(
     'inline-block rounded-full',
     getIntentText(intent),
-    getIntentBackground(intent),
+    getIntentColor(intent),
     {
       'w-2 h-2': size === 'md',
       'w-3 h-3': size === 'lg',

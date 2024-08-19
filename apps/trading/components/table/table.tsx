@@ -2,8 +2,8 @@ import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-gs-500 ';
-export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
+export const BORDER_COLOR = 'border-gs-300 dark:border-gs-700';
+export const GRADIENT = 'bg-gradient-to-b from-surface-2 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
@@ -53,7 +53,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={cn(
-                'px-5 py-3 text-xs  text-gs-100  font-normal',
+                'px-5 py-3 text-xs text-surface-1-fg-muted',
                 INNER_BORDER_STYLE,
                 headerClassName
               )}
@@ -62,7 +62,7 @@ export const Table = forwardRef<
                 <span>{displayName}</span>
                 {tooltip ? (
                   <Tooltip description={tooltip}>
-                    <button className="text-gs-400  no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
+                    <button className="no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
                       <VegaIcon size={12} name={VegaIconNames.INFO} />
                     </button>
                   </Tooltip>
@@ -93,7 +93,7 @@ export const Table = forwardRef<
               className={cn(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
                 // collapsed (mobile) row divider
-                'first:border-t-0 max-md:border-t border-gs-500  first:mt-0 mt-1':
+                'first:border-t-0 max-md:border-t border-gs-300 dark:border-gs-700  first:mt-0 mt-1':
                   !noCollapse,
               })}
               onClick={() => {
@@ -125,7 +125,7 @@ export const Table = forwardRef<
                   {!noCollapse && !noHeader && displayName && (
                     <span
                       aria-hidden
-                      className="px-0 font-mono text-xs md:hidden text-gs-100 "
+                      className="px-0 font-mono text-xs md:hidden text-surface-1-fg "
                     >
                       {displayName}
                     </span>

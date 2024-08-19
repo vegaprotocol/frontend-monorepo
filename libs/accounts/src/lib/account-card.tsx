@@ -6,10 +6,10 @@ import {
   VegaIcon,
   VegaIconNames,
   ProgressBar,
-  TradingDropdown,
-  TradingDropdownItem,
-  TradingDropdownContent,
-  TradingDropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -69,7 +69,7 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
   return (
     <div className="mb-2">
       <dl className="flex items-center">
-        <dt className="text-xs text-gs-200 ">
+        <dt className="text-xs text-surface-2-fg ">
           {AccountTypeMapping[data.type]}
           {data.market &&
             ` (${data.market.tradableInstrument.instrument.code})`}
@@ -111,9 +111,9 @@ export const AccountCard = ({
   return (
     <section
       data-testid="account-card"
-      className={cn('m-1 rounded border-default', {
-        'bg-gs-700 hover:bg-gs-600': !(expandable && expanded),
-        'bg-gs-600 ': expandable && expanded,
+      className={cn('m-1 rounded border-gs-300 dark:border-gs-700', {
+        'bg-surface-2 hover:bg-surface-3': !(expandable && expanded),
+        'bg-surface-2': expandable && expanded,
       })}
     >
       <div className="relative p-3">
@@ -122,7 +122,7 @@ export const AccountCard = ({
           <span className="grow ml-2 text-lg min-w-0">
             <span>{asset.name}</span>
             {asset.source.__typename === 'ERC20' && (
-              <small className="grow text-muted ml-0.5 truncate tracking-tight">
+              <small className="grow text-surface-0-fg-muted ml-0.5 truncate tracking-tight">
                 {getExternalChainShortLabel(asset.source.chainId)}
               </small>
             )}
@@ -177,7 +177,7 @@ export const AccountCard = ({
         {expandable && (
           <button
             type="button"
-            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-gs-800 before:-z-10"
+            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-surface-1 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
             data-testid="expand-account-card"
           >
@@ -187,26 +187,26 @@ export const AccountCard = ({
       </div>
       {!isReadOnly && expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 p-3 pt-0">
-          <TradingDropdown
+          <DropdownMenu
             trigger={
-              <TradingDropdownTrigger asChild>
+              <DropdownMenuTrigger asChild>
                 <ActionButton
                   label={t('Deposit')}
                   icon={VegaIconNames.DEPOSIT}
                 />
-              </TradingDropdownTrigger>
+              </DropdownMenuTrigger>
             }
           >
-            <TradingDropdownContent side="bottom" align="start">
-              <TradingDropdownItem
+            <DropdownMenuContent side="bottom" align="start">
+              <DropdownMenuItem
                 data-testid="account-action-deposit"
                 onClick={() => {
                   actions.onClickDeposit?.(asset.id);
                 }}
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 data-testid="account-action-cross-deposit"
                 onClick={() => {
                   actions.onClickCrossChainDeposit?.(asset.id);
@@ -214,9 +214,9 @@ export const AccountCard = ({
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} />{' '}
                 {t('Cross-chain deposit')}
-              </TradingDropdownItem>
-            </TradingDropdownContent>
-          </TradingDropdown>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <ActionButton
             data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}

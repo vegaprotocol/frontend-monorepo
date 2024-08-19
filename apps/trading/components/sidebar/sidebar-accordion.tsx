@@ -46,8 +46,8 @@ const SidebarAccordionHeader = forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'flex items-center w-full pr-2 bg-gs-700 ',
-      'hover:bg-gs-600 ',
+      'flex items-center w-full pr-2 bg-surface-2',
+      'hover:bg-surface-3',
       className
     )}
   >
@@ -79,7 +79,7 @@ const SidebarAccordionContent = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="flex-1 text-sm min-h-0 -mb-2"
+    className="flex-1 text-sm min-h-0 -mb-2 bg-surface-1 text-surface-1-fg"
     {...props}
   >
     <TinyScroll>{children}</TinyScroll>

@@ -25,9 +25,9 @@ export const SubmitButton = ({ text }: { text: string }) => {
         className={cn(
           'w-full h-12 flex flex-col justify-center items-center rounded-lg text-white p-2 transition-colors',
           {
-            'bg-vega-red-500 enabled:hover:bg-vega-red-550 dark:bg-vega-red-600 dark:enabled:hover:bg-vega-red-650':
+            'bg-red-500 enabled:hover:bg-red-550 dark:bg-red-600 dark:enabled:hover:bg-red-650':
               side === Side.SIDE_SELL,
-            'bg-vega-green-600 enabled:hover:bg-vega-green-650 dark:bg-vega-green-650 dark:enabled:hover:bg-vega-green-600':
+            'bg-green-600 enabled:hover:bg-green-650 dark:bg-green-650 dark:enabled:hover:bg-green-600':
               side === Side.SIDE_BUY,
           }
         )}

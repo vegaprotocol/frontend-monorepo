@@ -19,11 +19,14 @@ export const Balance = ({
   symbol: string;
 }) => {
   return balance ? (
-    <div className="font-alpha text-xs" data-testid="asset-balance">
+    <div className="text-xs" data-testid="asset-balance">
       {balance} {symbol}
     </div>
   ) : (
-    <div className="text-muted text-xs" data-testid="asset-balance">
+    <div
+      className="text-surface-0-fg-muted text-xs"
+      data-testid="asset-balance"
+    >
       -
     </div>
   );
@@ -79,7 +82,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
           >
             <span
               className={cn(
-                'bg-gs-900 ',
+                'bg-surface-2 ',
                 'text-black dark:text-white text-xs',
                 'py-px px-0.5 rounded-sm'
               )}

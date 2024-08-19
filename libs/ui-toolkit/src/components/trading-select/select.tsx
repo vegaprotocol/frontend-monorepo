@@ -63,7 +63,7 @@ export const TradingRichSelect = forwardRef<
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
           position="item-aligned"
           align="start"
           side="bottom"
@@ -90,8 +90,8 @@ export const TradingRichSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2 h-14 overflow-hidden',
       'cursor-pointer outline-none',
-      'hover:bg-gs-800 focus:bg-gs-800',
-      'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
+      'hover:bg-surface-1 focus:bg-surface-1',
+      'data-selected:bg-blue-300 dark:data-selected:bg-blue-600',
       className,
     ].join(' ')}
     {...props}
@@ -129,13 +129,13 @@ export const MiniSelect = ({
         <SelectPrimitive.Value placeholder={placeholder}>
           {trigger}
         </SelectPrimitive.Value>
-        <SelectPrimitive.Icon className="text-muted">
+        <SelectPrimitive.Icon className="text-surface-0-fg-muted">
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className="relative w-full z-20 bg-gs-900 border border-default rounded overflow-hidden shadow-lg"
+          className="relative w-full z-20 bg-surface-2 border border-gs-300 dark:border-gs-700 rounded overflow-hidden shadow-lg"
           position="popper"
           align="start"
           side="bottom"
@@ -163,8 +163,8 @@ export const MiniSelectOption = forwardRef<
     className={[
       'relative text-sm w-full p-2',
       'cursor-pointer outline-none ',
-      'hover:bg-gs-800 focus:bg-gs-800',
-      'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
+      'hover:bg-surface-1 focus:bg-surface-1',
+      'data-selected:bg-blue-300 dark:data-selected:bg-blue-600',
       className,
     ].join(' ')}
     {...props}

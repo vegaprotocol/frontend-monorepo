@@ -172,7 +172,7 @@ export const RewardHistoryTable = ({
       valueFormatted: string;
     }) => {
       if (!value || value <= 0 || !data) {
-        return <span className="text-muted">-</span>;
+        return <span className="text-surface-2-fg-muted">-</span>;
       }
 
       const pctOfTotal = new BigNumber(value).dividedBy(data.total).times(100);
@@ -269,7 +269,7 @@ export const RewardHistoryTable = ({
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-muted flex items-center gap-2 text-sm">
+        <h4 className="text-surface-0-fg-muted flex items-center gap-2 text-sm">
           <label htmlFor="fromEpoch">{t('From epoch')}</label>
           <EpochInput
             id="fromEpoch"
@@ -340,7 +340,7 @@ export const RewardHistoryTable = ({
           </Button>
         </div>
       </div>
-      <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
+      <div className="border rounded-lg md:rounded-sm overflow-hidden border-gs-300 dark:border-gs-700">
         <AgGrid
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -376,7 +376,7 @@ const EpochInput = ({
 }) => {
   return (
     <span className="flex gap-0.5" data-testid={id}>
-      <span className="bg-gs-600  relative rounded-l-sm">
+      <span className="bg-surface-3  relative rounded-l-sm">
         <span className="px-2 opacity-0">{value}</span>
         <input
           onChange={(e) => onChange(Number(e.target.value))}
@@ -393,13 +393,13 @@ const EpochInput = ({
       <span className="flex flex-col gap-0.5 overflow-hidden rounded-r-sm">
         <button
           onClick={onIncrement}
-          className="bg-gs-600  flex flex-1 items-center px-1"
+          className="bg-surface-3 flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_UP} size={12} />
         </button>
         <button
           onClick={onDecrement}
-          className="bg-gs-600  flex flex-1 items-center px-1"
+          className="bg-surface-3 flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
         </button>

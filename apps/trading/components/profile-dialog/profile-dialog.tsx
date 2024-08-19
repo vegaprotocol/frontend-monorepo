@@ -1,5 +1,5 @@
 import {
-  TradingDialog,
+  Dialog,
   FormGroup,
   Input,
   InputError,
@@ -37,9 +37,9 @@ export const ProfileDialog = () => {
   );
 
   return (
-    <TradingDialog
+    <Dialog
       open={open}
-      onOpenChange={() => {
+      onChange={() => {
         setOpen(undefined);
       }}
       title={t('Edit profile')}
@@ -50,7 +50,7 @@ export const ProfileDialog = () => {
           refetch();
         }}
       />
-    </TradingDialog>
+    </Dialog>
   );
 };
 

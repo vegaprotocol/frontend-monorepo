@@ -169,7 +169,7 @@ export const DisassociatePage = ({
         )}
       </p>
       <p data-testid="disassociation-warning">
-        <span className="text-vega-pink">{t('Warning')}:</span>{' '}
+        <span className="text-pink">{t('Warning')}:</span>{' '}
         {t(
           'Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.'
         )}

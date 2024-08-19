@@ -33,7 +33,7 @@ export const MobileMarketHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="pl-3 pr-2 grid grid-cols-2 h-10 bg-gs-700 ">
+    <div className="pl-3 pr-2 grid grid-cols-2 h-10 bg-surface-2 ">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
@@ -147,7 +147,7 @@ const FullScreenPopover = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          className="w-screen bg-gs-800  border-y border-default"
+          className="w-screen bg-surface-1  border-y border-gs-300 dark:border-gs-700"
           sideOffset={0}
         >
           {children}

@@ -57,10 +57,10 @@ const Rate = ({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded h-[9px] flex w-full bg-gs-100',
+        'overflow-hidden rounded h-[9px] flex w-full bg-surface-3',
         { 'pl-[9px]': asPoint },
         {
-          'bg-gradient-to-l to-vega-orange-500 dark:to-vega-orange-550 from-gs-100':
+          'bg-gradient-to-l to-orange-500 dark:to-orange-550 from-gs-100':
             asPoint && colour === 'orange',
         }
       )}
@@ -70,12 +70,11 @@ const Rate = ({
           className={cn(
             'w-[9px] h-[9px] absolute top-0 right-0 transition-all rounded',
             {
-              'bg-vega-green-550 dark:bg-vega-green-500': colour === 'green',
-              'bg-vega-blue-550 dark:bg-vega-blue-500': colour === 'blue',
-              'bg-vega-pink-550 dark:bg-vega-pink-500': colour === 'pink',
-              'bg-vega-orange-550 dark:bg-vega-orange-500': colour === 'orange',
+              'bg-green-550 dark:bg-green-500': colour === 'green',
+              'bg-blue-550 dark:bg-blue-500': colour === 'blue',
+              'bg-pink-550 dark:bg-pink-500': colour === 'pink',
+              'bg-orange-550 dark:bg-orange-500': colour === 'orange',
             },
-            'bg-vega',
             className
           )}
           style={bar}
@@ -193,7 +192,7 @@ export const ValidatorsPage = () => {
                     className="border border-gs-200  rounded p-2 overflow-hidden"
                   >
                     <div className="w-full">
-                      <h2 className="font-alpha text-2xl leading-[60px]">
+                      <h2 className="text-2xl leading-[60px]">
                         <ExternalLink href={validatorPage}>
                           {validatorName}
                         </ExternalLink>
@@ -210,9 +209,9 @@ export const ValidatorsPage = () => {
                           <div className="break-all text-xs">
                             <span
                               className={cn('mr-1', {
-                                'text-vega-green-550 dark:vega-green-500':
+                                'text-green-550 dark:green-500':
                                   v.status === NodeStatus.NODE_STATUS_VALIDATOR,
-                                'text-vega-pink-550 dark:vega-pink-500':
+                                'text-pink-550 dark:pink-500':
                                   v.status ===
                                   NodeStatus.NODE_STATUS_NON_VALIDATOR,
                               })}

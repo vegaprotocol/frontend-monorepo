@@ -5,7 +5,7 @@ import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 import type { ReactNode } from 'react';
-import type { Intent } from '../../utils/intent';
+import { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
@@ -28,7 +28,7 @@ export function Dialog({
   onInteractOutside,
   title,
   icon,
-  intent,
+  intent = Intent.None,
   size = 'small',
   dataTestId = 'dialog-content',
   description,
@@ -41,7 +41,8 @@ export function Dialog({
     // Dimensions
     'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
-    'bg-white dark:bg-black text-gs-50',
+    'bg-surface-0 text-surface-0-fg',
+    'border',
     getIntentBorder(intent),
     {
       'w-[520px]': size === 'small',

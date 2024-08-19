@@ -1,10 +1,10 @@
 import { VegaIcon, VegaIconNames } from '../icon';
 import {
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItem,
-  TradingDropdownTrigger,
-} from '../trading-dropdown';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../dropdown-menu';
 
 const labels: Record<string, string> = {
   en: 'English',
@@ -23,28 +23,28 @@ export const LanguageSelector = ({
   onSelect: (selectedLanguage: string) => void;
 }) => {
   return (
-    <TradingDropdown
+    <DropdownMenu
       trigger={
-        <TradingDropdownTrigger data-testid="language-selector-trigger">
+        <DropdownMenuTrigger data-testid="language-selector-trigger">
           <button className="flex justify-center items-center hover:bg-gs-500 p-1 rounded-full w-7 h-7">
             <VegaIcon name={VegaIconNames.GLOBE} size={16} />
           </button>
-        </TradingDropdownTrigger>
+        </DropdownMenuTrigger>
       }
     >
-      <TradingDropdownContent>
+      <DropdownMenuContent>
         {languages.map((language) => {
           return (
-            <TradingDropdownItem
+            <DropdownMenuItem
               key={language}
               data-testid={`language-selector-trigger-${language}`}
               onSelect={() => onSelect(language)}
             >
               {labels[language] || language}
-            </TradingDropdownItem>
+            </DropdownMenuItem>
           );
         })}
-      </TradingDropdownContent>
-    </TradingDropdown>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

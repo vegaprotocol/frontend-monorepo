@@ -133,7 +133,7 @@ export const FeedbackStop = () => {
 const MaxStopOrdersPerMarket = ({ max }: { max: string }) => {
   const t = useT();
   return (
-    <p className="text-xs text-warning">
+    <p className="text-xs text-intent-warning">
       {t(
         'There is a limit of {{max}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
         {
@@ -149,7 +149,7 @@ const OrderNotReducing = () => {
   return (
     <p
       data-testid="stop-order-warning-position"
-      className="text-xs text-warning"
+      className="text-xs text-intent-warning"
     >
       {t(
         'Stop orders are reduce only and this order would increase your position.'

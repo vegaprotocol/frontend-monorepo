@@ -17,6 +17,9 @@ export const theme = {
     'button-md': 'var(--button-border-radius-md)',
     'button-lg': 'var(--button-border-radius-lg)',
   },
+  borderWidth: {
+    999: 'var(--button-border-width)',
+  },
   colors: {
     gs: {
       '0': 'rgb(var(--gs-0) / <alpha-value>)',
@@ -31,6 +34,29 @@ export const theme = {
       '700': 'rgb(var(--gs-700) / <alpha-value>)',
       '800': 'rgb(var(--gs-800) / <alpha-value>)',
       '900': 'rgb(var(--gs-900) / <alpha-value>)',
+      '950': 'rgb(var(--gs-950) / <alpha-value>)',
+    },
+    surface: {
+      '0': {
+        DEFAULT: 'rgb(var(--surface-0) / <alpha-value>)',
+        fg: 'rgb(var(--surface-0-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-1-fg-muted) / <alpha-value>)',
+      },
+      '1': {
+        DEFAULT: 'rgb(var(--surface-1) / <alpha-value>)',
+        fg: 'rgb(var(--surface-1-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-1-fg-muted) / <alpha-value>)',
+      },
+      '2': {
+        DEFAULT: 'rgb(var(--surface-2) / <alpha-value>)',
+        fg: 'rgb(var(--surface-2-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-2-fg-muted) / <alpha-value>)',
+      },
+      '3': {
+        DEFAULT: 'rgb(var(--surface-3) / <alpha-value>)',
+        fg: 'rgb(var(--surface-3-fg) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--surface-3-fg-muted) / <alpha-value>)',
+      },
     },
     intent: {
       none: {
@@ -38,18 +64,24 @@ export const theme = {
         foreground: 'rgb(var(--intent-none-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-none-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-none-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-none-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-none-to) / <alpha-value>)',
       },
       primary: {
         DEFAULT: 'rgb(var(--intent-primary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-primary-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-primary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-primary-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-primary-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-primary-to) / <alpha-value>)',
       },
       secondary: {
         DEFAULT: 'rgb(var(--intent-secondary) / <alpha-value>)',
         foreground: 'rgb(var(--intent-secondary-foreground) / <alpha-value>)',
         background: 'rgb(var(--intent-secondary-background) / <alpha-value>)',
         outline: 'rgb(var(--intent-secondary-outline) / <alpha-value>)',
+        from: 'rgb(var(--intent-secondary-from) / <alpha-value>)',
+        to: 'rgb(var(--intent-secondary-to) / <alpha-value>)',
       },
       danger: {
         DEFAULT: 'rgb(var(--intent-danger) / <alpha-value>)',
@@ -80,6 +112,90 @@ export const theme = {
     current: 'currentColor',
     black: '#000000',
     white: '#FFFFFF',
+    pink: {
+      700: '#210215',
+      650: '#600330',
+      600: '#95054B',
+      550: '#CB0666',
+      DEFAULT: '#FF077F',
+      500: '#FF077F',
+      450: '#FF3C9A',
+      400: '#FF70B5',
+      350: '#FFA3D0',
+      300: '#FFD7EA',
+    },
+    yellow: {
+      700: '#23290E',
+      650: '#515E1E',
+      600: '#7E932F',
+      550: '#ABC840',
+      DEFAULT: '#D7FB50',
+      500: '#D7FB50',
+      450: '#E0FC75',
+      400: '#E8FD9A',
+      350: '#F0FDBE',
+      300: '#F9FEE3',
+    },
+    green: {
+      700: '#012915',
+      650: '#015D30',
+      600: '#008545',
+      550: '#01C566',
+      DEFAULT: '#00F780',
+      500: '#00F780',
+      450: '#37F99B',
+      400: '#6CFAB6',
+      350: '#A1FCD0',
+      300: '#D6FEEB',
+    },
+    blue: {
+      700: '#01142A',
+      650: '#012C60',
+      600: '#014595',
+      550: '#015ECB',
+      DEFAULT: '#0075FF',
+      500: '#0075FF',
+      450: '#3793FF',
+      400: '#6CAFFF',
+      350: '#A1CCFF',
+      300: '#D6E9FF',
+    },
+    purple: {
+      700: '#15072A',
+      650: '#301060',
+      600: '#4B1895',
+      550: '#6620CB',
+      DEFAULT: '#8028FF',
+      500: '#8028FF',
+      450: '#9B56FF',
+      400: '#B683FF',
+      350: '#D0B0FF',
+      300: '#EBDDFF',
+    },
+    red: {
+      700: '#2F000C',
+      650: '#550016',
+      600: '#7B001F',
+      550: '#B3002E',
+      DEFAULT: '#EC003C',
+      500: '#EC003C',
+      450: '#F03D6B',
+      400: '#F4668A',
+      350: '#F78FA9',
+      300: '#F8A3B9',
+    },
+    orange: {
+      700: '#2A1701',
+      650: '#603301',
+      600: '#954F01',
+      550: '#CB6C01',
+      DEFAULT: '#FF8700',
+      500: '#FF8700',
+      450: '#FFA137',
+      400: '#FFBA6C',
+      350: '#FFD3A1',
+      300: '#FFECD6',
+    },
     market: {
       red: {
         // same as vega-red
@@ -97,105 +213,6 @@ export const theme = {
       },
     },
     vega: {
-      // YELLOW
-      yellow: {
-        700: '#23290E',
-        650: '#515E1E',
-        600: '#7E932F',
-        550: '#ABC840',
-        DEFAULT: '#D7FB50',
-        500: '#D7FB50',
-        450: '#E0FC75',
-        400: '#E8FD9A',
-        350: '#F0FDBE',
-        300: '#F9FEE3',
-      },
-
-      // GREEN
-      green: {
-        700: '#012915',
-        650: '#015D30',
-        600: '#008545',
-        550: '#01C566',
-        DEFAULT: '#00F780',
-        500: '#00F780',
-        450: '#37F99B',
-        400: '#6CFAB6',
-        350: '#A1FCD0',
-        300: '#D6FEEB',
-      },
-
-      // BLUE
-      blue: {
-        700: '#01142A',
-        650: '#012C60',
-        600: '#014595',
-        550: '#015ECB',
-        DEFAULT: '#0075FF',
-        500: '#0075FF',
-        450: '#3793FF',
-        400: '#6CAFFF',
-        350: '#A1CCFF',
-        300: '#D6E9FF',
-      },
-
-      // PURPLE
-      purple: {
-        700: '#15072A',
-        650: '#301060',
-        600: '#4B1895',
-        550: '#6620CB',
-        DEFAULT: '#8028FF',
-        500: '#8028FF',
-        450: '#9B56FF',
-        400: '#B683FF',
-        350: '#D0B0FF',
-        300: '#EBDDFF',
-      },
-
-      // PINK
-      pink: {
-        700: '#210215',
-        650: '#600330',
-        600: '#95054B',
-        550: '#CB0666',
-        DEFAULT: '#FF077F',
-        500: '#FF077F',
-        450: '#FF3C9A',
-        400: '#FF70B5',
-        350: '#FFA3D0',
-        300: '#FFD7EA',
-      },
-
-      // RED
-      red: {
-        700: '#2F000C',
-        650: '#550016',
-        600: '#7B001F',
-        550: '#B3002E',
-        DEFAULT: '#EC003C',
-        500: '#EC003C',
-        450: '#F03D6B',
-        400: '#F4668A',
-        350: '#F78FA9',
-        300: '#F8A3B9',
-      },
-
-      // ORANGE
-      orange: {
-        700: '#2A1701',
-        650: '#603301',
-        600: '#954F01',
-        550: '#CB6C01',
-        DEFAULT: '#FF8700',
-        500: '#FF8700',
-        450: '#FFA137',
-        400: '#FFBA6C',
-        350: '#FFD3A1',
-        300: '#FFECD6',
-      },
-
-      // DARK
       dark: {
         100: '#161616',
         150: '#262626',
@@ -203,8 +220,6 @@ export const theme = {
         300: '#8B8B8B',
         400: '#C0C0C0',
       },
-
-      // LIGHT
       light: {
         100: '#F0F0F0',
         150: '#E9E9E9',
@@ -213,39 +228,11 @@ export const theme = {
         400: '#626262',
       },
     },
-    danger: '#EC003C',
-    warning: '#FF8700',
-    success: '#00F780',
   },
   fontFamily: {
-    mono: [
-      'ui-monospace',
-      'Menlo',
-      'Monaco',
-      'Cascadia Mono',
-      'Segoe UI Mono',
-      'Roboto Mono',
-      'Oxygen Mono',
-      'Ubuntu Monospace',
-      'Source Code Pro',
-      'Fira Mono',
-      'Droid Sans Mono',
-      'Courier New',
-      'monospace',
-    ],
-    sans: [
-      '"Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-    ],
-    alpha: [
-      'AlphaLyrae, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-      { fontFeatureSettings: '"calt" 0, "liga" 0' },
-    ],
-    glitch: [
-      'AlphaLyrae, monospace',
-      {
-        fontFeatureSettings: '"ss02" 1',
-      },
-    ],
+    mono: ['var(--font-mono)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    sans: ['var(--font-sans)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    alt: ['var(--font-alt)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
   },
   keyframes: {
     rotate: {

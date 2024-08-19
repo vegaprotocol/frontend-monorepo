@@ -87,7 +87,7 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
 
   return (
     <dl className="flex flex-col gap-1">
-      <dt className="text-muted text-sm">
+      <dt className="text-surface-1-fg-muted text-sm">
         {t('gameCount', { count: latestGames.length })}
       </dt>
       <dd className="flex gap-1">
@@ -136,7 +136,7 @@ export const FavoriteGame = ({
   return (
     <dl className="flex flex-col gap-1">
       <dt
-        className={cn('text-muted text-sm', {
+        className={cn('text-surface-1-fg-muted text-sm', {
           hidden: noLabel,
         })}
       >
@@ -146,7 +146,7 @@ export const FavoriteGame = ({
         <Pill className="inline-flex items-center gap-1 bg-transparent text-sm">
           <VegaIcon
             name={VegaIconNames.STAR}
-            className="text-vega-yellow-400 relative top-[-1px]"
+            className="text-yellow-400 relative top-[-1px]"
           />{' '}
           {favoriteMetricLabel}
         </Pill>
@@ -164,7 +164,9 @@ export const StatSection = ({ children }: { children: ReactNode }) => {
 };
 
 export const StatSectionSeparator = () => {
-  return <div className="hidden md:block border-r border-default" />;
+  return (
+    <div className="hidden md:block border-r border-gs-300 dark:border-gs-700" />
+  );
 };
 
 export const StatList = ({ children }: { children: ReactNode }) => {
@@ -193,7 +195,7 @@ export const Stat = ({
       <dd className="text-3xl lg:text-4xl" data-testid={valueTestId}>
         {value}
       </dd>
-      <dt className="text-sm text-muted">
+      <dt className="text-sm text-surface-1-fg-muted">
         {tooltip ? (
           <Tooltip description={tooltip} underline={false}>
             <span className="flex items-center gap-2">

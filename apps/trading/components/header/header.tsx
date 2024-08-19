@@ -40,21 +40,17 @@ export const HeaderStat = ({
   return (
     <div
       {...props}
-      className={cn(
-        'text-muted',
-        'min-w-min last:pr-0 whitespace-nowrap',
-        props.className
-      )}
+      className={cn('min-w-min last:pr-0 whitespace-nowrap', props.className)}
     >
-      <div data-testid="item-header" id={id}>
+      <div
+        data-testid="item-header"
+        id={id}
+        className="text-surface-1-fg-muted"
+      >
         {heading}
       </div>
       <Tooltip description={description} underline>
-        <div
-          data-testid="item-value"
-          aria-labelledby={id}
-          className="text-default"
-        >
+        <div data-testid="item-value" aria-labelledby={id}>
           {children}
         </div>
       </Tooltip>
@@ -66,7 +62,7 @@ export const HeaderTitle = ({ children }: { children: ReactNode }) => {
   return (
     <h1
       data-testid="header-title"
-      className="flex gap-4 items-center whitespace-nowrap xl:pr-4 xl:border-r border-default"
+      className="flex gap-4 items-center whitespace-nowrap xl:pr-4 xl:border-r border-gs-300 dark:border-gs-700"
     >
       {children}
     </h1>

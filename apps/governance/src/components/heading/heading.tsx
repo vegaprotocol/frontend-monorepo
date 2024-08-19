@@ -24,7 +24,7 @@ export const Heading = ({
       })}
     >
       <h1
-        className={cn('font-alpha calt text-5xl [word-break:break-word]', {
+        className={cn('font-alt text-5xl [word-break:break-word]', {
           'mt-0': !marginTop,
           'mb-0': !marginBottom,
         })}
@@ -44,7 +44,7 @@ export const SubHeading = ({
 
   return (
     <h2
-      className={cn('text-2xl font-alpha calt break-words', {
+      className={cn('text-2xl font-alt calt break-words', {
         'mx-auto': centerContent,
         'mb-0': !marginBottom,
         'mb-4': marginBottom,

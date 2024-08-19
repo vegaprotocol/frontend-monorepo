@@ -24,7 +24,7 @@ export const TelemetryApproval = ({
           <VegaIcon name={VegaIconNames.EYE_OFF} size={18} />
           <div className="flex flex-col gap-1">
             <h6 className="font-semibold">{t('Anonymous')}</h6>
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t('Your identity is always anonymous on Vega')}
             </p>
           </div>
@@ -33,7 +33,7 @@ export const TelemetryApproval = ({
           <VegaIcon name={VegaIconNames.COG} size={18} />
           <div className="flex flex-col gap-1">
             <h6 className="font-semibold">{t('Optional')}</h6>
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t('You can opt out any time via settings')}
             </p>
           </div>

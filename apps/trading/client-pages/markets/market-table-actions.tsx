@@ -1,6 +1,6 @@
 import {
-  TradingDropdownItem,
-  TradingDropdownCopyItem,
+  DropdownMenuItem,
+  DropdownMenuCopyItem,
   Link,
   VegaIcon,
   VegaIconNames,
@@ -30,8 +30,8 @@ export const MarketActionsDropdown = ({
 
   return (
     <ActionsDropdown data-testid="market-actions-content">
-      <TradingDropdownCopyItem value={marketId} text={t('Copy Market ID')} />
-      <TradingDropdownItem>
+      <DropdownMenuCopyItem value={marketId} text={t('Copy Market ID')} />
+      <DropdownMenuItem>
         <Link
           href={linkCreator(EXPLORER_MARKET.replace(':id', marketId))}
           target="_blank"
@@ -41,34 +41,34 @@ export const MarketActionsDropdown = ({
             {t('View on Explorer')}
           </span>
         </Link>
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         onClick={(e) => {
           open(assetId, e.target as HTMLElement);
         }}
       >
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View settlement asset details')}
-      </TradingDropdownItem>
+      </DropdownMenuItem>
       {parentMarketID && (
-        <TradingDropdownItem
+        <DropdownMenuItem
           onClick={() => {
             navigate(Links.MARKET(parentMarketID));
           }}
         >
           <VegaIcon name={VegaIconNames.EYE} size={16} />
           {t('View parent market')}
-        </TradingDropdownItem>
+        </DropdownMenuItem>
       )}
       {successorMarketID && (
-        <TradingDropdownItem
+        <DropdownMenuItem
           onClick={() => {
             navigate(Links.MARKET(successorMarketID));
           }}
         >
           <VegaIcon name={VegaIconNames.EYE} size={16} />
           {t('View successor market')}
-        </TradingDropdownItem>
+        </DropdownMenuItem>
       )}
     </ActionsDropdown>
   );

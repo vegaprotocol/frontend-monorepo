@@ -24,7 +24,7 @@ const Restricted = ({ name }: RouteChildProps) => {
       >
         <div className="flex gap-4">
           <div>{GHOST}</div>
-          <h1 className="leading-relaxed  mb-0 text-[2.7rem] font-alpha calt break-words uppercase">
+          <h1 className="leading-relaxed  mb-0 text-[2.7rem] font-alt calt break-words uppercase">
             {t('pageTitle451')}
           </h1>
         </div>

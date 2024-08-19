@@ -35,8 +35,8 @@ export const MarketSelectorItem = ({
         className={cn(
           'h-full grid grid-cols-6 sm:grid-cols-12 items-center gap-2 mx-2 px-2',
           {
-            'hover:bg-gs-500 ': market.id !== currentMarketId,
-            'bg-gs-500 ': market.id === currentMarketId,
+            'hover:bg-surface-3': market.id !== currentMarketId,
+            'bg-surface-2': market.id === currentMarketId,
           }
         )}
         onClick={() => onSelect(market.id)}

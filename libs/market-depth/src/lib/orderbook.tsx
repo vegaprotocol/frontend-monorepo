@@ -121,7 +121,7 @@ export const OrderbookMid = ({
     <div className="flex py-[1px]">
       <div
         className={cn('flex grow items-center justify-center text-base gap-2', {
-          'bg-gs-800 ':
+          'bg-surface-1 ':
             isMarketInAuction &&
             bestAskPrice &&
             bestBidPrice &&
@@ -162,7 +162,7 @@ export const OrderbookMid = ({
         {spread && !spread.startsWith('-') && (
           <span
             title={t('Spread')}
-            className="font-mono text-xs text-muted"
+            className="font-mono text-xs text-surface-0-fg-muted"
             data-testid="spread"
           >
             ({addDecimalsFormatNumber(spread, decimalPlaces)})
@@ -307,7 +307,7 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
+      <div className="border-t border-gs-300 dark:border-gs-700">
         <OrderbookControls
           lastTradedPrice={lastTradedPrice}
           resolution={resolution}

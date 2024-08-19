@@ -24,15 +24,15 @@ const Failure = ({ reason }: { reason?: ReactNode }) => {
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   return (
     <Splash>
-      <div className="border border-vega-red m-10 mx-auto w-4/5 max-w-3xl rounded-lg overflow-hidden animate-shake">
-        <div className="bg-vega-red text-white px-2 py-2 flex gap-1 items-center font-alpha calt uppercase">
+      <div className="border border-red m-10 mx-auto w-4/5 max-w-3xl rounded-lg overflow-hidden animate-shake">
+        <div className="bg-red text-white px-2 py-2 flex gap-1 items-center font-alt calt uppercase">
           <VLogo className="h-4" />
           <span className="text-lg">{t('Failed to initialize the app')}</span>
         </div>
         <div className="p-4 text-left text-sm">
           <p className="mb-4">{reason}</p>
           <div className="text-center">
-            <Button className="border-2" onClick={() => setNodeSwitcher(true)}>
+            <Button onClick={() => setNodeSwitcher(true)}>
               {t('Change node')}
             </Button>
           </div>
@@ -94,12 +94,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
 
   const ERR_DATA_LOADER = (
     <Trans
-      i18nKey="It appears that the connection to the node <0>{{VEGA_URL}}</0> does not return necessary data, try switching to another node."
-      components={[
-        <span key="vega" className="text-muted">
-          {VEGA_URL}
-        </span>,
-      ]}
+      i18nKey="It appears that the connection to the node {{VEGA_URL}} does not return necessary data, try switching to another node."
       values={{
         VEGA_URL,
       }}

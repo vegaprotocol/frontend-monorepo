@@ -262,7 +262,7 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
     expect(page.get_by_test_id("members-toggle")).to_have_text("Members (2)")
     expect(page.get_by_test_id("referee-0")).to_be_visible()
     expect(page.get_by_test_id("icon-question-mark").nth(0)).to_be_visible()
-    expect(page.get_by_test_id("referee-1").locator(".text-muted").nth(1)).to_have_text(
+    expect(page.get_by_test_id("referee-1").locator(".text-surface-1-fg-muted").nth(1)).to_have_text(
         "Owner"
     )
     expect(page.get_by_test_id("joinedAt-0")).to_be_visible()

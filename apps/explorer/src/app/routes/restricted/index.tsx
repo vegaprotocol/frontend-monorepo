@@ -20,7 +20,7 @@ const RestrictedPage = () => {
       >
         <div className="flex gap-4">
           <div>{GHOST}</div>
-          <h1 className="text-[2.7rem] font-alpha calt break-words uppercase">
+          <h1 className="text-[2.7rem] alt break-words uppercase">
             {errorTitle}
           </h1>
         </div>

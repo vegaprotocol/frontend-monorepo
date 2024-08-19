@@ -45,7 +45,7 @@ const getIconElement = ({
   CalloutProps,
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
-  const wrapperClassName = 'mt-1';
+  const wrapperClassName = 'text-surface-0-fg';
   if (isLoading) {
     return (
       <div className={wrapperClassName}>
@@ -100,7 +100,9 @@ export function Callout({
   const body = (
     <>
       {title && (
-        <TitleTag className="text-xl mt-0 mb-2 last:mb-0">{title}</TitleTag>
+        <TitleTag className="text-surface-0-fg text-xl mt-0 mb-2 last:mb-0">
+          {title}
+        </TitleTag>
       )}
       {children}
     </>

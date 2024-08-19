@@ -91,7 +91,6 @@ export const TelemetryDialog = () => {
             setTelemetryAccepted(false);
             close();
           }}
-          intent={Intent.Primary}
           data-testid="do-not-share-data-button"
         >
           {t('NoThanks')}

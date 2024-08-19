@@ -23,7 +23,7 @@ export const Tile = ({
         'overflow-hidden relative',
         'p-3 md:p-6',
         'rounded-lg',
-        'bg-gs-800 ',
+        'bg-surface-1 ',
         className
       )}
     >
@@ -51,7 +51,7 @@ export const StatTile = ({
   }
   return (
     <Tile>
-      <h3 data-testid={testId} className="mb-1 text-sm text-gs-100  calt">
+      <h3 data-testid={testId} className="mb-1 text-sm text-surface-1-fg  calt">
         {title}
       </h3>
       <div
@@ -61,7 +61,9 @@ export const StatTile = ({
         {children}
       </div>
       {description && (
-        <div className="text-sm text-left text-gs-100 ">{description}</div>
+        <div className="text-sm text-left text-surface-1-fg ">
+          {description}
+        </div>
       )}
     </Tile>
   );
@@ -71,7 +73,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   const t = useT();
   return (
     <Tile>
-      <h3 className="mb-1 text-sm text-gs-100  calt">{title}</h3>
+      <h3 className="mb-1 text-sm text-surface-1-fg  calt">{title}</h3>
       <div className="text-xs text-gs-300  leading-[3rem]">
         {t('No active program')}
       </div>
@@ -136,7 +138,7 @@ export const CodeTile = ({
             <>
               {t('Copy shareable apply code link')}
               {': '}
-              <a className="text-vega-blue-500 underline" href={applyCodeLink}>
+              <a className="text-blue-500 underline" href={applyCodeLink}>
                 {truncate(applyCodeLink, { length: 32 })}
               </a>
             </>

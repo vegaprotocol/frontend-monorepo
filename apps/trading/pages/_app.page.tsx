@@ -87,7 +87,7 @@ function AppBody({ Component }: AppProps) {
       <MaybeConnectEagerly />
       <PartyActiveOrdersHandler />
       <Telemetry />
-      <div className="hidden lg:block absolute bottom-3 right-3 z-10">
+      <div className="hidden lg:block absolute bottom-1.5 pb-px right-2 z-10">
         <NodeHealthContainer />
       </div>
     </div>

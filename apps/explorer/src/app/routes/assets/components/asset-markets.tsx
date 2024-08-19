@@ -25,7 +25,7 @@ export const AssetMarkets = ({ asset, decimals, symbol }: AssetMarketProps) => {
   const markets = transformAssetMarketsQuery(data, asset);
 
   return (
-    <div className="mt-10 font-alpha" data-testid="asset-balance">
+    <div className="mt-10" data-testid="asset-balance">
       <h2 className="text-xl mb-3">{t('Market insurance account')}</h2>
       {markets && markets.length === 0 ? (
         <p>
@@ -39,7 +39,7 @@ export const AssetMarkets = ({ asset, decimals, symbol }: AssetMarketProps) => {
             return (
               market.marketId &&
               market.balance !== '0' && (
-                <TableRow className="py-1 border-b border-gs-600">
+                <TableRow className="py-1 border-b border-gs-300 dark:border-gs-700">
                   <TableCell className="py-1">
                     <MarketLink id={market.marketId} />
                   </TableCell>

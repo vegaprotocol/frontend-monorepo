@@ -1,6 +1,6 @@
 import {
   Button,
-  TradingDialog,
+  Dialog,
   Intent,
   Tooltip,
   VegaIcon,
@@ -40,10 +40,10 @@ export const JoinTeam = ({
         isReadOnly={isReadOnly}
         onJoin={setConfirmDialog}
       />
-      <TradingDialog
+      <Dialog
         title={confirmDialog === 'switch' ? t('Switch team') : t('Join team')}
         open={confirmDialog !== undefined}
-        onOpenChange={() => setConfirmDialog(undefined)}
+        onChange={() => setConfirmDialog(undefined)}
       >
         {confirmDialog !== undefined && (
           <DialogContent
@@ -54,7 +54,7 @@ export const JoinTeam = ({
             refetch={refetch}
           />
         )}
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };
@@ -98,7 +98,7 @@ export const JoinButton = ({
         <Button intent={Intent.None} disabled={true}>
           <span className="flex items-center gap-2">
             {t('Owner')}{' '}
-            <span className="text-vega-green-600 dark:text-vega-green">
+            <span className="text-green-600 dark:text-green">
               <VegaIcon name={VegaIconNames.TICK} />
             </span>
           </span>
@@ -151,7 +151,7 @@ export const JoinButton = ({
       <Button intent={Intent.None} disabled={true}>
         <span className="flex items-center gap-2">
           {t('Joined')}{' '}
-          <span className="text-vega-green-600 dark:text-vega-green">
+          <span className="text-green-600 dark:text-green">
             <VegaIcon name={VegaIconNames.TICK} />
           </span>
         </span>

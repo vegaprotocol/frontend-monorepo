@@ -211,7 +211,7 @@ const WithdrawForm = ({
                 <input
                   value={pubKey}
                   readOnly
-                  className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none truncate"
+                  className="appearance-none bg-transparent text-sm w-full focus:outline-none truncate"
                   tabIndex={-1}
                 />
                 <FormSecondaryActionWrapper>

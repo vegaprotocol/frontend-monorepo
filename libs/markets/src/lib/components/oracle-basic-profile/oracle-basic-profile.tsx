@@ -100,10 +100,10 @@ export const OracleBasicProfile = ({
           className={cn(
             {
               'text-gs-700': intent === Intent.None,
-              'text-vega-blue': intent === Intent.Primary,
-              'text-vega-green dark:text-vega-green': intent === Intent.Success,
+              'text-blue': intent === Intent.Primary,
+              'text-green dark:text-green': intent === Intent.Success,
               'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
-              'text-vega-red': intent === Intent.Danger,
+              'text-red': intent === Intent.Danger,
             },
             'flex items-start align-text-bottom p-1'
           )}

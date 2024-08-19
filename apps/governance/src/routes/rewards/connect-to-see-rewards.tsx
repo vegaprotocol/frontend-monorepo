@@ -10,7 +10,7 @@ export const ConnectToSeeRewards = () => {
 
   const classes = cn(
     'flex flex-col items-center justify-center h-[300px] w-full',
-    'border border-gs-200'
+    'border border-gs-300 dark:border-gs-700'
   );
 
   return (

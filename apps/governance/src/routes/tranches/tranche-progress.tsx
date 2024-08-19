@@ -29,7 +29,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Locked')}</span>
         <ProgressBar
           width={220}
-          color={Colors.vega.pink.DEFAULT}
+          color={Colors.pink.DEFAULT}
           percentage={lockedPercentage}
         />
         <span className="tranches__progress-numbers">
@@ -40,7 +40,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Redeemed')}</span>
         <ProgressBar
           width={220}
-          color={Colors.vega.green.DEFAULT}
+          color={Colors.green.DEFAULT}
           percentage={removedPercentage}
         />
         <span className="tranches__progress-numbers">

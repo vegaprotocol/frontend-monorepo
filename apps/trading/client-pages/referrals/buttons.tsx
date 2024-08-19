@@ -6,19 +6,19 @@ import { NavLink } from 'react-router-dom';
 
 const RAINBOW_TAB_STYLE = cn(
   'inline-block',
-  'bg-gs-500 ',
-  'hover:bg-gs-400 ',
+  'bg-surface-2',
+  'hover:bg-gs-400',
   'data-[state="active"]:text-white data-[state="active"]:bg-rainbow',
-  'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
+  'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-pink-500 dark:data-[state="active"]:hover:bg-pink-500',
   '[&.active]:text-white [&.active]:bg-rainbow',
-  '[&.active]:hover:bg-none [&.active]:hover:bg-vega-pink-500 dark:[&.active]:hover:bg-vega-pink-500',
+  '[&.active]:hover:bg-none [&.active]:hover:bg-pink-500 dark:[&.active]:hover:bg-pink-500',
   'px-5 py-3',
   'first:rounded-tl-lg last:rounded-tr-lg'
 );
 
 const DISABLED_RAINBOW_TAB_STYLE = cn(
   'pointer-events-none',
-  'text-gs-100 ',
+  'text-surface-1-fg ',
   'data-[state="active"]:text-white',
   '[&.active]:text-white'
 );
@@ -26,8 +26,8 @@ const DISABLED_RAINBOW_TAB_STYLE = cn(
 const TAB_STYLE = cn(
   'inline-block',
   'bg-transparent',
-  'text-gs-200 ',
-  'hover:text-gs-100 ',
+  'text-surface-2-fg ',
+  'hover:text-surface-1-fg ',
   'data-[state="active"]:text-black dark:data-[state="active"]:text-white',
   'data-[state="active"]:border-b-2 data-[state="active"]:border-b-black dark:data-[state="active"]:border-b-white',
   '[&.active]:text-black dark:[&.active]:text-white',

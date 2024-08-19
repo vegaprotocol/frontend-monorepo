@@ -163,17 +163,17 @@ export function getLabelForTransfer(
   if (transfer.toAccountType === 'ACCOUNT_TYPE_NETWORK_TREASURY') {
     return {
       type,
-      colours: 'text-vega-green dark:text-green bg-gs-200',
+      colours: 'text-green dark:text-green bg-surface-3',
     };
   } else if (transfer.recurring) {
     return {
       type,
-      colours: 'text-vega-yellow dark:text-yellow bg-gs-200',
+      colours: 'text-yellow dark:text-yellow bg-surface-3',
     };
   }
   return {
     type,
-    colours: 'text-white bg-gs-200',
+    colours: 'text-white bg-surface-3',
   };
 }
 
@@ -252,13 +252,13 @@ export function getLabelForChainEvent(
 export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
-  let colours = 'text-gs-900 bg-gs-50';
+  let colours = 'text-surface-3-fg bg-surface-3';
 
   // This will get unwieldy and should probably produce a different colour of tag
   // Note that colours are currently arbitrary
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
-    colours = 'text-white dark-text-white bg-vega-pink dark:bg-vega-pink';
+    colours = 'text-white dark-text-white bg-pink dark:bg-pink';
   } else if (type === 'Transfer Funds' && command?.transfer) {
     const res = getLabelForTransfer(command.transfer);
     type = res.type;
@@ -267,13 +267,13 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
     if (command && !!command.proposalSubmission) {
       type = getLabelForProposal(command.proposalSubmission);
     }
-    colours = 'text-black bg-vega-yellow';
+    colours = 'text-black bg-yellow';
   } else if (type === 'Order' && command) {
     type = getLabelForOrderType(orderType, command);
-    colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
+    colours = 'text-white dark-text-white bg-blue dark:bg-blue';
   } else if (type === 'Stop' && command) {
     type = getLabelForStopOrderType(orderType, command);
-    colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
+    colours = 'text-white dark-text-white bg-blue dark:bg-blue';
   }
 
   if (type === 'Vote on Proposal') {
@@ -288,7 +288,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   }
 
   if (type === 'Vote on Proposal' || type === 'Vote Submission') {
-    colours = 'text-black bg-vega-yellow';
+    colours = 'text-black bg-yellow';
   }
 
   return (

@@ -39,12 +39,11 @@ export const ChainResponseCode = ({
 
   const isSuccess = successCodes.has(code);
   const size = small ? 3 : 4;
-  const successColour =
-    code === 71 ? '!fill-vega-orange' : '!fill-vega-green-600';
+  const successColour = code === 71 ? '!fill-orange' : '!fill-green-600';
   const icon = isSuccess ? (
     <Icon size={size} name="tick-circle" className={`${successColour}`} />
   ) : (
-    <Icon size={size} name="cross" className="!fill-vega-pink-500" />
+    <Icon size={size} name="cross" className="!fill-pink-500" />
   );
   const label = ErrorCodes.get(code) || 'Unknown response code';
 

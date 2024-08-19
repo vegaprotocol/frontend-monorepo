@@ -11,7 +11,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={cn(
             defaultWrapperClasses,
-            'bg-black dark:bg-white text-gs-800 '
+            'bg-black dark:bg-white text-gs-50 dark:text-gs-950'
           )}
         >
           <VLogo className="w-4 h-4" />
@@ -23,7 +23,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={cn(
             defaultWrapperClasses,
-            'bg-black dark:bg-white text-gs-800  text-xs'
+            'bg-black dark:bg-white text-gs-50 dark:text-gs-950 text-xs'
           )}
         >
           <span className="relative -top-0.5">{'>_'}</span>
@@ -32,21 +32,14 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     }
     case 'snap': {
       return (
-        <span
-          className={cn(
-            defaultWrapperClasses,
-            'border bg-white dark:bg-gs-600'
-          )}
-        >
+        <span className={cn(defaultWrapperClasses, 'border bg-white')}>
           <VegaIcon name={VegaIconNames.METAMASK} size={24} />
         </span>
       );
     }
     case 'viewParty': {
       return (
-        <span
-          className={cn(defaultWrapperClasses, 'bg-vega-blue-500 text-gs-800')}
-        >
+        <span className={cn(defaultWrapperClasses, 'bg-blue-500 text-gs-50')}>
           <VegaIcon name={VegaIconNames.EYE} size={20} />
         </span>
       );

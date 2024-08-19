@@ -7,12 +7,10 @@ export const Size = ({
   value,
   side,
   positionDecimalPlaces = 0,
-  forceTheme,
 }: {
   value: string;
   side?: Schema.Side;
   positionDecimalPlaces?: number;
-  forceTheme?: 'dark' | 'light';
 }) => {
   return (
     <span
@@ -20,11 +18,7 @@ export const Size = ({
       className={cn('text-right', {
         // BUY
         'text-market-green-600 dark:text-market-green':
-          side === Schema.Side.SIDE_BUY && !forceTheme,
-        'text-market-green-600':
-          side === Schema.Side.SIDE_BUY && forceTheme === 'light',
-        'text-market-green':
-          side === Schema.Side.SIDE_BUY && forceTheme === 'dark',
+          side === Schema.Side.SIDE_BUY,
         // SELL
         'text-market-red': side === Schema.Side.SIDE_SELL,
       })}

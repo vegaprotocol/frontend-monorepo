@@ -29,19 +29,19 @@ export const getTierColor = (tier: number, max = TIER_COLORS.length) => {
 
 export const getTierGradient = (tier: number, max = TIER_COLORS.length) =>
   cn({
-    'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%  bg-highlight':
+    'from-yellow-400 dark:from-yellow-600 to-20%  bg-highlight':
       'yellow' === getTierColor(tier, max),
-    'from-vega-green-400 dark:from-vega-green-600 to-20%  bg-highlight':
+    'from-green-400 dark:from-green-600 to-20%  bg-highlight':
       'green' === getTierColor(tier, max),
-    'from-vega-blue-400 dark:from-vega-blue-600 to-20%  bg-highlight':
+    'from-blue-400 dark:from-blue-600 to-20%  bg-highlight':
       'blue' === getTierColor(tier, max),
-    'from-vega-purple-400 dark:from-vega-purple-600 to-20%  bg-highlight':
+    'from-purple-400 dark:from-purple-600 to-20%  bg-highlight':
       'purple' === getTierColor(tier, max),
-    'from-vega-pink-400 dark:from-vega-pink-600 to-20%  bg-highlight':
+    'from-pink-400 dark:from-pink-600 to-20%  bg-highlight':
       'pink' === getTierColor(tier, max),
-    'from-vega-orange-400 dark:from-vega-orange-600 to-20%  bg-highlight':
+    'from-orange-400 dark:from-orange-600 to-20%  bg-highlight':
       'orange' === getTierColor(tier, max),
-    'from-vega-red-400 dark:from-vega-red-600 to-20%  bg-highlight':
+    'from-red-400 dark:from-red-600 to-20%  bg-highlight':
       'red' === getTierColor(tier, max),
     'from-gs-600 to-20%  bg-highlight': 'none' === getTierColor(tier, max),
   });

@@ -84,7 +84,7 @@ export const AnnouncementBanner = ({
     <Banner className="relative px-10" background={background}>
       <div
         data-testid="app-announcement"
-        className="relative flex justify-center text-lg text-center text-white font-alpha gap-2"
+        className="relative flex justify-center text-lg text-center text-white gap-2"
       >
         <span>{data.text}</span>{' '}
         {data.urlText && data.url && (

@@ -97,7 +97,7 @@ export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span data-testid="staking-node-not-found" className={'text-vega-pink'}>
+      <span data-testid="staking-node-not-found" className={'text-pink'}>
         {t('stakingNodeNotFound', { node })}
       </span>
     );

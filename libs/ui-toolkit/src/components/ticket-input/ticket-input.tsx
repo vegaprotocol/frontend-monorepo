@@ -10,7 +10,7 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
   ({ label, appendElement, ...props }: Props, ref) => {
     return (
       <div
-        className="relative flex items-center gap-1 pr-2 h-full w-full focus-within:outline outline-2 outline-vega-blue-550 rounded bg-gs-700 "
+        className="relative flex items-center gap-1 pr-2 h-full w-full focus-within:outline outline-2 outline-blue-550 rounded bg-surface-2"
         data-testid="ticket-input"
       >
         <input
@@ -28,7 +28,7 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
         <label
           htmlFor={props.id}
           className={cn(
-            'absolute transition-all text-muted transform text-sm left-2 pointer-events-none',
+            'absolute transition-all text-surface-2-fg-muted transform text-sm left-2 pointer-events-none',
             '-translate-y-2 text-xs top-3',
             'peer-focus:text-xs peer-focus:-translate-y-2',
             'peer-placeholder-shown:text-sm peer-placeholder-shown:translate-y-0'

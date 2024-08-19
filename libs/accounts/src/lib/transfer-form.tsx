@@ -200,7 +200,7 @@ export const TransferForm = ({
               return (
                 <span
                   data-testid="no-assets-available"
-                  className="text-xs text-gs-100 "
+                  className="text-xs text-surface-1-fg "
                 >
                   {t('No assets available')}
                 </span>
@@ -298,7 +298,7 @@ export const TransferForm = ({
             ) : (
               <span
                 data-testid="no-accounts-available"
-                className="text-xs text-gs-100 "
+                className="text-xs text-surface-1-fg "
               >
                 {t('No accounts available')}
               </span>
@@ -500,14 +500,14 @@ export const TransferFee = ({
     <div className="mb-4 flex flex-col gap-2 text-xs">
       <div className="flex flex-wrap items-center justify-between gap-1">
         <div>{t('Transfer fee')}</div>
-        <div data-testid="transfer-fee" className="text-muted">
+        <div data-testid="transfer-fee" className="text-surface-0-fg-muted">
           {addDecimalsFormatNumber(fee, decimals)}
         </div>
       </div>
       {discount && discount !== '0' && (
         <div className="flex flex-wrap items-center justify-between gap-1">
           <div>{t('Discount')}</div>
-          <div data-testid="discount" className="text-muted">
+          <div data-testid="discount" className="text-surface-0-fg-muted">
             {addDecimalsFormatNumber(discount, decimals)}
           </div>
         </div>
@@ -522,7 +522,7 @@ export const TransferFee = ({
           <div>{t('Amount to be transferred')}</div>
         </Tooltip>
 
-        <div data-testid="transfer-amount" className="text-muted">
+        <div data-testid="transfer-amount" className="text-surface-0-fg-muted">
           {addDecimalsFormatNumber(amount, decimals)}
         </div>
       </div>
@@ -535,7 +535,10 @@ export const TransferFee = ({
           <div>{t('Total amount (with fee)')}</div>
         </Tooltip>
 
-        <div data-testid="total-transfer-fee" className="text-muted">
+        <div
+          data-testid="total-transfer-fee"
+          className="text-surface-0-fg-muted"
+        >
           {addDecimalsFormatNumber(totalValue, decimals)}
         </div>
       </div>
@@ -594,7 +597,7 @@ const AssetOption = ({
         <div>
           {asset.name} | {asset.symbol}
         </div>
-        <div className="text-secondary text-xs">
+        <div className="text-surface-0-fg-muted text-xs">
           {asset.source.__typename === 'ERC20'
             ? truncateMiddle(asset.source.contractAddress)
             : asset.source.__typename}

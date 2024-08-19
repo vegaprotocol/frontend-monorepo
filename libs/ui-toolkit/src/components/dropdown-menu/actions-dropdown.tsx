@@ -1,9 +1,9 @@
 import { VegaIcon, VegaIconNames } from '../icon';
 import {
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownTrigger,
-} from './trading-dropdown';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
 
 export const ActionsDropdownTrigger = ({
   vertical,
@@ -11,7 +11,7 @@ export const ActionsDropdownTrigger = ({
   vertical?: boolean;
 }) => {
   return (
-    <TradingDropdownTrigger data-testid="dropdown-menu">
+    <DropdownMenuTrigger data-testid="dropdown-menu">
       <button type="button">
         <VegaIcon
           name={VegaIconNames.KEBAB}
@@ -19,12 +19,12 @@ export const ActionsDropdownTrigger = ({
           className={vertical ? 'rotate-90' : undefined}
         />
       </button>
-    </TradingDropdownTrigger>
+    </DropdownMenuTrigger>
   );
 };
 
 type ActionMenuContentProps = React.ComponentProps<
-  typeof TradingDropdownContent
+  typeof DropdownMenuContent
 > & { vertical?: boolean };
 
 export const ActionsDropdown = ({
@@ -32,8 +32,8 @@ export const ActionsDropdown = ({
   ...props
 }: ActionMenuContentProps) => {
   return (
-    <TradingDropdown trigger={<ActionsDropdownTrigger vertical={vertical} />}>
-      <TradingDropdownContent {...props} side="bottom" align="end" />
-    </TradingDropdown>
+    <DropdownMenu trigger={<ActionsDropdownTrigger vertical={vertical} />}>
+      <DropdownMenuContent {...props} side="bottom" align="end" />
+    </DropdownMenu>
   );
 };

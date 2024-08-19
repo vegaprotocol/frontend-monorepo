@@ -22,15 +22,15 @@ export const Tag = ({
     className={cn(
       'w-max border rounded-[1rem] py-[0.125rem] px-2 text-xs',
       {
-        'border-vega-yellow-550  text-vega-yellow-550 dark:border-vega-yellow-500  dark:text-vega-yellow-500':
+        'border-yellow-550  text-yellow-550 dark:border-yellow-500  dark:text-yellow-500':
           color === 'yellow',
-        'border-vega-green-550  text-vega-green-550 dark:border-vega-green-500  dark:text-vega-green-500':
+        'border-green-550  text-green-550 dark:border-green-500  dark:text-green-500':
           color === 'green',
-        'border-vega-blue-500  text-vega-blue-500': color === 'blue',
-        'border-vega-purple-500  text-vega-purple-500': color === 'purple',
-        'border-vega-pink-500  text-vega-pink-500': color === 'pink',
-        'border-vega-orange-500  text-vega-orange-500': color === 'orange',
-        'border-gs-100  text-gs-100   ': color === 'none',
+        'border-blue-500  text-blue-500': color === 'blue',
+        'border-purple-500  text-purple-500': color === 'purple',
+        'border-pink-500  text-pink-500': color === 'pink',
+        'border-orange-500  text-orange-500': color === 'orange',
+        'border-gs-100  text-surface-1-fg   ': color === 'none',
       },
       className
     )}

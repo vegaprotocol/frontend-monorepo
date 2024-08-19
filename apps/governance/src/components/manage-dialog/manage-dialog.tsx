@@ -3,7 +3,6 @@ import {
   Button,
   Dialog,
   CopyWithTooltip,
-  Intent,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -25,7 +24,6 @@ export const VegaManageDialog = ({
       title={t('SELECT A VEGA KEY')}
       open={dialogOpen}
       onChange={setDialogOpen}
-      intent={Intent.Primary}
       size="small"
     >
       {pubKeys ? (

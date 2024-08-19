@@ -58,25 +58,25 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             },
             {
               'bg-transparent border-gs-200': good === undefined,
-              'bg-vega-pink-300 dark:bg-vega-pink-700 border-vega-pink-500 dark:border-vega-pink-500':
+              'bg-pink-300 dark:bg-pink-700 border-pink-500 dark:border-pink-500':
                 good !== undefined && !good,
-              'bg-vega-green-300 dark:bg-vega-green-700 border-vega-green-500 dark:border-vega-green-500':
+              'bg-green-300 dark:bg-green-700 border-green-500 dark:border-green-500':
                 good !== undefined && good,
             }
           )}
         >
-          <div className="uppercase flex items-center gap-2 text-xs font-alpha calt">
+          <div className="uppercase flex items-center gap-2 text-xs font-alt calt">
             <div
               className={cn('w-2 h-2 rounded-full', {
-                'bg-gs-200': good === undefined,
-                'bg-vega-pink dark:bg-vega-pink': good !== undefined && !good,
-                'bg-vega-green dark:bg-vega-green': good !== undefined && good,
+                'bg-surface-2': good === undefined,
+                'bg-pink dark:bg-pink': good !== undefined && !good,
+                'bg-green dark:bg-green': good !== undefined && good,
               })}
             ></div>
             <div data-testid="stats-title">{title}</div>
             {description && (
               <Tooltip description={description} align="center">
-                <div className="absolute top-1 right-2 text-gs-200 cursor-help">
+                <div className="absolute top-1 right-2 text-surface-2-fg cursor-help">
                   <Icon name="info-sign" size={3} />
                 </div>
               </Tooltip>

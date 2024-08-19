@@ -244,7 +244,7 @@ export const TeamForm = ({
         )
       }
       {err && (
-        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+        <p className="text-intent-danger text-xs mb-4 first-letter:capitalize">
           {err}
         </p>
       )}
@@ -307,7 +307,7 @@ const SubmitButton = ({
       <VegaIcon
         name={VegaIconNames.TICK}
         size={18}
-        className="text-vega-green-500"
+        className="text-green-500"
       />{' '}
       {confirmedText}
     </span>

@@ -35,7 +35,7 @@ export const CompetitionsAction = ({
         <DudeBadge variant={variant} />
       </div>
       <h2 className="text-2xl">{title}</h2>
-      {description && <p className="text-muted">{description}</p>}
+      {description && <p className="text-surface-1-fg-muted">{description}</p>}
       <div className="flex justify-center">{actionElement}</div>
     </Box>
   );

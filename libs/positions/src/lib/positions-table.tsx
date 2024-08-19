@@ -106,7 +106,7 @@ const MarginChart = ({
       ) : null}
       <div
         className={cn('flex relative h-2', {
-          'bg-gs-800': other,
+          'bg-surface-1': other,
         })}
       >
         <div style={{ width: `${width || 100}%` }} className="bg-gs-400"></div>

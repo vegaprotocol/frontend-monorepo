@@ -8,7 +8,7 @@ import {
   Tooltip,
   AnchorButton,
   Button,
-  TradingDialog,
+  Dialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -41,7 +41,7 @@ export const CreateCodeContainer = () => {
   return (
     <div
       data-testid="referral-create-code-form"
-      className="md:w-2/3 max-w-md mx-auto bg-gs-800  p-8 rounded-lg"
+      className="md:w-2/3 max-w-md mx-auto bg-surface-1 p-8 rounded-lg"
     >
       <h3 className="mb-4 text-2xl text-center calt">
         {t('Create a referral code')}
@@ -153,10 +153,10 @@ export const CreateCodeForm = () => {
         </Link>
       </p>
 
-      <TradingDialog
+      <Dialog
         title={t('Create a referral code')}
         open={dialogOpen}
-        onOpenChange={() => setDialogOpen(false)}
+        onChange={() => setDialogOpen(false)}
       >
         <CreateCodeDialog
           onSubmit={onSubmit}
@@ -164,11 +164,11 @@ export const CreateCodeForm = () => {
             setDialogOpen(false);
           }}
         />
-      </TradingDialog>
+      </Dialog>
 
-      <TradingDialog
+      <Dialog
         open={txDialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setTxDialogOpen(open);
         }}
         title={t('Create a referral code')}
@@ -201,7 +201,7 @@ export const CreateCodeForm = () => {
             )
           }
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };
@@ -310,7 +310,7 @@ const CreateCodeDialog = ({
 
         {!programDetails ? YES_OR_NO : GENERATE}
 
-        <div className="flex justify-center text-sm gap-4 text-default ">
+        <div className="flex justify-center text-sm gap-4">
           <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
             {t('About the referral program')}
           </ExternalLink>

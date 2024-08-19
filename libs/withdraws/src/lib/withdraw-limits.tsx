@@ -149,9 +149,9 @@ const GasPrice = ({
       !withdrawalAmountQUSD.isLessThanOrEqualTo(0) &&
       withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD);
     const expensiveClassNames = {
-      'text-vega-red-500':
+      'text-red-500':
         isExpensive && withdrawalAmountQUSD.isLessThanOrEqualTo(basePriceQUSD),
-      'text-vega-orange-500':
+      'text-orange-500':
         isExpensive &&
         withdrawalAmountQUSD.isGreaterThan(basePriceQUSD) &&
         withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD),
@@ -222,7 +222,7 @@ const GasPrice = ({
           <span className={cn(expensiveClassNames, 'text-xs')}>{range}</span>
         </Tooltip>
 
-        <span className="text-muted text-xs">
+        <span className="text-surface-0-fg-muted text-xs">
           ~{formatNumber(basePriceQUSD, 2)} - {formatNumber(maxPriceQUSD, 2)}{' '}
           qUSD
         </span>

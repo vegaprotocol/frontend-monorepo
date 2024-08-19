@@ -51,7 +51,7 @@ export const Notification = ({
       data-testid={testId || 'notification'}
       className={cn(
         'flex items-start gap-2',
-        'rounded py-2 px-3',
+        'rounded py-2 px-3 border',
         getIntentBorder(intent),
         getIntentBackground(intent)
       )}
@@ -62,7 +62,7 @@ export const Notification = ({
       <div
         className={cn(
           'flex flex-col items-start overflow-hidden gap-1.5',
-          'text-gs-50 font-alpha text-sm'
+          'text-gs-50 text-sm'
         )}
       >
         {title && (

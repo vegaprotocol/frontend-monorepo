@@ -230,7 +230,7 @@ const KeyValue = ({
       className="text-xs flex justify-between items-center gap-4 flex-wrap text-right"
     >
       <Tooltip description={labelDescription}>
-        <div className="text-muted text-left">{label}</div>
+        <div className="text-surface-1-fg-muted text-left">{label}</div>
       </Tooltip>
       <Tooltip description={value && `${value} ${symbol || ''}`}>
         {valueElement}

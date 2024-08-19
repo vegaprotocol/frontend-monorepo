@@ -150,7 +150,7 @@ const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
             })}
           </ul>
           {error && error.code !== ConnectorErrors.userRejected.code && (
-            <p className="text-danger text-sm first-letter:uppercase">
+            <p className="text-intent-danger text-sm first-letter:uppercase">
               {error.message}
             </p>
           )}

@@ -21,7 +21,7 @@ const getClassName = (
   className?: string
 ) =>
   cn(
-    'inline-flex gap-2 items-center justify-center border disabled:opacity-40',
+    'inline-flex gap-2 items-center justify-center disabled:opacity-40 border-999',
     // size
     {
       'h-12 px-6 rounded-button-lg text-base': size === 'lg',
@@ -30,13 +30,13 @@ const getClassName = (
       'h-6 px-2 rounded-button-xs text-xs': size === 'xs',
     },
     // colours
-    'enabled:hover:brightness-110',
+    'enabled:hover:brightness-90  dark:enabled:hover:brightness-110',
     {
-      'bg-intent-none text-intent-none-foreground border-intent-none-outline text-gs-50':
+      'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline':
         intent === Intent.None,
-      'bg-intent-primary text-intent-primary-foreground border-intent-primary-outline':
+      'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline':
         intent === Intent.Primary,
-      'bg-intent-secondary text-intent-secondary-foreground border-intent-secondary-outline':
+      'bg-intent-secondary bg-gradient-to-tr from-intent-secondary-from to-intent-secondary-to text-intent-secondary-foreground':
         intent === Intent.Secondary,
       'bg-intent-danger text-intent-danger-foreground border-intent-danger-outline':
         intent === Intent.Danger,

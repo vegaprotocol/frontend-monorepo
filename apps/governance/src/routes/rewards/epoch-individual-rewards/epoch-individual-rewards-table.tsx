@@ -30,7 +30,7 @@ const DisplayReward = ({
   percentageOfTotal?: string;
 }) => {
   if (Number(reward) === 0) {
-    return <span className="text-gs-700">-</span>;
+    return <span>-</span>;
   }
 
   return (

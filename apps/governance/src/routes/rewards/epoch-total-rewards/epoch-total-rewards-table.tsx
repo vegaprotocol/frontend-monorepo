@@ -28,7 +28,7 @@ const DisplayReward = ({
   decimals: number;
 }) => {
   if (Number(reward) === 0) {
-    return <span className="text-gs-100">-</span>;
+    return <span className="text-surface-1-fg">-</span>;
   }
 
   return (

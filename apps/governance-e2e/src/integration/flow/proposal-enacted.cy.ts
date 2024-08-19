@@ -92,7 +92,7 @@ context(
             // 3001-VOTE-019 time to vote is highlighted red
             cy.getByTestId('vote-details')
               .find('span')
-              .should('have.class', 'text-vega-orange');
+              .should('have.class', 'text-orange');
             cy.getByTestId(viewProposalButton).click();
           });
       });
