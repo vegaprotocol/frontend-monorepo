@@ -75,8 +75,8 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
       <MobileMarketHeader />
 
       {/* Top section */}
-      <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto border-t border-gs-300 dark:border-gs-700 shrink-0">
+      <div className="flex flex-col overflow-hidden bg-surface-1">
+        <div className="flex flex-nowrap overflow-x-auto shrink-0">
           {[
             'chart',
             'orderbook',
@@ -129,7 +129,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
 
       {/* Bottom section */}
       <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto border-t border-gs-300 dark:border-gs-700 shrink-0">
+        <div className="flex flex-nowrap overflow-x-auto shrink-0">
           {[
             'positions',
             'activeOrders',

@@ -30,7 +30,7 @@ export const Card = ({
         {
           'p-4': size === 'md',
           'p-7': size === 'lg',
-          'bg-surface-2': !minimal,
+          'bg-surface-1': !minimal,
         },
         className
       )}

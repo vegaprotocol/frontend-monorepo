@@ -335,7 +335,7 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.gs.50);
+  --ag-background-color: theme(colors.gs.100);
   --ag-border-color: theme(colors.gs.100);
   --ag-header-background-color: theme(colors.gs.100);
   --ag-odd-row-background-color: transparent;
@@ -347,7 +347,7 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.gs.950);
+  --ag-background-color: theme(colors.gs.900);
   --ag-border-color: theme(colors.gs.900);
   --ag-header-background-color: theme(colors.gs.900);
   --ag-odd-row-background-color: transparent;
