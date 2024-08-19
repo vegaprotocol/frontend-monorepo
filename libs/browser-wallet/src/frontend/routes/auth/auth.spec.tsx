@@ -10,12 +10,7 @@ import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
 
-import { FULL_ROUTES } from '../route-names';
 import { Auth } from './auth';
-
-jest.mock('@/components/page-header', () => ({
-  PageHeader: () => <div data-testid="page-header" />,
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -89,7 +84,6 @@ describe('Auth', () => {
     expect(screen.getByTestId(locators.navBar)).toBeInTheDocument();
     expect(screen.getByTestId('outlet')).toBeInTheDocument();
     expect(screen.getByTestId('modal-wrapper')).toBeInTheDocument();
-    expect(screen.getByTestId('page-header')).toBeInTheDocument();
   });
   it('loads the users wallets, networks, assets and markets', () => {
     const { loadWallets, fetchAssets, fetchMarkets, loadConnections } =
@@ -100,12 +94,6 @@ describe('Auth', () => {
     expect(loadConnections).toHaveBeenCalledTimes(1);
     expect(fetchAssets).toHaveBeenCalledTimes(1);
     expect(fetchMarkets).toHaveBeenCalledTimes(1);
-  });
-  it('renders wallets header on wallets page', () => {
-    mockStores();
-    renderComponent(FULL_ROUTES.wallets);
-
-    expect(screen.getByTestId('dapps-header')).toBeVisible();
   });
   it('renders nothing if wallets are loading', () => {
     mockStore(useWalletStore, {

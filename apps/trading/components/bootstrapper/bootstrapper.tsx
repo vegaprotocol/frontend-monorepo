@@ -85,18 +85,18 @@ const Loading = () => {
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
 
-  const { error, VEGA_URL } = useEnvironment((state) => ({
+  const { error, API_NODE } = useEnvironment((state) => ({
     error: state.error,
-    VEGA_URL: state.VEGA_URL,
+    API_NODE: state.API_NODE,
   }));
 
   const config = useVegaWalletConfig();
 
   const ERR_DATA_LOADER = (
     <Trans
-      i18nKey="It appears that the connection to the node {{VEGA_URL}} does not return necessary data, try switching to another node."
+      i18nKey="It appears that the connection to the node {{url}} does not return necessary data, try switching to another node."
       values={{
-        VEGA_URL,
+        url: API_NODE?.graphQLApiUrl,
       }}
     />
   );
@@ -135,17 +135,17 @@ type ClientProviderProps = {
 };
 
 function GraphQLProvider({ skeleton, failure, children }: ClientProviderProps) {
-  const { status, VEGA_URL } = useEnvironment((store) => ({
+  const { status, API_NODE } = useEnvironment((store) => ({
     status: store.status,
-    VEGA_URL: store.VEGA_URL,
+    API_NODE: store.API_NODE,
   }));
 
   const client = useMemo(() => {
-    if (status === 'success' && VEGA_URL) {
-      return getApolloClient(VEGA_URL);
+    if (status === 'success' && API_NODE) {
+      return getApolloClient(API_NODE.graphQLApiUrl);
     }
     return undefined;
-  }, [VEGA_URL, status]);
+  }, [API_NODE, status]);
 
   if (status === 'failed') {
     // eslint-disable-next-line react/jsx-no-useless-fragment

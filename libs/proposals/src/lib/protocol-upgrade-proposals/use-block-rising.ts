@@ -23,9 +23,9 @@ export const useBlockRising = (skip = false) => {
   const nodes = useEnvironment((state) => state.nodes);
   const clients = useMemo(() => {
     return nodes.map((n) => {
-      if (n && n.length > 0) {
+      if (n.graphQLApiUrl && n.graphQLApiUrl.length > 0) {
         const client = createClient({
-          url: n,
+          url: n.graphQLApiUrl,
           cacheConfig: undefined,
           retry: false,
           connectToDevTools: false,

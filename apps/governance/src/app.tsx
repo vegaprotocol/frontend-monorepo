@@ -181,7 +181,7 @@ const ScrollToTop = () => {
 
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
-  const { VEGA_URL, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { API_NODE, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { t } = useTranslation();
   const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
     store.dialogOpen,
@@ -209,7 +209,9 @@ const AppContainer = () => {
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={
-              <NodeFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
+              <NodeFailure
+                title={t('NodeUnsuitable', { url: API_NODE?.graphQLApiUrl })}
+              />
             }
           >
             <AsyncRenderer<EthereumConfig | null>

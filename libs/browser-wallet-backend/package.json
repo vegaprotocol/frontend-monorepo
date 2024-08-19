@@ -2,9 +2,16 @@
   "name": "browser-wallet-backend",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@vegaprotocol/json-rpc": "0.0.1",
+    "mutexify": "^1.4.0",
+    "@vegaprotocol/crypto": "^0.12.0",
+    "read-write-mutexify": "^2.1.0",
+    "nanoassert": "^2.0.0",
+    "uuid": "^8.3.2",
+    "@vegaprotocol/protos": "^0.21.0"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts"
 }

@@ -13,7 +13,10 @@ const mockSetNodeSwitcher = jest.fn();
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
   useEnvironment: jest.fn().mockImplementation(() => ({
-    VEGA_URL: 'https://vega-url.wtf',
+    API_NODE: {
+      graphQLApiUrl: 'https://vega-url.wtf',
+      restApiUrl: 'https://vega-url.wtf',
+    },
     VEGA_INCIDENT_URL: 'https://blog.vega.community',
   })),
   useNodeSwitcherStore: jest.fn(() => mockSetNodeSwitcher),

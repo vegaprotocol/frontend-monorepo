@@ -1,3 +1,5 @@
+import { JSONRPCClient } from '@vegaprotocol/json-rpc';
+
 import { useCallback, useMemo } from 'react';
 
 import { getExtensionApi } from '@/lib/extension-apis';
@@ -6,8 +8,6 @@ import { useConnectionStore } from '@/stores/connections';
 import { useErrorStore } from '@/stores/error';
 import type { Connection } from '@/types/backend';
 
-// @ts-ignore
-import JSONRPCClient from '../../../lib/json-rpc-client';
 import { RpcMethods } from '../../../lib/client-rpc-methods';
 import type { JsonRpcNotification } from '../json-rpc-provider';
 
@@ -16,7 +16,6 @@ const createClient = (notificationHandler: Function) => {
   const { runtime } = getExtensionApi();
   const backgroundPort = runtime.connect({ name: 'popup' });
   const client = new JSONRPCClient({
-    // @ts-ignore
     onnotification: (...arguments_) => {
       notificationHandler(...arguments_);
     },
@@ -26,7 +25,7 @@ const createClient = (notificationHandler: Function) => {
       backgroundPort.postMessage(message);
     },
   });
-  // window.client = client;
+
   backgroundPort.onMessage.addListener((message: any) => {
     log('info', 'Received message from background', message);
     client.onmessage(message);
@@ -83,7 +82,6 @@ export const useCreateClient = () => {
     },
     [client, setError]
   );
-  // window.request = request;
 
   return {
     client,

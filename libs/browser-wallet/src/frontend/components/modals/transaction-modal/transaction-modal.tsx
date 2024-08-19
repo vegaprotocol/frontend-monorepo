@@ -2,7 +2,6 @@ import ReactTimeAgo from 'react-time-ago';
 
 import { useInteractionStore } from '@/stores/interaction-store';
 
-import { PageHeader } from '../../page-header';
 import { Splash } from '../../splash';
 import { TransactionNotAutoApproved } from './sections/auto-approval-notification';
 import { CheckTransaction } from './sections/check-transaction';
@@ -29,8 +28,6 @@ export const TransactionModal = () => {
   return (
     <>
       <Splash data-testid={locators.transactionWrapper}>
-        <PageHeader />
-
         <section className="pb-4 pt-2 px-5">
           <TransactionHeader
             origin={details.origin}

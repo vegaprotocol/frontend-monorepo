@@ -16,7 +16,7 @@ const getFeedbackLinks = (gitOriginUrl?: string) =>
 
 export const NetworkInfo = () => {
   const {
-    VEGA_URL,
+    API_NODE,
     GIT_COMMIT_HASH,
     GIT_ORIGIN_URL,
     GITHUB_FEEDBACK_URL,
@@ -29,7 +29,8 @@ export const NetworkInfo = () => {
   return (
     <div data-testid="git-info">
       <p data-testid="git-network-data" className="mb-2">
-        {t('Reading network data from')} <Lozenge>{VEGA_URL}</Lozenge>.{' '}
+        {t('Reading network data from')}{' '}
+        <Lozenge className="bg-gs-400">{API_NODE?.graphQLApiUrl}</Lozenge>.{' '}
         <Link onClick={() => setNodeSwitcher(true)}>{t('Edit')}</Link>
       </p>
       <p data-testid="git-eth-data" className="mb-2 break-all">

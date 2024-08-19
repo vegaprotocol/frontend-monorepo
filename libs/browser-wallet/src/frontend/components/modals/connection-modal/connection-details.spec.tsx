@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
 import { locators as headerLocators } from '../../header';
-import { locators as hostImageLocators } from '../../host-image';
 import locators from '../../locators';
 import { ConnectionDetails } from './connection-details';
 
@@ -23,7 +22,6 @@ describe('ConnectionDetails', () => {
     expect(screen.getByTestId(locators.dAppHostname)).toHaveTextContent(
       'https://www.google.com'
     );
-    expect(screen.getByTestId(hostImageLocators.hostImage)).toBeVisible();
     expect(
       screen.getByTestId(locators.connectionModalAccessListTitle)
     ).toHaveTextContent('Allow this site to:');

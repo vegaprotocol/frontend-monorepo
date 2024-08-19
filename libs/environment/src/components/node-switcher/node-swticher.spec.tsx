@@ -37,9 +37,18 @@ describe('NodeSwitcher', () => {
 
   it('renders with nodes', async () => {
     const nodes = [
-      'https://n00.api.vega.xyz',
-      'https://n01.api.vega.xyz',
-      'https://n02.api.vega.xyz',
+      {
+        graphQLApiUrl: 'https://n00.api.vega.xyz',
+        restApiUrl: 'https://n00.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n01.api.vega.xyz',
+        restApiUrl: 'https://n01.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n02.api.vega.xyz',
+        restApiUrl: 'https://n02.api.vega.xyz',
+      },
     ];
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
@@ -48,7 +57,10 @@ describe('NodeSwitcher', () => {
     render(<NodeSwitcher closeDialog={jest.fn()} />);
     nodes.forEach((node) => {
       expect(
-        screen.getByRole('radio', { checked: false, name: node })
+        screen.getByRole('radio', {
+          checked: false,
+          name: new URL(node.graphQLApiUrl).hostname,
+        })
       ).toBeInTheDocument();
     });
     expect(
@@ -76,14 +88,23 @@ describe('NodeSwitcher', () => {
 
   it('marks current node as selected', () => {
     const nodes = [
-      'https://n00.api.vega.xyz',
-      'https://n01.api.vega.xyz',
-      'https://n02.api.vega.xyz',
+      {
+        graphQLApiUrl: 'https://n00.api.vega.xyz',
+        restApiUrl: 'https://n00.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n01.api.vega.xyz',
+        restApiUrl: 'https://n01.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n02.api.vega.xyz',
+        restApiUrl: 'https://n02.api.vega.xyz',
+      },
     ];
     const selectedNode = nodes[0];
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
-      VEGA_URL: selectedNode,
+      API_NODE: selectedNode,
       nodes,
     });
     render(<NodeSwitcher closeDialog={jest.fn()} />);
@@ -92,7 +113,7 @@ describe('NodeSwitcher', () => {
       expect(
         screen.getByRole('radio', {
           checked: node === selectedNode,
-          name: node,
+          name: new URL(node.graphQLApiUrl).hostname,
         })
       ).toBeInTheDocument();
     });
@@ -107,12 +128,17 @@ describe('NodeSwitcher', () => {
 
   it('allows setting a custom node', () => {
     const mockSetUrl = jest.fn();
-    const mockUrl = 'https://custom.url';
-    const nodes = ['https://n00.api.vega.xyz'];
+    const mockUrl = 'https://custom.url/';
+    const nodes = [
+      {
+        graphQLApiUrl: 'https://n00.api.vega.xyz',
+        restApiUrl: 'https://n00.api.vega.xyz',
+      },
+    ];
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
       nodes,
-      setUrl: mockSetUrl,
+      setApiNode: mockSetUrl,
     });
     render(<NodeSwitcher closeDialog={jest.fn()} />);
     expect(
@@ -121,13 +147,14 @@ describe('NodeSwitcher', () => {
     // 0006-NETW-018
     fireEvent.click(screen.getByRole('radio', { name: 'Other' }));
 
-    fireEvent.change(screen.getByRole('textbox'), {
+    fireEvent.change(screen.getByTestId('gql-input'), {
       target: {
         value: mockUrl,
       },
     });
 
-    expect(screen.getByRole('textbox')).toHaveValue(mockUrl);
+    expect(screen.getByTestId('gql-input')).toHaveValue(mockUrl);
+
     expect(screen.getByRole('button', { name: 'Check' })).not.toBeDisabled();
 
     fireEvent.click(screen.getByRole('button', { name: 'Check' }));
@@ -139,21 +166,33 @@ describe('NodeSwitcher', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Connect to this node' })
     );
-    expect(mockSetUrl).toHaveBeenCalledWith(mockUrl);
+    expect(mockSetUrl).toHaveBeenCalledWith({
+      graphQLApiUrl: mockUrl + 'graphql',
+      restApiUrl: mockUrl,
+    });
   });
 
   it('disables a custom node with an invalid url', () => {
     const mockSetUrl = jest.fn();
     const mockUrl = 'invalid-url';
     const nodes = [
-      'https://n00.api.vega.xyz',
-      'https://n01.api.vega.xyz',
-      'https://n02.api.vega.xyz',
+      {
+        graphQLApiUrl: 'https://n00.api.vega.xyz',
+        restApiUrl: 'https://n00.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n01.api.vega.xyz',
+        restApiUrl: 'https://n01.api.vega.xyz',
+      },
+      {
+        graphQLApiUrl: 'https://n02.api.vega.xyz',
+        restApiUrl: 'https://n02.api.vega.xyz',
+      },
     ];
     mockEnv({
       VEGA_ENV: Networks.TESTNET,
       nodes,
-      setUrl: mockSetUrl,
+      setApiNode: mockSetUrl,
     });
     render(<NodeSwitcher closeDialog={jest.fn()} />);
     expect(
@@ -161,7 +200,7 @@ describe('NodeSwitcher', () => {
     ).toBeDisabled();
 
     fireEvent.click(screen.getByRole('radio', { name: 'Other' }));
-    fireEvent.change(screen.getByRole('textbox'), {
+    fireEvent.change(screen.getByTestId('gql-input'), {
       target: {
         value: mockUrl,
       },

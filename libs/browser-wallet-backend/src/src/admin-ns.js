@@ -1,4 +1,4 @@
-import JSONRPCServer from '../lib/json-rpc-server.js';
+import { JSONRPCServer } from '@vegaprotocol/json-rpc';
 import * as adminValidation from '../validation/admin/index.js';
 import pkg from '../../package.json';
 import { toBase64, string as fromString } from '@vegaprotocol/crypto/buf';

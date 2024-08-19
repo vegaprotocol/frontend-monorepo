@@ -60,8 +60,7 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
     loadGlobals(request);
     loadNetworks(request);
   }, [loadGlobals, loadNetworks, request]);
-
-  if (loadingNetworks || loadingGlobals) {
+  if (loadingGlobals || loadingNetworks) {
     return (
       <div
         data-testid={locators.networkProviderLoading}

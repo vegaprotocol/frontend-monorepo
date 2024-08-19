@@ -1,3 +1,4 @@
+import { storedApiNodeSchema } from '@vegaprotocol/environment';
 import { Server, WebSocket } from 'mock-socket';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,8 +16,9 @@ declare global {
   }
 }
 
-const mockSocketServer = Cypress.env('VEGA_URL')
-  ? new Server(Cypress.env('VEGA_URL').replace('http', 'ws'))
+const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
+const mockSocketServer = apiNode
+  ? new Server(apiNode.graphQLApiUrl.replace('http', 'ws'))
   : null;
 
 // DO NOT REMOVE: PASSTHROUGH for walletconnect

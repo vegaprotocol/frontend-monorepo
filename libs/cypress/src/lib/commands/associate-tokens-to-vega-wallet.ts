@@ -1,3 +1,4 @@
+import { storedApiNodeSchema } from '@vegaprotocol/environment';
 import { stakeForVegaPublicKey } from '../capsule/ethereum-setup';
 import { createEthereumWallet } from '../capsule/ethereum-wallet';
 import { setGraphQLEndpoint } from '../capsule/request';
@@ -18,11 +19,15 @@ export function addAssociateTokensToVegaWallet() {
     const ethWalletMnemonic = Cypress.env('ETH_WALLET_MNEMONIC');
     const ethereumProviderUrl = Cypress.env('ETHEREUM_PROVIDER_URL');
     const vegaWalletUrl = Cypress.env('VEGA_WALLET_URL');
-    const vegaUrl = Cypress.env('VEGA_URL');
+    const apiNode = storedApiNodeSchema.parse(Cypress.env('API_NODE'));
     const vegaPubKey = Cypress.env('VEGA_PUBLIC_KEY');
     const apiToken = Cypress.env('VEGA_WALLET_API_TOKEN');
 
-    setGraphQLEndpoint(vegaUrl);
+    if (!apiNode) {
+      throw new Error('API_NODE not configured');
+    }
+
+    setGraphQLEndpoint(apiNode.graphQLApiUrl);
     createWalletClient(vegaWalletUrl, apiToken);
     createEthereumWallet(ethWalletMnemonic, ethereumProviderUrl);
 

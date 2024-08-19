@@ -11,7 +11,7 @@ import { Routes } from '../../routes/route-names';
 import { Link as RouteLink } from 'react-router-dom';
 
 export const Footer = () => {
-  const { VEGA_URL, GIT_COMMIT_HASH, GIT_ORIGIN_URL } = useEnvironment();
+  const { API_NODE, GIT_COMMIT_HASH, GIT_ORIGIN_URL } = useEnvironment();
   const setNodeSwitcherOpen = useNodeSwitcherStore(
     (store) => store.setDialogOpen
   );
@@ -42,9 +42,12 @@ export const Footer = () => {
             </p>
           </div>
         )}
-
         <div className="content-center flex pr-4 md:border-r border-gs-300 dark:border-gs-700">
-          <span className="pr-2">{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
+          <span className="pr-2">
+            {API_NODE?.graphQLApiUrl && (
+              <NodeUrl url={API_NODE?.graphQLApiUrl} />
+            )}
+          </span>
           <Link
             className="ml-2 underline-offset-4"
             onClick={() => setNodeSwitcherOpen(true)}

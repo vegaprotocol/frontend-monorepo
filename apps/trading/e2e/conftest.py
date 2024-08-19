@@ -161,9 +161,10 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             # Set window._env_ so built app uses datanode from vega market sim
             load_dotenv()
             vega_env = os.getenv('VEGA_ENV')
+
             env = json.dumps(
                 {
-                    "VEGA_URL": f"http://localhost:{vega.data_node_rest_port}/graphql",
+                    "API_NODE": f"http://localhost:{vega.data_node_rest_port}",
                     "VEGA_WALLET_URL": f"http://localhost:{vega.wallet_port}",
                     "VEGA_ENV": vega_env,
                 }

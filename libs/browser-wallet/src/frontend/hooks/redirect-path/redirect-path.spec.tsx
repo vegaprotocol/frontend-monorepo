@@ -5,7 +5,6 @@ import { mockStorage } from '@/test-helpers/mock-storage';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { FULL_ROUTES } from '../../routes/route-names';
-import { SUGGESTED_MNEMONIC_KEY } from '../suggest-mnemonic';
 import { useGetRedirectPath } from '.';
 
 jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
@@ -72,22 +71,6 @@ describe('RedirectPath', () => {
     await waitFor(() => expect(view.result.current.loading).toBeFalsy());
     expect(view.result.current.loading).toBeFalsy();
     expect(view.result.current.path).toBe(FULL_ROUTES.login);
-  });
-
-  it('returns save mnemonic if no wallets exist and there is a mnemonic in memory', async () => {
-    // @ts-ignore
-    localStorage.setItem(SUGGESTED_MNEMONIC_KEY, 'foo');
-    const view = renderRedirectHook({
-      passphrase: true,
-      locked: false,
-      wallet: false,
-      version: '0.0.1',
-      settings: {
-        telemetry: false,
-      },
-    });
-    await waitFor(() => expect(view.result.current.loading).toBeFalsy());
-    expect(view.result.current.path).toBe(FULL_ROUTES.saveMnemonic);
   });
 
   // eslint-disable-next-line jest/no-disabled-tests

@@ -14,7 +14,7 @@ export const NodeHealthContainer = ({
   variant?: 'normal' | 'compact';
 }) => {
   const t = useT();
-  const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
+  const { API_NODE, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const { text, intent, datanodeBlockHeight } = useNodeHealth();
 
@@ -33,9 +33,9 @@ export const NodeHealthContainer = ({
             <p>{text}</p>
             <p>{datanodeBlockHeight}</p>
           </div>
-          {VEGA_URL && (
+          {API_NODE && (
             <p>
-              <NodeUrl url={VEGA_URL} />
+              <NodeUrl url={API_NODE.graphQLApiUrl} />
             </p>
           )}
           {VEGA_INCIDENT_URL && (
@@ -60,7 +60,7 @@ export const NodeHealthContainer = ({
         data-testid="node-health-trigger"
       >
         {variant === 'normal' && (
-          <span>{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
+          <span>{API_NODE && <NodeUrl url={API_NODE.graphQLApiUrl} />}</span>
         )}
 
         <Indicator intent={intent} size="md" />

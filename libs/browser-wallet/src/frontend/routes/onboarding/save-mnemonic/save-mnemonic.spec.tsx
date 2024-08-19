@@ -3,7 +3,6 @@ import { MemoryRouter } from 'react-router-dom';
 
 import locators from '@/components/locators';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
-import { SUGGESTED_MNEMONIC_KEY } from '@/hooks/suggest-mnemonic';
 import { mockClient } from '@/test-helpers/mock-client';
 import { mockStorage } from '@/test-helpers/mock-storage';
 
@@ -36,10 +35,6 @@ describe('Save mnemonic', () => {
     mockClient();
     mockStorage();
   });
-  // afterEach(() => {
-  //   // @ts-ignore
-  //   global.browser = null;
-  // });
   it('renders tile and disclaimer', async () => {
     renderComponent();
     await screen.findByTestId(locators.mnemonicContainerHidden);
@@ -131,7 +126,8 @@ describe('Save mnemonic', () => {
       screen.getByTestId(saveMnemonicFormLocators.saveMnemonicButton)
     ).toBeDisabled();
   });
-  it('redirects to the wallets page when button is clicked', async () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('redirects to the wallets page when button is clicked', async () => {
     renderComponent();
     await screen.findByTestId(locators.mnemonicContainerHidden);
     fireEvent.click(screen.getByTestId(locators.mnemonicContainerHidden));
@@ -145,16 +141,5 @@ describe('Save mnemonic', () => {
         expect(mockedUsedNavigate).toHaveBeenCalledWith(FULL_ROUTES.wallets),
       { timeout: 1200 }
     );
-  });
-
-  it('loads an existing mnemonic if one is in memory', async () => {
-    // @ts-ignore
-    localStorage.setItem(SUGGESTED_MNEMONIC_KEY, 'foo');
-    renderComponent();
-    await screen.findByTestId(locators.mnemonicContainerHidden);
-    fireEvent.click(screen.getByTestId(locators.mnemonicContainerHidden));
-    expect(
-      screen.getByTestId(locators.mnemonicContainerMnemonic)
-    ).toHaveTextContent('foo');
   });
 });

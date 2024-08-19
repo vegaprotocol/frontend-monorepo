@@ -1,4 +1,4 @@
-import { useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
@@ -30,6 +30,23 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
+import dynamic from 'next/dynamic';
+
+const BrowserWalletBackendLoader = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <>{children}</>;
+
+export const BrowserWalletBackend = dynamic(
+  () =>
+    import('@vegaprotocol/browser-wallet-backend').then(
+      () => BrowserWalletBackendLoader
+    ),
+  {
+    ssr: false,
+  }
+);
 
 const Title = () => {
   const t = useT();
@@ -40,13 +57,11 @@ const Title = () => {
   const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
-
   const title = useMemo(() => {
     if (!pageTitle) return DEFAULT_TITLE;
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
   }, [pageTitle, networkName, DEFAULT_TITLE]);
-
   return (
     <Head>
       <title>{title}</title>
@@ -101,13 +116,13 @@ function VegaTradingApp(props: AppProps) {
     store.setDialogOpen,
   ]);
 
-  // Start validation of env vars and determine VEGA_URL
+  // Start validation of env vars and determine API_NODE
   useInitializeEnv();
 
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   //
-  // This is the last point at which we get pregenerated
+  // This is the last point at which we get pre-generated
   // HTML so render a ssr friendly loader component
   if (status === 'default') {
     return <SSRLoader />;
@@ -115,12 +130,17 @@ function VegaTradingApp(props: AppProps) {
 
   return (
     <Suspense fallback={<AppLoader />}>
-      <HashRouter>
-        <Bootstrapper>
-          <AppBody {...props} />
-        </Bootstrapper>
-        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
-      </HashRouter>
+      <BrowserWalletBackend>
+        <HashRouter>
+          <Bootstrapper>
+            <AppBody {...props} />
+          </Bootstrapper>
+          <NodeSwitcherDialog
+            open={nodeSwitcherOpen}
+            setOpen={setNodeSwitcher}
+          />
+        </HashRouter>
+      </BrowserWalletBackend>
     </Suspense>
   );
 }

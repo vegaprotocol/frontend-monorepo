@@ -1,5 +1,4 @@
 import { Header } from '../../header';
-import { HostImage } from '../../host-image';
 import { VegaIcon } from '../../icons/vega-icon';
 import locators from '../../locators';
 
@@ -38,7 +37,6 @@ export const ConnectionHeader = ({
   return (
     <div data-testid={locators.modalHeader}>
       <div className="flex justify-center items-center">
-        <HostImage size={64} hostname={hostname} />
         <div className="flex flex-col justify-center mx-4">
           <LeftRightArrows />
         </div>

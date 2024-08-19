@@ -22,6 +22,9 @@
       "@vegaprotocol/apollo-client": ["libs/apollo-client/src/index.ts"],
       "@vegaprotocol/assets": ["libs/assets/src/index.ts"],
       "@vegaprotocol/browser-wallet": ["libs/browser-wallet/src/index.ts"],
+      "@vegaprotocol/browser-wallet-backend": [
+        "libs/browser-wallet-backend/src/index.ts"
+      ],
       "@vegaprotocol/candles-chart": ["libs/candles-chart/src/index.ts"],
       "@vegaprotocol/cypress": ["libs/cypress/src/index.ts"],
       "@vegaprotocol/data-provider": ["libs/data-provider/src/index.ts"],
@@ -32,6 +35,7 @@
       "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/funding-payments": ["libs/funding-payments/src/index.ts"],
       "@vegaprotocol/i18n": ["libs/i18n/src/index.ts"],
+      "@vegaprotocol/json-rpc": ["libs/json-rpc/src/index.ts"],
       "@vegaprotocol/ledger": ["libs/ledger/src/index.ts"],
       "@vegaprotocol/liquidity": ["libs/liquidity/src/index.ts"],
       "@vegaprotocol/logger": ["libs/logger/src/index.ts"],
@@ -47,6 +51,7 @@
       "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
       "@vegaprotocol/proposals": ["libs/proposals/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
+      "@vegaprotocol/rest": ["libs/rest/src/index.ts"],
       "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.ts"
