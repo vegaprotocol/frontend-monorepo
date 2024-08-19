@@ -18,6 +18,7 @@ export { createConfig, coreStoreSlice, singleKeyStoreSlice } from './wallet';
 export {
   InjectedConnector,
   SnapConnector,
+  InBrowserConnector,
   JsonRpcConnector,
   ViewPartyConnector,
   MockConnector,

@@ -527,6 +527,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_EXPLORER_VALIDATORS']
       ) as string
     ),
+    IN_BROWSER_WALLET: TRUTHY.includes(
+      windowOrDefault(
+        'NX_IN_BROWSER_WALLET',
+        process.env['NX_IN_BROWSER_WALLET']
+      ) as string
+    ),
   };
 
   const GOVERNANCE_FLAGS = {

@@ -4,15 +4,11 @@ import { Connector } from '@web3-react/types';
 import type { ConnectionInfo } from '@ethersproject/web';
 import type { Actions } from '@web3-react/types';
 import { initializeConnector } from '@web3-react/core';
-import type { Eip1193Bridge } from '@ethersproject/experimental';
 import { Eip1193CustomBridge } from './eip-1193-custom-bridge';
 
 type url = string | ConnectionInfo;
 
 export class UrlConnector extends Connector {
-  /** {@inheritdoc Connector.provider} */
-  public override provider: Eip1193Bridge | undefined;
-
   private eagerConnection?: Promise<void>;
   private url: url;
   private ethWalletMnemonic: string;

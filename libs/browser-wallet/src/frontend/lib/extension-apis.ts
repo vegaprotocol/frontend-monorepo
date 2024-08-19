@@ -26,7 +26,7 @@ export const getExtensionApi = () => {
               window.addEventListener(
                 `${name}-response`,
                 (event: CustomEvent) => {
-                  console.log('event', event.detail);
+                  // console.log('event', event.detail);
                   function_(event.detail);
                 }
               );

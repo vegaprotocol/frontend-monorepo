@@ -7,7 +7,7 @@ export async function install({ networks, settings }) {
     ...config.networks.map((network) => networks.set(network.id, network)),
     settings.set('selectedNetwork', config.defaultNetworkId),
     settings.set('autoOpen', true),
-    settings.set('showHiddenNetworks', false),
+    settings.set('showHiddenNetworks', true),
     settings.set('version', 0),
   ]);
 }
@@ -35,11 +35,11 @@ const createPortMock = (name) => ({
   onDisconnect: {
     addListener: (callback) => {
       // eslint-disable-next-line no-console
-      console.log('onMessage addListener', callback);
+      // console.log('onMessage addListener', callback);
     },
     removeListener: (callback) => {
       // eslint-disable-next-line no-console
-      console.log('onMessage removeListener', callback);
+      // console.log('onMessage removeListener', callback);
     },
   },
 });
