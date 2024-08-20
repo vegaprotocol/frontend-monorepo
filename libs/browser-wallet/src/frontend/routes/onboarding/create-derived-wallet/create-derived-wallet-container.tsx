@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { type ReactNode } from 'react';
 import { useAccount } from 'wagmi';
@@ -18,7 +18,7 @@ export const CreateDerivedWalletContainer = ({
             {({ show }) => {
               return (
                 <Button
-                  variant="primary"
+                  intent={Intent.Primary}
                   onClick={() => {
                     if (show) show();
                   }}
