@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/tailwindcss-config",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "dependencies": {
     "tailwindcss": "3.3.3"
   }
