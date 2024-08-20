@@ -27,7 +27,7 @@ export const CreateWallet = () => {
           navigate(FULL_ROUTES.createDerivedWallet);
         }}
         className="mt-6 mb-4"
-        variant="primary"
+        intent={Intent.Primary}
       >
         Create a wallet from Ethereum wallet
       </Button>
@@ -38,7 +38,6 @@ export const CreateWallet = () => {
           navigate(FULL_ROUTES.saveMnemonic);
         }}
         className="mt-6 mb-4"
-        variant="primary"
       >
         Create a wallet
       </Button>
