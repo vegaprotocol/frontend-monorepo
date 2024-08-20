@@ -29,54 +29,51 @@ export function ToAsset(props: {
   const t = useT();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
   return (
-    <FormGroup label="To asset" labelFor="asset">
-      <div className="flex flex-col gap-1">
-        <Controller
-          name="toAsset"
-          control={props.control}
-          render={({ field, fieldState }) => {
-            return (
-              <>
-                <TradingRichSelect
-                  placeholder="Select asset"
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  {props.assets.map((a) => {
-                    return (
-                      <TradingRichSelectOption value={a.id} key={a.id}>
-                        <AssetOption asset={a} />
-                      </TradingRichSelectOption>
-                    );
-                  })}
-                </TradingRichSelect>
-                {fieldState.error && (
-                  <TradingInputError>
-                    {fieldState.error.message}
-                  </TradingInputError>
-                )}
-              </>
-            );
-          }}
-        />
-        {props.toAsset && !isAssetUSDTArb(props.toAsset) && (
-          <TradingInputError intent="warning">
-            {t(
-              'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
+    <Controller
+      name="toAsset"
+      control={props.control}
+      render={({ field, fieldState }) => {
+        return (
+          <FormGroup label={t('To asset')} labelFor="asset">
+            <TradingRichSelect
+              placeholder={t('Select asset')}
+              value={field.value}
+              onValueChange={field.onChange}
+            >
+              {props.assets.map((a) => {
+                return (
+                  <TradingRichSelectOption value={a.id} key={a.id}>
+                    <AssetOption asset={a} />
+                  </TradingRichSelectOption>
+                );
+              })}
+            </TradingRichSelect>
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}
-          </TradingInputError>
-        )}
-      </div>
-      {props.toAsset && (
-        <FormSecondaryActionWrapper>
-          <FormSecondaryActionButton
-            onClick={() => openAssetDialog(props.toAsset.id)}
-          >
-            {t('View asset details')}
-          </FormSecondaryActionButton>
-          <Faucet asset={props.toAsset} queryKey={queryKey} />
-        </FormSecondaryActionWrapper>
-      )}
-    </FormGroup>
+            {props.toAsset && !isAssetUSDTArb(props.toAsset) && (
+              <TradingInputError intent="warning">
+                {t(
+                  'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
+                )}
+              </TradingInputError>
+            )}
+            {props.toAsset && (
+              <FormSecondaryActionWrapper>
+                <FormSecondaryActionButton
+                  onClick={() => {
+                    if (!props.toAsset) return;
+                    openAssetDialog(props.toAsset.id);
+                  }}
+                >
+                  {t('View asset details')}
+                </FormSecondaryActionButton>
+                <Faucet asset={props.toAsset} queryKey={props.queryKey} />
+              </FormSecondaryActionWrapper>
+            )}
+          </FormGroup>
+        );
+      }}
+    />
   );
 }

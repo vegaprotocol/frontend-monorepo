@@ -19,49 +19,45 @@ export function ToPubKey(props: {
   const t = useT();
   const form = useForm();
   return (
-    <FormGroup label={t('To (Vega key)')} labelFor="toPubKey">
-      <VegaKeySelect
-        onChange={() => form.setValue('toPubKey', '')}
-        input={<TradingInput {...form.register('toPubKey')} />}
-        select={
-          <Controller
-            name="toPubKey"
-            control={props.control}
-            render={({ field, fieldState }) => {
-              return (
-                <>
-                  <TradingRichSelect
-                    placeholder={t('Select public key')}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    {props.pubKeys.map((k) => {
-                      return (
-                        <TradingRichSelectOption
-                          value={k.publicKey}
-                          key={k.publicKey}
-                        >
-                          <div className="leading-4">
-                            <div>{k.name}</div>
-                            <div className="text-xs text-secondary">
-                              {truncateMiddle(k.publicKey)}
-                            </div>
+    <Controller
+      name="toPubKey"
+      control={props.control}
+      render={({ field, fieldState }) => {
+        return (
+          <FormGroup label={t('To (Vega key)')} labelFor="toPubKey">
+            <VegaKeySelect
+              onChange={() => form.setValue('toPubKey', '')}
+              input={<TradingInput {...field} />}
+              select={
+                <TradingRichSelect
+                  placeholder={t('Select public key')}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  {props.pubKeys.map((k) => {
+                    return (
+                      <TradingRichSelectOption
+                        value={k.publicKey}
+                        key={k.publicKey}
+                      >
+                        <div className="leading-4">
+                          <div>{k.name}</div>
+                          <div className="text-xs text-secondary">
+                            {truncateMiddle(k.publicKey)}
                           </div>
-                        </TradingRichSelectOption>
-                      );
-                    })}
-                  </TradingRichSelect>
-                  {fieldState.error && (
-                    <TradingInputError>
-                      {fieldState.error.message}
-                    </TradingInputError>
-                  )}
-                </>
-              );
-            }}
-          />
-        }
-      />
-    </FormGroup>
+                        </div>
+                      </TradingRichSelectOption>
+                    );
+                  })}
+                </TradingRichSelect>
+              }
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </FormGroup>
+        );
+      }}
+    />
   );
 }
