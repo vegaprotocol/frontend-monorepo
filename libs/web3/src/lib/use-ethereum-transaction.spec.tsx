@@ -15,7 +15,7 @@ class MockContract {
   static txHash = 'tx-hash';
   contract = {
     callStatic: {
-      deposit_asset() {
+      depositAsset() {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(true);
@@ -25,7 +25,7 @@ class MockContract {
     },
   } as unknown as ethers.Contract;
 
-  deposit_asset(assetSource: string, amount: string, vegaPublicKey: string) {
+  depositAsset(assetSource: string, amount: string, vegaPublicKey: string) {
     return Promise.resolve({
       hash: MockContract.txHash,
       wait: () => {
@@ -47,9 +47,9 @@ let confirmations = 0;
 const mockContract = new MockContract();
 const requiredConfirmations = 3;
 
-function setup(methodName: 'deposit_asset' = 'deposit_asset') {
+function setup(methodName: 'depositAsset' = 'depositAsset') {
   return renderHook(() =>
-    useEthereumTransaction<MockContract, 'deposit_asset'>(
+    useEthereumTransaction<MockContract, 'depositAsset'>(
       mockContract,
       methodName,
       requiredConfirmations
@@ -120,7 +120,7 @@ it('Ethereum transaction flow', async () => {
 
 describe('error handling', () => {
   it('ensures correct method is used', async () => {
-    const { result } = setup('non-existing-method' as 'deposit_asset');
+    const { result } = setup('non-existing-method' as 'depositAsset');
 
     act(() => {
       result.current.perform('asset-rouce', '100', 'vega-key');

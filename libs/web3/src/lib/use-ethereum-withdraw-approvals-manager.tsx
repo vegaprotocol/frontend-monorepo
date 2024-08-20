@@ -140,7 +140,7 @@ export const useEthWithdrawApprovalsManager = () => {
 
       createEthTransaction(
         contract,
-        'withdraw_asset',
+        'withdrawAsset',
         [
           approval.assetSource,
           approval.amount,

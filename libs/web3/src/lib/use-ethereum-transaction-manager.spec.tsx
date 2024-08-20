@@ -32,12 +32,12 @@ mockDepositAsset.mockResolvedValue({
 const contract = {
   contract: {
     callStatic: {
-      deposit_asset: mockDepositAssetStatic,
+      depositAsset: mockDepositAssetStatic,
     },
   },
-  deposit_asset: mockDepositAsset,
+  depositAsset: mockDepositAsset,
 } as unknown as CollateralBridge;
-const methodName = 'deposit_asset';
+const methodName = 'depositAsset';
 const args: string[] = [];
 
 const update = jest.fn();

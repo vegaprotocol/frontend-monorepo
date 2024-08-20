@@ -23,8 +23,8 @@ export const useCompleteWithdraw = () => {
   const [id, setId] = useState('');
   const { transaction, perform, reset, Dialog } = useEthereumTransaction<
     CollateralBridge,
-    'withdraw_asset'
-  >(contract, 'withdraw_asset');
+    'withdrawAsset'
+  >(contract, 'withdrawAsset');
 
   const submit = useCallback(
     async (withdrawalId: string) => {

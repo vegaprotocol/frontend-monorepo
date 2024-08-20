@@ -50,7 +50,7 @@ export async function depositAsset(
   ).then(() => {
     const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
     cy.wrap(
-      collateralBridge.deposit_asset(
+      collateralBridge.depositAsset(
         assetEthAddress,
         amount + '0'.repeat(decimalPlaces),
         '0x' + vegaWalletPubKey

@@ -15,7 +15,7 @@ describe('useEthTransactionStore', () => {
   };
 
   const contract = {} as unknown as CollateralBridge;
-  const methodName = 'withdraw_asset';
+  const methodName = 'withdrawAsset';
   const args = ['arg1'];
   const requiredConfirmations = 3;
   const requiresConfirmation = true;
