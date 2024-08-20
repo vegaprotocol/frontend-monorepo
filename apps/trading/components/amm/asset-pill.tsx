@@ -1,10 +1,6 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import type { Asset } from '@/lib/queries/assets';
-import { t } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import type { Asset } from '@vegaprotocol/rest';
+import { t } from '../../lib/use-t';
 import { Badge } from '../ui/badge';
 
 type AssetPillProps = {

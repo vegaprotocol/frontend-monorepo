@@ -37,6 +37,7 @@ import { LayoutCentered } from '../components/layouts';
 import { LayoutFull } from '../components/layouts/layout-full';
 
 import { Routes as AppRoutes } from '../lib/links';
+import { Explore } from '../client-pages/amm/explore';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -196,6 +197,16 @@ export const useRouterConfig = (): RouteObject[] => {
         {
           path: ':marketId',
           element: <Liquidity />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.AMM,
+      element: <LayoutCentered />,
+      children: [
+        {
+          index: true,
+          element: <Explore />,
         },
       ],
     },

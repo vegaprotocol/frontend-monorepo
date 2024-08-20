@@ -18,11 +18,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Tabs } from '@/components/ui/tabs';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { CONSOLE_URL, DOCS_UPDATE_MARKET_TUTORIAL_URL } from '@/env';
 import { useAMMs } from '@/lib/hooks/use-amms';
 import { useMarket } from '@/lib/hooks/use-markets';
