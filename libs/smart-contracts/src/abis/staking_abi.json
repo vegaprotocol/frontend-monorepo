@@ -1,16 +1,5 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -32,7 +21,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "Stake_Deposited",
+    "name": "StakeDeposited",
     "type": "event"
   },
   {
@@ -57,7 +46,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "Stake_Removed",
+    "name": "StakeRemoved",
     "type": "event"
   },
   {
@@ -88,71 +77,12 @@
         "type": "bytes32"
       }
     ],
-    "name": "Stake_Transferred",
+    "name": "StakeTransferred",
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "vega_public_key",
-        "type": "bytes32"
-      }
-    ],
-    "name": "stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "vega_public_key",
-        "type": "bytes32"
-      }
-    ],
-    "name": "remove_stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "new_address",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "vega_public_key",
-        "type": "bytes32"
-      }
-    ],
-    "name": "transfer_stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
-    "name": "staking_token",
+    "name": "stakingToken",
     "outputs": [
       {
         "internalType": "address",
@@ -176,7 +106,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "stake_balance",
+    "name": "stakeBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -189,7 +119,7 @@
   },
   {
     "inputs": [],
-    "name": "total_staked",
+    "name": "totalStaked",
     "outputs": [
       {
         "internalType": "uint256",
