@@ -39,7 +39,7 @@ export const useRemoveStake = (
     )
   );
   const walletRemove = useTransaction(() =>
-    staking.remove_stake(
+    staking.removeStake(
       removeDecimal(payload.amount, appState.decimals),
       payload.vegaKey
     )

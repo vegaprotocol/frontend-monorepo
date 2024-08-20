@@ -27,12 +27,12 @@ export class StakingBridge {
     const key = prepend0x(vegaPublicKey);
     const res = await this.contract.estimateGas.removeStake(amount, key);
     const gasLimit = calcGasBuffer(res);
-    return this.contract.remove_stake(amount, key, {
+    return this.contract.removeStake(amount, key, {
       gasLimit,
     });
   }
 
-  async transfer_stake(
+  async transferStake(
     amount: string,
     newAddress: string,
     vegaPublicKey: string
