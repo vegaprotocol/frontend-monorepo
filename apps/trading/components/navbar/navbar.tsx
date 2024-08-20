@@ -9,6 +9,7 @@ import {
   useEnvNameMapping,
   useFeatureFlags,
 } from '@vegaprotocol/environment';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
@@ -45,6 +46,7 @@ export const Navbar = () => {
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
   const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
+  const { theme } = useThemeSwitcher();
 
   const status = useWallet((store) => store.status);
 
@@ -60,12 +62,16 @@ export const Navbar = () => {
         to="/"
         className={cn(
           'flex items-center px-3',
-          'bg-[image:var(--nav-logo-bg)]',
-          'bg-[color:var(--nav-accent-color)]'
+          'bg-[image:var(--nav-logo-bg-img-dark)] dark:bg-[image:var(--nav-logo-bg-img-dark)]',
+          'bg-[color:var(--nav-logo-bg-light)] dark:bg-[color:var(--nav-logo-bg-dark)]'
         )}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="Logo" src="/logo.svg" className="block w-4" />
+        <img
+          alt="Logo"
+          src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
+          className="block w-4"
+        />
       </NavLink>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
