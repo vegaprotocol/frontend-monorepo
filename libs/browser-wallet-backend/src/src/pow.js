@@ -1,9 +1,6 @@
 import inprocess from './pow/in-process.js';
-// import chromium from './pow/chromium.js';
-// import webworker from './pow/web-worker.js';
 
 const solver = (async () => {
-  // const pow = (await webworker()) || inprocess();
   const pow = inprocess();
 
   return pow;

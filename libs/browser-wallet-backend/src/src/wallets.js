@@ -6,6 +6,9 @@ import {
 } from '@vegaprotocol/crypto/bip-0039/mnemonic';
 import ConcurrentStorage from '../lib/concurrent-storage.js';
 import { TinyEventemitter } from '../lib/tiny-eventemitter.js';
+import { hex, string, concat } from '@vegaprotocol/crypto/buf';
+import { toMnemonic, checksum } from '@vegaprotocol/crypto/bip-0039/mnemonic';
+import { sha256 } from '@vegaprotocol/crypto/crypto';
 
 export class WalletCollection {
   constructor({ walletsStore, publicKeyIndexStore, keySortIndex }) {
@@ -176,6 +179,16 @@ export class WalletCollection {
 
       return key;
     });
+  }
+
+  async generateDerivedMnemonic({ hexStr, salt }) {
+    const messageBytes = hex(hexStr);
+    const bytes = await sha256(concat(string(salt), messageBytes));
+    const checksumedEntropy = await checksum(bytes);
+    const words = await toMnemonic(checksumedEntropy);
+    return {
+      derivedMnemonic: words,
+    };
   }
 
   async renameKey({ publicKey, name }) {
