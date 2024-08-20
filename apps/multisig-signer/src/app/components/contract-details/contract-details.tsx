@@ -15,7 +15,7 @@ export const ContractDetails = ({ config }: ContractDetailsProps) => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await multisig.get_valid_signer_count();
+        const res = await multisig.getValidSignerCount();
         setValidSignerCount(res);
       } catch (err) {
         Sentry.captureException(err);

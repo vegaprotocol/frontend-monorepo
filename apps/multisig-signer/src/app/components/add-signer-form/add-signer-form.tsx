@@ -42,8 +42,8 @@ export const AddSignerForm = () => {
   >(ADD_SIGNER_QUERY);
   const { perform, Dialog } = useEthereumTransaction<
     MultisigControl,
-    'add_signer'
-  >(multisig, 'add_signer');
+    'addSigner'
+  >(multisig, 'addSigner');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setBundleNotFound(false);
