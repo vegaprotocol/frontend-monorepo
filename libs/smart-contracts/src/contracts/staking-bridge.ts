@@ -23,9 +23,9 @@ export class StakingBridge {
     });
   }
 
-  async remove_stake(amount: string, vegaPublicKey: string) {
+  async removeStake(amount: string, vegaPublicKey: string) {
     const key = prepend0x(vegaPublicKey);
-    const res = await this.contract.estimateGas.remove_stake(amount, key);
+    const res = await this.contract.estimateGas.removeStake(amount, key);
     const gasLimit = calcGasBuffer(res);
     return this.contract.remove_stake(amount, key, {
       gasLimit,
@@ -38,24 +38,24 @@ export class StakingBridge {
     vegaPublicKey: string
   ) {
     const key = prepend0x(vegaPublicKey);
-    const res = await this.contract.estimateGas.transfer_stake(
+    const res = await this.contract.estimateGas.transferStake(
       amount,
       newAddress,
       key
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.transfer_stake(amount, newAddress, key, {
+    return this.contract.transferStake(amount, newAddress, key, {
       gasLimit,
     });
   }
 
-  staking_token() {
-    return this.contract.staking_token();
+  stakingToken() {
+    return this.contract.stakingToken();
   }
-  stake_balance(target: string, vegaPublicKey: string): Promise<EthersBigNum> {
-    return this.contract.stake_balance(target, prepend0x(vegaPublicKey));
+  stakeBalance(target: string, vegaPublicKey: string): Promise<EthersBigNum> {
+    return this.contract.stakeBalance(target, prepend0x(vegaPublicKey));
   }
-  total_staked() {
-    return this.contract.total_staked();
+  totalStaked() {
+    return this.contract.totalStaked();
   }
 }

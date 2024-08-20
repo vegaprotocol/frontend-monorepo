@@ -61,9 +61,7 @@ export const useGetWithdrawThreshold = () => {
       }
 
       try {
-        const res = await contract.get_withdraw_threshold(
-          asset.contractAddress
-        );
+        const res = await contract.getWithdrawThreshold(asset.contractAddress);
 
         const value = new BigNumber(addDecimal(res.toString(), asset.decimals));
         const threshold = value.isEqualTo(0)

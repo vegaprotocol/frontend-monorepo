@@ -56,7 +56,7 @@ export const useGetWithdrawDelay = () => {
         return undefined;
       }
       try {
-        const res = await contract?.default_withdraw_delay();
+        const res = await contract?.defaultWithdrawDelay();
 
         logger.info(`retrieved withdraw delay: ${res} seconds`);
         setCachedDelay(chainId, res.toNumber());
