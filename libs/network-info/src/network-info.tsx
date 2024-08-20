@@ -30,7 +30,7 @@ export const NetworkInfo = () => {
     <div data-testid="git-info">
       <p data-testid="git-network-data" className="mb-2">
         {t('Reading network data from')}{' '}
-        <Lozenge className="bg-gs-400">{API_NODE?.graphQLApiUrl}</Lozenge>.{' '}
+        <Lozenge>{API_NODE?.graphQLApiUrl}</Lozenge>.{' '}
         <Link onClick={() => setNodeSwitcher(true)}>{t('Edit')}</Link>
       </p>
       <p data-testid="git-eth-data" className="mb-2 break-all">

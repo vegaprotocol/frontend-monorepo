@@ -134,7 +134,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('node-row').within(() => {
         cy.getByTestId('node-url-0')
           .parent()
-          .should('have.text', 'http://localhost:3008/graphql');
+          .should('have.text', 'http://localhost:3008');
         cy.getByTestId('response-time-cell')
           .invoke('text')
           .should('not.be.empty')
