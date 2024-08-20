@@ -1,6 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import type { SliderProps } from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { SliderThumb } from './slider';
 
 export const LeverageSlider = (
@@ -17,11 +17,8 @@ export const LeverageSlider = (
         {...props}
         className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
       >
-        <SliderPrimitive.Track className="relative grow h-[4px]">
-          <span className="bg-gs-700  absolute left-2 right-2 top-0 bottom-0"></span>
-          <SliderPrimitive.Range className="absolute h-full">
-            <span className="absolute left-2 right-0 h-full bg-gs-100 "></span>
-          </SliderPrimitive.Range>
+        <SliderPrimitive.Track className="relative grow h-[4px] bg-surface-2">
+          <SliderPrimitive.Range className="absolute h-full bg-gs-500" />
           <span className="absolute top-[-3px] left-[8px] right-[8px]">
             {step &&
               new Array(Math.floor(props.max / step) + 1)
@@ -38,11 +35,11 @@ export const LeverageSlider = (
                   return (
                     <span
                       key={left}
-                      className={classNames(
+                      className={cn(
                         'absolute translate-x-[-50%] block w-[10px] h-[10px] rounded-full',
                         {
-                          'bg-gs-500 ': !lowerThanValue,
-                          'bg-gs-50': !!lowerThanValue,
+                          'bg-surface-3 ': !lowerThanValue,
+                          'bg-gs-500': !!lowerThanValue,
                         }
                       )}
                       style={{
@@ -72,7 +69,7 @@ export const LeverageSlider = (
                   props.onValueChange && props.onValueChange([labelValue])
                 }
                 key={labelValue}
-                className="absolute translate-x-[-50%] text-xs font-alpha mt-1 text-gs-100 "
+                className="absolute translate-x-[-50%] text-xs mt-1 text-surface-1-fg "
                 style={{
                   left,
                 }}

@@ -44,7 +44,7 @@ export const SidebarAccountsContainer = ({
                 setInnerView(undefined);
               }}
             >
-              <span className="text-muted inline-flex items-center">
+              <span className="text-surface-1-fg-muted inline-flex items-center">
                 <VegaIcon name={VegaIconNames.CHEVRON_LEFT} size={14} />
               </span>
               <span>{t(innerView[0])}</span>

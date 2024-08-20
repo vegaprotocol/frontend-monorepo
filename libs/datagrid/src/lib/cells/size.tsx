@@ -1,30 +1,24 @@
 import * as Schema from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export const Size = ({
   value,
   side,
   positionDecimalPlaces = 0,
-  forceTheme,
 }: {
   value: string;
   side?: Schema.Side;
   positionDecimalPlaces?: number;
-  forceTheme?: 'dark' | 'light';
 }) => {
   return (
     <span
       data-testid="size"
-      className={classNames('text-right', {
+      className={cn('text-right', {
         // BUY
         'text-market-green-600 dark:text-market-green':
-          side === Schema.Side.SIDE_BUY && !forceTheme,
-        'text-market-green-600':
-          side === Schema.Side.SIDE_BUY && forceTheme === 'light',
-        'text-market-green':
-          side === Schema.Side.SIDE_BUY && forceTheme === 'dark',
+          side === Schema.Side.SIDE_BUY,
         // SELL
         'text-market-red': side === Schema.Side.SIDE_SELL,
       })}

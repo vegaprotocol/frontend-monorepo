@@ -10,8 +10,8 @@ import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
   ButtonLink,
-  TradingDropdownCopyItem,
-  TradingDropdownItem,
+  DropdownMenuCopyItem,
+  DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -317,18 +317,18 @@ export const OrderListTable = memo<
                     </>
                   )}
                   <ActionsDropdown data-testid="order-actions-content">
-                    <TradingDropdownCopyItem
+                    <DropdownMenuCopyItem
                       value={data.id}
                       text={t('Copy order ID')}
                     />
-                    <TradingDropdownItem
+                    <DropdownMenuItem
                       key={'view-order'}
                       data-testid="view-order"
                       onClick={() => onView(data)}
                     >
                       <VegaIcon name={VegaIconNames.INFO} size={16} />
                       {t('View order details')}
-                    </TradingDropdownItem>
+                    </DropdownMenuItem>
                   </ActionsDropdown>
                 </div>
               );

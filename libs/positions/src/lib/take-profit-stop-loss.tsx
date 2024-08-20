@@ -1,7 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingButton as Button,
-  ButtonLink,
+  Button,
   FormGroup,
   TradingInput as Input,
   InputError,
@@ -10,6 +9,7 @@ import {
   Pill,
   VegaIcon,
   VegaIconNames,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import {
   SizeOverrideSetting,
@@ -56,7 +56,7 @@ import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 
 interface TakeProfitStopLossDialogProps {
@@ -472,7 +472,7 @@ const StopOrder = ({
   const t = useT();
   return (
     <div
-      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5  bg-gs-800 mb-0.5"
+      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5  bg-surface-1 mb-0.5"
       data-testid="stop-order"
     >
       <span>
@@ -667,15 +667,15 @@ export const TakeProfitStopLoss = ({
 
   return (
     <>
-      <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-gs-50">
-        <dt className="text-gs-100 ">{t('Symbol')}</dt>
+      <dl className="mb-6 grid grid-cols-2 gap-1 text-gs-50">
+        <dt className="text-surface-1-fg ">{t('Symbol')}</dt>
         <dd className="text-right" data-testid="instrument-code">
           {market?.tradableInstrument.instrument.code}
         </dd>
-        <dt className="text-gs-100 ">{t('Position')}</dt>
+        <dt className="text-surface-1-fg ">{t('Position')}</dt>
         <dd
           data-testid="open-volume"
-          className={classNames(
+          className={cn(
             'text-right',
             openVolume?.openVolume &&
               signedNumberCssClass(openVolume.openVolume)
@@ -690,7 +690,7 @@ export const TakeProfitStopLoss = ({
               )
             : '-'}
         </dd>
-        <dt className="text-gs-100 ">{t('Entry price')}</dt>
+        <dt className="text-surface-1-fg ">{t('Entry price')}</dt>
         <dd className="text-right" data-testid="average-entry-price">
           {openVolume?.averageEntryPrice &&
             market &&
@@ -699,7 +699,7 @@ export const TakeProfitStopLoss = ({
               market?.decimalPlaces
             )} ${quoteName}`}
         </dd>
-        <dt className="text-gs-100 ">{t('Mark price')}</dt>
+        <dt className="text-surface-1-fg ">{t('Mark price')}</dt>
         <dd className="text-right" data-testid="mark-price">
           {markPrice &&
             market &&
@@ -709,7 +709,7 @@ export const TakeProfitStopLoss = ({
             )} ${quoteName}`}
         </dd>
       </dl>
-      <hr className="border-gs-500 mb-6" />
+      <hr className="border-gs-300 dark:border-gs-700 mb-6" />
       <div className="mb-1 float-left">{t('Take profit')}</div>
       <div className="mb-6" data-testid="take-profit">
         {market && (
@@ -747,7 +747,7 @@ export const TakeProfitStopLoss = ({
           )
         )}
       </div>
-      <hr className="border-gs-500 mb-6" />
+      <hr className="border-gs-300 dark:border-gs-700 mb-6" />
       <div className="mb-1">{t('Stop loss')}</div>
       <div className="mb-6" data-testid="stop-loss">
         {market && (

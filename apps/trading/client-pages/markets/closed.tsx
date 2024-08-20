@@ -189,7 +189,7 @@ const ClosedMarketsDataGrid = ({
           );
         },
         cellClassRules: {
-          'text-danger': ({
+          'text-intent-danger': ({
             value,
             data,
           }: {

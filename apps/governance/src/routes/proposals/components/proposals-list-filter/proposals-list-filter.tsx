@@ -14,7 +14,7 @@ import {
   ProposalState,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import {
@@ -291,7 +291,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 'The number of found proposals matching the below criteria.'
               )}
             >
-              <span className="text-gs-200">({count})</span>
+              <span className="text-surface-2-fg">({count})</span>
             </Tooltip>
           )}
           <VegaIcon name={VegaIconNames.KEBAB} size={24} />
@@ -324,8 +324,8 @@ export const Filters = ({ count }: { count?: number }) => {
                 pt != null && (
                   <li
                     key={i + 'pt'}
-                    className={classNames(
-                      'bg-gs-600 text-xs px-1 py-[2px] rounded',
+                    className={cn(
+                      'bg-surface-3 text-xs px-1 py-[2px] rounded',
                       'flex items-center gap-1'
                     )}
                   >
@@ -350,8 +350,8 @@ export const Filters = ({ count }: { count?: number }) => {
           {filter.id && filter.id.length > 0 && (
             <li
               key={'id'}
-              className={classNames(
-                'bg-vega-blue-550 text-xs px-1 py-[2px] rounded',
+              className={cn(
+                'bg-blue-550 text-xs px-1 py-[2px] rounded',
                 'flex items-center gap-1'
               )}
             >
@@ -384,7 +384,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 {t('Include proposal states')}
               </span>
               <button
-                className="text-xs text-gs-200 hover:text-gs-50"
+                className="text-xs text-surface-2-fg hover:text-surface-3-fg"
                 onClick={() => {
                   proposalStates.forEach((ps) => filter.addState(ps));
                 }}
@@ -392,7 +392,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 select all
               </button>
               <button
-                className="text-xs text-gs-200 hover:text-gs-50"
+                className="text-xs text-surface-2-fg hover:text-surface-3-fg"
                 onClick={() => {
                   filter.clearStates();
                 }}
@@ -429,8 +429,8 @@ export const Filters = ({ count }: { count?: number }) => {
                       }
                     >
                       <span
-                        className={classNames({
-                          ' text-gs-100 cursor-help':
+                        className={cn({
+                          ' text-surface-1-fg cursor-help':
                             !filter.states.includes(ps) &&
                             !BASE_FILTER.states.includes(ps),
                         })}
@@ -451,7 +451,7 @@ export const Filters = ({ count }: { count?: number }) => {
               </span>
 
               <button
-                className="text-xs text-gs-200 hover:text-gs-50"
+                className="text-xs text-surface-2-fg hover:text-surface-3-fg"
                 onClick={() => {
                   proposalTypes.forEach((pt) => filter.addType(pt));
                 }}
@@ -459,7 +459,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 select all
               </button>
               <button
-                className="text-xs text-gs-200 hover:text-gs-50"
+                className="text-xs text-surface-2-fg hover:text-surface-3-fg"
                 onClick={() => {
                   filter.clearTypes();
                 }}
@@ -501,7 +501,7 @@ export const Filters = ({ count }: { count?: number }) => {
                 label="Filter text input"
                 labelFor="filter-input"
                 hideLabel={true}
-                className="relative"
+                className="relative flex"
               >
                 <Input
                   value={filter.id}
@@ -510,11 +510,11 @@ export const Filters = ({ count }: { count?: number }) => {
                   onChange={(e) => {
                     filter.setId(e.target.value);
                   }}
-                  className="text-xs !p-1 !pr-6"
+                  className="pr-6"
                 />
                 {filter.id && filter.id.length > 0 && (
                   <button
-                    className="absolute top-2 right-2"
+                    className="absolute top-3 right-2"
                     onClick={() => {
                       filter.setId('');
                     }}
@@ -523,7 +523,7 @@ export const Filters = ({ count }: { count?: number }) => {
                     <VegaIcon
                       name={VegaIconNames.CROSS}
                       size={12}
-                      className="text-gs-100 absolute top-0 right-0"
+                      className="text-surface-1-fg absolute top-0 right-0"
                     />
                   </button>
                 )}

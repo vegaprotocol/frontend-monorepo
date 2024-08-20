@@ -1,1 +1,1 @@
-export { AddTokenButton, AddTokenButtonLink } from './add-token-button';
+export { AddTokenButton, AddTokenAnchorButton } from './add-token-button';

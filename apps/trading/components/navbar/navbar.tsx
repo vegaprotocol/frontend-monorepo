@@ -14,7 +14,6 @@ import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
   VegaIconNames,
   VegaIcon,
-  VLogo,
   LanguageSelector,
   ThemeSwitcher,
   Icon,
@@ -24,7 +23,7 @@ import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
 import { Links } from '../../lib/links';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
 import { WalletIcon } from '../icons/wallet';
@@ -39,9 +38,8 @@ import { InBrowserWalletButton } from '../browser-wallet-button';
 import { BrowserWallet } from '../browser-wallet';
 
 type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
-type Theme = 'system' | 'yellow';
 
-export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
+export const Navbar = () => {
   const i18n = useI18n();
   const t = useT();
   // menu state for small screens
@@ -52,26 +50,22 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
 
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
-  const navTextClasses = 'text-gs-200 ';
-  const rootClasses = classNames(
-    navTextClasses,
+  const rootClasses = cn(
     'flex gap-3 h-10 pr-1',
-    'border-b border-default',
-    'bg-gs-800 '
+    'bg-surface-1 text-surface-1-fg-muted'
   );
   return (
     <N.Root className={rootClasses}>
       <NavLink
         to="/"
-        className={classNames('flex items-center px-3', {
-          'bg-vega-yellow text-black': theme === 'yellow',
-          'text-default': theme === 'system',
-        })}
-        style={{
-          background: theme === 'yellow' ? 'url(/testnet-logo-bg.png' : 'none',
-        }}
+        className={cn(
+          'flex items-center px-3',
+          'bg-[image:var(--nav-logo-bg)]',
+          'bg-[color:var(--nav-accent-color)]'
+        )}
       >
-        <VLogo className="w-4" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="Logo" src="/logo.svg" className="block w-4" />
       </NavLink>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
@@ -142,14 +136,13 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 z-20 bg-gs-900/50 lg:hidden"
+            className="fixed inset-0 z-20 bg-surface-2/50 lg:hidden"
             data-testid="navbar-menu-overlay"
           />
           <D.Content
-            className={classNames(
+            className={cn(
               'lg:hidden',
-              'border-default bg-gs-700  fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
-              navTextClasses
+              'border-gs-300 dark:border-gs-700 bg-surface-1 text-surface-1-fg-muted fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col'
             )}
             data-testid="navbar-menu-content"
           >
@@ -299,11 +292,11 @@ const NavbarTrigger = ({
       {...props}
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
-      className={classNames(
+      className={cn(
         'w-full lg:h-full lg:w-auto',
         'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
         'text-lg lg:text-sm',
-        'hover:text-gs-100 '
+        'hover:text-surface-1-fg'
       )}
     >
       {children}
@@ -331,10 +324,10 @@ const NavbarLink = ({
       <NavLink
         to={to}
         end={end}
-        className={classNames(
+        className={cn(
           'block flex-col justify-center lg:flex lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-gs-100 '
+          'hover:text-surface-1-fg'
         )}
         onClick={onClick}
       >
@@ -342,24 +335,24 @@ const NavbarLink = ({
           const borderClasses = {
             'border-b-2': true,
             'border-transparent': !isActive,
-            'border-vega-yellow lg:group-[.navbar-content]:border-transparent':
+            'border-[color:var(--nav-accent-color)] lg:group-[.navbar-content]:border-transparent':
               isActive,
           };
           return (
             <>
               <span
-                className={classNames(
+                className={cn(
                   'inline-flex gap-1 items-center lg:border-0',
                   borderClasses,
                   {
-                    'text-gs-50 ': isActive,
+                    'text-surface-1-fg ': isActive,
                   }
                 )}
               >
                 {children}
               </span>
               <span
-                className={classNames(
+                className={cn(
                   'absolute bottom-0 left-0 hidden h-0 w-full lg:block',
                   borderClasses
                 )}
@@ -391,11 +384,10 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
   return (
     <N.Content
       {...props}
-      className={classNames(
+      className={cn(
         'navbar-content group',
         'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
-        'lg:bg-gs-700 lg:',
-        'border-gs-500  lg:rounded lg:border'
+        'bg-surface-2 border-gs-300 dark:border-gs-700 lg:rounded lg:border'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
@@ -419,10 +411,10 @@ const NavbarLinkExternal = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className={classNames(
+        className={cn(
           'flex items-center gap-2 lg:h-full',
           'px-6 py-2 text-lg lg:p-0 lg:text-sm',
-          'hover:text-gs-100 '
+          'hover:text-surface-1-fg'
         )}
         onClick={onClick}
         target="_blank"
@@ -449,7 +441,7 @@ const BurgerIcon = () => (
 const NavbarListDivider = () => {
   return (
     <div className="px-6 py-2 lg:px-0" role="separator">
-      <div className="bg-gs-500  h-px w-full lg:h-full lg:w-px" />
+      <div className="bg-surface-3  h-px w-full lg:h-full lg:w-px" />
     </div>
   );
 };
@@ -461,10 +453,9 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       {...props}
-      className={classNames(
-        'flex h-8 w-8 items-center rounded p-1 lg:hidden ',
-        'hover:bg-gs-500 ',
-        'hover:text-gs-50 '
+      className={cn(
+        'flex h-8 w-8 items-center rounded p-1 lg:hidden',
+        'hover:text-surface-1-fg'
       )}
     />
   );

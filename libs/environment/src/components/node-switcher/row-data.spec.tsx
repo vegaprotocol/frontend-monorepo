@@ -250,9 +250,9 @@ describe('RowData', () => {
       const blockHeightCell = screen.getByTestId('block-height-cell');
       const subscriptionCell = screen.getByTestId('subscription-cell');
       expect(responseCell).toHaveTextContent('n/a');
-      expect(responseCell).toHaveClass('text-danger');
+      expect(responseCell).toHaveClass('text-intent-danger');
       expect(blockHeightCell).toHaveTextContent('n/a');
-      expect(blockHeightCell).toHaveClass('text-danger');
+      expect(blockHeightCell).toHaveClass('text-intent-danger');
       expect(subscriptionCell).toHaveTextContent('No');
       expect(
         screen.getByRole('radio', {
@@ -281,7 +281,7 @@ describe('RowData', () => {
     });
 
     expect(screen.getByTestId('block-height-cell')).not.toHaveClass(
-      'text-danger'
+      'text-intent-danger'
     );
 
     rerender(
@@ -292,7 +292,9 @@ describe('RowData', () => {
       )
     );
 
-    expect(screen.getByTestId('block-height-cell')).toHaveClass('text-danger');
+    expect(screen.getByTestId('block-height-cell')).toHaveClass(
+      'text-intent-danger'
+    );
   });
 
   it('doesnt render the radio if its the custom row', () => {

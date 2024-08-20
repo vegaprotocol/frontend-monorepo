@@ -1,5 +1,5 @@
 import { GetStarted } from './get-started';
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useOnboardingStore } from '../../stores/onboarding';
@@ -43,7 +43,7 @@ export const WelcomeDialogContent = () => {
               )}
             />
           </ul>
-          <TradingButton
+          <Button
             onClick={() => {
               setDialog('inactive');
               dismiss();
@@ -52,7 +52,7 @@ export const WelcomeDialogContent = () => {
             data-testid="browse-markets-button"
           >
             {t('Explore')}
-          </TradingButton>
+          </Button>
         </div>
         <div className="flex sm:w-1/2 grow">
           <GetStarted lead={lead} />
@@ -76,7 +76,7 @@ const ListItemContent = ({
       <div className="pt-1 shrink-0">{icon}</div>
       <div>
         <h3 className="mb-2 text-lg leading-snug">{title}</h3>
-        <p className="text-sm text-secondary">{text}</p>
+        <p className="text-sm text-surface-0-fg-muted">{text}</p>
       </div>
     </li>
   );

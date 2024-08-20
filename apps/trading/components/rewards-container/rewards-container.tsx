@@ -23,7 +23,7 @@ import {
 } from '../../lib/hooks/__generated__/Rewards';
 import {
   Tooltip,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -41,7 +41,7 @@ import {
 import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
@@ -263,7 +263,7 @@ export const RewardsContainer = () => {
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
-            className={classNames({
+            className={cn({
               'lg:col-span-6 xl:col-span-3':
                 activityStreakBenefitTiers.tiers.length <= 4,
               'xl:col-span-6': activityStreakBenefitTiers.tiers.length > 4,
@@ -280,7 +280,7 @@ export const RewardsContainer = () => {
         {pubKey && vestingBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Reward Hoarder Bonus')}
-            className={classNames({
+            className={cn({
               'lg:col-span-6 xl:col-span-3':
                 vestingBenefitTiers.tiers.length <= 4,
               'xl:col-span-6': vestingBenefitTiers.tiers.length > 4,
@@ -373,7 +373,7 @@ export const RewardPot = ({
   if (!pubKey) {
     return (
       <div className="pt-4">
-        <p className="text-muted text-sm">{t('Not connected')}</p>
+        <p className="text-sm">{t('Not connected')}</p>
       </div>
     );
   }
@@ -441,7 +441,7 @@ export const RewardPot = ({
                     'Click to move all vested rewards for this key into its general account'
                   )}
                 >
-                  <TradingButton
+                  <Button
                     onClick={() => {
                       if (!rewardAsset) return;
                       const transfer = normalizeTransfer(
@@ -456,18 +456,18 @@ export const RewardPot = ({
                       );
                       create({ transfer });
                     }}
-                    size="small"
+                    size="sm"
                     data-testid="redeem-rewards-button"
                   >
                     {t('Redeem rewards')}
-                  </TradingButton>
+                  </Button>
                 </Tooltip>
               </div>
             )}
           </div>
         </>
       ) : (
-        <p className="text-muted text-sm">{t('No rewards')}</p>
+        <p className="text-surface-2-fg-muted text-sm">{t('No rewards')}</p>
       )}
     </div>
   );
@@ -527,7 +527,7 @@ export const Multipliers = ({
   if (!pubKey) {
     return (
       <div className="pt-4">
-        <p className="text-muted text-sm">{t('Not connected')}</p>
+        <p className="text-surface-2-fg-muted text-sm">{t('Not connected')}</p>
       </div>
     );
   }

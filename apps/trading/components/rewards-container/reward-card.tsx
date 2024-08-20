@@ -4,14 +4,14 @@ import {
   formatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   type VegaIconSize,
+  AnchorButton,
   Tooltip,
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -54,19 +54,11 @@ import flatten from 'lodash/flatten';
 import sum from 'lodash/sum';
 
 const Tick = () => (
-  <VegaIcon
-    name={VegaIconNames.TICK}
-    size={12}
-    className="text-vega-green-500"
-  />
+  <VegaIcon name={VegaIconNames.TICK} size={12} className="text-green-500" />
 );
 
 const Cross = () => (
-  <VegaIcon
-    name={VegaIconNames.CROSS}
-    size={12}
-    className="text-vega-red-500"
-  />
+  <VegaIcon name={VegaIconNames.CROSS} size={12} className="text-red-500" />
 );
 
 /** Eligibility requirements for rewards */
@@ -101,7 +93,7 @@ const GroupCard = ({
   return (
     <div data-reward-card>
       <div
-        className={classNames(
+        className={cn(
           'bg-gradient-to-r col-span-full p-px lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
@@ -109,16 +101,16 @@ const GroupCard = ({
         data-testid="active-rewards-card"
       >
         <div
-          className={classNames(
+          className={cn(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-surface-1  h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
           <div
-            className={classNames(
+            className={cn(
               'flex justify-between gap-2',
-              'pb-3 border-b-[0.5px]  border-gs-500'
+              'pb-3 border-b-[0.5px]  border-gs-300 dark:border-gs-700'
             )}
           >
             {/** ENTITY SCOPE */}
@@ -127,7 +119,7 @@ const GroupCard = ({
                 <>
                   <EntityIcon entityScope={entityScope} />
                   <span
-                    className="text-muted text-xs"
+                    className="text-surface-1-fg-muted text-xs"
                     data-testid="entity-scope"
                   >
                     {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
@@ -142,12 +134,10 @@ const GroupCard = ({
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
                 <span>
                   {t('Up to')}{' '}
-                  <span className="font-glitch" data-testid="reward-value">
-                    {rewardAmount}
-                  </span>
+                  <span data-testid="reward-value">{rewardAmount}</span>
                 </span>
 
-                <span className="font-alpha" data-testid="reward-asset">
+                <span data-testid="reward-asset">
                   <AssetSymbol asset={transferAsset} />
                 </span>
               </h3>
@@ -158,7 +148,7 @@ const GroupCard = ({
                 <>
                   <DistributionStrategyIcon strategy={distributionStrategy} />
                   <span
-                    className="text-muted text-xs"
+                    className="text-surface-1-fg-muted text-xs"
                     data-testid="distribution-strategy"
                   >
                     {DistributionStrategyMapping[distributionStrategy]}
@@ -168,20 +158,20 @@ const GroupCard = ({
             </div>
           </div>
 
-          <div className={classNames('flex flex-col gap-3 h-full')}>
+          <div className={cn('flex flex-col gap-3 h-full')}>
             {/** DISPATCH METRIC */}
             <h4 data-testid="dispatch-metric-info" className="text-lg">
               {DispatchMetricLabels[dispatchMetric]}
             </h4>
             {/** DISPATCH METRIC DESCRIPTION */}
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t(DispatchMetricDescription[dispatchMetric])}
             </p>
           </div>
           <div>
             {/** REQUIREMENTS */}
             {dispatchStrategy && (
-              <div className="pt-4 border-t border-default">
+              <div className="pt-4 border-t border-gs-300 dark:border-gs-700">
                 <RewardRequirements
                   dispatchStrategy={dispatchStrategy}
                   dispatchAsset={transferAsset}
@@ -191,13 +181,13 @@ const GroupCard = ({
             )}
           </div>
           <div>
-            <TradingAnchorButton
+            <AnchorButton
               intent={null}
-              className={classNames(CardColourStyles[colour].btn, 'w-full')}
+              className={cn(CardColourStyles[colour].btn, 'w-full')}
               href={link}
             >
               {t('View reward details')}
-            </TradingAnchorButton>
+            </AnchorButton>
           </div>
         </div>
       </div>
@@ -243,7 +233,7 @@ const RewardCard = ({
   return (
     <div data-reward-card className="min-h-[366px] h-full">
       <div
-        className={classNames(
+        className={cn(
           'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
@@ -251,22 +241,25 @@ const RewardCard = ({
         data-testid="active-rewards-card"
       >
         <div
-          className={classNames(
+          className={cn(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4 flex flex-col gap-4'
+            'bg-gradient-to-b bg-surface-2  h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
-            className={classNames(
+            className={cn(
               'flex justify-between gap-4',
-              'pb-4 border-b-[0.5px]  border-gs-500'
+              'pb-4 border-b-[0.5px]  border-gs-300 dark:border-gs-700'
             )}
           >
             {/** ENTITY SCOPE */}
             <div className="flex flex-col gap-2 items-center text-center">
               <EntityIcon entityScope={dispatchStrategy.entityScope} />
               {dispatchStrategy.entityScope && (
-                <span className="text-muted text-xs" data-testid="entity-scope">
+                <span
+                  className="text-surface-1-fg-muted text-xs"
+                  data-testid="entity-scope"
+                >
                   {EntityScopeLabelMapping[dispatchStrategy.entityScope] ||
                     t('Unspecified')}
                 </span>
@@ -277,11 +270,8 @@ const RewardCard = ({
             <div className="flex flex-col gap-2 items-center text-center">
               {/** AMOUNT */}
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
-                <span className="font-glitch" data-testid="reward-value">
-                  {rewardAmount}
-                </span>
-
-                <span className="font-alpha" data-testid="reward-asset">
+                <span data-testid="reward-value">{rewardAmount}</span>
+                <span data-testid="reward-asset">
                   <AssetSymbol asset={transferAsset as AssetFieldsFragment} />
                 </span>
               </h3>
@@ -316,7 +306,9 @@ const RewardCard = ({
               {/** ENDS IN or STARTS IN */}
               {startsIn ? (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Starts in')} </span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Starts in')}{' '}
+                  </span>
                   <span data-testid="starts-in" data-startsin={startsIn}>
                     {t('numberEpochs', '{{count}} epochs', {
                       count: startsIn,
@@ -325,7 +317,9 @@ const RewardCard = ({
                 </span>
               ) : endsIn !== undefined ? (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Ends in')} </span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Ends in')}{' '}
+                  </span>
                   <span data-testid="ends-in" data-endsin={endsIn}>
                     {endsIn > 0
                       ? t('numberEpochs', '{{count}} epochs', {
@@ -337,7 +331,9 @@ const RewardCard = ({
               ) : null}
               {/** WINDOW LENGTH */}
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Assessed over')}</span>
+                <span className="text-surface-1-fg-muted text-xs">
+                  {t('Assessed over')}
+                </span>
                 <span data-testid="assessed-over">
                   {t('numberEpochs', '{{count}} epochs', {
                     count: dispatchStrategy.windowLength,
@@ -347,7 +343,9 @@ const RewardCard = ({
               {/** PAYS EVERY */}
               {dispatchStrategy.transferInterval && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Pays every')}</span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Pays every')}
+                  </span>
                   <span data-testid="pays-every">
                     {t('numberEpochs', '{{count}} epochs', {
                       count: dispatchStrategy.transferInterval,
@@ -358,7 +356,9 @@ const RewardCard = ({
               {/** CAPPED AT */}
               {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Capped at')}</span>
+                  <span className="text-surface-1-fg-muted text-xs">
+                    {t('Capped at')}
+                  </span>
                   <Tooltip
                     description={t(
                       'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
@@ -378,7 +378,7 @@ const RewardCard = ({
 
             {/** DISPATCH METRIC DESCRIPTION */}
             {dispatchStrategy?.dispatchMetric && (
-              <p className="text-muted text-sm">
+              <p className="text-surface-1-fg-muted text-sm">
                 {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
               </p>
             )}
@@ -386,7 +386,7 @@ const RewardCard = ({
 
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
-            <div className="pt-4 border-t-[0.5px]  border-gs-500">
+            <div className="pt-4 border-t-[0.5px]  border-gs-300 dark:border-gs-700">
               <RewardRequirements
                 dispatchStrategy={dispatchStrategy}
                 dispatchAsset={dispatchAsset}
@@ -538,7 +538,7 @@ const RewardRequirements = ({
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
       {/** SCOPE */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {entityLabel
             ? t('{{entity}} scope', {
                 entity: entityLabel,
@@ -555,7 +555,7 @@ const RewardRequirements = ({
 
       {/** STAKING REQUIREMENT */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {t('Staked VEGA')}
         </dt>
         <dd
@@ -588,7 +588,7 @@ const RewardRequirements = ({
 
       {/** AVERAGE POSITION REQUIREMENT */}
       <div className="flex flex-col gap-1">
-        <dt className="flex items-center gap-1 text-muted">
+        <dt className="flex items-center gap-1 text-surface-1-fg-muted">
           {t('Average position')}
         </dt>
         <Tooltip
@@ -788,45 +788,45 @@ const CardColourStyles: Record<
   { gradientClassName: string; mainClassName: string; btn: string }
 > = {
   [CardColour.BLUE]: {
-    gradientClassName: 'from-vega-blue-500 to-vega-green-400',
-    mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-blue-500 from-50% to-vega-green-400 !text-white',
+    gradientClassName: 'from-blue-500 to-green-400',
+    mainClassName: 'from-blue-400 dark:from-blue-600 to-20%',
+    btn: '!bg-gradient-to-br from-blue-500 from-50% to-green-400 !text-white',
   },
   [CardColour.GREEN]: {
-    gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
-    mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-green-500 from-50% to-vega-yellow-400 !text-black',
+    gradientClassName: 'from-green-500 to-yellow-500',
+    mainClassName: 'from-green-400 dark:from-green-600 to-20%',
+    btn: '!bg-gradient-to-br from-green-500 from-50% to-yellow-400 !text-black',
   },
   [CardColour.GREY]: {
     gradientClassName: 'from-gs-500 to-gs-200',
-    mainClassName: 'from-gs-400 to-20%',
+    mainClassName: 'from-surface-1 to-20%',
     btn: '!bg-gradient-to-br from-50% to-gs-200 !text-white',
   },
   [CardColour.ORANGE]: {
-    gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
-    mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-orange-500 from-50% to-vega-pink-600 !text-black',
+    gradientClassName: 'from-orange-500 to-pink-400',
+    mainClassName: 'from-orange-400 dark:from-orange-600 to-20%',
+    btn: '!bg-gradient-to-br from-orange-500 from-50% to-pink-600 !text-black',
   },
   [CardColour.PINK]: {
-    gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
-    mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-pink-500 from-50% to-vega-purple-600 !text-white',
+    gradientClassName: 'from-pink-500 to-purple-400',
+    mainClassName: 'from-pink-400 dark:from-pink-600 to-20%',
+    btn: '!bg-gradient-to-br from-pink-500 from-50% to-purple-600 !text-white',
   },
   [CardColour.PURPLE]: {
-    gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-    mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-purple-500 from-50% to-vega-blue-600 !text-white',
+    gradientClassName: 'from-purple-500 to-blue-400',
+    mainClassName: 'from-purple-400 dark:from-purple-600 to-20%',
+    btn: '!bg-gradient-to-br from-purple-500 from-50% to-blue-600 !text-white',
   },
   [CardColour.WHITE]: {
     gradientClassName:
-      'from-gs-600 dark:from-gs-900 to-vega-yellow-500 dark:to-vega-yellow-400',
+      'from-gs-600 dark:from-gs-900 to-yellow-500 dark:to-yellow-400',
     mainClassName: 'from-white dark:from-gs-100 to-20%',
-    btn: '!bg-gradient-to-br from-white from-50% to-vega-yellow-500 !text-black',
+    btn: '!bg-gradient-to-br from-white from-50% to-yellow-500 !text-black',
   },
   [CardColour.YELLOW]: {
-    gradientClassName: 'from-vega-yellow-500 to-vega-orange-400',
-    mainClassName: 'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-yellow-500 from-50% to-vega-orange-400 !text-black',
+    gradientClassName: 'from-yellow-500 to-orange-400',
+    mainClassName: 'from-yellow-400 dark:from-yellow-600 to-20%',
+    btn: '!bg-gradient-to-br from-yellow-500 from-50% to-orange-400 !text-black',
   },
 };
 
@@ -866,7 +866,7 @@ const CardIcon = ({
 }) => {
   return (
     <Tooltip description={<span>{tooltip}</span>}>
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-700 dark:border-gs-300">
         <VegaIcon name={iconName} size={size} />
       </span>
     </Tooltip>
@@ -896,7 +896,7 @@ const EntityIcon = ({
         entityScope ? <span>{EntityScopeMapping[entityScope]}</span> : undefined
       }
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon
           name={EntityScopeIconMap[entityScope] || VegaIconNames.QUESTION_MARK}
           size={size}
@@ -923,7 +923,7 @@ const DistributionStrategyIcon = ({
       }
       underline={true}
     >
-      <span className="flex items-center p-2 rounded-full border border-gs-600">
+      <span className="flex items-center p-2 rounded-full border border-gs-300">
         <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
       </span>
     </Tooltip>
@@ -1112,7 +1112,7 @@ const DistributionDelay = ({ value = 0 }: { value?: number | string }) => {
         )}
       />
       <span
-        className="text-muted text-xs whitespace-nowrap"
+        className="text-surface-1-fg-muted text-xs whitespace-nowrap"
         data-testid="locked-for"
       >
         {typeof value === 'number'

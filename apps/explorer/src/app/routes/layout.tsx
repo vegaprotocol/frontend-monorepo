@@ -10,7 +10,7 @@ import {
   BreadcrumbsContainer,
   ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   isRouteErrorResponse,
   Link,
@@ -52,7 +52,7 @@ export const Layout = () => {
   return (
     <>
       <div
-        className={classNames(
+        className={cn(
           'min-h-screen',
           'mx-auto my-0',
           'grid grid-rows-[auto_1fr_auto] grid-cols-1',
@@ -104,7 +104,7 @@ export const ErrorBoundary = () => {
     <>
       <BackgroundVideo className="brightness-50" />
       <div
-        className={classNames(
+        className={cn(
           'max-w-[620px] p-2 mt-[10vh]',
           'mx-auto my-0',
           'antialiased text-white',
@@ -114,7 +114,7 @@ export const ErrorBoundary = () => {
       >
         <div className="flex gap-4">
           <div>{GHOST}</div>
-          <h1 className="text-[2.7rem] font-alpha calt break-words uppercase">
+          <h1 className="text-[2.7rem] font-alt calt break-words uppercase">
             {errorTitle}
           </h1>
         </div>

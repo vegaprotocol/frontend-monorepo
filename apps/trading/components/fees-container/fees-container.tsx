@@ -24,7 +24,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getTierGradient } from '../helpers/tiers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
@@ -141,7 +141,7 @@ export const FeesContainer = () => {
                 />
               ) : (
                 <p
-                  className="text-muted pt-3 text-sm"
+                  className="text-surface-1-fg-muted pt-3 text-sm"
                   data-testid="no-volume-discount"
                 >
                   {t('No volume discount program active')}
@@ -165,7 +165,7 @@ export const FeesContainer = () => {
                 />
               ) : (
                 <p
-                  className="text-muted pt-3 text-sm"
+                  className="text-surface-1-fg-muted pt-3 text-sm"
                   data-testid="no-referral-program"
                 >
                   {t('No referral program active')}
@@ -281,7 +281,7 @@ export const TradingFees = ({
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
         <CardTable>
-          <tr className="text-default" data-testid="total-fee-before-discount">
+          <tr data-testid="total-fee-before-discount">
             <CardTableTH>{t('Taker fee before discount')}</CardTableTH>
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
@@ -481,7 +481,7 @@ const VolumeTiers = ({
   const t = useT();
   if (!tiers.length) {
     return (
-      <p className="text-muted text-sm">
+      <p className="text-surface-1-fg-muted text-sm">
         {t('No volume discount program active')}
       </p>
     );
@@ -490,7 +490,7 @@ const VolumeTiers = ({
   return (
     <div>
       <SimpleTable
-        className="bg-gs-0"
+        className="bg-surface-0"
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
@@ -541,10 +541,7 @@ const VolumeTiers = ({
               <span className="md:hidden">-</span>
             ),
             indicator: indicator,
-            className: classNames(
-              getTierGradient(i + 1, tiers.length),
-              'text-xs'
-            ),
+            className: cn(getTierGradient(i + 1, tiers.length), 'text-xs'),
           };
         })}
       />
@@ -573,14 +570,16 @@ const ReferralTiers = ({
 
   if (!tiers.length) {
     return (
-      <p className="text-muted text-sm">{t('No referral program active')}</p>
+      <p className="text-surface-1-fg-muted text-sm">
+        {t('No referral program active')}
+      </p>
     );
   }
 
   return (
     <div>
       <SimpleTable
-        className="bg-gs-0"
+        className="bg-surface-0"
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
@@ -627,7 +626,7 @@ const ReferralTiers = ({
             <YourTier testId={`your-referral-tier-${i}`} />
           ) : referralVolumeInWindow >= requiredVolume &&
             epochsInSet < tier.minimumEpochs ? (
-            <span className="text-muted text-xs">
+            <span className="text-surface-1-fg-muted text-xs">
               Unlocks in {tier.minimumEpochs - epochsInSet} epochs
             </span>
           ) : null;
@@ -647,10 +646,7 @@ const ReferralTiers = ({
             volume: formatNumber(tier.minimumRunningNotionalTakerVolume),
             epochs: tier.minimumEpochs,
             indicator,
-            className: classNames(
-              getTierGradient(i + 1, tiers.length),
-              'text-xs'
-            ),
+            className: cn(getTierGradient(i + 1, tiers.length), 'text-xs'),
           };
         })}
       />
@@ -679,7 +675,7 @@ const ReferrerInfo = ({ code }: { code?: string }) => {
   const t = useT();
 
   return (
-    <div className="text-gs-200 pt-3 text-sm">
+    <div className="text-surface-2-fg pt-3 text-sm">
       <p className="mb-1">
         {t('Connected key is owner of the referral set')}
         {code && (

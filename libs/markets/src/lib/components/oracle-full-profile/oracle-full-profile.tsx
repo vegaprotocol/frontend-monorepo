@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useOracleStatuses } from '../../hooks';
 import type { IconName } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { getLinkIcon, useVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import ReactMarkdown from 'react-markdown';
@@ -34,13 +34,13 @@ export const OracleProfileTitle = ({
     <span className="w-full flex gap-1 items-center justify-between pr-6">
       <span className="flex gap-1 items-center">
         <span
-          className={classNames(
+          className={cn(
             {
               'text-gs-50': intent === Intent.None,
-              'text-vega-blue': intent === Intent.Primary,
-              'text-vega-green dark:text-vega-green': intent === Intent.Success,
+              'text-blue': intent === Intent.Primary,
+              'text-green dark:text-green': intent === Intent.Success,
               'dark:text-yellow text-yellow-600': intent === Intent.Warning,
-              'text-vega-red': intent === Intent.Danger,
+              'text-red': intent === Intent.Danger,
             },
             'flex items-start p-1 align-text-bottom'
           )}
@@ -49,7 +49,7 @@ export const OracleProfileTitle = ({
         </span>
         <span>
           {parentProvider && (
-            <Lozenge variant={Intent.Primary}>{t('Updated')}</Lozenge>
+            <Lozenge intent={Intent.Primary}>{t('Updated')}</Lozenge>
           )}
           {provider.url && (
             <span>

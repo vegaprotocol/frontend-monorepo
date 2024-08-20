@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAddAssetToWallet } from '../../hooks/use-add-asset-to-wallet';
 
-export const AddTokenButtonLink = ({
+export const AddTokenAnchorButton = ({
   address,
   symbol,
   decimals,

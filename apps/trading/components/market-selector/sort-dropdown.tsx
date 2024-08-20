@@ -1,14 +1,14 @@
 import {
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItemIndicator,
-  TradingDropdownRadioGroup,
-  TradingDropdownRadioItem,
-  TradingDropdownTrigger,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { MarketSelectorButton } from './market-selector-button';
 import {
   type ISortOption,
   SortOption,
@@ -47,23 +47,24 @@ export const SortDropdown = ({
   ];
 
   return (
-    <TradingDropdown
+    <DropdownMenu
       trigger={
-        <TradingDropdownTrigger data-testid="sort-trigger">
-          <MarketSelectorButton>
+        <DropdownMenuTrigger data-testid="sort-trigger">
+          <Button size="sm" className="justify-between">
             {SortTypeMapping[currentSort]}
-          </MarketSelectorButton>
-        </TradingDropdownTrigger>
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+          </Button>
+        </DropdownMenuTrigger>
       }
     >
-      <TradingDropdownContent>
-        <TradingDropdownRadioGroup
+      <DropdownMenuContent>
+        <DropdownMenuRadioGroup
           value={currentSort}
           onValueChange={(value) => onSelect(value as ISortOption)}
         >
           {options.map((option) => {
             return (
-              <TradingDropdownRadioItem
+              <DropdownMenuRadioItem
                 inset
                 key={option}
                 value={option}
@@ -73,12 +74,12 @@ export const SortDropdown = ({
                   <VegaIcon name={SortIconMapping[option]} />{' '}
                   {SortTypeMapping[option]}
                 </span>
-                <TradingDropdownItemIndicator />
-              </TradingDropdownRadioItem>
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
             );
           })}
-        </TradingDropdownRadioGroup>
-      </TradingDropdownContent>
-    </TradingDropdown>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

@@ -1,7 +1,7 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Toggle } from '../toggle';
 import { useT } from '../../use-t';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 export const ThemeSwitcher = ({
@@ -17,8 +17,8 @@ export const ThemeSwitcher = ({
     <button
       type="button"
       onClick={() => setTheme()}
-      className={classNames(
-        'flex justify-center items-center hover:bg-gs-500 rounded-full w-7 h-7',
+      className={cn(
+        'flex justify-center items-center hover:bg-surface-3 rounded-full w-7 h-7',
         className
       )}
       data-testid="theme-switcher"

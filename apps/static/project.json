@@ -18,12 +18,6 @@
         "main": "apps/static/src/main.ts",
         "tsConfig": "apps/static/tsconfig.app.json",
         "assets": ["apps/static/src/favicon.ico", "apps/static/src/assets"],
-        "styles": [
-          {
-            "input": "apps/static/src/fonts.scss",
-            "bundleName": "fonts"
-          }
-        ],
         "scripts": []
       },
       "configurations": {

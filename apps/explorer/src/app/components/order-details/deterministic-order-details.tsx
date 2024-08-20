@@ -70,11 +70,11 @@ const DeterministicOrderDetails = ({
             <span className="mx-5 text-base">@</span>
             <PriceInMarket price={o.price} marketId={o.market.id} />
           </h2>
-          <p className="text-gs-100">
+          <p className="text-surface-1-fg">
             In <MarketLink id={o.market.id} /> at <Time date={o.createdAt} />.
           </p>
           {o.peggedOrder ? (
-            <p className="text-gs-100">
+            <p className="text-surface-1-fg">
               {t('Price peg')}:{' '}
               <TxOrderPeggedReference
                 side={o.side}
@@ -85,7 +85,7 @@ const DeterministicOrderDetails = ({
             </p>
           ) : null}
           {o.reference ? (
-            <p className="text-gs-100 mt-4">
+            <p className="text-surface-1-fg mt-4">
               <span>{t('Reference')}</span>: {o.reference}
             </p>
           ) : null}
@@ -94,7 +94,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Status')}
               </h2>
-              <h5 className="text-lg font-medium text-gs-100 mb-0 capitalize">
+              <h5 className="text-lg font-medium text-surface-1-fg mb-0 capitalize">
                 {statusText[o.status]}
               </h5>
             </div>
@@ -103,7 +103,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Size')}
               </h2>
-              <h5 className="text-lg font-medium text-gs-100 mb-0">
+              <h5 className="text-lg font-medium text-surface-1-fg mb-0">
                 <SizeInMarket size={o.size} marketId={o.market.id} />
               </h5>
             </div>
@@ -112,7 +112,7 @@ const DeterministicOrderDetails = ({
               <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Version')}
               </h2>
-              <h5 className="text-lg font-medium text-gs-100 mb-0">
+              <h5 className="text-lg font-medium text-surface-1-fg mb-0">
                 {o.version}
               </h5>
             </div>
@@ -121,7 +121,7 @@ const DeterministicOrderDetails = ({
                 <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                   {t('Type')}
                 </h2>
-                <h5 className="text-lg font-medium text-gs-100 mb-0">
+                <h5 className="text-lg font-medium text-surface-1-fg mb-0">
                   {OrderTypeMapping[o.type]}
                 </h5>
               </div>

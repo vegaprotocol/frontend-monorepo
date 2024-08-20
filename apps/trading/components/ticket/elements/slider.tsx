@@ -1,5 +1,5 @@
 import * as SliderPrimitives from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ComponentProps } from 'react';
 
 const markers = [0, 25, 50, 75, 100];
@@ -9,24 +9,24 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
     <div className="flex flex-col gap-0.5">
       <SliderPrimitives.Root
         {...props}
-        className={classNames(
+        className={cn(
           'relative flex items-center select-none touch-none w-full height-10 py-1.5',
           {
             'opacity-50': props.disabled,
           }
         )}
       >
-        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded bg-gs-700 ">
-          <SliderPrimitives.Range className="absolute h-1 bg-gs-100 " />
+        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded bg-surface-2">
+          <SliderPrimitives.Range className="absolute h-1 bg-gs-500" />
           {markers.map((m) => {
             return (
               <button
                 key={m}
                 type="button"
-                className={classNames('relative -top-1 w-3 h-3 rounded-full', {
-                  'bg-gs-100 ':
-                    props.value !== undefined && props.value[0] >= m,
-                  'bg-gs-500 ': props.value === undefined || props.value[0] < m,
+                className={cn('relative -top-1 w-3 h-3 rounded-full', {
+                  'bg-gs-500': props.value !== undefined && props.value[0] >= m,
+                  'bg-surface-3':
+                    props.value === undefined || props.value[0] < m,
                 })}
                 disabled={props.disabled}
                 onClick={() => {
@@ -39,7 +39,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
             );
           })}
         </SliderPrimitives.Track>
-        <SliderPrimitives.Thumb className="group cursor-pointer relative block w-5 h-5 border-2 bg-gs-100  rounded-full border-gs-900 ">
+        <SliderPrimitives.Thumb className="group cursor-pointer relative block w-5 h-5 border-2 bg-gs-700 dark:bg-gs-300 rounded-full border-surface-1">
           <span className="group-active:block hidden absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 rounded">
             {props.value}
           </span>
@@ -52,7 +52,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
             <span key={m} className="w-3 relative">
               <button
                 type="button"
-                className={classNames('absolute text-xs text-muted', {
+                className={cn('absolute text-xs text-surface-1-fg-muted', {
                   'left-1/2 -translate-x-1/2': isMiddle,
                   'left-0': i === 0,
                   'right-0': i === markers.length - 1,

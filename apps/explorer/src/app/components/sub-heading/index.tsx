@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes } from 'react';
 
 interface SubHeadingProps extends HTMLAttributes<HTMLHeadingElement> {
@@ -11,8 +11,8 @@ export const SubHeading = ({
   className,
   ...props
 }: SubHeadingProps) => {
-  const classes = classnames(
-    'font-alpha calt',
+  const classes = cn(
+    'font-alt calt',
     'text-2xl',
     'uppercase',
     'mt-8 mb-2',

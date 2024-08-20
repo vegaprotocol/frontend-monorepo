@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
@@ -32,11 +32,11 @@ export const MarketSelectorItem = ({
     <div style={style} role="row">
       <Link
         to={`/markets/${market.id}`}
-        className={classNames(
+        className={cn(
           'h-full grid grid-cols-6 sm:grid-cols-12 items-center gap-2 mx-2 px-2',
           {
-            'hover:bg-gs-500 ': market.id !== currentMarketId,
-            'bg-gs-500 ': market.id === currentMarketId,
+            'hover:bg-surface-3': market.id !== currentMarketId,
+            'bg-surface-2': market.id === currentMarketId,
           }
         )}
         onClick={() => onSelect(market.id)}

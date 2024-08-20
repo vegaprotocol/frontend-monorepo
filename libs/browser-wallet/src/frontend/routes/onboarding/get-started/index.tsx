@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 
 import { Frame } from '@/components/frame';
@@ -44,7 +44,7 @@ export const GetStarted = () => {
         }}
         type="submit"
         data-testid={locators.getStartedButton}
-        variant="primary"
+        intent={Intent.Primary}
         fill={true}
       >
         I understand

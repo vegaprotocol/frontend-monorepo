@@ -80,7 +80,7 @@ import {
 } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 import { getQuoteName, getAsset } from '../../market-utils';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import {
   NetworkParams,
@@ -497,11 +497,7 @@ const SuccessionLineItem = ({
   return (
     <div
       data-testid="succession-line-item"
-      className={classNames(
-        'bg-gs-700  rounded p-2',
-        'font-alpha',
-        'flex flex-col '
-      )}
+      className="bg-surface-2 rounded p-2 flex flex-col"
     >
       <div className="flex justify-between">
         <div>
@@ -519,7 +515,7 @@ const SuccessionLineItem = ({
         </div>
         {isCurrent && (
           <Tooltip description={t('This market')}>
-            <div className="text-gs-200  cursor-help">
+            <div className="text-surface-2-fg  cursor-help">
               <VegaIcon name={VegaIconNames.BULLET} size={16} />
             </div>
           </Tooltip>
@@ -1009,7 +1005,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
 
   const price = (price: string, direction: 'min' | 'max') => (
     <div
-      className={classNames(
+      className={cn(
         'rounded px-1 py-[1px] bg-gs-500  relative',
         'after:absolute after:content-[" "] after:z-10',
         'after:block after:w-3 after:h-3 after:bg-gs-500 after:rotate-45 after:-translate-y-1/2',
@@ -1020,7 +1016,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
       )}
     >
       <div
-        className={classNames('text-[10px]', {
+        className={cn('text-[10px]', {
           'text-left': direction === 'min',
           'text-right': direction === 'max',
         })}
@@ -1063,7 +1059,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
             <div aria-hidden className="w-full text-center text-[10px]">
               <div
                 data-testid="bounds-percent-price"
-                className="border-b-[2px] border-dashed border-gs-500 w-full h-1/2 translate-y-[1px]"
+                className="border-b-[2px] border-dashed border-gs-300 dark:border-gs-700 w-full h-1/2 translate-y-[1px]"
               >
                 {probability}
               </div>
@@ -1103,7 +1099,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
 export const PriceMonitoringSettingsInfoPanel = ({
   market,
   className,
-}: MarketInfoProps & { className?: classNames.Argument }) => {
+}: MarketInfoProps & { className?: string }) => {
   const t = useT();
 
   const triggers = groupBy(
@@ -1233,11 +1229,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           trigger={
             <AccordionPrimitive.Trigger
               data-testid="accordion-toggle"
-              className={classNames(
-                'w-full pt-2',
-                'flex items-center gap-2',
-                'group'
-              )}
+              className={cn('w-full pt-2', 'flex items-center gap-2', 'group')}
             >
               <div
                 data-testid={`abi-dropdown`}
@@ -1652,14 +1644,14 @@ export const OracleInfoPanel = ({
     parentDataSourceSpecId !== undefined &&
     !isEqual(dataSourceSpec, parentDataSourceSpec);
 
-  const wrapperClasses = classNames('mb-4', {
+  const wrapperClasses = cn('mb-4', {
     'flex items-center gap-6': shouldShowParentData,
   });
 
   return (
     <>
       {shouldShowParentData && (
-        <Lozenge variant={Intent.Primary} className="text-sm">
+        <Lozenge intent={Intent.Primary} className="text-sm">
           {t('Updated')}
         </Lozenge>
       )}

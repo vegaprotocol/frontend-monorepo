@@ -11,7 +11,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
 import { useT } from './use-t';
@@ -49,7 +49,7 @@ const OrderbookSide = ({
     <div
       className={
         // position the ask side to the bottow of the top section and the bid side to the top of the bottom section
-        classNames(
+        cn(
           'flex flex-col',
           type === VolumeType.ask ? 'justify-end' : 'justify-start'
         )
@@ -120,20 +120,17 @@ export const OrderbookMid = ({
   return (
     <div className="flex py-[1px]">
       <div
-        className={classNames(
-          'flex grow items-center justify-center text-base gap-2',
-          {
-            'bg-gs-800 ':
-              isMarketInAuction &&
-              bestAskPrice &&
-              bestBidPrice &&
-              BigInt(bestAskPrice) < BigInt(bestBidPrice),
-          }
-        )}
+        className={cn('flex grow items-center justify-center text-base gap-2', {
+          'bg-surface-1 ':
+            isMarketInAuction &&
+            bestAskPrice &&
+            bestBidPrice &&
+            BigInt(bestAskPrice) < BigInt(bestBidPrice),
+        })}
       >
         {priceChangeRef.current !== 'none' && (
           <span
-            className={classNames('flex flex-col justify-center', {
+            className={cn('flex flex-col justify-center', {
               'text-market-green-600 dark:text-market-green':
                 priceChangeRef.current === 'up',
               'text-market-red dark:text-market-red':
@@ -165,7 +162,7 @@ export const OrderbookMid = ({
         {spread && !spread.startsWith('-') && (
           <span
             title={t('Spread')}
-            className="font-mono text-xs text-muted"
+            className="font-mono text-xs text-surface-0-fg-muted"
             data-testid="spread"
           >
             ({addDecimalsFormatNumber(spread, decimalPlaces)})
@@ -310,7 +307,7 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
+      <div className="border-t border-gs-300 dark:border-gs-700">
         <OrderbookControls
           lastTradedPrice={lastTradedPrice}
           resolution={resolution}

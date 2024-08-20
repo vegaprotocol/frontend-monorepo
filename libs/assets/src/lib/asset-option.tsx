@@ -3,7 +3,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 type AssetOptionProps = {
@@ -19,11 +19,14 @@ export const Balance = ({
   symbol: string;
 }) => {
   return balance ? (
-    <div className="font-alpha text-xs" data-testid="asset-balance">
+    <div className="text-xs" data-testid="asset-balance">
       {balance} {symbol}
     </div>
   ) : (
-    <div className="text-muted text-xs" data-testid="asset-balance">
+    <div
+      className="text-surface-0-fg-muted text-xs"
+      data-testid="asset-balance"
+    >
       -
     </div>
   );
@@ -70,7 +73,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
 
           {/* Chain and asset source pill */}
           <div
-            className={classNames(
+            className={cn(
               'bg-gs-500 ',
               'text-black dark:text-white',
               'p-0.5 rounded',
@@ -78,15 +81,15 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
             )}
           >
             <span
-              className={classNames(
-                'bg-gs-900 ',
+              className={cn(
+                'bg-surface-2 ',
                 'text-black dark:text-white text-xs',
                 'py-px px-0.5 rounded-sm'
               )}
             >
               {asset.symbol}
             </span>
-            <span className={classNames('py-px px-0.5')}>
+            <span className={cn('py-px px-0.5')}>
               {truncateMiddle(assetSource || '')}
             </span>
           </div>

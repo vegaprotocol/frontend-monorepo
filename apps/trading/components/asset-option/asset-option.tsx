@@ -18,7 +18,7 @@ export const AssetOption = ({
         <div>
           {asset.name} | {asset.symbol}
         </div>
-        <div className="text-secondary text-xs">
+        <div className="text-surface-0-fg-muted text-xs">
           {asset.source.__typename === 'ERC20'
             ? truncateMiddle(asset.source.contractAddress)
             : asset.source.__typename}

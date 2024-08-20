@@ -10,35 +10,48 @@ export enum Intent {
 
 export const getIntentBorder = (intent = Intent.None) => {
   return {
-    border: true,
-    'border-danger': intent === Intent.Danger,
-    'border-warning': intent === Intent.Warning,
-    'border-gs-500 ': intent === Intent.None,
-    'border-vega-blue-300': intent === Intent.Primary,
-    'border-vega-green': intent === Intent.Success,
+    'border-intent-none-outline': intent === Intent.None,
+    'border-intent-primary-outline': intent === Intent.Primary,
+    'border-intent-secondary-outline': intent === Intent.Secondary,
+    'border-intent-info-outline': intent === Intent.Info,
+    'border-intent-danger-outline': intent === Intent.Danger,
+    'border-intent-warning-outline': intent === Intent.Warning,
+    'border-intent-success-outline': intent === Intent.Success,
+  };
+};
+
+export const getIntentColor = (intent?: Intent) => {
+  return {
+    'bg-intent-none': intent === Intent.None,
+    'bg-intent-primary': intent === Intent.Primary,
+    'bg-intent-secondary': intent === Intent.Secondary,
+    'bg-intent-info': intent === Intent.Info,
+    'bg-intent-danger': intent === Intent.Danger,
+    'bg-intent-warning': intent === Intent.Warning,
+    'bg-intent-success': intent === Intent.Success,
   };
 };
 
 export const getIntentBackground = (intent?: Intent) => {
   return {
-    'bg-gs-800': intent === undefined,
-    'bg-gs-0': intent === Intent.None,
-    'bg-vega-blue-300 dark:bg-vega-blue-650': intent === Intent.Primary,
-    'bg-danger': intent === Intent.Danger,
-    'bg-warning': intent === Intent.Warning,
-    // contrast issues with light mode
-    'bg-vega-green-550 dark:bg-vega-green': intent === Intent.Success,
+    'bg-intent-none-background': intent === Intent.None,
+    'bg-intent-primary-background': intent === Intent.Primary,
+    'bg-intent-secondary-background': intent === Intent.Secondary,
+    'bg-intent-info-background': intent === Intent.Info,
+    'bg-intent-danger-background': intent === Intent.Danger,
+    'bg-intent-warning-background': intent === Intent.Warning,
+    'bg-intent-success-background': intent === Intent.Success,
   };
 };
 
 export const getIntentText = (intent?: Intent) => {
   return {
-    'text-white dark:text-black': intent === Intent.None,
-    'text-white': intent === Intent.Danger || intent === Intent.Primary,
-    'text-black': intent === Intent.Warning || intent === Intent.Success,
+    'text-gs-50': intent === Intent.None,
+    'text-intent-primary': intent === Intent.Primary,
+    'text-intent-secondary': intent === Intent.Secondary,
+    'text-intent-info': intent === Intent.Info,
+    'text-intent-danger': intent === Intent.Danger,
+    'text-intent-warning': intent === Intent.Warning,
+    'text-intent-success': intent === Intent.Success,
   };
-};
-
-export const getIntentTextAndBackground = (intent?: Intent) => {
-  return { ...getIntentText(intent), ...getIntentBackground(intent) };
 };

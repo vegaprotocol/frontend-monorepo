@@ -67,7 +67,7 @@ export const RankPayoutTable = ({
             })
           )}
         />
-        <p className="text-sm text-muted">
+        <p className="text-sm text-surface-1-fg-muted">
           {isOpenFinalTier &&
             t(
               '*Note: Final tier will payout to all game participants, therefore all payout estimates will lower depending on how many participants there are.'

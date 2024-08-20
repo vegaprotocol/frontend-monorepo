@@ -4,7 +4,7 @@ import {
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 export enum AdditionalProposalState {
@@ -19,13 +19,13 @@ type State = ProposalState | AdditionalProposalState;
 
 const PROPOSAL_STATE_COLOR_MAP: { [state in State]: string } = {
   [ProposalState.STATE_OPEN]: 'bg-white text-black',
-  [ProposalState.STATE_ENACTED]: 'bg-vega-green-500 text-black',
-  [ProposalState.STATE_PASSED]: 'bg-vega-green-500 text-black',
-  [ProposalState.STATE_DECLINED]: 'bg-vega-red-500',
-  [ProposalState.STATE_FAILED]: 'bg-vega-red-500',
-  [ProposalState.STATE_REJECTED]: 'bg-vega-red-500',
-  [ProposalState.STATE_WAITING_FOR_NODE_VOTE]: 'bg-vega-blue-650',
-  [AdditionalProposalState.PASSED_WITH_ERRORS]: 'bg-vega-yellow-500 text-black',
+  [ProposalState.STATE_ENACTED]: 'bg-green-500 text-black',
+  [ProposalState.STATE_PASSED]: 'bg-green-500 text-black',
+  [ProposalState.STATE_DECLINED]: 'bg-red-500',
+  [ProposalState.STATE_FAILED]: 'bg-red-500',
+  [ProposalState.STATE_REJECTED]: 'bg-red-500',
+  [ProposalState.STATE_WAITING_FOR_NODE_VOTE]: 'bg-blue-650',
+  [AdditionalProposalState.PASSED_WITH_ERRORS]: 'bg-yellow-500 text-black',
 };
 
 export const UPGRADE_STATUS_PROPOSAL_STATE_MAP = {
@@ -49,7 +49,7 @@ export const CurrentProposalState = ({
     | ProposalState
     | AdditionalProposalState
     | ProtocolUpgradeProposalStatus;
-  className?: classNames.Argument;
+  className?: string;
   tooltip?: ReactNode;
   children?: ReactNode;
 }) => {
@@ -111,9 +111,9 @@ export const CurrentProposalState = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         'rounded px-1 py-[2px]',
-        'font-alpha text-xs',
+        'text-xs',
         'flex items-center gap-1',
         PROPOSAL_STATE_COLOR_MAP[state],
         { 'cursor-help': Boolean(tooltip) },

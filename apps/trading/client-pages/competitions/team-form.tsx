@@ -4,7 +4,7 @@ import {
   TradingInputError,
   TradingCheckbox,
   TextArea,
-  TradingButton,
+  Button,
   Intent,
   VegaIcon,
   VegaIconNames,
@@ -19,7 +19,7 @@ import {
   type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
 import { TxStatus, type Status } from '@vegaprotocol/wallet-react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useLayoutEffect, useState } from 'react';
 
 export type FormFields = {
@@ -244,7 +244,7 @@ export const TeamForm = ({
         )
       }
       {err && (
-        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+        <p className="text-intent-danger text-xs mb-4 first-letter:capitalize">
           {err}
         </p>
       )}
@@ -300,14 +300,14 @@ const SubmitButton = ({
 
   const confirmed = (
     <span
-      className={classNames('text-sm transition-opacity opacity-0', {
+      className={cn('text-sm transition-opacity opacity-0', {
         'opacity-100': showConfirmed,
       })}
     >
       <VegaIcon
         name={VegaIconNames.TICK}
         size={18}
-        className="text-vega-green-500"
+        className="text-green-500"
       />{' '}
       {confirmedText}
     </span>
@@ -315,14 +315,14 @@ const SubmitButton = ({
 
   return (
     <div className="flex gap-2 items-baseline">
-      <TradingButton
+      <Button
         type="submit"
         intent={Intent.Info}
         disabled={disabled}
         data-testid="team-form-submit-button"
       >
         {text}
-      </TradingButton>
+      </Button>
       {status === TxStatus.Confirmed && confirmed}
     </div>
   );

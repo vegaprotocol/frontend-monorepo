@@ -1,10 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import {
-  TradingButton as Button,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { truncateByChars } from '@vegaprotocol/utils';
 import { type Key } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';

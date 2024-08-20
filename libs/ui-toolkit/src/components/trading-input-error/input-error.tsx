@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { HTMLAttributes } from 'react';
 
 interface TradingInputErrorProps extends HTMLAttributes<HTMLDivElement> {
@@ -16,7 +16,7 @@ export const TradingInputError = ({
   className,
   ...props
 }: TradingInputErrorProps) => {
-  const effectiveClassName = classNames(
+  const effectiveClassName = cn(
     'text-xs flex items-center first-letter:uppercase',
     'mt-1',
     {
@@ -25,14 +25,14 @@ export const TradingInputError = ({
     },
     {
       'text-warning': intent === 'warning',
-      'text-danger': intent === 'danger',
+      'text-intent-danger': intent === 'danger',
     }
   );
   return (
     <div
       data-testid={testId || 'input-error-text'}
       aria-describedby={forInput}
-      className={classNames(effectiveClassName, className)}
+      className={cn(effectiveClassName, className)}
       {...props}
       role="alert"
     >

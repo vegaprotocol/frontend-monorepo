@@ -23,10 +23,10 @@ export const Footer = () => {
   );
 
   return (
-    <footer className="grid grid-cols-[1fr_auto] items-center text-xs md:text-md lg:flex md:col-span-2 px-4 pt-2 pb-3 gap-4 border-t border-gs-600 ">
+    <footer className="grid grid-cols-[1fr_auto] items-center text-xs md:text-md lg:flex md:col-span-2 px-4 pt-2 pb-3 gap-4 border-t border-gs-300 dark:border-gs-700 ">
       <div className="flex justify-between gap-2 align-middle">
         {GIT_COMMIT_HASH && (
-          <div className="content-center flex border-r border-gs-600 pr-4">
+          <div className="content-center flex border-r border-gs-300 dark:border-gs-700 pr-4">
             <p data-testid="git-commit-hash">
               {t('Version')}:{' '}
               <Link
@@ -42,8 +42,7 @@ export const Footer = () => {
             </p>
           </div>
         )}
-
-        <div className="content-center flex pr-4 md:border-r border-gs-600">
+        <div className="content-center flex pr-4 md:border-r border-gs-300 dark:border-gs-700">
           <span className="pr-2">
             {API_NODE?.graphQLApiUrl && (
               <NodeUrl url={API_NODE?.graphQLApiUrl} />

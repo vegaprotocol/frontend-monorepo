@@ -1,6 +1,6 @@
 import {
   Loader,
-  TradingAnchorButton,
+  AnchorButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -10,7 +10,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { REFERRAL_DOCS_LINK } from './constants';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
@@ -21,7 +21,7 @@ const Nav = () => {
   const t = useT();
   const match = useMatch(Routes.REFERRALS_APPLY_CODE);
   return (
-    <nav className="flex justify-center border-b border-gs-500">
+    <nav className="flex justify-center border-b border-gs-300 dark:border-gs-700">
       <TabLink end to={match ? Routes.REFERRALS_APPLY_CODE : Routes.REFERRALS}>
         {t('Apply code')}
       </TabLink>
@@ -58,7 +58,7 @@ export const Referrals = () => {
       {showNav && <Nav />}
 
       <section
-        className={classNames({
+        className={cn({
           'py-4 lg:py-8': showNav,
           'h-[300px] relative': loading || error,
         })}
@@ -83,9 +83,9 @@ export const Referrals = () => {
 
       <section className="py-14 flex flex-col justify-center items-center gap-4">
         <h2 className="text-2xl">{t('How it works')}</h2>
-        <TradingAnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
+        <AnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
           {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-        </TradingAnchorButton>
+        </AnchorButton>
       </section>
     </ErrorBoundary>
   );

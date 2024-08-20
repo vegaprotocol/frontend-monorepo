@@ -45,7 +45,7 @@ export const ProtocolUpgradeProposalNotification = ({
         <Trans
           i18nKey="numberOfBlocks"
           defaults="<0>{{count}}</0> blocks"
-          components={[<span className="text-vega-orange-500">count</span>]}
+          components={[<span className="text-orange-500">count</span>]}
           values={{
             count: blocksLeft,
           }}
@@ -57,13 +57,13 @@ export const ProtocolUpgradeProposalNotification = ({
         timeLeft !== undefined ? (
           <span
             title={t('estimated time to protocol upgrade')}
-            className="text-vega-orange-500"
+            className="text-orange-500"
             data-testid="upgrade-proposal-estimate"
           >
             {convertToCountdownString(timeLeft, '0:00:00:00')}
           </span>
         ) : (
-          <span className="text-vega-orange-600 lowercase italic">
+          <span className="text-orange-600 lowercase italic">
             {t('estimating...')}
           </span>
         );

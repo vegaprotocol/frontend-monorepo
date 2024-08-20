@@ -6,7 +6,7 @@ import type {
   SliderRangeProps,
   SliderThumbProps,
 } from '@radix-ui/react-slider';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 
 export const SliderRoot = ({
   children,
@@ -15,7 +15,7 @@ export const SliderRoot = ({
   ...props
 }: SliderProps) => {
   const defaultStyles = 'relative flex items-center select-none touch-none';
-  const classes = classNames(
+  const classes = cn(
     defaultStyles,
     {
       'h-[20px] w-full': orientation === 'horizontal',
@@ -40,22 +40,19 @@ export const SliderTrack = ({
   className,
   ...props
 }: SliderTrackProps) => {
-  const defaultStyles = 'bg-gs-700  relative grow h-[4px]';
+  const defaultStyles = 'bg-surface-2 relative grow h-[4px]';
   return (
-    <SliderPrimitive.Track
-      className={classNames(defaultStyles, className)}
-      {...props}
-    >
+    <SliderPrimitive.Track className={cn(defaultStyles, className)} {...props}>
       {children}
     </SliderPrimitive.Track>
   );
 };
 
 export const SliderRange = ({ className, ...props }: SliderRangeProps) => {
-  const defaultStyles = 'absolute bg-gs-100  h-full';
+  const defaultStyles = 'absolute bg-surface-3  h-full';
   return (
     <SliderPrimitive.Range
-      className={classNames(defaultStyles, className)}
+      className={cn(defaultStyles, className)}
       {...props}
     />
   );
@@ -70,10 +67,10 @@ export const SliderThumb = ({
   ...props
 }: SliderThumbProps & { tooltip?: string }) => {
   const defaultStyles =
-    'block w-[18px] h-[18px] border-[2px] rounded-full border-white  bg-gs-50 focus-visible:outline-0';
+    'block w-[18px] h-[18px] border-[2px] rounded-full border-surface-0 bg-surface-0-fg focus-visible:outline-0';
   return (
     <SliderPrimitive.Thumb
-      className={classNames(defaultStyles, className, {
+      className={cn(defaultStyles, className, {
         [tooltipClasses]: tooltip,
       })}
       {...props}

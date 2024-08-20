@@ -171,7 +171,7 @@ export const ProposalMarketChanges = ({
       </CollapsibleToggle>
 
       {showChanges && (
-        <div className="mb-6 bg-gs-900 p-2 rounded-lg">
+        <div className="mb-6 bg-surface-2 p-2 rounded-lg">
           <JsonDiff left={left as JsonValue} right={right as JsonValue} />
         </div>
       )}

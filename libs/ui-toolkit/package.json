@@ -1,6 +1,10 @@
 {
   "name": "@vegaprotocol/ui-toolkit",
   "version": "0.12.9",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.4.0"
+  },
   "devDependencies": {
     "@vegaprotocol/tailwindcss-config": "0.0.6"
   }

@@ -53,7 +53,7 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 );
 
 const marketDataHeaderStyles =
-  'font-alpha calt text-gs-50 border-b border-gs-200 mt-2 py-2';
+  'font-alt calt text-gs-50 border-b border-gs-200 mt-2 py-2';
 
 export const ProposalMarketData = ({
   marketId,
@@ -86,7 +86,7 @@ export const ProposalMarketData = ({
   });
 
   let details: ReactNode = (
-    <div className="text-muted text-center text-sm">
+    <div className="text-surface-0-fg-muted text-center text-sm">
       {marketDataLoading ? t('Loading') : t('Could not retrieve data')}
     </div>
   );

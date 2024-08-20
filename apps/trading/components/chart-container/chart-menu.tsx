@@ -8,14 +8,14 @@ import {
 } from 'pennant';
 import { Trans } from 'react-i18next';
 import {
-  TradingButton,
-  TradingDropdown,
-  TradingDropdownCheckboxItem,
-  TradingDropdownContent,
-  TradingDropdownItemIndicator,
-  TradingDropdownRadioGroup,
-  TradingDropdownRadioItem,
-  TradingDropdownTrigger,
+  Button,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { type Interval } from '@vegaprotocol/types';
@@ -51,91 +51,89 @@ export const ChartMenu = () => {
 
   const contentAlign = 'end';
   const triggerClasses = 'text-xs';
-  const triggerButtonProps = { size: 'extra-small' } as const;
+  const triggerButtonProps = { size: 'xs' } as const;
 
   const isPennant = chartlib === 'pennant';
   const commonMenuItems = (
-    <TradingButton
+    <Button
       onClick={() => {
         setChartlib(isPennant ? 'tradingview' : 'pennant');
       }}
-      size="extra-small"
-      testId="chartlib-toggle-button"
+      size="xs"
+      data-testid="chartlib-toggle-button"
     >
       {isPennant ? 'TradingView' : t('Vega chart')}
-    </TradingButton>
+    </Button>
   );
 
   const pennantMenuItems = (
     <>
-      <TradingDropdown
+      <DropdownMenu
         trigger={
-          <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+          <DropdownMenuTrigger className={triggerClasses}>
+            <Button {...triggerButtonProps}>
               {t('Interval: {{interval}}', {
                 interval: t(interval),
               })}
-            </TradingButton>
-          </TradingDropdownTrigger>
+            </Button>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align={contentAlign}>
-          <TradingDropdownRadioGroup
+        <DropdownMenuContent align={contentAlign}>
+          <DropdownMenuRadioGroup
             value={interval}
             onValueChange={(value) => {
               setInterval(value as Interval);
             }}
           >
             {SUPPORTED_INTERVALS.map((timeInterval) => (
-              <TradingDropdownRadioItem
+              <DropdownMenuRadioItem
                 key={timeInterval}
                 inset
                 value={timeInterval}
               >
                 {t(timeInterval)}
-                <TradingDropdownItemIndicator />
-              </TradingDropdownRadioItem>
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
             ))}
-          </TradingDropdownRadioGroup>
-        </TradingDropdownContent>
-      </TradingDropdown>
-      <TradingDropdown
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DropdownMenu
         trigger={
-          <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+          <DropdownMenuTrigger className={triggerClasses}>
+            <Button {...triggerButtonProps}>
               <Icon name={chartTypeIcon.get(chartType) as IconName} />
-            </TradingButton>
-          </TradingDropdownTrigger>
+            </Button>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align={contentAlign}>
-          <TradingDropdownRadioGroup
+        <DropdownMenuContent align={contentAlign}>
+          <DropdownMenuRadioGroup
             value={chartType}
             onValueChange={(value) => {
               setType(value as ChartType);
             }}
           >
             {Object.values(ChartType).map((type) => (
-              <TradingDropdownRadioItem key={type} inset value={type}>
+              <DropdownMenuRadioItem key={type} inset value={type}>
                 {chartTypeLabels[type]}
-                <TradingDropdownItemIndicator />
-              </TradingDropdownRadioItem>
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
             ))}
-          </TradingDropdownRadioGroup>
-        </TradingDropdownContent>
-      </TradingDropdown>
-      <TradingDropdown
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DropdownMenu
         trigger={
-          <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
-              {t('Indicators')}
-            </TradingButton>
-          </TradingDropdownTrigger>
+          <DropdownMenuTrigger className={triggerClasses}>
+            <Button {...triggerButtonProps}>{t('Indicators')}</Button>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align={contentAlign}>
+        <DropdownMenuContent align={contentAlign}>
           {Object.values(Overlay).map((overlay) => (
-            <TradingDropdownCheckboxItem
+            <DropdownMenuCheckboxItem
               key={overlay}
               checked={overlays.includes(overlay)}
               onCheckedChange={() => {
@@ -150,11 +148,11 @@ export const ChartMenu = () => {
               }}
             >
               {overlayLabels[overlay]}
-              <TradingDropdownItemIndicator />
-            </TradingDropdownCheckboxItem>
+              <DropdownMenuItemIndicator />
+            </DropdownMenuCheckboxItem>
           ))}
           {Object.values(Study).map((study) => (
-            <TradingDropdownCheckboxItem
+            <DropdownMenuCheckboxItem
               key={study}
               checked={studies.includes(study)}
               onCheckedChange={() => {
@@ -169,11 +167,11 @@ export const ChartMenu = () => {
               }}
             >
               {studyLabels[study]}
-              <TradingDropdownItemIndicator />
-            </TradingDropdownCheckboxItem>
+              <DropdownMenuItemIndicator />
+            </DropdownMenuCheckboxItem>
           ))}
-        </TradingDropdownContent>
-      </TradingDropdown>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 

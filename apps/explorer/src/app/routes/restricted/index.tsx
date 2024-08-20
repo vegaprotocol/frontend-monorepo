@@ -1,5 +1,5 @@
 import { BackgroundVideo } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const RestrictedPage = () => {
   const errorTitle = '451 Unavailable';
@@ -10,7 +10,7 @@ const RestrictedPage = () => {
     <div>
       <BackgroundVideo className="brightness-50" />
       <div
-        className={classNames(
+        className={cn(
           'max-w-[620px] p-2 mt-[10vh]',
           'mx-auto my-0',
           'antialiased text-white',
@@ -20,7 +20,7 @@ const RestrictedPage = () => {
       >
         <div className="flex gap-4">
           <div>{GHOST}</div>
-          <h1 className="text-[2.7rem] font-alpha calt break-words uppercase">
+          <h1 className="text-[2.7rem] alt break-words uppercase">
             {errorTitle}
           </h1>
         </div>

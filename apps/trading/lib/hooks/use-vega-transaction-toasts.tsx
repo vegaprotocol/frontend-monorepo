@@ -191,7 +191,6 @@ const SizeAtPrice = ({
           side={side}
           value={size}
           positionDecimalPlaces={meta.positionDecimalPlaces}
-          forceTheme="light"
         />
       )}{' '}
       {price && price !== '0' && meta.decimalPlaces

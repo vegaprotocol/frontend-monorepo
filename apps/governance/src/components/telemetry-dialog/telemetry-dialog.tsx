@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { Dialog, Icon, Button } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 type TelemetryDialogState = {
@@ -80,7 +80,7 @@ export const TelemetryDialog = () => {
             setTelemetryAccepted(true);
             close();
           }}
-          variant="primary"
+          intent={Intent.Primary}
           data-testid="share-data-button"
         >
           {telemetryAccepted ? t('ContinueSharingData') : t('ShareData')}
@@ -91,7 +91,6 @@ export const TelemetryDialog = () => {
             setTelemetryAccepted(false);
             close();
           }}
-          variant="default"
           data-testid="do-not-share-data-button"
         >
           {t('NoThanks')}

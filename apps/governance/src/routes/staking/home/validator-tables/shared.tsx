@@ -128,7 +128,7 @@ export const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
           <Button
             data-testid="my-stake-btn"
             size="sm"
-            className="text-vega-green border-vega-green"
+            className="text-green border-green"
           >
             {t('myStake')}
           </Button>
@@ -221,7 +221,7 @@ export const PendingStakeRenderer = ({ data }: PendingStakeRendererProps) => {
           </div>
           {data.pendingUserStake && (
             <div
-              className="text-vega-green border-t border-t-gs-800 mt-1.5 pt-1"
+              className="text-green border-t border-t-gs-800 mt-1.5 pt-1"
               data-testid="pending-user-stake-tooltip"
             >
               {t('myPendingStake')}:{' '}
@@ -236,7 +236,7 @@ export const PendingStakeRenderer = ({ data }: PendingStakeRendererProps) => {
     >
       <div className="flex flex-col">
         {data.pendingUserStake && data.pendingStake !== '0' && (
-          <span data-testid="pending-user-stake" className="text-vega-green">
+          <span data-testid="pending-user-stake" className="text-green">
             {formatNumber(toBigNum(data.pendingUserStake, decimals), 2)}
           </span>
         )}
@@ -280,7 +280,7 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
           </div>
           {data.stakedByUser && (
             <div
-              className="text-vega-green border-t border-t-gs-800 mt-1.5 pt-1"
+              className="text-green border-t border-t-gs-800 mt-1.5 pt-1"
               data-testid="staked-by-user-tooltip"
             >
               {t('stakedByMe')}: {data.stakedByUser}
@@ -291,7 +291,7 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
     >
       <div className="flex flex-col">
         {data.stakedByUser && (
-          <span data-testid="user-stake" className="text-vega-green">
+          <span data-testid="user-stake" className="text-green">
             {data.stakedByUser}
           </span>
         )}
@@ -312,7 +312,7 @@ export const StakeShareRenderer = ({ data }: StakeShareRendererProps) => {
   return (
     <div className="flex flex-col">
       {data.userStakeShare && (
-        <span data-testid="user-stake-share" className="text-vega-green">
+        <span data-testid="user-stake-share" className="text-green">
           {data.userStakeShare}
         </span>
       )}

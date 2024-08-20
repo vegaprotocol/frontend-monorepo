@@ -44,10 +44,10 @@ export const InfoPanel = ({
                 text={id}
                 startChars={visibleChars}
                 endChars={visibleChars}
-                className="text-gs-100"
+                className="text-surface-1-fg"
               />
             ) : (
-              <p title={id} className="text-gs-100 truncate">
+              <p title={id} className="text-surface-1-fg truncate">
                 {id}
               </p>
             )}
@@ -55,7 +55,7 @@ export const InfoPanel = ({
             {type && (
               <Lozenge
                 className="text-xs leading-relaxed cursor-auto"
-                variant={Intent.None}
+                intent={Intent.None}
               >
                 <Tooltip side="top" description={type} align="center">
                   <span>{type}</span>
@@ -67,7 +67,7 @@ export const InfoPanel = ({
         </div>
         {copy && (
           <CopyWithTooltip text={id}>
-            <button className="bg-gs-100 rounded-sm py-2 px-3">
+            <button className="bg-surface-2 rounded-sm py-2 px-3">
               <Icon name="duplicate" />
             </button>
           </CopyWithTooltip>

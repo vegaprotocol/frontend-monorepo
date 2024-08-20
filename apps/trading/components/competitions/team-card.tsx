@@ -6,12 +6,12 @@ import { useT } from '../../lib/use-t';
 import { formatNumberRounded } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { Box } from './box';
-import { Intent, Tooltip, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
+import { Intent, Tooltip, AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 import orderBy from 'lodash/orderBy';
 import { take } from 'lodash';
 import { DispatchMetricLabels } from '@vegaprotocol/types';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
 import { type TeamGame } from '../../lib/hooks/use-games';
 import { Rank } from './graphics/rank';
@@ -50,12 +50,7 @@ export const TeamCard = ({
   if (rank === 3) rankElement = <Rank variant="bronze" />;
 
   return (
-    <div
-      className={classNames(
-        'gap-6 grid grid-cols-1 grid-rows-1',
-        'md:grid-cols-3'
-      )}
-    >
+    <div className={cn('gap-6 grid grid-cols-1 grid-rows-1', 'md:grid-cols-3')}>
       {/** Card */}
       <Box
         backgroundImage={team.avatarUrl || getFallbackAvatar(team.teamId)}
@@ -66,20 +61,20 @@ export const TeamCard = ({
           {team.name}
         </h1>
         {games && <FavoriteGame games={games} noLabel />}
-        <TradingAnchorButton
-          size="extra-small"
+        <AnchorButton
+          size="xs"
           intent={Intent.Primary}
           href={Links.COMPETITIONS_TEAM(team.teamId)}
         >
           {t('Profile')}
-        </TradingAnchorButton>
-        <UpdateTeamButton team={team} size="extra-small" />
+        </AnchorButton>
+        <UpdateTeamButton team={team} size="xs" />
       </Box>
 
       {/** Tiles */}
       <Box className="w-full md:col-span-2">
         <div
-          className={classNames(
+          className={cn(
             'grid gap-3 w-full mb-4',
             'md:grid-cols-3 md:grid-rows-2',
             'grid-cols-2 grid-rows-3'
@@ -132,7 +127,7 @@ export const TeamCard = ({
         </div>
 
         <dl className="w-full pt-4 border-t border-gs-700 ">
-          <dt className="mb-1 text-sm text-muted">
+          <dt className="mb-1 text-sm text-surface-1-fg-muted">
             {t('Last {{games}} games result', {
               replace: { games: lastGames.length || '' },
             })}
@@ -141,7 +136,7 @@ export const TeamCard = ({
             {lastGames.length === 0 && t('None available')}
             {lastGames.map((game, i) => (
               <Tooltip key={i} description={DispatchMetricLabels[game.metric]}>
-                <button className="cursor-help text-sm bg-gs-700  px-2 py-1 rounded-full">
+                <button className="cursor-help text-sm bg-surface-2  px-2 py-1 rounded-full">
                   <RankLabel rank={game.rank} />
                 </button>
               </Tooltip>

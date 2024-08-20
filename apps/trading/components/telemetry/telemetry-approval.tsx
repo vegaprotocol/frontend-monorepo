@@ -1,6 +1,6 @@
 import {
   Intent,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -24,7 +24,7 @@ export const TelemetryApproval = ({
           <VegaIcon name={VegaIconNames.EYE_OFF} size={18} />
           <div className="flex flex-col gap-1">
             <h6 className="font-semibold">{t('Anonymous')}</h6>
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t('Your identity is always anonymous on Vega')}
             </p>
           </div>
@@ -33,33 +33,33 @@ export const TelemetryApproval = ({
           <VegaIcon name={VegaIconNames.COG} size={18} />
           <div className="flex flex-col gap-1">
             <h6 className="font-semibold">{t('Optional')}</h6>
-            <p className="text-muted">
+            <p className="text-surface-1-fg-muted">
               {t('You can opt out any time via settings')}
             </p>
           </div>
         </div>
         <div className="flex flex-col items-center justify-around gap-2">
-          <TradingButton
+          <Button
             onClick={() => setTelemetryValue('true')}
             intent={Intent.Info}
             data-testid="share-data-button"
-            size="small"
+            size="sm"
             fill
           >
             {telemetryValue === 'true'
               ? t('Continue sharing data')
               : t('Share data')}
-          </TradingButton>
+          </Button>
 
-          <TradingButton
+          <Button
             onClick={() => setTelemetryValue('false')}
-            size="small"
+            size="sm"
             intent={Intent.None}
             data-testid="do-not-share-data-button"
             fill
           >
             {t('No thanks')}
-          </TradingButton>
+          </Button>
         </div>
       </div>
     </div>

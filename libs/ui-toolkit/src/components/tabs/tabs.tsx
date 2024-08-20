@@ -4,7 +4,7 @@ import {
   useResizeObserver,
   useLocalStorage,
 } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useRef, useState } from 'react';
 import { VegaIcon } from '../icon/vega-icons/vega-icon';
@@ -50,7 +50,10 @@ export const Tabs = ({
       }}
       className="h-full grid grid-rows-[min-content_1fr] relative"
     >
-      <div ref={wrapperRef} className="flex flex-wrap justify-between min-w-0">
+      <div
+        ref={wrapperRef}
+        className="flex flex-wrap justify-between min-w-0 bg-surface-1"
+      >
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -59,12 +62,12 @@ export const Tabs = ({
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
-            const triggerClass = classNames(
+            const triggerClass = cn(
               'relative text-xs py-2 px-3',
               {
-                'cursor-default bg-gs-700 ': isActive,
-                'text-default': isActive,
-                'text-muted': !isActive,
+                'cursor-default bg-surface-2': isActive,
+                'text-surface-1-fg': isActive,
+                'text-surface-1-fg-muted': !isActive,
               },
               'flex items-center gap-2'
             );
@@ -82,8 +85,8 @@ export const Tabs = ({
         </TabsPrimitive.List>
         <div
           ref={menuRef}
-          className={classNames('flex justify-end flex-1 p-1', {
-            'bg-gs-700 ': wrapped,
+          className={cn('flex justify-end flex-1 p-1', {
+            'bg-surface-1': wrapped,
           })}
         >
           {Children.map(children, (child) => {
@@ -91,7 +94,7 @@ export const Tabs = ({
             return (
               <TabsPrimitive.Content
                 value={child.props.id}
-                className={classNames('flex items-center flex-nowrap gap-1', {
+                className={cn('flex items-center flex-nowrap gap-1', {
                   'justify-end': !wrapped,
                 })}
               >
@@ -121,7 +124,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className={classNames('h-full', {
+              className={cn('h-full bg-surface-1', {
                 'overflow-hidden': child.props.overflowHidden,
               })}
               data-testid={`tab-${child.props.id}`}

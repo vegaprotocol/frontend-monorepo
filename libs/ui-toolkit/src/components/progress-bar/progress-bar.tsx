@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import { getIntentBackground } from '../../utils/intent';
+import { cn } from '../../utils/cn';
+import { getIntentColor } from '../../utils/intent';
 import { Intent } from '../../utils/intent';
 
 interface ProgressBarProps {
@@ -19,22 +19,22 @@ export const ProgressBar = ({
     <div
       data-progress-bar
       style={{ height: compact ? '4px' : '6px' }}
-      className={classNames(
+      className={cn(
         'relative',
         {
-          'bg-gs-700': !compact,
+          'bg-surface-2': !compact,
         },
         className
       )}
     >
       <div
         data-progress-bar-value
-        className={classNames(
+        className={cn(
           'absolute left-0 top-0 bottom-0',
           { 'rounded-sm': compact },
           intent === undefined || intent === Intent.None
-            ? 'bg-gs-0'
-            : getIntentBackground(intent ?? Intent.None)
+            ? 'bg-surface-0'
+            : getIntentColor(intent ?? Intent.None)
         )}
         style={{ width: `${Math.max(0, value ?? 0)}%` }}
       ></div>

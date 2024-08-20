@@ -8,12 +8,12 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
-  ButtonLink,
   VegaIcon,
   VegaIconNames,
-  TradingDropdownItem,
-  TradingDropdownCopyItem,
+  DropdownMenuItem,
+  DropdownMenuCopyItem,
   Pill,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { memo, useMemo } from 'react';
 import {
@@ -277,11 +277,11 @@ export const StopOrdersTable = memo(
                 {data.status === Schema.StopOrderStatus.STATUS_TRIGGERED &&
                   data.order && (
                     <ActionsDropdown data-testid="stop-order-actions-content">
-                      <TradingDropdownCopyItem
+                      <DropdownMenuCopyItem
                         value={data.order.id}
                         text={t('Copy order ID')}
                       />
-                      <TradingDropdownItem
+                      <DropdownMenuItem
                         key={'view-order'}
                         data-testid="view-order"
                         onClick={() =>
@@ -291,7 +291,7 @@ export const StopOrdersTable = memo(
                       >
                         <VegaIcon name={VegaIconNames.INFO} size={16} />
                         {t('View order details')}
-                      </TradingDropdownItem>
+                      </DropdownMenuItem>
                     </ActionsDropdown>
                   )}
               </div>

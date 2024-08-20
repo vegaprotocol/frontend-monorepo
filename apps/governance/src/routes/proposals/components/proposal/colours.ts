@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 // rainbow-ish order
 const COLOURS = ['red', 'pink', 'orange', 'yellow', 'green', 'blue', 'purple'];
@@ -15,27 +15,23 @@ const getColour = (indicator: number, max = COLOURS.length) => {
 };
 
 export const getStyle = (indicator: number, max = COLOURS.length) =>
-  classNames({
-    'bg-vega-yellow-400 before:bg-vega-yellow-400':
+  cn({
+    'bg-yellow-400 before:bg-yellow-400':
       'yellow' === getColour(indicator, max),
-    'bg-vega-green-400 before:bg-vega-green-400':
-      'green' === getColour(indicator, max),
-    'bg-vega-blue-400 before:bg-vega-blue-400':
-      'blue' === getColour(indicator, max),
-    'bg-vega-purple-400 before:bg-vega-purple-400':
+    'bg-green-400 before:bg-green-400': 'green' === getColour(indicator, max),
+    'bg-blue-400 before:bg-blue-400': 'blue' === getColour(indicator, max),
+    'bg-purple-400 before:bg-purple-400':
       'purple' === getColour(indicator, max),
-    'bg-vega-pink-400 before:bg-vega-pink-400':
-      'pink' === getColour(indicator, max),
-    'bg-vega-orange-400 before:bg-vega-orange-400':
+    'bg-pink-400 before:bg-pink-400': 'pink' === getColour(indicator, max),
+    'bg-orange-400 before:bg-orange-400':
       'orange' === getColour(indicator, max),
-    'bg-vega-red-400 before:bg-vega-red-400':
-      'red' === getColour(indicator, max),
+    'bg-red-400 before:bg-red-400': 'red' === getColour(indicator, max),
     'bg-gs-600 before:bg-gs-600': 'none' === getColour(indicator, max),
   });
 
 export const getIndicatorStyle = (indicator: number) =>
-  classNames(
-    'rounded-sm text-black inline-block px-1 py-1 font-alpha calt h-8 w-7 text-center',
+  cn(
+    'rounded-sm text-black inline-block px-1 py-1 font-alt calt h-8 w-7 text-center',
     'text-border-1',
     getStyle(indicator),
     // Comment below if you want to remove the "chevron"

@@ -8,10 +8,10 @@ import {
   Portal,
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 
 const tooltipContentClasses =
-  'max-w-sm bg-gs-800 border border-gs-700 px-2 py-1 z-20 rounded text-xs text-gs-0 break-word';
+  'max-w-sm bg-surface-2 text-surface-2-fg border border-gs-300 dark:border-gs-700 px-2 py-1 z-20 rounded text-xs break-word';
 export interface TooltipProps {
   children: React.ReactElement;
   description?: string | ReactNode;
@@ -25,8 +25,8 @@ export interface TooltipProps {
 }
 
 export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
-  classNames({
-    'underline underline-offset-2 decoration-gs-100 decoration-dashed':
+  cn({
+    'underline underline-offset-2 decoration-gs-500 decoration-dashed':
       underline,
   });
 

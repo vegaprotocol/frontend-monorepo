@@ -10,7 +10,7 @@ import {
 import {
   ActionsDropdown,
   ButtonLink,
-  TradingDropdownItem,
+  DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -29,7 +29,7 @@ import {
 } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
 import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 import { getAssetSymbol } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';
@@ -204,7 +204,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
       </ButtonLink>
 
       <ActionsDropdown>
-        <TradingDropdownItem
+        <DropdownMenuItem
           key={'withdrawal-approval'}
           data-testid="withdrawal-approval"
           onClick={() => {
@@ -215,7 +215,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         >
           <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
           {t('View withdrawal details')}
-        </TradingDropdownItem>
+        </DropdownMenuItem>
       </ActionsDropdown>
     </div>
   );
@@ -308,8 +308,8 @@ export const StatusCell = ({
 
   return data ? (
     <span
-      className={classNames({
-        'text-vega-blue-450': label === READY_TO_COMPLETE,
+      className={cn({
+        'text-blue-450': label === READY_TO_COMPLETE,
       })}
     >
       {label}

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '../icon';
 import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
@@ -35,15 +35,13 @@ export const ToastPositionSetter = () => {
   if (isMobileScreen) {
     return (
       <div className="flex justify-between">
-        <div className={classNames('grid grid-cols-1 grid-rows-2 gap-1')}>
+        <div className={cn('grid grid-cols-1 grid-rows-2 gap-1')}>
           <button
             className={buttonCssClasses}
             onClick={() => handleChange(ToastPosition.TopCenter)}
           >
             <Icon
-              className={classNames(
-                position === ToastPosition.TopCenter && activeIcon
-              )}
+              className={cn(position === ToastPosition.TopCenter && activeIcon)}
               size={3}
               name={IconNames.ARROW_UP}
             />
@@ -53,7 +51,7 @@ export const ToastPositionSetter = () => {
             onClick={() => handleChange(ToastPosition.BottomCenter)}
           >
             <Icon
-              className={classNames(
+              className={cn(
                 position === ToastPosition.BottomCenter && activeIcon
               )}
               size={3}
@@ -67,15 +65,13 @@ export const ToastPositionSetter = () => {
 
   return (
     <div className="flex justify-between">
-      <div className={classNames('grid grid-cols-3 grid-rows-2 gap-1')}>
+      <div className={cn('grid grid-cols-3 grid-rows-2 gap-1')}>
         <button
           className={buttonCssClasses}
           onClick={() => handleChange(ToastPosition.TopLeft)}
         >
           <Icon
-            className={classNames(
-              position === ToastPosition.TopLeft && activeIcon
-            )}
+            className={cn(position === ToastPosition.TopLeft && activeIcon)}
             size={3}
             name={IconNames.ARROW_TOP_LEFT}
           />{' '}
@@ -85,9 +81,7 @@ export const ToastPositionSetter = () => {
           onClick={() => handleChange(ToastPosition.TopCenter)}
         >
           <Icon
-            className={classNames(
-              position === ToastPosition.TopCenter && activeIcon
-            )}
+            className={cn(position === ToastPosition.TopCenter && activeIcon)}
             size={3}
             name={IconNames.ARROW_UP}
           />
@@ -97,9 +91,7 @@ export const ToastPositionSetter = () => {
           onClick={() => handleChange(ToastPosition.TopRight)}
         >
           <Icon
-            className={classNames(
-              position === ToastPosition.TopRight && activeIcon
-            )}
+            className={cn(position === ToastPosition.TopRight && activeIcon)}
             size={3}
             name={IconNames.ARROW_TOP_RIGHT}
           />
@@ -109,9 +101,7 @@ export const ToastPositionSetter = () => {
           onClick={() => handleChange(ToastPosition.BottomLeft)}
         >
           <Icon
-            className={classNames(
-              position === ToastPosition.BottomLeft && activeIcon
-            )}
+            className={cn(position === ToastPosition.BottomLeft && activeIcon)}
             size={3}
             name={IconNames.ARROW_BOTTOM_LEFT}
           />
@@ -121,7 +111,7 @@ export const ToastPositionSetter = () => {
           onClick={() => handleChange(ToastPosition.BottomCenter)}
         >
           <Icon
-            className={classNames(
+            className={cn(
               position === ToastPosition.BottomCenter && activeIcon
             )}
             size={3}
@@ -133,9 +123,7 @@ export const ToastPositionSetter = () => {
           onClick={() => handleChange(ToastPosition.BottomRight)}
         >
           <Icon
-            className={classNames(
-              position === ToastPosition.BottomRight && activeIcon
-            )}
+            className={cn(position === ToastPosition.BottomRight && activeIcon)}
             size={3}
             name={IconNames.ARROW_BOTTOM_RIGHT}
           />

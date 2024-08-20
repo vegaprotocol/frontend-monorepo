@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import * as RadioGroup from '@radix-ui/react-toggle-group';
 
 import { Side as ESide } from '@vegaprotocol/types';
@@ -22,7 +22,7 @@ export const Side = (props: {
       render={({ field }) => {
         return (
           <RadioGroup.Root
-            className="relative flex h-10 leading-10 bg-gs-700  rounded"
+            className="relative flex h-10 leading-10 bg-surface-2 rounded"
             type="single"
             {...field}
             onValueChange={(value) => {
@@ -32,12 +32,12 @@ export const Side = (props: {
             }}
           >
             <span
-              className={classNames(
+              className={cn(
                 'absolute top-0 left-0 rounded w-1/2 h-full transition-transform',
                 {
-                  'bg-vega-green-600 dark:bg-vega-green-650':
+                  'bg-green-600 dark:bg-green-650':
                     field.value === ESide.SIDE_BUY,
-                  'bg-vega-red-500 dark:bg-vega-red-600 translate-x-full':
+                  'bg-red-500 dark:bg-red-600 translate-x-full':
                     field.value === ESide.SIDE_SELL,
                 }
               )}
@@ -47,10 +47,9 @@ export const Side = (props: {
                 value={value}
                 key={value}
                 data-testid={`order-side-${value}`}
-                className={classNames(
+                className={cn(
                   'flex gap-2 justify-center items-center flex-1 relative text-sm rounded transition-colors',
-                  'data-[state=off]:hover:bg-gs-500',
-                  'data-[state=off]:text-gs-200',
+                  'data-[state=off]:hover:bg-surface-3',
                   'data-[state=on]:text-white'
                 )}
               >

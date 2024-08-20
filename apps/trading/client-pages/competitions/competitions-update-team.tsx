@@ -10,7 +10,7 @@ import {
 import {
   Loader,
   Splash,
-  TradingDialog,
+  Dialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -48,7 +48,7 @@ export const CompetitionsUpdateTeam = () => {
             <VegaIcon
               name={VegaIconNames.CHEVRON_LEFT}
               size={12}
-              className="text-gs-100 "
+              className="text-surface-1-fg "
             />{' '}
             <span className="group-hover:underline">
               {t('Go back to the team profile')}
@@ -150,9 +150,9 @@ const UpdateTeamFormContainer = ({
         onSubmit={onSubmit}
         defaultValues={defaultValues}
       />
-      <TradingDialog
+      <Dialog
         open={dialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setDialogOpen(open);
         }}
         title={t('Update a team')}
@@ -173,7 +173,7 @@ const UpdateTeamFormContainer = ({
           }
           confirmedLabel={t('Changes successfully saved to your team.')}
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

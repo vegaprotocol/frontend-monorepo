@@ -5,22 +5,22 @@ import { truncateByChars } from '@vegaprotocol/utils';
 import {
   VegaIcon,
   VegaIconNames,
-  TradingButton as Button,
+  Button,
   Intent,
-  TradingDropdown,
-  TradingDropdownTrigger,
-  TradingDropdownContent,
-  TradingDropdownRadioGroup,
-  TradingDropdownSeparator,
-  TradingDropdownItem,
-  TradingDropdownRadioItem,
-  TradingDropdownItemIndicator,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuRadioItem,
+  DropdownMenuItemIndicator,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
@@ -53,10 +53,10 @@ export const VegaWalletConnectButton = ({
 
   if (status === 'connected') {
     return (
-      <TradingDropdown
+      <DropdownMenu
         open={dropdownOpen}
         trigger={
-          <TradingDropdownTrigger
+          <DropdownMenuTrigger
             data-testid="manage-vega-wallet"
             onClick={() => {
               refreshKeys();
@@ -64,7 +64,7 @@ export const VegaWalletConnectButton = ({
             }}
           >
             <Button
-              size="small"
+              size="sm"
               icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />}
             >
               {activeKey ? (
@@ -79,10 +79,10 @@ export const VegaWalletConnectButton = ({
                 <>{'Select key'}</>
               )}
             </Button>
-          </TradingDropdownTrigger>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent
+        <DropdownMenuContent
           onInteractOutside={() => setDropdownOpen(false)}
           sideOffset={12}
           side="bottom"
@@ -97,9 +97,9 @@ export const VegaWalletConnectButton = ({
               onSelect={selectPubKey}
               isReadOnly={isReadOnly}
             />
-            <TradingDropdownSeparator />
+            <DropdownMenuSeparator />
             {!isReadOnly && (
-              <TradingDropdownItem
+              <DropdownMenuItem
                 data-testid="wallet-transfer"
                 role="link"
                 onClick={() => {
@@ -108,14 +108,14 @@ export const VegaWalletConnectButton = ({
                 }}
               >
                 {t('Transfer')}
-              </TradingDropdownItem>
+              </DropdownMenuItem>
             )}
-            <TradingDropdownItem data-testid="disconnect" onClick={disconnect}>
+            <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
               {t('Disconnect')}
-            </TradingDropdownItem>
+            </DropdownMenuItem>
           </div>
-        </TradingDropdownContent>
-      </TradingDropdown>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
@@ -126,7 +126,7 @@ export const VegaWalletConnectButton = ({
         onClick?.();
         openVegaWalletDialog();
       }}
-      size="small"
+      size="sm"
       intent={intent}
       icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
     >
@@ -157,7 +157,7 @@ const KeypairRadioGroup = ({
   });
 
   return (
-    <TradingDropdownRadioGroup value={pubKey} onValueChange={onSelect}>
+    <DropdownMenuRadioGroup value={pubKey} onValueChange={onSelect}>
       {pubKeys.map((pk) => {
         const profile = data?.partiesProfilesConnection?.edges.find(
           (e) => e.node.partyId === pk.publicKey
@@ -172,7 +172,7 @@ const KeypairRadioGroup = ({
           />
         );
       })}
-    </TradingDropdownRadioGroup>
+    </DropdownMenuRadioGroup>
   );
 };
 
@@ -192,7 +192,7 @@ const KeypairItem = ({
   const setOpen = useProfileDialogStore((store) => store.setOpen);
 
   return (
-    <TradingDropdownRadioItem value={pk.publicKey}>
+    <DropdownMenuRadioItem value={pk.publicKey}>
       <div>
         <div className="flex items-center gap-2">
           <span>{pk.name ? pk.name : t('Unnamed key')}</span>
@@ -213,7 +213,7 @@ const KeypairItem = ({
           {copied && <span className="text-xs">{t('Copied')}</span>}
         </div>
         <div
-          className={classNames('flex-1 mr-2 text-secondary text-sm')}
+          className={cn('flex-1 mr-2 text-surface-0-fg-muted text-sm')}
           data-testid={`key-${pk.publicKey}`}
         >
           {!isReadOnly && (
@@ -230,7 +230,7 @@ const KeypairItem = ({
           )}
         </div>
       </div>
-      <TradingDropdownItemIndicator />
-    </TradingDropdownRadioItem>
+      <DropdownMenuItemIndicator />
+    </DropdownMenuRadioItem>
   );
 };

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const NUM_AVATARS = 20;
 const AVATAR_PATHNAME_PATTERN = '/team-avatars/{id}.png';
@@ -28,7 +28,7 @@ export const TeamAvatar = ({
     <img
       src={imgUrl || getFallbackAvatar(teamId)}
       alt={alt || 'Team avatar'}
-      className={classNames('rounded-full bg-gs-700  shrink-0', {
+      className={cn('rounded-full bg-surface-2  shrink-0', {
         'w-20 h-20 lg:w-[112px] lg:h-[112px]': size === 'large',
         'w-10 h-10': size === 'small',
       })}

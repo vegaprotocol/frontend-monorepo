@@ -31,17 +31,17 @@ export const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: theme.colors.gs[900],
-      color: theme.colors.vega.green.DEFAULT,
+      color: theme.colors.green,
       border: '0',
     },
     '.syntax-highlighter-wrapper .hljs-literal': {
-      color: theme.colors.vega.pink.DEFAULT,
+      color: theme.colors.pink,
     },
     '.syntax-highlighter-wrapper .hljs-number': {
-      color: theme.colors.vega.orange.DEFAULT,
+      color: theme.colors.orange,
     },
     '.syntax-highlighter-wrapper .hljs-string': {
-      color: theme.colors.vega.blue.DEFAULT,
+      color: theme.colors.blue,
     },
     '.clip-path-rounded': {
       clipPath: 'circle(50%)',

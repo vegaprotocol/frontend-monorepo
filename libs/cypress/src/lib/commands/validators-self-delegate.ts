@@ -19,11 +19,12 @@ export const addValidatorsSelfDelegate = () => {
       throw new Error('API_NODE not configured');
     }
 
+    const url = new URL('graphql', apiNode);
     const config = {
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
-      vegaUrl: apiNode.graphQLApiUrl,
+      vegaUrl: url.href,
       faucetUrl: Cypress.env('FAUCET_URL'),
     };
     setGraphQLEndpoint(config.vegaUrl);

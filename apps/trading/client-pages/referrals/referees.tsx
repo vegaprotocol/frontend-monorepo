@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { ns, useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   Loader,
   TextChildrenTooltip as Tooltip,
@@ -58,7 +58,7 @@ export const RefereesTable = ({
         <div>
           <h2 className="mb-5 text-2xl">{t('Referees')}</h2>
           <div
-            className={classNames(
+            className={cn(
               collapsed && [
                 'relative max-h-96 overflow-hidden',
                 'after:w-full after:h-20 after:absolute after:bottom-0 after:left-0',
@@ -67,7 +67,7 @@ export const RefereesTable = ({
             )}
           >
             <button
-              className={classNames(
+              className={cn(
                 'absolute left-1/2 bottom-0 z-10 p-2 translate-x-[-50%]',
                 {
                   hidden: !collapsed,

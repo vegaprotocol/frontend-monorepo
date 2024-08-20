@@ -84,17 +84,17 @@ export const WithdrawalProgress = ({ id, txStatus }: TxsStatsInfoProps) => {
 
 const classes = {
   indicatorFailed:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-pink-600 bg-vega-pink-600 text-center text-white font-bold leading-5',
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-pink-600 bg-pink-600 text-center text-white font-bold leading-5',
   textFailed:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-pink',
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-pink',
   indicatorComplete:
-    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-vega-green bg-vega-green text-center text-white leading-5',
+    'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-green bg-green text-center text-white leading-5',
   textComplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-vega-green',
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-green',
   indicatorIncomplete:
     'rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gs-700 text-center leading-5',
   textIncomplete:
-    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gs-100',
+    'absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-surface-1-fg',
 };
 
 interface WithdrawalProgressIndicatorProps {
@@ -140,7 +140,7 @@ export function WithdrawalProgressSeparator({
   return (
     <div
       className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-        isComplete ? 'border-vega-green' : 'border-gs-700'
+        isComplete ? 'border-green' : 'border-gs-700'
       }`}
     ></div>
   );

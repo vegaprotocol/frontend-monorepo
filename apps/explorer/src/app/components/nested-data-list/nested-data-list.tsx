@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import isObject from 'lodash/isObject';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { Icon } from '@vegaprotocol/ui-toolkit';
@@ -76,14 +76,14 @@ const NestedDataListItem = ({
   );
   const isArr = isArray(value);
 
-  const listItemClasses = classNames('pl-4 border-l-4', {
+  const listItemClasses = cn('pl-4 border-l-4', {
     'pt-10 last:pb-0': hasChildren,
     'first:pt-0': hasChildren && !index,
     'pt-2': !hasChildren && index,
   });
 
-  const titleClasses = classNames({
-    'text-xl pl-4 border-l-4 font-alpha calt': hasChildren,
+  const titleClasses = cn({
+    'text-xl pl-4 border-l-4 font-alt calt': hasChildren,
     'text-base font-medium whitespace-nowrap': !hasChildren,
   });
 
@@ -103,7 +103,7 @@ const NestedDataListItem = ({
               onClick={toggleVisible}
             >
               <span className="">{title}</span>
-              <small className="px-1 text-sm rounded bg-gs-200">
+              <small className="px-1 text-sm rounded bg-surface-3">
                 {isArr ? 'array' : typeof value}
               </small>
               <Icon
@@ -117,7 +117,7 @@ const NestedDataListItem = ({
           )}
         </h4>
         {!hasChildren && (
-          <code className="text-gs-100 mb-2 last:mb-0 break-all">
+          <code className="text-surface-1-fg mb-2 last:mb-0 break-all">
             {JSON.stringify(value, null, '  ')}
           </code>
         )}

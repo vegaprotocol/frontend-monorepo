@@ -88,7 +88,7 @@ export const ConnectionOptions = ({
           </ul>
           {error && error.code !== ConnectorErrors.userRejected.code && (
             <p
-              className="text-danger text-sm first-letter:uppercase"
+              className="text-intent-danger text-sm first-letter:uppercase"
               data-testid="connection-error"
             >
               {error.message}
@@ -119,9 +119,9 @@ interface ConnectionOptionProps {
 }
 
 const CONNECTION_OPTION_CLASSES =
-  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-gs-800';
+  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1';
 const CONNECTION_OPTION_CLASSES_DESC =
-  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-gs-800';
+  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-surface-1';
 
 export const ConnectionOptionDefault = ({
   id,
@@ -135,7 +135,7 @@ export const ConnectionOptionDefault = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="first-letter:capitalize">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     );
@@ -181,7 +181,7 @@ export const ConnectionOptionInjected = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     ) : (
@@ -194,7 +194,7 @@ export const ConnectionOptionInjected = ({
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionLinkWithDescription>
     );
@@ -241,7 +241,7 @@ export const ConnectionOptionSnap = ({
       <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionButtonWithDescription>
     ) : (
@@ -250,7 +250,7 @@ export const ConnectionOptionSnap = ({
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
-          <span className="text-muted text-sm">{description}</span>
+          <span className="text-surface-0-fg-muted text-sm">{description}</span>
         </span>
       </ConnectionOptionLinkWithDescription>
     );

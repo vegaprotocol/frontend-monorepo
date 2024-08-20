@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { Link, useSearchParams } from 'react-router-dom';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import {
   type DispatchMetric,
@@ -96,7 +96,7 @@ export const RewardDetailContainer = (props: {
   });
   const total = BigNumber.sum.apply(null, amounts);
 
-  const labelClasses = 'text-sm text-muted';
+  const labelClasses = 'text-sm text-surface-1-fg-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
   const asset = first.transfer.asset;
@@ -154,7 +154,7 @@ export const RewardDetailContainer = (props: {
             ]
           }
         </HeaderPage>
-        <p className="text-muted text-4xl">
+        <p className="text-surface-1-fg-muted text-4xl">
           {formatNumber(total)} <span className="calt">{asset.symbol}</span>
         </p>
       </header>
@@ -168,7 +168,7 @@ export const RewardDetailContainer = (props: {
           <h2>{t('Entry conditions')}</h2>
           <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
             <div>
-              <dd className={classNames(valueClasses, 'calt')}>
+              <dd className={cn(valueClasses, 'calt')}>
                 {EntityScopeLabelMapping[entityScope]}
               </dd>
               <dt className={labelClasses}>{t('Entity scope')}</dt>
@@ -187,7 +187,7 @@ export const RewardDetailContainer = (props: {
               <dt className={labelClasses}>{t('Notional')}</dt>
             </div>
             <div>
-              <dd className={classNames(valueClasses, 'calt')}>
+              <dd className={cn(valueClasses, 'calt')}>
                 {DistributionStrategyMapping[strategy]}
               </dd>
               <dt className={labelClasses}>{t('Method')}</dt>

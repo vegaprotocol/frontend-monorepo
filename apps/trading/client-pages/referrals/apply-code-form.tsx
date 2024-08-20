@@ -1,11 +1,11 @@
 import {
-  Input,
+  TradingInput as Input,
   InputError,
   Loader,
-  TradingDialog,
+  Dialog,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useState } from 'react';
@@ -226,7 +226,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     <>
       <div
         data-testid="referral-apply-code-form"
-        className="bg-gs-800  mx-auto md:w-2/3 max-w-md rounded-lg p-8"
+        className="bg-surface-1 mx-auto md:w-2/3 max-w-md rounded-lg p-8"
       >
         <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
@@ -238,7 +238,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           )}
         </p>
         <form
-          className={classNames('flex w-full flex-col gap-4', {
+          className={cn('flex w-full flex-col gap-4', {
             'animate-shake': Boolean(errors.code),
           })}
           onSubmit={handleSubmit(onSubmit)}
@@ -258,7 +258,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
                 },
               })}
               placeholder="Enter a code"
-              className="bg-gs-900  mb-2"
+              className="mb-2"
             />
           </label>
           <RainbowButton variant="border" {...getButtonProps()} />
@@ -304,10 +304,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         </div>
       ) : null}
 
-      <TradingDialog
+      <Dialog
         title={t('Apply a referral code')}
         open={dialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setDialogOpen(open);
         }}
       >
@@ -322,7 +322,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           }}
           resetLabel={t('Back to referrals')}
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

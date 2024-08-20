@@ -62,7 +62,7 @@ const ProposalTypeTags = ({
       <div data-testid="proposal-type">
         <ProposalInfoLabel variant="secondary">
           <span>{t('Batch Proposal')}</span>
-          <span className="bg-gs-600 rounded-full px-1 text-center font-glitch">
+          <span className="bg-surface-3 rounded-full px-1 text-center">
             {proposal.subProposals?.length || 0}
           </span>
         </ProposalInfoLabel>
@@ -330,10 +330,10 @@ const ProposalDetails = ({
   if (proposal.__typename === 'BatchProposal' && proposal.subProposals) {
     details = (
       <div>
-        <h3 className="text-xl border-b border-default pb-3 mb-3">
+        <h3 className="text-xl border-b border-gs-300 dark:border-gs-700 pb-3 mb-3">
           Proposals in batch
         </h3>
-        <ul className="flex flex-col gap-2 border-b border-default pb-3 mb-3">
+        <ul className="flex flex-col gap-2 border-b border-gs-300 dark:border-gs-700 pb-3 mb-3">
           {proposal.subProposals.map((p, i) => {
             if (!p?.terms) return null;
             return (
@@ -417,7 +417,7 @@ const VoteStateText = ({
     case ProposalState.STATE_OPEN: {
       return (
         <p {...props}>
-          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+          <span className={nowToCloseInHours < 6 ? 'text-orange' : ''}>
             {t('{{time}} left to vote', {
               time: formatDistanceToNowStrict(new Date(closingDatetime)),
             })}
@@ -532,7 +532,7 @@ const BatchProposalStateText = ({
     case ProposalState.STATE_OPEN: {
       return (
         <p {...props}>
-          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+          <span className={nowToCloseInHours < 6 ? 'text-orange' : ''}>
             {t('{{time}} left to vote', {
               time: formatDistanceToNowStrict(new Date(closingDatetime)),
             })}
@@ -717,7 +717,7 @@ export const CancelTransferSummary = ({
 };
 
 const Badge = ({ children }: { children: ReactNode }) => (
-  <div className="rounded px-1 py-[2px] font-alpha text-xs items-center gap-1 inline-flex bg-gs-300 text-gs-50">
+  <div className="rounded px-1 py-[2px] text-xs items-center gap-1 inline-flex bg-surface-3 text-gs-50">
     {children}
   </div>
 );

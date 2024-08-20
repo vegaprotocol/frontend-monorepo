@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import locators from '../locators';
 import { className as defaultClassName } from './style';
@@ -13,7 +13,7 @@ export function Tick({
       height={size}
       data-testid={locators.tickIcon}
       viewBox="0 0 16 16"
-      className={classnames(defaultClassName, className)}
+      className={cn(defaultClassName, className)}
     >
       <path
         fillRule="evenodd"

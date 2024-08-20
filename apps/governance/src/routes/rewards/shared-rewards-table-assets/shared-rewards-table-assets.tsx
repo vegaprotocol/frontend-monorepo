@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import type { ReactNode } from 'react';
@@ -27,18 +27,18 @@ interface ColumnHeaderProps {
 }
 
 const headerGridItemStyles = (last = false) =>
-  classNames('border-r border-b border-default', 'py-3 px-5', {
+  cn('border-r border-b border-gs-300 dark:border-gs-700', 'py-3 px-5', {
     'border-r-0': last,
   });
 
 export const rowGridItemStyles = (last = false) =>
-  classNames('relative', 'border-r border-b border-default', {
+  cn('relative', 'border-r border-b border-gs-300 dark:border-gs-700', {
     'border-r-0': last,
   });
 
-const gridStyles = classNames(
+const gridStyles = cn(
   'grid grid-cols-[repeat(4,minmax(100px,auto))] max-w-full overflow-auto',
-  `border-t border-default`,
+  `border-t border-gs-300 dark:border-gs-700`,
   'text-sm'
 );
 
@@ -48,11 +48,11 @@ const ColumnHeader = ({
   className,
 }: ColumnHeaderProps) => (
   <div className={className}>
-    <h2 className="mb-1 text-sm text-gs-100">{title}</h2>
+    <h2 className="mb-1 text-sm text-surface-1-fg">{title}</h2>
     {tooltipContent && (
       <Tooltip description={tooltipContent}>
         <button>
-          <Icon name={'info-sign'} className="text-gs-100" />
+          <Icon name={'info-sign'} className="text-surface-1-fg" />
         </button>
       </Tooltip>
     )}

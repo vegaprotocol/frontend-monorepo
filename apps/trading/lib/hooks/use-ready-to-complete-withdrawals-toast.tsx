@@ -93,6 +93,7 @@ const MultipleReadyToWithdrawToastContent = ({ count }: { count: number }) => {
       </p>
       <p className="mt-2">
         <Button
+          intent={Intent.Warning}
           data-testid="toast-view-withdrawals"
           size="xs"
           onClick={() => navigate(Links.PORTFOLIO())}
@@ -177,6 +178,7 @@ const SingleReadyToWithdrawToastContent = ({
   const completeButton = (
     <p className="mt-2">
       <Button
+        intent={Intent.Warning}
         data-testid="toast-complete-withdrawal"
         size="xs"
         onClick={submitWithdrawAsset}

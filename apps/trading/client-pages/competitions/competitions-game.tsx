@@ -164,7 +164,7 @@ export const CompetitionsGame = () => {
         <HeaderPage>
           {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
         </HeaderPage>
-        <p className="text-muted text-4xl">
+        <p className="text-surface-1-fg-muted text-4xl">
           {addDecimalsFormatNumberQuantum(
             amount,
             asset.decimals,
@@ -189,7 +189,7 @@ export const CompetitionsGame = () => {
       {gameId && (
         <section>
           <Tabs defaultValue="scores">
-            <div className="flex justify-between items-center border-b border-default">
+            <div className="flex justify-between items-center border-b border-gs-300 dark:border-gs-700">
               <TabsList>
                 <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
                 <TabsTrigger value="history">{t('Score history')}</TabsTrigger>
@@ -260,7 +260,7 @@ const EntryConditions = ({
   const notional =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
 
-  const labelClasses = 'text-sm text-muted';
+  const labelClasses = 'text-sm text-surface-1-fg-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
   return (
@@ -325,7 +325,7 @@ const GameDetails = ({
           .times(feeCap)
       : null;
 
-  const labelClasses = 'text-sm text-muted';
+  const labelClasses = 'text-sm text-surface-1-fg-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
   return (

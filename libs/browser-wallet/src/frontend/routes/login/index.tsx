@@ -1,4 +1,4 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -84,7 +84,7 @@ export const Login = () => {
           data-testid={locators.loginButton}
           fill={true}
           className="mt-2"
-          variant="primary"
+          intent={Intent.Primary}
           type="submit"
           disabled={!passphrase}
         />

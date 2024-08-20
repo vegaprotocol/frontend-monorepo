@@ -1,15 +1,15 @@
 import {
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItemIndicator,
-  TradingDropdownRadioGroup,
-  TradingDropdownRadioItem,
-  TradingDropdownTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../lib/use-t';
 import { type TicketType } from './schemas';
@@ -23,7 +23,7 @@ export const TicketTypeSelect = ({
 }) => {
   const t = useT();
   const toggleClasses =
-    'flex-1 -mb-px px-0.5 py-1.5 border-b-2 border-b-transparent text-secondary';
+    'flex-1 -mb-px px-0.5 py-1.5 text-surface-2-fg-muted border-b-2 border-b-transparent';
 
   const stopOptions = useStopOptions();
   const toggles = useToggles();
@@ -31,7 +31,7 @@ export const TicketTypeSelect = ({
 
   return (
     <ToggleGroup.Root
-      className="flex border-b border-default"
+      className="flex border-b border-gs-300 dark:border-gs-700"
       type="single"
       value={type}
       onValueChange={(type) => {
@@ -44,53 +44,53 @@ export const TicketTypeSelect = ({
           value={itemValue}
           key={itemValue}
           data-testid={`order-type-${itemValue}`}
-          className={classNames(
+          className={cn(
             toggleClasses,
-            'data-[state=on]:border-b-gs-400 data-[state=on]:text-gs-50'
+            'data-[state=on]:border-b-gs-500 data-[state=on]:text-surface-2-fg'
           )}
         >
           {label}
         </ToggleGroup.Item>
       ))}
-      <TradingDropdown
+      <DropdownMenu
         trigger={
-          <TradingDropdownTrigger>
+          <DropdownMenuTrigger>
             <button
               data-testid="order-type-stop"
-              className={classNames(
+              className={cn(
                 toggleClasses,
                 'flex gap-1 justify-center items-center',
                 {
-                  'border-b-gs-400': selectedStopOption,
-                  'text-gs-50 ': selectedStopOption,
+                  'border-b-gs-500': selectedStopOption,
+                  'text-surface-2-fg': selectedStopOption,
                 }
               )}
             >
               {selectedStopOption ? selectedStopOption.label : t('Stop')}
               <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
             </button>
-          </TradingDropdownTrigger>
+          </DropdownMenuTrigger>
         }
       >
-        <TradingDropdownContent align="end">
-          <TradingDropdownRadioGroup
+        <DropdownMenuContent align="end">
+          <DropdownMenuRadioGroup
             onValueChange={(value) => onTypeChange(value as TicketType)}
             value={type}
           >
             {stopOptions.map(({ label, value: itemValue }) => (
-              <TradingDropdownRadioItem
+              <DropdownMenuRadioItem
                 key={itemValue}
                 value={itemValue}
                 textValue={itemValue}
                 data-testid={`order-type-${itemValue}`}
               >
                 {label}
-                <TradingDropdownItemIndicator />
-              </TradingDropdownRadioItem>
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
             ))}
-          </TradingDropdownRadioGroup>
-        </TradingDropdownContent>
-      </TradingDropdown>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </ToggleGroup.Root>
   );
 };

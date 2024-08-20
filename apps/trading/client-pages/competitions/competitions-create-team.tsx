@@ -2,9 +2,9 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   CopyWithTooltip,
   Intent,
-  TradingAnchorButton,
-  TradingButton,
-  TradingDialog,
+  AnchorButton,
+  Button,
+  Dialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -61,16 +61,10 @@ export const CompetitionsCreateTeam = () => {
         <Box className="flex flex-col gap-4">
           <Link
             to={Links.COMPETITIONS()}
-            className="text-xs inline-flex items-center gap-1 group"
+            className="underline underline-offset-4 inline-flex items-center gap-1"
           >
-            <VegaIcon
-              name={VegaIconNames.CHEVRON_LEFT}
-              size={12}
-              className="text-gs-100 "
-            />{' '}
-            <span className="group-hover:underline">
-              {t('Go back to the competitions')}
-            </span>
+            <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />{' '}
+            <span>{t('Go back to the competitions')}</span>
           </Link>
           <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">{title}</h1>
           {canShowForm ? (
@@ -156,13 +150,13 @@ const CreateTeamFormContainer = ({
             )}
           </p>
         )}
-        <TradingAnchorButton
+        <AnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
           intent={Intent.Primary}
           target="_blank"
         >
           {t('Stake some $VEGA now')}
-        </TradingAnchorButton>
+        </AnchorButton>
       </div>
     );
   }
@@ -192,9 +186,9 @@ const CreateTeamFormContainer = ({
             : undefined
         }
       />
-      <TradingDialog
+      <Dialog
         open={dialogOpen}
-        onOpenChange={(open) => {
+        onChange={(open) => {
           setDialogOpen(open);
         }}
         title={t('Create a team')}
@@ -224,12 +218,12 @@ const CreateTeamFormContainer = ({
                   <span className="truncate">{teamCode}</span>
 
                   <CopyWithTooltip text={teamCode}>
-                    <TradingButton
-                      size="extra-small"
+                    <Button
+                      size="xs"
                       icon={<VegaIcon name={VegaIconNames.COPY} />}
                     >
                       <span>{t('Copy')}</span>
-                    </TradingButton>
+                    </Button>
                   </CopyWithTooltip>
                 </div>
               </div>
@@ -240,7 +234,7 @@ const CreateTeamFormContainer = ({
             )
           }
         />
-      </TradingDialog>
+      </Dialog>
     </>
   );
 };

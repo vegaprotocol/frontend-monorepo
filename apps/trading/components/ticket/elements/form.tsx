@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type HTMLAttributes } from 'react';
 
 export const Form = (props: HTMLAttributes<HTMLFormElement>) => {
@@ -18,7 +18,7 @@ export const FormGrid = ({
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames('w-full flex items-start gap-2', className)}
+      className={cn('w-full flex items-start gap-2', className)}
       {...props}
     />
   );
@@ -46,7 +46,7 @@ export const InputLabel = ({
 }) => {
   return (
     <>
-      <span className="text-default">{label}</span> {symbol}
+      <span className="text-surface-2-fg">{label}</span> {symbol}
     </>
   );
 };

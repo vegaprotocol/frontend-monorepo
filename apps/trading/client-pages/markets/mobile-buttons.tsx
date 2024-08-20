@@ -2,11 +2,11 @@ import {
   BottomDrawer,
   BottomDrawerContent,
   Intent,
-  TradingButton,
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItem,
-  TradingDropdownTrigger,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -41,80 +41,74 @@ export const MarketActionDrawer = () => {
         {!pubKeys.length || isReadOnly ? (
           <>
             <div className="flex-1">
-              <TradingButton
+              <Button
                 intent={Intent.Primary}
-                size="medium"
+                size="md"
                 onClick={() => {
                   openVegaWalletDialog();
                 }}
                 fill={true}
               >
                 {t('Connect')}
-              </TradingButton>
+              </Button>
             </div>
             <div className="flex-1">
-              <TradingButton
-                onClick={() => setDrawer(DrawerView.Trade)}
-                fill={true}
-              >
+              <Button onClick={() => setDrawer(DrawerView.Trade)} fill={true}>
                 {t('Trade')}
-              </TradingButton>
+              </Button>
             </div>
           </>
         ) : (
           <>
             <div className="flex-1">
-              <TradingButton
-                onClick={() => setDrawer(DrawerView.Trade)}
-                fill={true}
-              >
+              <Button onClick={() => setDrawer(DrawerView.Trade)} fill={true}>
                 {t('Trade')}
-              </TradingButton>
+              </Button>
             </div>
             <div className="flex-1">
-              <TradingButton
+              <Button
                 onClick={() => setDrawer(DrawerView.Deposit)}
                 role="link"
                 fill={true}
               >
                 {t('Deposit')}
-              </TradingButton>
+              </Button>
             </div>
           </>
         )}
         <div className="flex-1">
-          <TradingDropdown
+          <DropdownMenu
             trigger={
-              <TradingDropdownTrigger>
-                <TradingButton fill={true}>...</TradingButton>
-              </TradingDropdownTrigger>
+              <DropdownMenuTrigger>
+                <Button fill={true}>...</Button>
+              </DropdownMenuTrigger>
             }
           >
-            <TradingDropdownContent>
-              <TradingDropdownItem
+            <DropdownMenuContent>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Deposit)}
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Withdraw)}
               >
                 <VegaIcon name={VegaIconNames.WITHDRAW} /> {t('Withdraw')}
-              </TradingDropdownItem>
-              <TradingDropdownItem
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 role="link"
                 onClick={() => setDrawer(DrawerView.Transfer)}
               >
                 <VegaIcon name={VegaIconNames.TRANSFER} /> {t('Transfer')}
-              </TradingDropdownItem>
-              <TradingDropdownItem onClick={() => setDrawer(DrawerView.Info)}>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDrawer(DrawerView.Info)}>
                 <VegaIcon name={VegaIconNames.BREAKDOWN} />{' '}
                 {t('Market specification')}
-              </TradingDropdownItem>
-            </TradingDropdownContent>
-          </TradingDropdown>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <TradeDrawer drawer={drawer} setDrawer={setDrawer} />

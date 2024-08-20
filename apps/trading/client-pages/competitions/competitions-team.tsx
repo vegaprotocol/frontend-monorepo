@@ -10,7 +10,7 @@ import {
   VegaIcon,
   VegaIconNames,
   Tooltip,
-  TradingAnchorButton,
+  AnchorButton,
   Intent,
   CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
@@ -151,12 +151,12 @@ const TeamPage = ({
   const createdAt = new Date(team.createdAt);
 
   const closedIndicator = team.closed ? (
-    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300 dark:border-gs-700 px-1 pt-px flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.LOCK} size={10} />
       <span>{t('Private')}</span>
     </div>
   ) : (
-    <div className="border rounded border-gs-300  px-1 pt-[1px] flex items-baseline gap-1">
+    <div className="border rounded border-gs-300 dark:border-gs-700 px-1 pt-px flex items-baseline gap-1">
       <VegaIcon name={VegaIconNames.GLOBE} size={10} />
       <span>{t('Public')}</span>
     </div>
@@ -179,14 +179,14 @@ const TeamPage = ({
             {team.teamUrl && team.teamUrl.length > 0 && (
               <Tooltip description={t("Visit the team's page.")}>
                 <span>
-                  <TradingAnchorButton
+                  <AnchorButton
                     intent={Intent.Info}
                     target="_blank"
                     referrerPolicy="no-referrer"
                     href={team.teamUrl}
                   >
                     <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-                  </TradingAnchorButton>
+                  </AnchorButton>
                 </span>
               </Tooltip>
             )}
@@ -199,17 +199,17 @@ const TeamPage = ({
               </button>
             </CopyWithTooltip>
           </div>
-          <div className="flex gap-2 items-baseline text-xs text-muted font-alpha calt">
+          <div className="flex gap-2 items-baseline text-xs text-surface-1-fg-muted font-alt calt">
             {closedIndicator}
             <div className="">
               {t('Created at')}:{' '}
-              <span className="text-gs-600 ">{formatDate(createdAt)}</span> (
-              {t('epoch')}: {team.createdAtEpoch})
+              <span className="text-surface-1-fg">{formatDate(createdAt)}</span>{' '}
+              ({t('epoch')}: {team.createdAtEpoch})
             </div>
             <div>
               <span>
                 {t('ID')}:{' '}
-                <span className="text-gs-600 ">
+                <span className="text-surface-1-fg">
                   {truncateMiddle(team.teamId)}
                 </span>{' '}
               </span>
@@ -483,16 +483,18 @@ const RefereeLink = ({
             'You can set your pubkey alias by using the key selector in the top right corner.'
           )}
         >
-          <button className="text-muted text-xs">
+          <button className="text-surface-1-fg-muted text-xs">
             <VegaIcon name={VegaIconNames.QUESTION_MARK} size={14} />
           </button>
         </Tooltip>
       )}
       {alias && (
-        <span className="text-muted text-xs">{truncateMiddle(pubkey)}</span>
+        <span className="text-surface-1-fg-muted text-xs">
+          {truncateMiddle(pubkey)}
+        </span>
       )}
       {isCreator && (
-        <span className="text-muted text-xs border border-gs-300   rounded px-1 py-[1px]">
+        <span className="text-surface-1-fg-muted text-xs border border-gs-300   rounded px-1 py-[1px]">
           {t('Owner')}
         </span>
       )}

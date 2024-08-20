@@ -1,9 +1,9 @@
 import type { ReactNode, ReactElement } from 'react';
-import classNames from 'classnames';
 import { getIntentBorder, Intent } from '../../utils/intent';
 import { Loader } from '../loader';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
+import { cn } from '../../utils/cn';
 
 interface CalloutRootProps {
   children?: ReactNode;
@@ -45,7 +45,7 @@ const getIconElement = ({
   CalloutProps,
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
-  const wrapperClassName = 'mt-1';
+  const wrapperClassName = 'text-surface-0-fg';
   if (isLoading) {
     return (
       <div className={wrapperClassName}>
@@ -57,7 +57,7 @@ const getIconElement = ({
     return (
       <Icon
         name={iconName}
-        className={classNames(wrapperClassName, 'fill-current')}
+        className={cn(wrapperClassName, 'fill-current')}
         size={6}
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
@@ -87,18 +87,22 @@ export function Callout({
     isLoading,
   });
 
-  const className = classNames(
+  const className = cn(
     'flex gap-4',
     'px-6 py-4',
+    'border',
     getIntentBorder(intent)
   );
+
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`
     : 'div';
   const body = (
     <>
       {title && (
-        <TitleTag className="text-xl mt-0 mb-2 last:mb-0">{title}</TitleTag>
+        <TitleTag className="text-surface-0-fg text-xl mt-0 mb-2 last:mb-0">
+          {title}
+        </TitleTag>
       )}
       {children}
     </>

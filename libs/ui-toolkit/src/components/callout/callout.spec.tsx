@@ -17,25 +17,35 @@ it('renders title and icon', () => {
 
 it(`Applies class for success intent`, () => {
   render(<Callout intent={Intent.Danger} />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-danger');
+  expect(screen.getByTestId('callout')).toHaveClass(
+    'border-intent-danger-outline'
+  );
 });
 
 it(`Applies class for warning intent`, () => {
   render(<Callout intent={Intent.Warning} />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-warning');
+  expect(screen.getByTestId('callout')).toHaveClass(
+    'border-intent-warning-outline'
+  );
 });
 
 it(`Applies class for danger intent`, () => {
   render(<Callout intent={Intent.Danger} />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-danger');
+  expect(screen.getByTestId('callout')).toHaveClass(
+    'border-intent-danger-outline'
+  );
 });
 
 it(`Applies class for primary intent`, () => {
   render(<Callout intent={Intent.Primary} />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-vega-blue-300');
+  expect(screen.getByTestId('callout')).toHaveClass(
+    'border-intent-primary-outline'
+  );
 });
 
 it(`Applies class for none intent`, () => {
   render(<Callout />);
-  expect(screen.getByTestId('callout')).toHaveClass('border-gs-500 ');
+  expect(screen.getByTestId('callout')).toHaveClass(
+    'border-intent-none-outline'
+  );
 });

@@ -13,20 +13,20 @@ export const Default = Template.bind({});
 
 export const Primary = Template.bind({});
 Primary.args = {
-  variant: Intent.Primary,
+  intent: Intent.Primary,
 };
 
 export const Success = Template.bind({});
 Success.args = {
-  variant: Intent.Success,
+  intent: Intent.Success,
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
-  variant: Intent.Warning,
+  intent: Intent.Warning,
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
-  variant: Intent.Danger,
+  intent: Intent.Danger,
 };

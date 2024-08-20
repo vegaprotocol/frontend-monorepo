@@ -3,7 +3,6 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
   useEnvTriggerMapping,
-  Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
@@ -18,7 +17,7 @@ import { HashRouter, useLocation } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
 import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeInProgressNotification,
@@ -72,11 +71,11 @@ const Title = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
-  const { VEGA_ENV } = useEnvironment();
-  const gridClasses = classNames(
+  const gridClasses = cn(
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
+
   return (
     <div className="h-full overflow-hidden">
       <Head>
@@ -86,7 +85,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
+        <Navbar />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
@@ -103,7 +102,7 @@ function AppBody({ Component }: AppProps) {
       <MaybeConnectEagerly />
       <PartyActiveOrdersHandler />
       <Telemetry />
-      <div className="hidden lg:block absolute bottom-3 right-3 z-10">
+      <div className="hidden lg:block absolute bottom-1.5 pb-px right-2 z-10">
         <NodeHealthContainer />
       </div>
     </div>

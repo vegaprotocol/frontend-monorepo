@@ -4,21 +4,21 @@ import {
   Popover,
   Switch,
   ToastPositionSetter,
-  TradingButton,
+  Button,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
 export const SettingsPopover = () => {
   return (
     <Popover
       trigger={
-        <span className="flex items-center justify-center w-7 h-7 hover:bg-gs-500  rounded-full">
+        <span className="flex items-center justify-center w-7 h-7 hover:bg-surface-3  rounded-full">
           <VegaIcon name={VegaIconNames.COG} size={18} />
         </span>
       }
@@ -38,7 +38,7 @@ export const Settings = () => {
 
   return (
     <section className="flex flex-col gap-3 p-4 w-96">
-      <h2 className="font-alpha calt uppercase">{t('Settings')}</h2>
+      <h2 className="font-alt calt uppercase">{t('Settings')}</h2>
       <SettingsGroup label={t('Dark mode')}>
         <Switch
           name="settings-theme-switch"
@@ -62,16 +62,16 @@ export const Settings = () => {
         <ToastPositionSetter />
       </SettingsGroup>
       <SettingsGroup label={t('Reset to default')}>
-        <TradingButton
+        <Button
           name="reset-to-defaults"
-          size="small"
+          size="sm"
           intent={Intent.None}
           onClick={() => {
             setOpen(true);
           }}
         >
           {t('Reset')}
-        </TradingButton>
+        </Button>
         <Dialog open={open} title={t('Reset')}>
           <div className="mb-4">
             <p>
@@ -85,7 +85,7 @@ export const Settings = () => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <TradingButton
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.Primary}
               onClick={() => {
@@ -95,8 +95,8 @@ export const Settings = () => {
               }}
             >
               {t('Yes, clear cache and refresh')}
-            </TradingButton>
-            <TradingButton
+            </Button>
+            <Button
               name="reset-to-defaults-cancel"
               intent={Intent.None}
               onClick={() => {
@@ -104,7 +104,7 @@ export const Settings = () => {
               }}
             >
               {t('No, keep settings')}
-            </TradingButton>
+            </Button>
           </div>
         </Dialog>
       </SettingsGroup>
@@ -112,11 +112,11 @@ export const Settings = () => {
         <dl className="text-sm grid grid-cols-2 gap-1">
           {process.env.GIT_TAG && (
             <>
-              <dt className="text-muted">{t('Version')}</dt>
+              <dt className="text-surface-1-fg-muted">{t('Version')}</dt>
               <dd>{process.env.GIT_TAG}</dd>
             </>
           )}
-          <dt className="text-muted">{t('Git commit hash')}</dt>
+          <dt className="text-surface-1-fg-muted">{t('Git commit hash')}</dt>
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
@@ -137,15 +137,17 @@ const SettingsGroup = ({
 }) => {
   return (
     <div
-      className={classNames('gap-2', {
+      className={cn('gap-2', {
         'flex items-start justify-between gap-2': inline,
       })}
     >
-      <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
+      <div className={cn({ 'w-3/4': inline, 'mb-2': !inline })}>
         <label className="text-sm" id={label}>
           {label}
         </label>
-        {helpText && <p className="text-xs text-muted">{helpText}</p>}
+        {helpText && (
+          <p className="text-xs text-surface-1-fg-muted">{helpText}</p>
+        )}
       </div>
       <div aria-describedby={label}>{children}</div>
     </div>

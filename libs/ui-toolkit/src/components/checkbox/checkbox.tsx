@@ -1,6 +1,6 @@
 import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import { type ElementRef, forwardRef, type ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
@@ -18,13 +18,13 @@ export const Checkbox = forwardRef<
   ElementRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
 >(({ checked, label, name, onCheckedChange, disabled = false }, ref) => {
-  const rootClasses = classNames(
+  const rootClasses = cn(
     'relative flex justify-center items-center w-[15px] h-[15px] mt-1',
     'border rounded-sm overflow-hidden',
     {
       'opacity-40 cursor-default': disabled,
-      'border-gs-600 bg-gs-200': !checked,
-      'border-gs-0': checked,
+      'border-gs-600 bg-surface-2': !checked,
+      'border-surface-0': checked,
     }
   );
 
@@ -40,11 +40,11 @@ export const Checkbox = forwardRef<
         disabled={disabled}
         data-testid={name}
       >
-        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-gs-0">
+        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-surface-0">
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-gs-900"
+              className="absolute w-[8px] h-[2px] bg-surface-2"
             />
           ) : (
             <Icon
@@ -56,8 +56,8 @@ export const Checkbox = forwardRef<
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
       <span
-        className={classNames('text-sm flex-1', {
-          'text-gs-100': disabled,
+        className={cn('text-sm flex-1', {
+          'text-surface-1-fg': disabled,
         })}
       >
         {label}

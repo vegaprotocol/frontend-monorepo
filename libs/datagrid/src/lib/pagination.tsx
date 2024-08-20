@@ -1,4 +1,4 @@
-import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 
 export const Pagination = ({
@@ -26,7 +26,7 @@ export const Pagination = ({
   }
 
   return (
-    <div className="border-default flex items-center justify-between border-t p-1">
+    <div className="border-gs-300 dark:border-gs-700 flex items-center justify-between border-t p-1">
       <div className="text-xs">
         {false}
         {showRetentionMessage &&
@@ -37,7 +37,7 @@ export const Pagination = ({
       <div className="flex items-center text-xs">
         <span>{rowMessage}</span>
         {pageInfo?.hasNextPage ? (
-          <Button size="extra-small" className="ml-1" onClick={onLoad}>
+          <Button size="xs" className="ml-1" onClick={onLoad}>
             {t('Load more')}
           </Button>
         ) : null}

@@ -4,9 +4,9 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
-import { Button } from './buttons';
+import { ReferralButton } from './buttons';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
 import { DApp, useLinks } from '@vegaprotocol/environment';
@@ -18,12 +18,12 @@ export const Tile = ({
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         'text-black dark:text-white',
         'overflow-hidden relative',
         'p-3 md:p-6',
         'rounded-lg',
-        'bg-gs-800 ',
+        'bg-surface-1 ',
         className
       )}
     >
@@ -51,7 +51,7 @@ export const StatTile = ({
   }
   return (
     <Tile>
-      <h3 data-testid={testId} className="mb-1 text-sm text-gs-100  calt">
+      <h3 data-testid={testId} className="mb-1 text-sm text-surface-1-fg  calt">
         {title}
       </h3>
       <div
@@ -61,7 +61,9 @@ export const StatTile = ({
         {children}
       </div>
       {description && (
-        <div className="text-sm text-left text-gs-100 ">{description}</div>
+        <div className="text-sm text-left text-surface-1-fg ">
+          {description}
+        </div>
       )}
     </Tile>
   );
@@ -71,7 +73,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   const t = useT();
   return (
     <Tile>
-      <h3 className="mb-1 text-sm text-gs-100  calt">{title}</h3>
+      <h3 className="mb-1 text-sm text-surface-1-fg  calt">{title}</h3>
       <div className="text-xs text-gs-300  leading-[3rem]">
         {t('No active program')}
       </div>
@@ -79,7 +81,7 @@ export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   );
 };
 
-const FADE_OUT_STYLE = classNames(
+const FADE_OUT_STYLE = cn(
   'after:w-5 after:h-full after:absolute after:top-0 after:right-0',
   'after:bg-gradient-to-l after:from-gs-800 after:to-transparent'
 );
@@ -116,7 +118,7 @@ export const CodeTile = ({
           }
         >
           <div
-            className={classNames(
+            className={cn(
               'relative bg-rainbow bg-clip-text text-transparent text-2xl lg:text-5xl overflow-hidden',
               FADE_OUT_STYLE
             )}
@@ -125,10 +127,10 @@ export const CodeTile = ({
           </div>
         </Tooltip>
         <CopyWithTooltip text={code} description={t('Copy referral code')}>
-          <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
+          <ReferralButton className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
             <span className="sr-only">{t('Copy')}</span>
             <VegaIcon size={20} name={VegaIconNames.COPY} />
-          </Button>
+          </ReferralButton>
         </CopyWithTooltip>
         <CopyWithTooltip
           text={applyCodeLink}
@@ -136,16 +138,16 @@ export const CodeTile = ({
             <>
               {t('Copy shareable apply code link')}
               {': '}
-              <a className="text-vega-blue-500 underline" href={applyCodeLink}>
+              <a className="text-blue-500 underline" href={applyCodeLink}>
                 {truncate(applyCodeLink, { length: 32 })}
               </a>
             </>
           }
         >
-          <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
+          <ReferralButton className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
             <span className="sr-only">{t('Copy')}</span>
             <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
-          </Button>
+          </ReferralButton>
         </CopyWithTooltip>
       </div>
     </StatTile>

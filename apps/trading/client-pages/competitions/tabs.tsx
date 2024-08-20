@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { type ComponentProps } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 
@@ -22,9 +22,9 @@ export const TabsTrigger = (
   return (
     <TabsPrimitive.Trigger
       {...props}
-      className={classNames(
-        'relative top-px uppercase border-b-2 py-4 border-transparent text-muted',
-        'data-[state=active]:border-vega-yellow data-[state=active]:text-gs-50'
+      className={cn(
+        'relative top-px uppercase border-b-2 py-4 border-transparent text-surface-1-fg-muted',
+        'data-[state=active]:border-yellow data-[state=active]:text-gs-50'
       )}
     />
   );

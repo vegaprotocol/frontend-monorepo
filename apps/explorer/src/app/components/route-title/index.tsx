@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes } from 'react';
 import React from 'react';
 
@@ -12,8 +12,8 @@ export const RouteTitle = ({
   className,
   ...props
 }: RouteTitleProps) => {
-  const classes = classnames(
-    'font-alpha calt',
+  const classes = cn(
+    'font-alt calt',
     'text-4xl',
     'uppercase',
     'mb-8',

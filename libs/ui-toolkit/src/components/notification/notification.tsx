@@ -1,22 +1,26 @@
 import { IconNames } from '@blueprintjs/icons';
 import type { IconName } from '@blueprintjs/icons';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ComponentProps, ReactNode } from 'react';
-import { Intent } from '../../utils/intent';
+import {
+  getIntentBackground,
+  getIntentBorder,
+  getIntentText,
+  Intent,
+} from '../../utils/intent';
 import { Icon } from '../icon';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 
 type NotificationProps = {
-  intent: Intent;
+  intent?: Intent;
   message: ReactNode | string;
-  size?: 'small' | 'medium';
   title?: string;
   buttonProps?: {
     text: string;
     action: () => void;
     className?: string;
     dataTestId?: string;
-    size?: ComponentProps<typeof TradingButton>['size'];
+    size?: ComponentProps<typeof Button>['size'];
     disabled?: boolean;
   };
   testId?: string;
@@ -36,98 +40,55 @@ const getIcon = (intent: Intent): IconName => {
 };
 
 export const Notification = ({
-  intent,
+  intent = Intent.None,
   message,
   title,
-  size = 'small',
   testId,
   buttonProps,
 }: NotificationProps) => {
-  if (intent === Intent.Primary) {
-    intent = Intent.Info;
-  }
-
   return (
     <div
       data-testid={testId || 'notification'}
-      className={classNames(
-        {
-          'border-gs-500 ': intent === Intent.None,
-          'border-vega-blue-350 dark:border-vega-blue-650':
-            intent === Intent.Info,
-          'border-vega-green-350 dark:border-vega-green-650':
-            intent === Intent.Success,
-          'border-vega-orange-350 dark:border-vega-orange-650':
-            intent === Intent.Warning,
-          'border-vega-red-350 dark:border-vega-red-650':
-            intent === Intent.Danger,
-        },
-        {
-          'bg-gs-700  ': intent === Intent.None,
-          'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Info,
-          'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
-          'bg-vega-orange-300 dark:bg-vega-orange-700':
-            intent === Intent.Warning,
-          'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
-        },
-        'shadow-[0px_2px_4px_0px_rgba(0,0,0,0.09)]',
-        'border rounded-[2px] p-2',
-        'flex items-start gap-1.5'
+      className={cn(
+        'flex items-start gap-2',
+        'rounded py-2 px-3 border',
+        getIntentBorder(intent),
+        getIntentBackground(intent)
       )}
     >
-      <div
-        className={classNames(
-          {
-            'text-gs-50 ': intent === Intent.None,
-            'text-vega-blue-500': intent === Intent.Info,
-            'text-vega-green-500': intent === Intent.Success,
-            'text-yellow-500': intent === Intent.Warning,
-            'text-vega-red-500': intent === Intent.Danger,
-            'mt-[0.125rem]': !title || (!!title && size === 'small'),
-            'mt-1': !!title && size === 'medium',
-          },
-          'flex items-start'
-        )}
-      >
+      <div className={cn('pt-px flex items-start', getIntentText(intent))}>
         <Icon size={4} name={getIcon(intent)} />
       </div>
       <div
-        className={classNames(
-          'flex flex-col items-start overflow-hidden gap-0',
-          'text-gs-50 ',
-          'font-alpha',
-          { 'text-sm': size === 'small', 'text-base': size === 'medium' }
+        className={cn(
+          'flex flex-col items-start overflow-hidden gap-1.5',
+          'text-gs-50 text-sm'
         )}
       >
         {title && (
-          <div
+          <h4
             key="title"
-            className="uppercase leading-none mb-2 max-w-full"
+            className="uppercase max-w-full truncate"
             title={title}
           >
-            <span className="block truncate">{title}</span>
-          </div>
+            {title}
+          </h4>
         )}
-        <div
-          key="message"
-          className={classNames('[word-break:break-word]', {
-            'mb-3': buttonProps,
-          })}
-        >
+        <div key="message" className="break-words">
           {message}
         </div>
         {buttonProps && (
-          <TradingButton
+          <Button
             intent={intent}
-            size={buttonProps.size || 'small'}
+            size={buttonProps.size || 'sm'}
             onClick={buttonProps.action}
-            className={classNames(buttonProps.className)}
+            className={cn(buttonProps.className)}
             data-testid={buttonProps.dataTestId}
             type="button"
             disabled={buttonProps.disabled || false}
           >
             {buttonProps.text}
-          </TradingButton>
+          </Button>
         )}
       </div>
     </div>

@@ -1,23 +1,138 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 
+@font-face {
+  font-family: AlphaLyrae;
+  src: url('/assets/AlphaLyrae.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --gs-0: 255 255 255;
-    --gs-50: 220 222 227;
-    --gs-100: 148 150 155;
-    --gs-200: 124 126 131;
-    --gs-300: 98 100 105;
-    --gs-400: 68 70 75;
-    --gs-500: 50 51 57;
-    --gs-600: 41 43 48;
-    --gs-700: 32 34 39;
-    --gs-800: 23 25 30;
-    --gs-900: 5 6 12;
+    /* Primitives */
+    --color-white: 255 255 255;
+    --color-black: 0 0 0;
+
+    --color-blue-300: 214 233 255;
+    --color-blue: 0 117 255;
+    --color-blue-700: 1 20 42;
+
+    --color-red-300: 248 163 185;
+    --color-red: 236 0 60;
+    --color-red-700: 47 0 12;
+
+    --color-orange-300: 255 236 214;
+    --color-orange: 255 135 0;
+    --color-orange-700: 42 23 1;
+
+    --color-green-300: 214 254 235;
+    --color-green: 0 247 128;
+    --color-green-700: 1 41 21;
+
+    /* grayscale */
+    --gs-0: var(--color-white);
+    --gs-50: 250 250 250;
+    --gs-50-hex: #fafafa;
+    --gs-100: 244 244 245;
+    --gs-100-hex: #f4f4f5;
+    --gs-200: 228 228 231;
+    --gs-200-hex: #e4e4e7;
+    --gs-300: 212 212 216;
+    --gs-300-hex: #d4d4d8;
+    --gs-400: 161 161 170;
+    --gs-400-hex: #a1a1aa;
+    --gs-500: 113 113 122;
+    --gs-500-hex: #71717a;
+    --gs-600: 82 82 91;
+    --gs-600-hex: #52525b;
+    --gs-700: 63 63 70;
+    --gs-700-hex: #3f3f46;
+    --gs-800: 39 39 42;
+    --gs-800-hex: #27272a;
+    --gs-900: 24 24 27;
+    --gs-900-hex: #18181b;
+    --gs-950: 9 9 11;
+    --gs-950-hex: #09090b;
+
+    /* Semantic colors
+     *
+     * - surface: standard background and foreground colors
+     * - intent: base bg color, eg buttons
+     * - intent-outline: borders
+     * - intent-foreground: card text color
+     * - intent-background: card bg color
+     * - intent-from: 'from' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     * - intent-to: 'to' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     */
+
+    --surface-0: var(--color-black);
+    --surface-0-fg: var(--gs-50);
+    --surface-0-fg-muted: var(--gs-800);
+    --surface-1: var(--gs-950);
+    --surface-1-fg: var(--gs-50);
+    --surface-1-fg-muted: var(--gs-400);
+    --surface-2: var(--gs-900);
+    --surface-2-fg: var(--gs-50);
+    --surface-2-fg-muted: var(--gs-400);
+    --surface-3: var(--gs-800);
+    --surface-3-fg: var(--gs-50);
+    --surface-3-fg-muted: var(--gs-600);
+
+    --intent-none: transparent;
+    --intent-none-outline: var(--gs-700);
+    --intent-none-foreground: var(--gs-50);
+    --intent-none-background: var(--gs-800);
+
+    --intent-primary: var(--color-blue);
+    --intent-primary-outline: var(--color-blue);
+    --intent-primary-foreground: var(--color-white);
+    --intent-primary-background: var(--color-blue-700);
+
+    --intent-secondary: var(--color-blue);
+    --intent-secondary-outline: var(--color-blue);
+    --intent-secondary-foreground: var(--color-white);
+    --intent-secondary-background: var(--color-blue-700);
+
+    --intent-danger: var(--color-red);
+    --intent-danger-outline: var(--color-red);
+    --intent-danger-foreground: var(--color-white);
+    --intent-danger-background: var(--color-red-700);
+
+    --intent-info: var(--color-blue);
+    --intent-info-outline: var(--color-blue);
+    --intent-info-foreground: var(--color-white);
+    --intent-info-background: var(--color-blue-700);
+
+    --intent-warning: var(--color-orange);
+    --intent-warning-outline: var(--color-orange);
+    --intent-warning-foreground: var(--color-white);
+    --intent-warning-background: var(--color-orange-700);
+
+    --intent-success: var(--color-green);
+    --intent-success-outline: var(--color-green);
+    --intent-success-foreground: var(--color-white);
+    --intent-success-background: var(--color-green-700);
+
+    /* Fonts */
+    --font-sans: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+      'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+      'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+    --font-alt: AlphaLyrae, 'Helvetica Neue', -apple-system, BlinkMacSystemFont,
+      'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Buttons */
+    --button-border-width: 1px;
+    --button-border-radius-xs: theme(borderRadius.DEFAULT);
+    --button-border-radius-sm: theme(borderRadius.DEFAULT);
+    --button-border-radius-md: theme(borderRadius.DEFAULT);
+    --button-border-radius-lg: theme(borderRadius.lg);
   }
 
   *,
@@ -33,13 +148,7 @@
     @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-2 text-gs-100;
-  }
-}
-
-@layer components {
-  .border-default {
-    @apply border-gs-400;
+    @apply mb-2;
   }
 }
 
@@ -67,12 +176,12 @@
 /* Dark variables */
 .ag-theme-balham-dark {
   --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.gs.400);
+  --ag-border-color: theme(colors.gs.700);
   --ag-header-background-color: theme(colors.black);
   --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.gs.400);
+  --ag-header-column-separator-color: theme(colors.gs.700);
   --ag-row-border-color: theme(colors.gs.900);
-  --ag-row-hover-color: theme(colors.gs.700);
+  --ag-row-hover-color: theme(colors.gs.900);
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {
@@ -135,7 +244,7 @@
 .jsondiffpatch-added .jsondiffpatch-value pre,
 .jsondiffpatch-modified .jsondiffpatch-right-value pre,
 .jsondiffpatch-textdiff-added {
-  background: theme(colors.vega.green[650]) !important;
+  background: theme(colors.green[650]) !important;
   color: theme(colors.white) !important;
 }
 
@@ -143,11 +252,11 @@
 .jsondiffpatch-deleted pre,
 .jsondiffpatch-modified .jsondiffpatch-left-value pre,
 .jsondiffpatch-textdiff-deleted {
-  background: theme(colors.vega.pink[650]) !important;
+  background: theme(colors.pink[650]) !important;
   color: theme(colors.white) !important;
 }
 
 .jsondiffpatch-moved .jsondiffpatch-moved-destination {
-  background: theme(colors.vega.yellow[350]) !important;
+  background: theme(colors.yellow[350]) !important;
   color: theme(colors.vega.dark[200]) !important;
 }

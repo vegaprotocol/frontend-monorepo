@@ -233,7 +233,7 @@ const EnactmentForm = ({
               {deadlines.enactment < deadlines.vote && (
                 <span
                   data-testid="enactment-before-voting-deadline"
-                  className="block mt-4 text-vega-pink"
+                  className="block mt-4 text-pink"
                 >
                   {t('ProposalWillFailIfEnactmentIsEarlierThanVotingDeadline')}
                 </span>
@@ -241,7 +241,7 @@ const EnactmentForm = ({
               {deadlines.enactment < minEnactmentHours && (
                 <span
                   data-testid="enactment-less-than-min"
-                  className="block mt-4 text-vega-pink"
+                  className="block mt-4 text-pink"
                 >
                   {t('ProposalWillFailIfEnactmentIsBelowTheMinimumDeadline')}
                 </span>
@@ -249,7 +249,7 @@ const EnactmentForm = ({
               {deadlines.enactment > maxEnactmentHours && (
                 <span
                   data-testid="enactment-greater-than-max"
-                  className="block mt-4 text-vega-pink"
+                  className="block mt-4 text-pink"
                 >
                   {t('ProposalWillFailIfEnactmentIsAboveTheMaximumDeadline')}
                 </span>
@@ -533,7 +533,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
                 {deadlines.vote < minVoteHours && (
                   <span
                     data-testid="voting-less-than-min"
-                    className="block mt-4 text-vega-pink"
+                    className="block mt-4 text-pink"
                   >
                     {t('ProposalWillFailIfVotingIsBelowTheMinimumDeadline')}
                   </span>
@@ -541,7 +541,7 @@ export function ProposalFormVoteAndEnactmentDeadline({
                 {deadlines.vote > maxVoteHours && (
                   <span
                     data-testid="voting-greater-than-max"
-                    className="block mt-4 text-vega-pink"
+                    className="block mt-4 text-pink"
                   >
                     {t('ProposalWillFailIfVotingIsAboveTheMaximumDeadline')}
                   </span>

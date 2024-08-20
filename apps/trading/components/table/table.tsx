@@ -1,9 +1,9 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-gs-500 ';
-export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
+export const BORDER_COLOR = 'border-gs-300 dark:border-gs-700';
+export const GRADIENT = 'bg-gradient-to-b from-surface-2 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
@@ -46,14 +46,14 @@ export const Table = forwardRef<
     ref
   ) => {
     const header = (
-      <thead className={classNames({ 'max-md:hidden': !noCollapse })}>
+      <thead className={cn({ 'max-md:hidden': !noCollapse })}>
         <tr>
           {columns.map(({ displayName, name, tooltip, headerClassName }) => (
             <th
               key={name}
               col-id={name}
-              className={classNames(
-                'px-5 py-3 text-xs  text-gs-100  font-normal',
+              className={cn(
+                'px-5 py-3 text-xs text-surface-1-fg-muted',
                 INNER_BORDER_STYLE,
                 headerClassName
               )}
@@ -62,7 +62,7 @@ export const Table = forwardRef<
                 <span>{displayName}</span>
                 {tooltip ? (
                   <Tooltip description={tooltip}>
-                    <button className="text-gs-400  no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
+                    <button className="no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
                       <VegaIcon size={12} name={VegaIconNames.INFO} />
                     </button>
                   </Tooltip>
@@ -76,7 +76,7 @@ export const Table = forwardRef<
     return (
       <table
         ref={ref}
-        className={classNames(
+        className={cn(
           'w-full',
           'border-separate border rounded-md border-spacing-0 overflow-hidden',
           BORDER_COLOR,
@@ -90,10 +90,10 @@ export const Table = forwardRef<
           {data.map((dataEntry, i) => (
             <tr
               key={i}
-              className={classNames(dataEntry['className'] as string, {
+              className={cn(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
                 // collapsed (mobile) row divider
-                'first:border-t-0 max-md:border-t border-gs-500  first:mt-0 mt-1':
+                'first:border-t-0 max-md:border-t border-gs-300 dark:border-gs-700  first:mt-0 mt-1':
                   !noCollapse,
               })}
               onClick={() => {
@@ -104,7 +104,7 @@ export const Table = forwardRef<
             >
               {columns.map(({ name, displayName, className, testId }, j) => (
                 <td
-                  className={classNames(
+                  className={cn(
                     'px-5 py-3',
                     {
                       'max-md:flex max-md:flex-col max-md:justify-between':
@@ -125,7 +125,7 @@ export const Table = forwardRef<
                   {!noCollapse && !noHeader && displayName && (
                     <span
                       aria-hidden
-                      className="px-0 font-mono text-xs md:hidden text-gs-100 "
+                      className="px-0 font-mono text-xs md:hidden text-surface-1-fg "
                     >
                       {displayName}
                     </span>

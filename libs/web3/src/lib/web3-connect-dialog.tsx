@@ -14,7 +14,7 @@ import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 
 interface Web3ConnectDialogProps {
@@ -76,14 +76,9 @@ const ConnectButton = ({
   const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   return (
     <button
-      className={classNames(
-        'flex items-center gap-2 p-2 rounded ',
-        'hover:bg-gs-100',
-        {
-          '!bg-vega-yellow text-black hover:active:!bg-vega-yellow':
-            isActivating,
-        }
-      )}
+      className={cn('flex items-center gap-2 p-2 rounded hover:bg-surface-2', {
+        '!bg-yellow text-black hover:active:!bg-yellow': isActivating,
+      })}
       data-testid={`web3-connector-${info.name}`}
       title={info.alt}
       onClick={async () => {
@@ -150,12 +145,7 @@ function getConnectorInfo(connector: Connector, t: ReturnType<typeof useT>) {
   }
   if (connector instanceof WalletConnectLegacy) {
     return {
-      icon: (
-        <WalletConnectIcon
-          width={32}
-          fillColor={theme.colors.vega.light[200]}
-        />
-      ),
+      icon: <WalletConnectIcon width={32} fillColor={theme.colors.gs[500]} />,
       name: 'WalletConnectLegacy',
       text: t('WalletConnect Legacy'),
       alt: t('WalletConnect v1'),

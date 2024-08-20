@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ export const LockSection = () => {
         <Button
           data-testid={locators.settingsLockButton}
           fill={true}
-          variant="secondary"
+          intent={Intent.Secondary}
           type="submit"
         >
           Lock

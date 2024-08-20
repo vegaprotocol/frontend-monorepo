@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
@@ -28,10 +28,12 @@ export const ProductSelector = ({
   const buttons = [MarketType.PERPETUAL, MarketType.FUTURE, MarketType.SPOT];
 
   const getStyles = (selected: boolean) =>
-    classNames('text-sm px-3 py-1.5 rounded hover:text-gs-50 ', {
-      'bg-gs-500  text-default': selected,
-      'text-secondary': !selected,
-    });
+    cn(
+      'text-sm px-3 py-1.5 rounded text-surface-3-fg-muted hover:text-surface-3-fg',
+      {
+        'bg-surface-3 text-surface-3-fg': selected,
+      }
+    );
 
   return (
     <div className="flex mb-2">

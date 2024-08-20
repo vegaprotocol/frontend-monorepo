@@ -1,5 +1,5 @@
 import startCase from 'lodash/startCase';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import {
   AsyncRenderer,
@@ -87,11 +87,11 @@ export const renderGroupedParams = (
   parentKeys: string[] = []
 ) => {
   const Header = `h${level}` as keyof JSX.IntrinsicElements;
-  const headerStyles = classNames('uppercase font-semibold', {
+  const headerStyles = cn('uppercase font-semibold', {
     'pt-6 text-3xl underline': level === 1,
     'pt-3 text-2xl': level === 2,
     'pt-2 text-lg': level === 3,
-    'pt-2 text-default': level === 4,
+    'pt-2': level === 4,
   });
 
   return Object.entries(group).map(([key, value]) => {
@@ -143,7 +143,7 @@ export const NetworkParameterRow = ({
       inline={!isSyntaxRow}
       id={key}
       className={
-        'group focus:bg-vega-pink focus:text-white dark:focus:bg-vega-yellow dark:focus:text-black'
+        'group focus:bg-pink focus:text-white dark:focus:bg-yellow dark:focus:text-black'
       }
     >
       {key}

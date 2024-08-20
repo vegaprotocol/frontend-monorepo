@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import countBy from 'lodash/countBy';
 import { useState, type ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
@@ -44,17 +44,17 @@ const VoteProgress = ({
   testId,
   children,
 }: VoteProgressProps) => {
-  const containerClasses = classNames(
+  const containerClasses = cn(
     'relative h-2 rounded-md overflow-hidden',
-    colourfulBg ? 'bg-vega-red' : 'bg-gs-200'
+    colourfulBg ? 'bg-red' : 'bg-surface-200'
   );
 
-  const progressClasses = classNames(
+  const progressClasses = cn(
     'absolute h-full top-0 left-0',
-    colourfulBg ? 'bg-vega-green' : 'bg-white'
+    colourfulBg ? 'bg-green' : 'bg-white'
   );
 
-  const textClasses = classNames(
+  const textClasses = cn(
     'w-full flex items-center justify-start text-white text-sm pb-1'
   );
 
@@ -88,7 +88,7 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
         <div className="flex items-center gap-2">
           <VegaIcon
             name={VegaIconNames.TICK}
-            className="text-vega-green"
+            className="text-green"
             size={20}
           />
           <span>
@@ -97,11 +97,7 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <VegaIcon
-            name={VegaIconNames.CROSS}
-            className="text-vega-red"
-            size={20}
-          />
+          <VegaIcon name={VegaIconNames.CROSS} className="text-red" size={20} />
           <span>
             {threshold.toString()}% {text} {t('not met')}
           </span>
@@ -193,7 +189,7 @@ const VoteBreakdownBatch = ({
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.TICK}
-                className="text-vega-green"
+                className="text-green"
                 size={20}
               />
               {t(
@@ -208,7 +204,7 @@ const VoteBreakdownBatch = ({
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.CROSS}
-                className="text-vega-red"
+                className="text-red"
                 size={20}
               />
               {t(
@@ -258,7 +254,7 @@ const VoteBreakdownBatch = ({
         total: voteInfo.length,
       }
     );
-    let descriptionIconColor = 'text-vega-green';
+    let descriptionIconColor = 'text-green';
     if (proposal.__typename === 'BatchProposal') {
       const subStates = compact(
         proposal?.subProposals?.map((sub) => sub?.state)
@@ -275,7 +271,7 @@ const VoteBreakdownBatch = ({
             total: voteInfo.length,
           }
         );
-        descriptionIconColor = 'text-vega-yellow';
+        descriptionIconColor = 'text-yellow';
       }
     }
 
@@ -295,7 +291,7 @@ const VoteBreakdownBatch = ({
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.CROSS}
-                className="text-vega-red"
+                className="text-red"
                 size={20}
               />
               {t('Proposal failed: {{count}} of {{total}} proposals passed', {
@@ -421,7 +417,7 @@ const VoteBreakdownBatchSubProposal = ({
         />
       </div>
       {errorDetails ? (
-        <div className="rounded-sm bg-vega-red-600 text-white text-xs p-1 mt-1">
+        <div className="rounded-sm bg-red-600 text-white text-xs p-1 mt-1">
           {rejectionReason
             ? `${ProposalRejectionReasonMapping[rejectionReason]}: `
             : null}{' '}
@@ -461,7 +457,7 @@ const VoteBreakdownNormal = ({
         isUpdateMarket={isUpdateMarket}
       />
       {errorDetails ? (
-        <div className="rounded-sm bg-vega-red-600 text-white text-xs p-1 mt-1">
+        <div className="rounded-sm bg-red-600 text-white text-xs p-1 mt-1">
           {rejectionReason
             ? `${ProposalRejectionReasonMapping[rejectionReason]}: `
             : null}{' '}
@@ -528,12 +524,10 @@ const VoteBreakDownUI = ({
     ? t('byTokenVote')
     : t('byLiquidityVote');
 
-  const sectionWrapperClasses = classNames(
-    'flex justify-between flex-wrap gap-6'
-  );
-  const sectionClasses = classNames('min-w-[300px] flex-1 flex-grow');
-  const headingClasses = classNames('mb-2 text-sm text-white font-bold');
-  const progressDetailsClasses = classNames(
+  const sectionWrapperClasses = cn('flex justify-between flex-wrap gap-6');
+  const sectionClasses = cn('min-w-[300px] flex-1 flex-grow');
+  const headingClasses = cn('mb-2 text-sm text-white font-bold');
+  const progressDetailsClasses = cn(
     'flex justify-between flex-wrap mt-2 text-sm'
   );
 
@@ -549,13 +543,13 @@ const VoteBreakDownUI = ({
               <VegaIcon
                 name={VegaIconNames.TICK}
                 size={20}
-                className="text-vega-green"
+                className="text-green"
               />
             ) : (
               <VegaIcon
                 name={VegaIconNames.CROSS}
                 size={20}
-                className="text-vega-red"
+                className="text-red"
               />
             )}
           </span>
@@ -563,7 +557,7 @@ const VoteBreakDownUI = ({
             <p className="m-0">
               <Trans
                 i18nKey={'Currently expected to <0>pass</0>'}
-                components={[<span className="text-vega-green" />]}
+                components={[<span className="text-green" />]}
               />
               {isUpdateMarket && <span> {updateMarketVotePassMethod}</span>}
             </p>
@@ -571,7 +565,7 @@ const VoteBreakDownUI = ({
             <p className="m-0">
               <Trans
                 i18nKey={'Currently expected to <0>fail</0>'}
-                components={[<span className="text-vega-red" />]}
+                components={[<span className="text-red" />]}
               />
             </p>
           )}

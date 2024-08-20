@@ -1,14 +1,14 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ReactNode } from 'react';
 
 export interface SplashProps {
   children: ReactNode;
-  className?: classNames.Argument;
+  className?: string;
 }
 
 export const Splash = ({ children, className }: SplashProps) => {
-  const splashClasses = classNames(
-    'w-full h-full text-xs text-center text-gs-50',
+  const splashClasses = cn(
+    'w-full h-full text-xs text-center',
     'flex items-center justify-center',
     className
   );

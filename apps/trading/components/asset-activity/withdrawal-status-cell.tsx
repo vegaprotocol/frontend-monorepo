@@ -14,7 +14,7 @@ import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
 import { useModal } from 'connectkit';
 import {
-  TradingButton as Button,
+  Button,
   Intent,
   VegaIcon,
   VegaIconNames,
@@ -159,7 +159,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
       <span className="flex gap-1 items-center">
         <Button
           intent={Intent.Secondary}
-          size="extra-small"
+          size="xs"
           onClick={() => {
             if (ethWalletStatus === 'disconnected') {
               modal.setOpen(true);

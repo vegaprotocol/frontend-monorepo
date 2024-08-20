@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ChangeEvent } from 'react';
 
 // Supports controlled and uncontrolled setups.
@@ -27,17 +27,15 @@ export const Toggle = ({
   size = 'lg',
   ...props
 }: ToggleProps) => {
-  const fieldsetClasses = 'flex rounded-full bg-gs-600 text-sm';
-  const labelClasses = classnames(
-    'group flex-1',
-    '-ml-[1px] first-of-type:ml-0'
-  );
-  const radioClasses = classnames('sr-only', 'peer');
-  const buttonClasses = classnames(
+  const fieldsetClasses = 'flex rounded-full bg-surface-3 text-sm';
+  const labelClasses = cn('group flex-1', '-ml-[1px] first-of-type:ml-0');
+  const radioClasses = cn('sr-only', 'peer');
+  const buttonClasses = cn(
     'relative inline-flex w-full h-full text-center items-center justify-center',
     'peer-checked:rounded-full',
     {
-      'peer-checked:bg-gs-0 peer-checked:text-gs-900': type === 'primary',
+      'peer-checked:bg-gs-900 peer-checked:text-surface-1-fg peer-checked:dark:bg-gs-100 peer-checked:dark:text-gs-900':
+        type === 'primary',
       'peer-checked:bg-market-green-550 peer-checked:text-white':
         type === 'buy',
       'peer-checked:bg-market-red peer-checked:text-white': type === 'sell',

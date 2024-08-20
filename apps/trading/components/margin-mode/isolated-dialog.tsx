@@ -1,7 +1,7 @@
 import { MarginMode } from '@vegaprotocol/types';
 import { MarginMode as MarginModeTx } from '@vegaprotocol/wallet';
 import {
-  TradingButton as Button,
+  Button,
   Dialog,
   FormGroup,
   TradingInput as Input,

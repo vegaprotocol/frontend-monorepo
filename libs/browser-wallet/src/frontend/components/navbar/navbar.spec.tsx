@@ -6,6 +6,7 @@ import type { NavButtonProperties } from '.';
 import { NavBar, NavButton } from '.';
 
 jest.mock('@vegaprotocol/ui-toolkit', () => ({
+  ...jest.requireActual('@vegaprotocol/ui-toolkit'),
   Button: (properties: HTMLAttributes<HTMLButtonElement>) => (
     <button {...properties} />
   ),

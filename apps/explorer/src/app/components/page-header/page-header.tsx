@@ -20,7 +20,7 @@ export const PageHeader = ({
   copy = false,
   className,
 }: PageHeaderProps) => {
-  const titleClasses = 'text-xl uppercase font-alpha calt';
+  const titleClasses = 'text-xl uppercase font-alt calt';
   return (
     <header className={className}>
       <span className={`${titleClasses} block`}>{prefix}</span>

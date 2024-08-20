@@ -17,7 +17,7 @@ import {
   TradingRichSelect,
   ExternalLink,
   Intent,
-  TradingButton,
+  Button,
   truncateMiddle,
   VegaIcon,
   VegaIconNames,
@@ -242,7 +242,7 @@ export const WithdrawForm = ({
                     </div>
 
                     {wrongChain ? (
-                      <p className="text-xs text-vega-red-500 flex items-center gap-1">
+                      <p className="text-xs text-red-500 flex items-center gap-1">
                         <VegaIcon name={VegaIconNames.WARNING} size={12} />
                         {t('Switch network in your wallet to {{chain}}', {
                           chain: getChainName(Number(selectedAsset?.chainId)),
@@ -259,7 +259,7 @@ export const WithdrawForm = ({
                 );
               }
               return (
-                <TradingButton
+                <Button
                   onClick={() => {
                     const desiredChainId = selectedAsset?.chainId || 1;
                     openDialog(desiredChainId);
@@ -269,7 +269,7 @@ export const WithdrawForm = ({
                   data-testid="connect-eth-wallet-btn"
                 >
                   {t('Connect')}
-                </TradingButton>
+                </Button>
               );
             }}
           />
@@ -399,13 +399,9 @@ export const WithdrawForm = ({
           )}
         </TradingFormGroup>
 
-        <TradingButton
-          data-testid="submit-withdrawal"
-          type="submit"
-          fill={true}
-        >
+        <Button data-testid="submit-withdrawal" type="submit" fill={true}>
           {t('Release funds')}
-        </TradingButton>
+        </Button>
       </form>
     </>
   );

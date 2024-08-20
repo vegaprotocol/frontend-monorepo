@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export const CenteredGridCellWrapper = ({
   children,
@@ -9,7 +9,7 @@ export const CenteredGridCellWrapper = ({
   className?: string;
 }) => (
   <div
-    className={classNames(
+    className={cn(
       'flex h-[20px] p-0 justify-items-center items-center',
       className
     )}

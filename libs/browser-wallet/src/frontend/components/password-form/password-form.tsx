@@ -1,4 +1,4 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, InputError, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -80,7 +80,7 @@ export const PasswordForm = ({
         text={text}
         data-testid={locators.passphraseSubmit}
         className="mt-2"
-        variant="secondary"
+        intent={Intent.Secondary}
         type="submit"
         disabled={!passphrase}
       />

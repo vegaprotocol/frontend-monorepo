@@ -76,7 +76,7 @@ export const WalletAssociate = ({
     new BigNumber(walletAssociatedBalance || 0).isEqualTo('0')
   ) {
     pageContent = (
-      <div className="text-danger">
+      <div className="text-intent-danger">
         {t(
           'You have no VEGA tokens in your connected wallet. You will need to buy some VEGA tokens from an exchange in order to stake using this method.'
         )}
@@ -87,7 +87,7 @@ export const WalletAssociate = ({
     !new BigNumber(walletAssociatedBalance || 0).isEqualTo('0')
   ) {
     pageContent = (
-      <div className="text-danger">
+      <div className="text-intent-danger">
         {t(
           'All VEGA tokens in the connected wallet is already associated with a Vega wallet/key'
         )}

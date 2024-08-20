@@ -1,11 +1,11 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 
 import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 import type { ReactNode } from 'react';
-import type { Intent } from '../../utils/intent';
+import { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
@@ -28,20 +28,21 @@ export function Dialog({
   onInteractOutside,
   title,
   icon,
-  intent,
+  intent = Intent.None,
   size = 'small',
   dataTestId = 'dialog-content',
   description,
 }: DialogProps) {
-  const contentClasses = classNames(
+  const contentClasses = cn(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
     'w-full h-full'
   );
-  const wrapperClasses = classNames(
+  const wrapperClasses = cn(
     // Dimensions
     'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
-    'bg-white dark:bg-black text-gs-50',
+    'bg-surface-0 text-surface-0-fg',
+    'border',
     getIntentBorder(intent),
     {
       'w-[520px]': size === 'small',
@@ -70,7 +71,7 @@ export function Dialog({
             </DialogPrimitives.Description>
           )}
           <div
-            className={classNames(
+            className={cn(
               // Positions the modal in the center of screen
               'z-20 relative rounded top-[5vw] pb-3'
             )}

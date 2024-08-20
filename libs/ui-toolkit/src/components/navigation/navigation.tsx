@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '../../utils/cn';
 import type { ComponentProps, ReactNode } from 'react';
 import { useLayoutEffect } from 'react';
 import { useContext } from 'react';
@@ -38,9 +38,9 @@ const Logo = ({
       {appName && (
         <span
           data-testid="nav-app-name"
-          className={classNames(
+          className={cn(
             'group-[.nav-size-small]:text-sm',
-            'font-alpha calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
+            'font-alt calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
             'border-l border-l-gs-200 pl-4'
           )}
         >
@@ -75,7 +75,7 @@ export const NavigationItem = ({
   const insideDrawer = useContext(NavigationDrawerContext);
   return (
     <NavigationMenu.Item
-      className={classNames(
+      className={cn(
         !insideDrawer && ['h-12 [.navigation-content_&]:h-8 flex items-center'],
         determineIfHidden({ hide, hideInDrawer }),
         className
@@ -99,7 +99,7 @@ export const NavigationList = ({
   }
   return (
     <NavigationMenu.List
-      className={classNames(
+      className={cn(
         'flex gap-4 items-center',
         '[.navigation-content_&]:flex-col [.navigation-content_&]:items-start',
         '[.drawer-content_&]:flex-col [.drawer-content_&]:items-start [.drawer-content_&]:gap-6 [.drawer-content_&]:mt-2',
@@ -126,7 +126,7 @@ export const NavigationTrigger = ({
   const insideDrawer = useContext(NavigationDrawerContext);
   return (
     <NavigationMenu.Trigger
-      className={classNames(
+      className={cn(
         'h-12 [.drawer-content_&]:h-min flex items-center relative gap-2',
         {
           'text-gs-50': isActive,
@@ -145,9 +145,9 @@ export const NavigationTrigger = ({
       </span>
       <div
         aria-hidden="true"
-        className={classNames(
+        className={cn(
           'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-          'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+          'bg-yellow-550 dark:bg-yellow-500',
           { hidden: !isActive }
         )}
       ></div>
@@ -168,12 +168,12 @@ export const NavigationContent = ({
       {...props}
     >
       <div
-        className={classNames(
+        className={cn(
           'navigation-content',
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
-          'border rounded border-gs-400',
-          'bg-gs-800'
+          'border rounded border-gs-300 dark:border-gs-700',
+          'bg-surface-1'
         )}
       >
         {children}
@@ -182,7 +182,7 @@ export const NavigationContent = ({
   );
 
   const list = (
-    <div className={classNames('navigation-content', 'border-none pl-4')}>
+    <div className={cn('navigation-content', 'border-none pl-4')}>
       {children}
     </div>
   );
@@ -205,7 +205,7 @@ export const NavigationLink = ({
     >
       <NavLink
         to={to}
-        className={classNames(
+        className={cn(
           'h-12 [.navigation-content_&]:h-min [.drawer-content_&]:h-min flex items-center relative'
         )}
         {...props}
@@ -213,17 +213,17 @@ export const NavigationLink = ({
         {({ isActive }) => (
           <>
             <span
-              className={classNames({
-                'text-gs-50': isActive,
+              className={cn({
+                'text-surface-0-fg': isActive,
               })}
             >
               {children as ReactNode}
             </span>
             <div
               aria-hidden="true"
-              className={classNames(
+              className={cn(
                 'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-                'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+                'bg-yellow-550 dark:bg-yellow-500',
                 { hidden: !isActive }
               )}
             ></div>
@@ -278,18 +278,18 @@ export const Navigation = ({
     <NavigationMenu.Root
       ref={navigationRef}
       id="navigation"
-      className={classNames(
+      className={cn(
         'h-12',
         'group flex gap-4 items-center',
-        'border-b px-3 relative border-b-gs-600'
+        'border-b px-3 relative border-gs-300 dark:border-gs-700'
       )}
       data-testid="navigation"
     >
       <Logo appName={appName} homeLink={homeLink} />
       <div
-        className={classNames(
+        className={cn(
           'navbar',
-          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-200'
+          'flex gap-4 h-12 items-center text-lg text-surface-0-fg-muted'
         )}
       >
         {children}

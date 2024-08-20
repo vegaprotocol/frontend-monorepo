@@ -4,7 +4,7 @@ import {
   type ComponentPropsWithoutRef,
 } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 
 const SidebarAccordion = forwardRef<
@@ -14,7 +14,7 @@ const SidebarAccordion = forwardRef<
   <AccordionPrimitive.Root
     ref={ref}
     {...props}
-    className={classNames('flex flex-col gap-2 overflow-hidden', className)}
+    className={cn('flex flex-col gap-2 overflow-hidden', className)}
   />
 ));
 
@@ -26,7 +26,7 @@ const SidebarAccordionItem = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={classNames(
+    className={cn(
       'rounded-sm min-h-[40px]',
       'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] transition-[flex] flex flex-col',
       className
@@ -45,9 +45,9 @@ const SidebarAccordionHeader = forwardRef<
   <AccordionPrimitive.Header
     ref={ref}
     {...props}
-    className={classNames(
-      'flex items-center w-full pr-2 bg-gs-700 ',
-      'hover:bg-gs-600 ',
+    className={cn(
+      'flex items-center w-full pr-2 bg-surface-2',
+      'hover:bg-surface-3',
       className
     )}
   >
@@ -62,7 +62,7 @@ const SidebarAccordionTrigger = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Trigger
     ref={ref}
-    className={classNames(
+    className={cn(
       'flex flex-1 items-center justify-between text-sm px-2 py-3 h-10',
       className
     )}
@@ -79,7 +79,7 @@ const SidebarAccordionContent = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="flex-1 text-sm min-h-0 -mb-2"
+    className="flex-1 text-sm min-h-0 -mb-2 bg-surface-1 text-surface-1-fg"
     {...props}
   >
     <TinyScroll>{children}</TinyScroll>

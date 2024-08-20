@@ -9,7 +9,7 @@ import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 interface Props {
   marketId?: string;
@@ -43,7 +43,7 @@ export const Last24hPriceChange = ({
 
   if (orientation === 'vertical') {
     return (
-      <span className={classNames('leading-4', signedNumberCssClass(change))}>
+      <span className={cn('leading-4', signedNumberCssClass(change))}>
         <div className="flex items-center gap-1 text-ellipsis whitespace-nowrap overflow-hidden">
           <Arrow value={change} />
           <span data-testid="price-change-percentage">
@@ -56,7 +56,7 @@ export const Last24hPriceChange = ({
         {showChangeValue && (
           <span
             data-testid="price-change"
-            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-surface-0-fg-muted text-xs"
           >
             ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
             )
@@ -68,10 +68,7 @@ export const Last24hPriceChange = ({
 
   return (
     <span
-      className={classNames(
-        'flex items-center gap-1',
-        signedNumberCssClass(change)
-      )}
+      className={cn('flex items-center gap-1', signedNumberCssClass(change))}
     >
       <Arrow value={change} />
       <span data-testid="price-change-percentage">

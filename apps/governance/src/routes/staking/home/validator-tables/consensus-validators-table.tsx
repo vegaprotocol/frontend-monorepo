@@ -92,7 +92,7 @@ const TopThirdCellRenderer = (
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
-            rightIcon={
+            icon={
               <Icon
                 name="arrow-right"
                 className="mr-2 fill-current align-text-top"
@@ -103,12 +103,12 @@ const TopThirdCellRenderer = (
             {t('Reveal top validators')}
           </Button>
         </div>
-        <p className="mb-0 font-semibold text-white">
+        <p className="mb-0">
           {t(
             'Validators with too great a stake share will have the staking rewards for their delegators penalised.'
           )}
         </p>
-        <p>
+        <p className="text-surface-1-fg-muted">
           {t(
             'To avoid penalties and increase decentralisation of the network, delegate to validators below.'
           )}

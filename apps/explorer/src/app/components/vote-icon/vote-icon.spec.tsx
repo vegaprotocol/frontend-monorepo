@@ -37,14 +37,12 @@ describe('Vote TX icon', () => {
 
   it('useVoteColour prop can be used to override coloured background', () => {
     const no = render(<VoteIcon vote={false} />);
-    expect(no.container.children[0]).toHaveClass('bg-vega-pink-550');
+    expect(no.container.children[0]).toHaveClass('bg-pink-550');
 
     const monochromeNo = render(
       <VoteIcon vote={false} useVoteColour={false} />
     );
-    expect(monochromeNo.container.children[0]).not.toHaveClass(
-      'bg-vega-pink-550'
-    );
-    expect(monochromeNo.container.children[0]).toHaveClass('bg-gs-200');
+    expect(monochromeNo.container.children[0]).not.toHaveClass('bg-pink-550');
+    expect(monochromeNo.container.children[0]).toHaveClass('bg-surface-3');
   });
 });

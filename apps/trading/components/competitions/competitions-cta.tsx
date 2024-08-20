@@ -1,7 +1,7 @@
 import { Box } from './box';
 import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import { DudeBadge } from './graphics/dude-badge';
-import { Tooltip, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { Tooltip, Button, type ButtonProps } from '@vegaprotocol/ui-toolkit';
 
 export const CompetitionsActionsContainer = ({
   children,
@@ -35,7 +35,7 @@ export const CompetitionsAction = ({
         <DudeBadge variant={variant} />
       </div>
       <h2 className="text-2xl">{title}</h2>
-      {description && <p className="text-muted">{description}</p>}
+      {description && <p className="text-surface-1-fg-muted">{description}</p>}
       <div className="flex justify-center">{actionElement}</div>
     </Box>
   );
@@ -44,10 +44,10 @@ export const CompetitionsAction = ({
 export const ActionButton = ({
   tooltip,
   ...buttonProps
-}: ComponentProps<typeof TradingButton> & {
+}: ButtonProps & {
   tooltip?: string;
 }) => (
   <Tooltip description={tooltip}>
-    <TradingButton {...buttonProps} />
+    <Button {...buttonProps} />
   </Tooltip>
 );

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
@@ -6,7 +6,7 @@ const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 export const Th = ({ children, ...props }: { children?: ReactNode }) => {
   return (
     <th
-      className={classNames(cellClass, 'text-secondary leading-none py-3')}
+      className={cn(cellClass, 'text-surface-0-fg-muted leading-none py-3')}
       {...props}
     >
       {children}
@@ -40,6 +40,6 @@ export const Table = ({ children }: { children: ReactNode }) => {
 
 export const THead = ({ children }: { children: ReactNode }) => {
   return (
-    <thead className="border-b bg-gs-700  border-gs-600 ">{children}</thead>
+    <thead className="border-b bg-surface-2  border-gs-600 ">{children}</thead>
   );
 };

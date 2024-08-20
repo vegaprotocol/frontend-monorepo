@@ -1,6 +1,6 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import type { PartyVestingStats } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { formatNumber } from '@vegaprotocol/utils';
@@ -82,13 +82,13 @@ export const RewardHoarderBonus = ({
                             tier: index + 1,
                           })}
                         </span>
-                        <span className="text-muted text-xs">
+                        <span className="text-surface-1-fg-muted text-xs">
                           {formatNumber(tier.minimum_quantum_balance)} {qUSD}
                         </span>
                       </span>
 
                       <span
-                        className={classNames(
+                        className={cn(
                           'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
                           {
                             'border-pink-600 bg-pink-900': index % 6 === 0,
@@ -110,7 +110,7 @@ export const RewardHoarderBonus = ({
                     </span>
 
                     <span
-                      className={classNames(
+                      className={cn(
                         {
                           'text-pink-500': index % 6 === 0,
                           'text-purple-500': index % 6 === 1,
@@ -119,7 +119,7 @@ export const RewardHoarderBonus = ({
                           'text-green-500': index % 6 === 4,
                           'text-yellow-500': index % 6 === 5,
                         },
-                        'leading-[0] font-sans text-[48px]'
+                        'leading-[0] text-[48px]'
                       )}
                     >
                       •
@@ -136,30 +136,27 @@ export const RewardHoarderBonus = ({
             return (
               <div
                 key={index}
-                className="bg-gs-0 shadow-card rounded-[100px] grow"
+                className="bg-surface-0 shadow-card rounded-[100px] grow"
               >
                 <div
-                  className={classNames(
-                    'relative w-full rounded-[100px] bg-gs-200',
+                  className={cn(
+                    'relative w-full rounded-[100px] bg-surface-2',
                     progressBarHeight
                   )}
                 >
                   <div
-                    className={classNames(
+                    className={cn(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
                         'from-gs-400 to-gs-200': userTierIndex === 0,
-                        'from-vega-pink-600 to-vega-pink-500':
-                          userTierIndex % 6 === 1,
-                        'from-vega-purple-600 to-vega-purple-500':
+                        'from-pink-600 to-pink-500': userTierIndex % 6 === 1,
+                        'from-purple-600 to-purple-500':
                           userTierIndex % 6 === 2,
-                        'from-vega-blue-600 to-vega-blue-500':
-                          userTierIndex % 6 === 3,
-                        'from-vega-orange-600 to-vega-orange-500':
+                        'from-blue-600 to-blue-500': userTierIndex % 6 === 3,
+                        'from-orange-600 to-orange-500':
                           userTierIndex % 6 === 4,
-                        'from-vega-green-600 to-vega-green-500':
-                          userTierIndex % 6 === 5,
-                        'from-vega-yellow-600 to-vega-yellow-500':
+                        'from-green-600 to-green-500': userTierIndex % 6 === 5,
+                        'from-yellow-600 to-yellow-500':
                           userTierIndex % 6 === 0,
                       }
                     )}

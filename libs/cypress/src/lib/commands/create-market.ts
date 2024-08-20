@@ -16,14 +16,14 @@ export const addCreateMarket = () => {
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
-
+    const url = new URL('graphql', apiNode);
     const config = {
       vegaPubKey: Cypress.env('VEGA_PUBLIC_KEY'),
       token: Cypress.env('VEGA_WALLET_API_TOKEN'),
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
-      vegaUrl: apiNode.graphQLApiUrl,
+      vegaUrl: url.href,
       faucetUrl: Cypress.env('FAUCET_URL'),
     };
 

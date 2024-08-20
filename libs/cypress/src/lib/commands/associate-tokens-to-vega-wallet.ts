@@ -26,7 +26,8 @@ export function addAssociateTokensToVegaWallet() {
       throw new Error('API_NODE not configured');
     }
 
-    setGraphQLEndpoint(apiNode.graphQLApiUrl);
+    const url = new URL('graphql', apiNode);
+    setGraphQLEndpoint(url.href);
     createWalletClient(vegaWalletUrl, apiToken);
     createEthereumWallet(ethWalletMnemonic, ethereumProviderUrl);
 

@@ -18,7 +18,7 @@ import { ProductSelector } from './product-selector';
 import { AssetDropdown } from './asset-dropdown';
 import { SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import flatten from 'lodash/flatten';
 import {
@@ -122,8 +122,11 @@ export const MarketSelector = ({
         <ProductSelector
           marketTypes={marketTypes}
           onSelect={(marketType) => {
-            if (marketType) setMarketTypes([marketType]);
-            else setMarketTypes([]);
+            if (marketType) {
+              setMarketTypes([marketType]);
+            } else {
+              setMarketTypes([]);
+            }
           }}
         />
         <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
@@ -137,7 +140,6 @@ export const MarketSelector = ({
               type="text"
               placeholder={t('Search')}
               data-testid="search-term"
-              className="w-full"
               prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
             />
           </div>
@@ -217,10 +219,9 @@ const MarketList = ({
   return (
     <TinyScroll>
       <div
-        className={classNames(
+        className={cn(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
-          'bg-gs-700 ',
-          'p-2 mx-2 border-b border-default text-xs text-secondary'
+          'p-2 mx-2 border-b border-gs-300 dark:border-gs-700 text-xs text-surface-0-fg-muted'
         )}
       >
         <div className="col-span-4 sm:col-span-5" role="columnheader">
@@ -241,7 +242,9 @@ const MarketList = ({
         <div className="hidden sm:flex col-span-2" role="columnheader" />
       </div>
       {filterSummary ? (
-        <div className="text-xs border-b border-default">{filterSummary}</div>
+        <div className="text-xs border-b border-gs-300 dark:border-gs-700">
+          {filterSummary}
+        </div>
       ) : null}
       <div ref={listRef}>
         <List
@@ -342,9 +345,9 @@ const List = ({
 const Skeleton = () => {
   return (
     <div className="px-2 mb-2">
-      <div className="p-4 rounded-lg bg-gs-100">
-        <div className="w-full h-3 mb-2 bg-gs-200" />
-        <div className="w-2/3 h-3 bg-gs-200" />
+      <div className="p-4 rounded-lg bg-surface-2">
+        <div className="w-full h-3 mb-2 bg-surface-3" />
+        <div className="w-2/3 h-3 bg-surface-3" />
       </div>
     </div>
   );

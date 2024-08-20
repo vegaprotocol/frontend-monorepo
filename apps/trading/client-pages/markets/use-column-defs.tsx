@@ -91,7 +91,7 @@ export const priceChangeRenderer = (
           {showChangeValue && (
             <span
               data-testid="price-change"
-              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
+              className="text-ellipsis whitespace-nowrap overflow-hidden text-surface-1-fg-muted text-xs"
             >
               ({'0.00'})
             </span>

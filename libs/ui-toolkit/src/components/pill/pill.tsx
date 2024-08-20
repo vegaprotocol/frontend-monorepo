@@ -1,6 +1,6 @@
 import type { ReactNode, HTMLProps } from 'react';
-import { Intent } from '../../utils/intent';
-import classNames from 'classnames';
+import { getIntentColor, Intent } from '../../utils/intent';
+import { cn } from '../../utils/cn';
 
 type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
 interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
@@ -11,18 +11,9 @@ interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
 }
 
 const getClasses = (size: Size, intent: Intent, className?: string) => {
-  return classNames(
-    'rounded-sm leading-none font-alpha flex-inline items-center',
-    {
-      'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
-      'bg-gs-500 ': intent === Intent.None,
-      'bg-vega-blue-500 dark:bg-vega-blue-500': intent === Intent.Info,
-      'bg-vega-orange-350 dark:bg-vega-orange-650': intent === Intent.Warning,
-      'bg-vega-red-350 dark:bg-vega-red-650': intent === Intent.Danger,
-      'bg-vega-green-350 dark:bg-vega-green-650': intent === Intent.Success,
-      'text-gs-100 ': intent !== Intent.Primary,
-      'text-gs-900 ': intent === Intent.Primary,
-    },
+  return cn(
+    'rounded-sm leading-none flex-inline items-center',
+    getIntentColor(intent),
     {
       'text-lg py-1 px-2': size === 'lg',
       'text-base py-1 px-2': size === 'md',

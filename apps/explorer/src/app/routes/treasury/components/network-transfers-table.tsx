@@ -15,8 +15,8 @@ import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { ProposalLink } from '../../../components/links/proposal-link/proposal-link';
 
 export const colours = {
-  INCOMING: '!fill-vega-green-600 text-vega-green-600 mr-2',
-  OUTGOING: '!fill-vega-pink-600 text-vega-pink-600 mr-2',
+  INCOMING: '!fill-green-600 text-green-600 mr-2',
+  OUTGOING: '!fill-pink-600 text-pink-600 mr-2',
 };
 
 export const theadClasses = 'py-2 border text-center bg-gs-700';

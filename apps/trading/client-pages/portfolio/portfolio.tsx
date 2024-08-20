@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
@@ -112,10 +112,10 @@ const PortfolioSmall = () => {
       <div>
         <PortfolioActionTabs />
       </div>
-      <div className="h-[300px] border-t border-default">
+      <div className="h-[300px] border-t border-gs-300 dark:border-gs-700">
         <PortfolioTopTabs />
       </div>
-      <div className="h-[300px] border-t border-default">
+      <div className="h-[300px] border-t border-gs-300 dark:border-gs-700">
         <PortfolioBottomTabs />
       </div>
     </div>
@@ -127,10 +127,10 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="flex justify-between bg-gs-700 ">
+      <div className="flex justify-between bg-surface-2 ">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
-          className={classNames('transition-all w-1/3 p-1 relative', {
+          className={cn('transition-all w-1/3 p-1 relative', {
             '!w-1/2': searchTerm?.length > 10,
           })}
         >
@@ -143,7 +143,7 @@ const PortfolioAssets = () => {
             type="text"
             placeholder={t('Search')}
             data-testid="search-term"
-            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-gs-800 "
+            className="bg-surface-1 pr-8"
             prependElement={
               <VegaIcon className="fill-gs-300 " name={VegaIconNames.SEARCH} />
             }

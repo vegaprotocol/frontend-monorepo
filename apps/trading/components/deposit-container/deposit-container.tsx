@@ -11,7 +11,7 @@ import {
 import {
   FormGroup,
   TradingInput as Input,
-  TradingButton,
+  Button,
   truncateMiddle,
   TradingInputError,
   Intent,
@@ -182,7 +182,7 @@ const DepositForm = ({
                   <input
                     value={address}
                     readOnly
-                    className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
+                    className="appearance-none bg-transparent text-sm w-full focus:outline-none"
                     tabIndex={-1}
                   />
                   <FormSecondaryActionWrapper>
@@ -198,16 +198,16 @@ const DepositForm = ({
               <ConnectKitButton.Custom>
                 {({ show }) => {
                   return (
-                    <TradingButton
+                    <Button
                       type="button"
                       onClick={() => {
                         if (show) show();
                       }}
                       intent={Intent.Info}
-                      size="small"
+                      size="sm"
                     >
                       {t('Connect')}
-                    </TradingButton>
+                    </Button>
                   );
                 }}
               </ConnectKitButton.Custom>
@@ -290,7 +290,7 @@ const DepositForm = ({
                         >
                           <div className="leading-4">
                             <div>{k.name}</div>
-                            <div className="text-xs text-secondary">
+                            <div className="text-xs text-surface-0-fg-muted">
                               {truncateMiddle(k.publicKey)}
                             </div>
                           </div>
@@ -342,14 +342,9 @@ const DepositForm = ({
           queryKey={queryKey}
         />
       )}
-      <TradingButton
-        type="submit"
-        size="large"
-        fill={true}
-        intent={Intent.Secondary}
-      >
+      <Button type="submit" size="lg" fill={true} intent={Intent.Secondary}>
         {t('Deposit')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };

@@ -68,17 +68,17 @@ const useFeesTableColumnDefs = (): ColDef[] => {
         },
         {
           field: 'liquidityFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'infraFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'makerFee',
-          cellClass: 'text-gs-100',
+          cellClass: 'text-surface-1-fg',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
@@ -136,7 +136,7 @@ export const MarketFees = ({
   );
 
   return (
-    <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
+    <div className="border rounded-lg md:rounded-sm overflow-hidden border-gs-300 dark:border-gs-700">
       <AgGrid
         columnDefs={colDef}
         rowData={rows}

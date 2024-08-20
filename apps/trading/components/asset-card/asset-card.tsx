@@ -49,7 +49,7 @@ export const AssetCard = ({
         <span className="flex items-end grow text-lg min-w-0">
           <span className="shrink-0">{asset.symbol}</span>
           {asset.source.__typename === 'ERC20' && (
-            <small className="grow text-muted ml-0.5 truncate tracking-tight">
+            <small className="grow text-surface-1-fg-muted ml-0.5 truncate tracking-tight">
               {getExternalChainShortLabel(asset.source.chainId)}
             </small>
           )}
@@ -58,7 +58,7 @@ export const AssetCard = ({
       <div className="flex justify-between">
         {!showAllocation ? null : (
           <dl>
-            <dt className="text-xs text-gs-200 ">{t('Deployed')}</dt>
+            <dt className="text-xs text-surface-2-fg-muted">{t('Deployed')}</dt>
             <dd className="text-base">
               {addDecimalsFormatNumberQuantum(
                 account?.used || '0',
@@ -71,7 +71,7 @@ export const AssetCard = ({
           </dl>
         )}
         <dl className={showAllocation ? 'text-right' : undefined}>
-          <dt className="text-xs text-gs-200 ">{t('Available')}</dt>
+          <dt className="text-xs text-surface-2-fg-muted">{t('Available')}</dt>
           <dd className="text-base">
             {addDecimalsFormatNumberQuantum(
               account?.available || '0',

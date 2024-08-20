@@ -44,24 +44,26 @@ const extractVariables = (req: CyHttpMessages.IncomingHttpRequest): object => {
 export function addMockStatistics() {
   Cypress.Commands.add('mockStatistics', (handler: RouteHandler) => {
     const apiNode = Cypress.env('API_NODE');
+
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
-    cy.intercept(
-      'GET',
-      apiNode.graphQLApiUrl.replace('graphql', 'statistics'),
-      handler
-    ).as('ChainId');
+
+    const url = new URL('statistics', apiNode);
+    cy.intercept('GET', url.href, handler).as('ChainId');
   });
 }
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
     const apiNode = Cypress.env('API_NODE');
+
     if (!apiNode) {
       throw new Error('API_NODE not configured');
     }
-    cy.intercept('POST', apiNode.graphQLApiUrl, handler).as('GQL');
+
+    const url = new URL('graphql', apiNode);
+    cy.intercept('POST', url.href, handler).as('GQL');
   });
 }
 

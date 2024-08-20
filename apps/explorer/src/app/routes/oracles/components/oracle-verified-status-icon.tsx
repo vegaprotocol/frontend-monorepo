@@ -1,7 +1,7 @@
 import { useVerifiedStatusIcon } from '@vegaprotocol/markets';
 import type { Provider } from '@vegaprotocol/markets';
 import { Icon, type IconName, Intent } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export type OracleVerifiedStatusIconProps = {
   provider: Provider;
@@ -20,19 +20,21 @@ export const OracleVerifiedStatusIcon = ({
   const { icon, message, intent } = useVerifiedStatusIcon(provider);
   return (
     <div
-      className={classNames(
+      className={cn(
         {
           'text-gs-700': intent === Intent.None,
-          'text-vega-blue': intent === Intent.Primary,
-          'text-vega-green dark:text-vega-green': intent === Intent.Success,
+          'text-blue': intent === Intent.Primary,
+          'text-green dark:text-green': intent === Intent.Success,
           'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
-          'text-vega-red': intent === Intent.Danger,
+          'text-red': intent === Intent.Danger,
         },
         'flex items-start align-text-bottom'
       )}
     >
       <Icon size={5} name={icon as IconName} />
-      <p className="ml-1 text-sm text-gs-100 align-text-middle">{message}</p>
+      <p className="ml-1 text-sm text-surface-1-fg align-text-middle">
+        {message}
+      </p>
     </div>
   );
 };
