@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@vegaprotocol/utils';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const Card = React.forwardRef<
   HTMLDivElement,
