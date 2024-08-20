@@ -16,9 +16,8 @@ declare global {
 }
 
 const apiNode = Cypress.env('API_NODE');
-const mockSocketServer = apiNode
-  ? new Server(apiNode.graphQLApiUrl.replace('http', 'ws'))
-  : null;
+const url = new URL('graphql', apiNode).href;
+const mockSocketServer = apiNode ? new Server(url.replace('http', 'ws')) : null;
 
 // DO NOT REMOVE: PASSTHROUGH for walletconnect
 new Server('wss://relay.walletconnect.com', {
