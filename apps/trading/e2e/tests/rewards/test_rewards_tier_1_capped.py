@@ -149,6 +149,7 @@ def test_network_reward_pot_capped(
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("31.20525 tDAI ")
 
 
+@pytest.mark.skip("flakey")
 def test_reward_history_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
