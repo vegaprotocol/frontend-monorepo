@@ -41,9 +41,8 @@ export const VegaKey = ({
               {name}
             </div>
           ) : null}
-          <div>
+          <div className="text-surface-0-fg-muted">
             <ExternalLink
-              className="text-surface-0-fg-muted"
               data-testid={locators.explorerLink}
               href={`${network.explorer}/parties/${publicKey}`}
             >
