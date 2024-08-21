@@ -95,7 +95,7 @@ export const AssetCard = ({
   return (
     <div
       data-testid={locators.assetCard}
-      className="border border-vega-dark-150 mb-4"
+      className="border border-surface-0-fg-muted mb-4"
     >
       <CollapsibleCard
         title={
