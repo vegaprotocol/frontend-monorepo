@@ -4,7 +4,7 @@ import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useGlobalsStore } from '@/stores/globals';
 import { useInteractionStore } from '@/stores/interaction-store';
 
-import { NetworkContext, type NetworkContextShape } from './network-context';
+import { NetworkContext } from './network-context';
 
 export const locators = {
   networkProviderLoading: 'network-provider-loading',
@@ -17,19 +17,19 @@ export const locators = {
  */
 export const NetworkProvider = ({
   children,
-  ethereumExplorerLink,
-  arbitrumExplorerLink,
   explorer,
   docs,
   governance,
   console,
-  arbitrumChainId,
-  ethereumChainId,
   chainId,
-}: { children: JSX.Element } & Omit<
-  NetworkContextShape,
-  'interactionMode'
->) => {
+}: {
+  children: JSX.Element;
+  explorer: string;
+  docs: string;
+  governance: string;
+  console: string;
+  chainId: string;
+}) => {
   const { request } = useJsonRpcClient();
   const { loadGlobals, loading: loadingGlobals } = useGlobalsStore((store) => ({
     loadGlobals: store.loadGlobals,
@@ -45,29 +45,14 @@ export const NetworkProvider = ({
   const interactionMode = transactionModalOpen || connectionModalOpen;
   const value = useMemo(
     () => ({
-      ethereumExplorerLink,
-      arbitrumExplorerLink,
       explorer,
       docs,
       governance,
       console,
-      arbitrumChainId,
-      ethereumChainId,
       chainId,
       interactionMode,
     }),
-    [
-      arbitrumChainId,
-      arbitrumExplorerLink,
-      chainId,
-      console,
-      docs,
-      ethereumChainId,
-      ethereumExplorerLink,
-      explorer,
-      governance,
-      interactionMode,
-    ]
+    [chainId, console, docs, explorer, governance, interactionMode]
   );
 
   useEffect(() => {

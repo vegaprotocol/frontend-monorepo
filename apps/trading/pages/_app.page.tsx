@@ -41,9 +41,16 @@ const createBrowserWalletBackendLoader = (
   }: {
     children: React.ReactNode;
   }) {
+    const { API_NODE } = useEnvironment((state) => ({
+      error: state.error,
+      API_NODE: state.API_NODE,
+    }));
+    if (!API_NODE) {
+      throw new Error('Could not find URL');
+    }
     useEffect(() => {
       createWalletBackend({
-        node: new URL('https://api.n06.testnet.vega.rocks/graphql'),
+        node: new URL(API_NODE?.restApiUrl),
       });
     }, []);
     return <>{children}</>;
@@ -144,17 +151,14 @@ function VegaTradingApp(props: AppProps) {
 
   return (
     <Suspense fallback={<AppLoader />}>
-      <BrowserWalletBackend>
-        <HashRouter>
-          <Bootstrapper>
+      <HashRouter>
+        <Bootstrapper>
+          <BrowserWalletBackend>
             <AppBody {...props} />
-          </Bootstrapper>
-          <NodeSwitcherDialog
-            open={nodeSwitcherOpen}
-            setOpen={setNodeSwitcher}
-          />
-        </HashRouter>
-      </BrowserWalletBackend>
+          </BrowserWalletBackend>
+        </Bootstrapper>
+        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      </HashRouter>
     </Suspense>
   );
 }

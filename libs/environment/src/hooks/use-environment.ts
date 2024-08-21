@@ -343,6 +343,10 @@ const compileEnvVars = () => {
       'VEGA_CONSOLE_URL',
       process.env['NX_VEGA_CONSOLE_URL']
     ),
+    VEGA_GOVERNANCE_URL: windowOrDefault(
+      'VEGA_GOVERNANCE_URL',
+      process.env['NX_VEGA_GOVERNANCE_URL']
+    ),
     VEGA_EXPLORER_URL: windowOrDefault(
       'VEGA_EXPLORER_URL',
       process.env['NX_VEGA_EXPLORER_URL']

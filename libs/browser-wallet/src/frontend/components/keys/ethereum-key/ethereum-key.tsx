@@ -1,10 +1,8 @@
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
-import { useNetwork } from '@/contexts/network/network-context';
-
 import { CopyWithCheckmark } from '../../copy-with-check';
-import { ExternalLink } from '../../external-link';
 import { EthereumIcon } from '../../icons/ethereum-icon';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 
 export const locators = {
   title: 'ethereum-key-title',
@@ -25,8 +23,13 @@ const EthIcon = () => {
   );
 };
 
-export const EthereumKey = ({ address }: { address: string }) => {
-  const { ethereumExplorerLink } = useNetwork();
+export const EthereumKey = ({
+  address,
+  chainId,
+}: {
+  chainId: number;
+  address: string;
+}) => {
   return (
     <div className="flex items-center">
       <EthIcon />
@@ -37,13 +40,9 @@ export const EthereumKey = ({ address }: { address: string }) => {
         >
           Ethereum Address
         </div>
-        <ExternalLink
-          className="text-surface-0-fg-muted"
-          data-testid={locators.explorerLink}
-          href={`${ethereumExplorerLink}/address/${address}`}
-        >
+        <BlockExplorerLink sourceChainId={chainId} address={address}>
           {truncateMiddle(address)}
-        </ExternalLink>
+        </BlockExplorerLink>
         <CopyWithCheckmark text={address} />
       </div>
     </div>

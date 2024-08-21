@@ -2,14 +2,10 @@ import { createContext, useContext } from 'react';
 
 export interface NetworkContextShape {
   interactionMode: boolean;
-  ethereumExplorerLink: string;
-  arbitrumExplorerLink: string;
   explorer: string;
   docs: string;
   governance: string;
   console: string;
-  ethereumChainId: string;
-  arbitrumChainId: string;
   chainId: string;
 }
 

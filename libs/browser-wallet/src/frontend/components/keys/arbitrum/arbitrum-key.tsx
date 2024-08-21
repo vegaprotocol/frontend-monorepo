@@ -1,9 +1,8 @@
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 import { CopyWithCheckmark } from '@/components/copy-with-check';
-import { ExternalLink } from '@/components/external-link';
 import { ArbitrumLogo } from '@/components/icons/arbitrum';
-import { useNetwork } from '@/contexts/network/network-context';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 
 export const locators = {
   title: 'arbitrum-key-title',
@@ -24,8 +23,13 @@ const ArbIcon = () => {
   );
 };
 
-export const ArbitrumKey = ({ address }: { address: string }) => {
-  const { arbitrumExplorerLink } = useNetwork();
+export const ArbitrumKey = ({
+  address,
+  chainId,
+}: {
+  address: string;
+  chainId: number;
+}) => {
   return (
     <div className="flex items-center">
       <ArbIcon />
@@ -36,13 +40,9 @@ export const ArbitrumKey = ({ address }: { address: string }) => {
         >
           Arbitrum Address
         </div>
-        <ExternalLink
-          className="text-surface-0-fg-muted"
-          data-testid={locators.explorerLink}
-          href={`${arbitrumExplorerLink}/address/${address}`}
-        >
+        <BlockExplorerLink sourceChainId={chainId} address={address}>
           {truncateMiddle(address)}
-        </ExternalLink>
+        </BlockExplorerLink>
         <CopyWithCheckmark text={address} />
       </div>
     </div>
