@@ -64,7 +64,7 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
     return (
       <div
         data-testid={locators.networkProviderLoading}
-        className="h-full w-full bg-black"
+        className="h-full w-full bg-surface-0"
       />
     );
   }

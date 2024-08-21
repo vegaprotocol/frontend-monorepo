@@ -68,7 +68,7 @@ describe('NavBar', () => {
   it('renders with all three NavButtons', () => {
     renderNav();
     expect(screen.getByTestId('nav-bar')).toBeInTheDocument();
-    expect(screen.getByTestId('nav-bar')).toHaveClass('bg-black');
+    expect(screen.getByTestId('nav-bar')).toHaveClass('bg-surface-1');
     expect(screen.getAllByTestId('nav-button')).toHaveLength(3);
     const [wallets, transactions, settings] =
       screen.getAllByTestId('nav-button');

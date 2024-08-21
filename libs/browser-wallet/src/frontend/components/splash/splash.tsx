@@ -19,7 +19,7 @@ export function Splash({
     <div
       {...properties}
       className={cn(
-        'bg-black z-[15] fixed flex flex-col items-center justify-start',
+        'bg-surface-0 z-[15] fixed flex flex-col items-center justify-start',
         'w-full h-full top-0 left-0 right-0 overflow-y-auto text-surface-0-fg',
         className
       )}
