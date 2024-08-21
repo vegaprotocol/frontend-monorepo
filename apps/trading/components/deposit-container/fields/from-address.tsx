@@ -1,6 +1,6 @@
-import { type Control, Controller } from 'react-hook-form';
+import { type Control, Controller, useForm } from 'react-hook-form';
 
-import { useAccount, useDisconnect, useChainId } from 'wagmi';
+import { useAccount, useDisconnect, useChainId, useAccountEffect } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 
 import {
@@ -13,7 +13,7 @@ import { Emblem } from '@vegaprotocol/emblem';
 
 import { useT } from '../../../lib/use-t';
 
-import { type FormFields } from '../deposit-form';
+import { type FormFields } from '../form-schema';
 
 import {
   FormSecondaryActionButton,
@@ -22,9 +22,17 @@ import {
 
 export function FromAddress(props: { control: Control<FormFields> }) {
   const t = useT();
+  const form = useForm();
   const { disconnect } = useDisconnect();
   const { isConnected, address } = useAccount();
   const chainId = useChainId();
+
+  useAccountEffect({
+    onConnect: ({ address }) => {
+      form.setValue('fromAddress', address, { shouldValidate: true });
+    },
+    onDisconnect: () => form.setValue('fromAddress', ''),
+  });
 
   return (
     <FormGroup label={t('From address')} labelFor="fromAddress">

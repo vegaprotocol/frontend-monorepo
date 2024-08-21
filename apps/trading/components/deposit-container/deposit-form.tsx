@@ -1,22 +1,13 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import {
-  useAccount,
-  useAccountEffect,
-  useChainId,
-  useSwitchChain,
-} from 'wagmi';
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { type Squid } from '@0xsquid/sdk';
 
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
-import { ETHEREUM_ADDRESS_REGEX, VEGA_ID_REGEX } from '@vegaprotocol/utils';
 
 import { useT } from '../../lib/use-t';
-import i18n from '../../lib/i18n';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { useEthersSigner } from './use-ethers-signer';
@@ -27,42 +18,17 @@ import * as Fields from './fields';
 import { useSquidRoute } from './use-squid-route';
 import { Approval } from './approval';
 import { SwapInfo } from './swap-info';
-
-export type Configs = Array<EthereumConfig | EVMBridgeConfig>;
-export type FormFields = z.infer<typeof depositSchema>;
-
-export const depositSchema = z.object({
-  fromAddress: z
-    .string()
-    .regex(ETHEREUM_ADDRESS_REGEX, i18n.t('Connect wallet')),
-  fromChain: z.string(),
-  fromAsset: z.string(),
-  toAsset: z.string().regex(VEGA_ID_REGEX),
-  toPubKey: z.string().regex(VEGA_ID_REGEX),
-  // Use a string but parse it as a number for validation
-  amount: z.string().refine(
-    (v) => {
-      const n = Number(v);
-
-      if (v?.length <= 0) return false;
-      if (isNaN(n)) return false;
-      if (n <= 0) return false;
-
-      return true;
-    },
-    { message: 'Invalid number' }
-  ),
-});
+import { type FormFields, formSchema, type Configs } from './form-schema';
 
 export const DepositForm = ({
   squid,
   assets,
-  initialAssetId,
+  initialAsset,
   configs,
 }: {
   squid: Squid;
   assets: Array<AssetERC20>;
-  initialAssetId: string;
+  initialAsset: AssetERC20;
   configs: Configs;
 }) => {
   const t = useT();
@@ -75,13 +41,13 @@ export const DepositForm = ({
   const chainId = useChainId();
 
   const form = useForm<FormFields>({
-    resolver: zodResolver(depositSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
       fromAddress: address,
-      toAsset: initialAssetId,
+      toAsset: initialAsset.id,
       toPubKey: '',
       amount: '',
     },
@@ -102,13 +68,6 @@ export const DepositForm = ({
   const { data, queryKey } = useAssetReadContracts({ asset: toAsset, configs });
 
   const { submitDeposit } = useEvmDeposit({ queryKey });
-
-  useAccountEffect({
-    onConnect: ({ address }) => {
-      form.setValue('fromAddress', address, { shouldValidate: true });
-    },
-    onDisconnect: () => form.setValue('fromAddress', ''),
-  });
 
   const isSwap =
     fields.fromAsset && toAsset

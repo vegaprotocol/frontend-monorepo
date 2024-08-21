@@ -3,6 +3,7 @@ import { useEVMBridgeConfigs, useEthereumConfig } from '@vegaprotocol/web3';
 import { DepositForm } from './deposit-form';
 import { type AssetERC20, useEnabledAssets } from '@vegaprotocol/assets';
 import { useSquid } from './use-squid';
+import { FallbackDepositForm } from './fallback-deposit-form';
 
 /**
  * Gets env vars, assets, and configs required for the deposit form
@@ -29,15 +30,23 @@ export const DepositContainer = ({
     return <div>Loading</div>;
   }
 
-  if (!squid) {
-    return <div>Squid init</div>;
+  if (!squid) return null;
+
+  if (squid.initialized) {
+    return (
+      <DepositForm
+        squid={squid}
+        assets={assets as AssetERC20[]}
+        initialAsset={asset as AssetERC20}
+        configs={allConfigs}
+      />
+    );
   }
 
   return (
-    <DepositForm
-      squid={squid}
+    <FallbackDepositForm
       assets={assets as AssetERC20[]}
-      initialAssetId={asset?.id || ''}
+      initialAsset={asset as AssetERC20}
       configs={allConfigs}
     />
   );

@@ -11,7 +11,7 @@ import {
   FormSecondaryActionWrapper,
 } from '../../form-secondary-action';
 import { Faucet } from '../faucet';
-import { type FormFields } from '../deposit-form';
+import { type FormFields } from '../form-schema';
 import { isAssetUSDTArb } from '../../../lib/utils/is-asset-usdt-arb';
 import { useT } from '../../../lib/use-t';
 import {

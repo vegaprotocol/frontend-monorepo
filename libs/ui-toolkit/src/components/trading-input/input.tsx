@@ -140,10 +140,7 @@ export const TradingInput = forwardRef<HTMLInputElement, TradingInputProps>(
       <input
         {...props}
         ref={ref}
-        className={cn(
-          defaultFormElement(hasError, props.disabled),
-          inputClassName
-        )}
+        className={cn(defaultFormElement(hasError), inputClassName)}
       />
     );
 

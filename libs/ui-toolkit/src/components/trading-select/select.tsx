@@ -53,7 +53,7 @@ export const TradingRichSelect = forwardRef<
         <SelectPrimitive.Trigger
           data-testid={props['data-testid'] || 'rich-select-trigger'}
           className={[
-            defaultSelectElement(hasError, props.disabled),
+            defaultSelectElement(hasError),
             'relative rounded-md pl-2 pr-8 text-left h-10',
             'max-w-full overflow-hidden break-all',
             '[&_>span]:flex-1',
