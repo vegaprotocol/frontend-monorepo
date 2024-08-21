@@ -56,15 +56,24 @@ export class InBrowserConnector implements Connector {
     'Connect with In Browser Vega Wallet to get started quickly';
   store: StoreApi<Store> | undefined;
 
+  private static onMessage = (event: Event) => {
+    const msg = (event as CustomEvent).detail;
+    client.onmessage(msg);
+  };
+
   /**
    *
    */
   constructor() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('content-script-response', (event) => {
-        const msg = (event as CustomEvent).detail;
-        client.onmessage(msg);
-      });
+      window.removeEventListener(
+        'content-script-response',
+        InBrowserConnector.onMessage
+      );
+      window.addEventListener(
+        'content-script-response',
+        InBrowserConnector.onMessage
+      );
     }
   }
 
