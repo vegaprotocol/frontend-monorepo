@@ -10,7 +10,7 @@ export type MarketsStore = {
   markets: vegaMarket[];
   loading: boolean;
   error: Error | null;
-  fetchMarkets: (request: SendMessage) => Promise<void>;
+  fetchMarkets: (request: SendMessage, networkId: string) => Promise<void>;
   getMarketById: (id: string) => vegaMarket;
   getMarketsByAssetId: (assetId: string) => vegaMarket[];
 };
@@ -19,12 +19,12 @@ export const useMarketsStore = create<MarketsStore>((set, get) => ({
   markets: [],
   loading: true,
   error: null,
-  async fetchMarkets(request) {
+  async fetchMarkets(request, networkId) {
     try {
       set({ loading: true, error: null });
       const response = await request(
         RpcMethods.Fetch,
-        { path: 'api/v2/markets' },
+        { path: 'api/v2/markets', networkId },
         true
       );
       const markets = removePaginationWrapper<vegaMarket>(

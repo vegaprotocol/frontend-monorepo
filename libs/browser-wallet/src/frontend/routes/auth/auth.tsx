@@ -8,10 +8,11 @@ import { useAssetsStore } from '@/stores/assets-store';
 import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
 import { useWalletStore } from '@/stores/wallets';
+import { useNetwork } from '@/contexts/network/network-context';
 
 export const Auth = () => {
   const { request } = useJsonRpcClient();
-
+  const { chainId } = useNetwork();
   // Wallets store
   const { loadWallets, loading: loadingWallets } = useWalletStore((state) => ({
     loadWallets: state.loadWallets,
@@ -46,10 +47,17 @@ export const Auth = () => {
   // Ideally the backend should be capable of doing this in parallel, but increases perceived performance for now.
   useEffect(() => {
     if (!loadingWallets && !loadingConnections) {
-      loadAssets(request);
-      loadMarkets(request);
+      loadAssets(request, chainId);
+      loadMarkets(request, chainId);
     }
-  }, [loadingConnections, loadAssets, loadMarkets, loadingWallets, request]);
+  }, [
+    loadingConnections,
+    chainId,
+    loadAssets,
+    loadMarkets,
+    loadingWallets,
+    request,
+  ]);
 
   // Only render the UI if the wallets and networks have loaded
   if (loadingWallets) return null;

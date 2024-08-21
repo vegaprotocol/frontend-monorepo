@@ -54,18 +54,20 @@ export class FetchCache {
   /**
    * @private
    * @param {string} path The path to cache
-   * @returns {string} The cache key
+   * @param {string} chainId The id of the network we are requesting the data from
+   * @returns {string} The combined path and chainId cache key
    */
-  _getCacheKey(path) {
-    return `${path}`;
+  _getCacheKey(path, chainId) {
+    return `${chainId}:${path}`;
   }
 
   /**
    * @param {string} path
+   * @param {string} chainId
    * @returns {Promise<boolean>}
    */
-  async has(path) {
-    const key = this._getCacheKey(path);
+  async has(path, chainId) {
+    const key = this._getCacheKey(path, chainId);
     await this._gc();
 
     return this._cache.has(key);
@@ -75,9 +77,9 @@ export class FetchCache {
    * @param {string} path
    * @returns {Promise<Object> | Promise<undefined>}
    */
-  async get(path) {
+  async get(path, chainId) {
     await this._gc();
-    const key = this._getCacheKey(path);
+    const key = this._getCacheKey(path, chainId);
 
     const value = await this._cache.get(key);
     if (!value) return undefined;
@@ -87,11 +89,12 @@ export class FetchCache {
 
   /**
    * @param {string} path
+   * @param {string} chainId
    * @param {Object} value
    * @returns {Promise<void>}
    */
-  async set(path, value) {
-    const key = this._getCacheKey(path);
+  async set(path, chainId, value) {
+    const key = this._getCacheKey(path, chainId);
 
     const ttl = this._ttlFn(path, value) ?? 0;
     if (ttl === 0) return;

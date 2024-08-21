@@ -5,6 +5,7 @@ import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';
 
 import { useAsyncAction } from '../async-action';
+import { useNetwork } from '@/contexts/network/network-context';
 
 /**
  * Hook to load an order by ID. This is not implemented as a store because orders are only required for receipts
@@ -16,16 +17,17 @@ import { useAsyncAction } from '../async-action';
 export const useOrder = (orderId: string) => {
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const { request } = useJsonRpcClient();
+  const { chainId } = useNetwork();
   const loadOrder = useCallback(async () => {
     const response = await request(
       RpcMethods.Fetch,
-      { path: `api/v2/order/${orderId}` },
+      { path: `api/v2/order/${orderId}`, networkId: chainId },
       true
     );
     const { order } = response as v2GetOrderResponse;
     setLastUpdated(Date.now());
     return order;
-  }, [orderId, request]);
+  }, [chainId, orderId, request]);
   const { loaderFunction, ...rest } = useAsyncAction(loadOrder);
   useEffect(() => {
     if (orderId) {
