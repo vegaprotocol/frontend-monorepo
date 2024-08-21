@@ -5,7 +5,6 @@ import { ModalWrapper } from '@/components/modals';
 import { NavBar } from '@/components/navbar';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useAssetsStore } from '@/stores/assets-store';
-import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
 import { useWalletStore } from '@/stores/wallets';
 import { useNetwork } from '@/contexts/network/network-context';
@@ -29,35 +28,19 @@ export const Auth = () => {
     loadMarkets: state.fetchMarkets,
   }));
 
-  // Connections store
-  const { loading: loadingConnections, loadConnections } = useConnectionStore(
-    (state) => ({
-      loading: state.loading,
-      loadConnections: state.loadConnections,
-    })
-  );
-
   useEffect(() => {
     loadWallets(request);
-    loadConnections(request);
-  }, [request, loadWallets, loadConnections]);
+  }, [request, loadWallets]);
 
   // TODO: Remove
   // HACK: This is work around to ensure that the wallets are loaded before network requests.
   // Ideally the backend should be capable of doing this in parallel, but increases perceived performance for now.
   useEffect(() => {
-    if (!loadingWallets && !loadingConnections) {
+    if (!loadingWallets) {
       loadAssets(request, chainId);
       loadMarkets(request, chainId);
     }
-  }, [
-    loadingConnections,
-    chainId,
-    loadAssets,
-    loadMarkets,
-    loadingWallets,
-    request,
-  ]);
+  }, [chainId, loadAssets, loadMarkets, loadingWallets, request]);
 
   // Only render the UI if the wallets and networks have loaded
   if (loadingWallets) return null;

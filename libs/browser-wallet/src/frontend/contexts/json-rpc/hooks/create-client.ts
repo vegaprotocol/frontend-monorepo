@@ -4,20 +4,14 @@ import { useCallback, useMemo } from 'react';
 
 import { getExtensionApi } from '@/lib/extension-apis';
 import { log } from '@/lib/logging';
-import { useConnectionStore } from '@/stores/connections';
 import { useErrorStore } from '@/stores/error';
-import type { Connection } from '@/types/backend';
 
-import { RpcMethods } from '../../../lib/client-rpc-methods';
-import type { JsonRpcNotification } from '../json-rpc-provider';
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-const createClient = (notificationHandler: Function) => {
+const createClient = () => {
   const { runtime } = getExtensionApi();
   const backgroundPort = runtime.connect({ name: 'popup' });
   const client = new JSONRPCClient({
     onnotification: (...arguments_) => {
-      notificationHandler(...arguments_);
+      // NOOP
     },
     idPrefix: 'vega-popup-',
     send(message: any) {
@@ -44,25 +38,8 @@ export const useCreateClient = () => {
   const { setError } = useErrorStore((store) => ({
     setError: store.setError,
   }));
-  const { addConnection } = useConnectionStore((store) => ({
-    addConnection: store.addConnection,
-  }));
 
-  // TODO better pattern for this
-  const notificationHandler = useCallback(
-    (message: JsonRpcNotification) => {
-      if (message.method === RpcMethods.ConnectionsChange) {
-        for (const connections of message.params.add as Array<Connection>) {
-          addConnection(connections);
-        }
-      }
-    },
-    [addConnection]
-  );
-  const client = useMemo(
-    () => createClient(notificationHandler),
-    [notificationHandler]
-  );
+  const client = useMemo(() => createClient(), []);
   const request = useCallback(
     async (
       method: string,
