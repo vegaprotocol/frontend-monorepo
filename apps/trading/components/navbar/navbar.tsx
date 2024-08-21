@@ -249,6 +249,9 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLinkExternal>
         </NavbarItem>
         <NavbarItem>
+          <NavbarLink to={Links.AMM()}>{t('AMM')}</NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
           <NavbarContent data-testid="navbar-content-resources">
             <ul className="lg:p-4">

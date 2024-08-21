@@ -1,5 +1,4 @@
-import type { Asset } from '@/lib/queries/assets';
-import type { Decimal } from '@/lib/utils';
+import type { Asset, Decimal } from '@vegaprotocol/rest';
 import type BigNumber from 'bignumber.js';
 
 export const Currency = ({

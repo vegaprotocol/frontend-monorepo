@@ -1,5 +1,4 @@
-import { TxDialog } from '@/components/app/tx-dialog';
-import { WalletNotConnectedAlert } from '@/components/app/wallet-not-connected-alert';
+import { WalletNotConnectedAlert } from '../../components/amm/wallet-not-connected-alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,9 +11,9 @@ import {
   AlertDialogTrigger,
 } from '../../components/ui/alert-dialog';
 import { Button } from '../../components/ui/button';
-import { useAMMs } from '@vegaprotocol/rest';
-import type { AMM } from '@/lib/queries/amms';
-import { createCancelAmmTransaction } from '@/lib/txs/liquidity';
+import { useAMMs, type AMM } from '@vegaprotocol/rest';
+
+import { createCancelAmmTransaction } from '../../lib/utils/amm';
 import { CancelAMMMethod } from '@vegaprotocol/wallet';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
@@ -22,7 +21,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from '../../lib/use-t';
 import { Links } from '../../lib/links';
-import { useWallet } from '@vegaprotocol/wallet-react';
+import { useSimpleTransaction, useWallet } from '@vegaprotocol/wallet-react';
+import { TransactionDialog } from '../../components/transaction-dialog/transaction-dialog';
 
 export const Liquidity = () => {
   const [pubKey, status] = useWallet((store) => [store.pubKey, store.status]);
@@ -30,7 +30,9 @@ export const Liquidity = () => {
 
   return (
     <>
-      <h1 className="text-5xl">{t('MY_LIQUIDITY_TITLE')}</h1>
+      <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
+        {t('MY_LIQUIDITY_TITLE')}
+      </h1>
 
       {!isConnected ? (
         <WalletNotConnectedAlert />
@@ -67,7 +69,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
 
               return (
                 <div className="flex h-full items-center justify-end gap-1">
-                  <Link to={Links.POOLS_MARKET_MANAGE(value)}>
+                  <Link to={Links.AMM_POOL_MANAGE(value)}>
                     <Button variant="outline" size="xs">
                       {t('LIQUIDITY_ACTION_AMEND')}
                     </Button>
@@ -85,7 +87,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
 
 const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
   const [open, setOpen] = useState(false);
-  const { error, send, result, status } = useTx();
+  const { error, send, result, status, reset } = useSimpleTransaction();
 
   const sendCancelAmmTx = () => {
     const tx = createCancelAmmTransaction(
@@ -127,7 +129,7 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <TxDialog
+      <TransactionDialog
         open={open}
         onOpenChange={(open) => {
           setOpen(open);
@@ -136,6 +138,7 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
         error={error}
         txStatus={status}
         result={result}
+        reset={reset}
       />
     </>
   );

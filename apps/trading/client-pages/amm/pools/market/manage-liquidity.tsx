@@ -1,5 +1,5 @@
-import { LiquidityForm } from '@/components/app/liquidity-form';
-import { WalletNotConnectedAlert } from '@/components/app/wallet-not-connected-alert';
+import { LiquidityForm } from '../../../../components/amm/liquidity-form';
+import { WalletNotConnectedAlert } from '../../../../components/amm/wallet-not-connected-alert';
 
 import {
   Alert,
@@ -46,7 +46,7 @@ export const ManageLiquidity = () => {
           <AlertTitle>{t('MARKET_NO_MARKET')}</AlertTitle>
           <AlertDescription>
             <p>{t('MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
-            <Link to={Links.POOLS()}>
+            <Link to={Links.AMM_POOLS()}>
               <Button>{t('POOLS_GOTO_POOLS')}</Button>
             </Link>
           </AlertDescription>
@@ -77,13 +77,13 @@ export const ManageLiquidity = () => {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={Links.POOLS()}>{t('POOLS_TITLE')}</Link>
+              <Link to={Links.AMM_POOLS()}>{t('POOLS_TITLE')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={Links.POOLS_MARKET(market.id)}>{market.code}</Link>
+              <Link to={Links.AMM_POOL(market.id)}>{market.code}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -92,7 +92,9 @@ export const ManageLiquidity = () => {
       </Breadcrumb>
 
       <div className="flex items-baseline justify-between">
-        <h1 className="text-2xl">{market.code}</h1>
+        <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
+          {market.code}
+        </h1>
       </div>
 
       <div>

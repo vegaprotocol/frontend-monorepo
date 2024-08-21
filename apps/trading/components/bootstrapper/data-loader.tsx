@@ -1,6 +1,7 @@
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
+import { useSuspenseAssets, useSuspenseMarkets } from '@vegaprotocol/rest';
 import { type ReactNode } from 'react';
 
 /**
@@ -28,6 +29,9 @@ export const DataLoader = ({
     error: errorAssets,
     loading: loadingAssets,
   } = useAssetsMapProvider();
+
+  useSuspenseAssets();
+  useSuspenseMarkets();
 
   if (loading || loadingAssets || loadingParams) {
     // eslint-disable-next-line

@@ -38,6 +38,10 @@ import { LayoutFull } from '../components/layouts/layout-full';
 
 import { Routes as AppRoutes } from '../lib/links';
 import { Explore } from '../client-pages/amm/explore';
+import { Pools } from '../client-pages/amm/pools';
+import { MarketPage as Pool } from '../client-pages/amm/pools/market/index';
+import { Liquidity as MyLiquidity } from '../client-pages/amm/liquidity';
+import { ManageLiquidity } from '../client-pages/amm/pools/market/manage-liquidity';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -207,6 +211,22 @@ export const useRouterConfig = (): RouteObject[] => {
         {
           index: true,
           element: <Explore />,
+        },
+        {
+          path: AppRoutes.AMM_POOLS,
+          element: <Pools />,
+        },
+        {
+          path: AppRoutes.AMM_POOL,
+          element: <Pool />,
+        },
+        {
+          path: AppRoutes.AMM_POOL_MANAGE,
+          element: <ManageLiquidity />,
+        },
+        {
+          path: AppRoutes.AMM_MY_LIQUIDITY,
+          element: <MyLiquidity />,
         },
       ],
     },

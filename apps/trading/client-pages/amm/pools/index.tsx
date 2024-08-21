@@ -25,7 +25,9 @@ export const Pools = () => {
 
   return (
     <>
-      <h1 className="text-5xl">{t('POOLS_TITLE')}</h1>
+      <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
+        {t('POOLS_TITLE')}
+      </h1>
 
       <p className="w-3/5">{t('POOLS_DESCRIPTION')}</p>
 
@@ -51,7 +53,7 @@ export const Pools = () => {
           onRowClicked={(e) => {
             const marketId = e.data?.id;
             if (marketId) {
-              navigate(Links.POOLS_MARKET(marketId));
+              navigate(Links.AMM_POOL(marketId));
             }
           }}
         />

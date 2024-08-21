@@ -29,6 +29,10 @@ export const Routes = {
   REWARDS: '/rewards',
   REWARDS_DETAIL: '/reward',
   AMM: '/amm',
+  AMM_MY_LIQUIDITY: '/amm/my-liquidity',
+  AMM_POOLS: '/amm/pools',
+  AMM_POOL: '/amm/pool/:marketId',
+  AMM_POOL_MANAGE: '/amm/pool/:marketId/manage',
 } as const;
 
 type ConsoleLinks = {
@@ -68,4 +72,9 @@ export const Links: ConsoleLinks = {
     return `${Routes.REWARDS_DETAIL}?${searchParams}`;
   },
   AMM: () => Routes.AMM,
+  AMM_MY_LIQUIDITY: () => Routes.AMM_MY_LIQUIDITY,
+  AMM_POOLS: () => Routes.AMM_POOLS,
+  AMM_POOL: (marketId) => Routes.AMM_POOL.replace(':marketId', marketId),
+  AMM_POOL_MANAGE: (marketId) =>
+    Routes.AMM_POOL_MANAGE.replace(':marketId', marketId),
 };

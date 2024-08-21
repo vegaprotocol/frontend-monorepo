@@ -1,10 +1,3 @@
-import { useTx } from '@/lib/hooks/use-tx';
-import type { Market } from '@/lib/queries/markets';
-import {
-  createAmendAmmTransaction,
-  createSubmitAmmTransaction,
-} from '@/lib/txs/liquidity';
-import { t } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BarChart3Icon } from 'lucide-react';
 import { useState } from 'react';
@@ -21,7 +14,14 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { AssetPill } from './asset-pill';
-import { TxDialog } from './tx-dialog';
+import type { Market } from '@vegaprotocol/rest';
+import { useSimpleTransaction } from '@vegaprotocol/wallet-react';
+import {
+  createAmendAmmTransaction,
+  createSubmitAmmTransaction,
+} from '../../lib/utils/amm';
+import { TransactionDialog } from '../transaction-dialog/transaction-dialog';
+import { t } from '../../lib/use-t';
 
 const submitAMMFormSchema = z.object({
   marketId: z.string(),
@@ -112,7 +112,7 @@ export const LiquidityForm = ({
   type = 'submit',
   defaultValues,
 }: LiquidityFormProps) => {
-  const { error, reset, send, result, status } = useTx();
+  const { error, send, result, status, reset } = useSimpleTransaction();
   const [open, setOpen] = useState(false);
 
   let schema: SubmitAMMFormSchema | AmendAMMFormSchema = submitAMMFormSchema;
@@ -154,7 +154,7 @@ export const LiquidityForm = ({
 
   return (
     <Form {...form}>
-      <TxDialog
+      <TransactionDialog
         open={open}
         onOpenChange={(open) => {
           setOpen(open);
@@ -164,6 +164,7 @@ export const LiquidityForm = ({
         txStatus={status}
         error={error}
         result={result}
+        reset={reset}
       />
       <form
         className="flex flex-col gap-4"
