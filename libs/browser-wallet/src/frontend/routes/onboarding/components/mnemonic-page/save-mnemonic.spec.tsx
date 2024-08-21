@@ -6,8 +6,8 @@ import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { mockClient } from '@/test-helpers/mock-client';
 import { mockStorage } from '@/test-helpers/mock-storage';
 
-import { FULL_ROUTES } from '../../route-names';
-import { locators as saveMnemonicLocators, SaveMnemonic } from '.';
+import { FULL_ROUTES } from '../../../route-names';
+import { locators as saveMnemonicLocators, MnemonicPage } from '.';
 import { locators as saveMnemonicFormLocators } from './save-mnemonic-form';
 
 const mockedUsedNavigate = jest.fn();
@@ -25,7 +25,7 @@ const renderComponent = () =>
   render(
     <JsonRPCProvider>
       <MemoryRouter>
-        <SaveMnemonic />
+        <MnemonicPage mnemonic={'Word '.repeat(24)} />
       </MemoryRouter>
     </JsonRPCProvider>
   );

@@ -1,5 +1,3 @@
-// import { createWindow } from '../src/windows.js';
-// import { disconnect, removeListener } from 'process';
 import config from '../../config/beta.js';
 
 export async function install({ networks, settings }) {
@@ -33,14 +31,8 @@ const createPortMock = (name) => ({
     },
   },
   onDisconnect: {
-    addListener: (callback) => {
-      // eslint-disable-next-line no-console
-      // console.log('onMessage addListener', callback);
-    },
-    removeListener: (callback) => {
-      // eslint-disable-next-line no-console
-      // console.log('onMessage removeListener', callback);
-    },
+    addListener: (callback) => {},
+    removeListener: (callback) => {},
   },
 });
 

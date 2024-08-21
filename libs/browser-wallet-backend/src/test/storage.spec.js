@@ -1,11 +1,4 @@
-import { /* StorageSessionMap, */ StorageLocalMap } from '../lib/storage.js';
-
-// describe('StorageSessionMap', () => {
-//   it('should not be supported in Node.js', () => {
-//     expect(() => new StorageSessionMap('test')).toThrow();
-//     expect(StorageSessionMap.isSupported()).toBe(false);
-//   });
-// });
+import { StorageLocalMap } from '../lib/storage.js';
 
 describe('StorageLocalMap', () => {
   beforeEach(() => {

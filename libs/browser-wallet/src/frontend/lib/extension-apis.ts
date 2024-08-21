@@ -15,10 +15,7 @@ export const getExtensionApi = () => {
             window.dispatchEvent(new CustomEvent(name, { detail: message }));
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onmessage: (...arguments_: any[]) => {
-            // eslint-disable-next-line no-console
-            // console.log('om', arguments_);
-          },
+          onmessage: (...arguments_: any[]) => {},
           onMessage: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             addListener: (function_: any) => {
@@ -26,7 +23,6 @@ export const getExtensionApi = () => {
               window.addEventListener(
                 `${name}-response`,
                 (event: CustomEvent) => {
-                  // console.log('event', event.detail);
                   function_(event.detail);
                 }
               );
