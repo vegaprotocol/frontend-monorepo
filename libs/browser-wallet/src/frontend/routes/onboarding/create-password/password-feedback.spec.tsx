@@ -40,9 +40,9 @@ describe('PasswordFeedback component', () => {
       locators.feedbackStrength
     );
     expect(feedbackStrengthElements).toHaveLength(4);
-    expect(feedbackStrengthElements[0]).toHaveClass('bg-yellow-650');
-    expect(feedbackStrengthElements[1]).toHaveClass('bg-yellow-600');
-    expect(feedbackStrengthElements[2]).toHaveClass('bg-yellow-550');
+    expect(feedbackStrengthElements[0]).toHaveClass('bg-yellow-600');
+    expect(feedbackStrengthElements[1]).toHaveClass('bg-yellow-550');
+    expect(feedbackStrengthElements[2]).toHaveClass('bg-yellow-500');
     expect(feedbackStrengthElements[3]).toHaveClass('bg-surface-1-fg-muted');
   });
 
