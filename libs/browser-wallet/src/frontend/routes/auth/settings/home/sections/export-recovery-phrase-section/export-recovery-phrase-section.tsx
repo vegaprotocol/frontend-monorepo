@@ -35,7 +35,7 @@ export const ExportRecoveryPhraseSection = () => {
         onInteractOutside={resetDialog}
         onChange={resetDialog}
       >
-        <div className="p-2 text-base text-vega-dark-400">
+        <div className="p-2 text-base text-surface-0-fg-muted">
           <h1
             data-testid={locators.exportRecoveryPhraseTitle}
             className="text-xl  text-center text-surface-0-fg mb-2"

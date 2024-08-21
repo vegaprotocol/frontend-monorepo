@@ -37,7 +37,7 @@ export const ArbitrumKey = ({ address }: { address: string }) => {
           Arbitrum Address
         </div>
         <ExternalLink
-          className="text-vega-dark-400"
+          className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
           href={`${network.arbitrumExplorerLink}/address/${address}`}
         >

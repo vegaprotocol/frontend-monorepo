@@ -38,7 +38,7 @@ export const EthereumKey = ({ address }: { address: string }) => {
           Ethereum Address
         </div>
         <ExternalLink
-          className="text-vega-dark-400"
+          className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
           href={`${network.ethereumExplorerLink}/address/${address}`}
         >

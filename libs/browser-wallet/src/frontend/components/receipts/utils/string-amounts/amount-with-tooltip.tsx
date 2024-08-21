@@ -46,7 +46,7 @@ export const AmountWithTooltip = ({
       &nbsp;
       <ExternalLink
         data-testid={locators.assetExplorerLink}
-        className="text-vega-dark-300"
+        className="text-surface-0-fg-muted"
         href={assetHref}
       >
         {truncateMiddle(assetId)}

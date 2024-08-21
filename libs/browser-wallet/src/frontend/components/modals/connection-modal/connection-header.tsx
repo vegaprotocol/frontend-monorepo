@@ -46,7 +46,7 @@ export const ConnectionHeader = ({
         <Header content={title} />
         <p
           data-testid={locators.dAppHostname}
-          className="break-all text-neutral-light text-vega-dark-400"
+          className="break-all text-neutral-light text-surface-0-fg-muted"
         >
           {hostname}
         </p>

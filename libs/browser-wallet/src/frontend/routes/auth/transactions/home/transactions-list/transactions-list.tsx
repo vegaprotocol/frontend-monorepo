@@ -43,7 +43,7 @@ export const TransactionsList = ({
               <div className="flex flex-row">
                 <div
                   data-testid={locators.transactionListItemKeyName}
-                  className="text-vega-dark-300"
+                  className="text-surface-0-fg-muted"
                 >
                   {transaction.keyName}
                 </div>

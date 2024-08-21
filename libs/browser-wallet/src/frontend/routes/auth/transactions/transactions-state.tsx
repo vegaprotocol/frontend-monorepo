@@ -6,7 +6,7 @@ export const locators = {
 
 const TRANSACTION_STATE_COLOR = {
   [TransactionState.Confirmed]: 'text-vega-blue-500',
-  [TransactionState.Rejected]: 'text-vega-dark-300',
+  [TransactionState.Rejected]: 'text-surface-0-fg-muted',
   [TransactionState.Error]: 'text-vega-pink-500',
 };
 

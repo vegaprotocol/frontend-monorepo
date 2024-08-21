@@ -29,7 +29,7 @@ export const HiddenContainer = ({
       >
         {hiddenInformation}
       </code>
-      <div className="text-vega-dark-300 flex justify-between">
+      <div className="text-surface-0-fg-muted flex justify-between">
         <CopyWithCheckmark text={hiddenInformation} iconSide="left">
           Copy to clipboard
         </CopyWithCheckmark>
