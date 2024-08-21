@@ -20,6 +20,8 @@ jest.mock('@vegaprotocol/network-parameters', () => ({
       governance_proposal_updateNetParam_requiredParticipation: '0.65',
       governance_proposal_freeform_requiredMajority: '0.7',
       governance_proposal_freeform_requiredParticipation: '0.75',
+      governance_proposal_VolumeRebateProgram_requiredParticipation: '0.5',
+      governance_proposal_VolumeRebateProgram_requiredMajority: '0.55',
     },
     loading: false,
     error: null,
@@ -53,6 +55,7 @@ describe('use-proposal-network-params', () => {
       UpdateVolumeDiscountProgram: expectedObj,
       NewTransfer: expectedObj,
       CancelTransfer: expectedObj,
+      UpdateVolumeRebateProgram: expectedObj,
     });
   });
 
