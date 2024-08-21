@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense, useEffect } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
@@ -32,16 +32,25 @@ import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
 import dynamic from 'next/dynamic';
 
-const BrowserWalletBackendLoader = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => <>{children}</>;
+const createBrowserWalletBackendLoader = (createWalletBackend: () => void) => {
+  return function BrowserWalletBackendLoader({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) {
+    useEffect(() => {
+      createWalletBackend();
+    }, []);
+    return <>{children}</>;
+  };
+};
 
 export const BrowserWalletBackend = dynamic(
   () =>
     import('@vegaprotocol/browser-wallet-backend').then(
-      () => BrowserWalletBackendLoader
+      ({ createWalletBackend }) => {
+        return createBrowserWalletBackendLoader(createWalletBackend);
+      }
     ),
   {
     ssr: false,
