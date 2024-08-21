@@ -31,15 +31,20 @@ import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
 import dynamic from 'next/dynamic';
+import type { createWalletBackend as createWalletBackendType } from '@vegaprotocol/browser-wallet-backend';
 
-const createBrowserWalletBackendLoader = (createWalletBackend: () => void) => {
+const createBrowserWalletBackendLoader = (
+  createWalletBackend: typeof createWalletBackendType
+) => {
   return function BrowserWalletBackendLoader({
     children,
   }: {
     children: React.ReactNode;
   }) {
     useEffect(() => {
-      createWalletBackend();
+      createWalletBackend({
+        node: new URL('https://api.n06.testnet.vega.rocks/graphql'),
+      });
     }, []);
     return <>{children}</>;
   };

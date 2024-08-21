@@ -4,15 +4,14 @@ import { useEffect } from 'react';
 import { ModalWrapper } from '@/components/modals';
 import { NavBar } from '@/components/navbar';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 import { useAssetsStore } from '@/stores/assets-store';
 import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
 import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
+
 export const Auth = () => {
   const { request } = useJsonRpcClient();
-  const { network } = useNetwork();
 
   // Wallets store
   const { loadWallets, loading: loadingWallets } = useWalletStore((state) => ({
@@ -53,8 +52,8 @@ export const Auth = () => {
   // Ideally the backend should be capable of doing this in parallel, but increases perceived performance for now.
   useEffect(() => {
     if (!loadingWallets && !loadingConnections && !loadingNetworks) {
-      loadAssets(request, network.id);
-      loadMarkets(request, network.id);
+      loadAssets(request);
+      loadMarkets(request);
     }
   }, [
     loadingConnections,
