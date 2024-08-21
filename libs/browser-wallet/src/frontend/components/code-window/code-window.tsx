@@ -13,7 +13,7 @@ export const CodeWindow = ({
   return (
     <div
       data-testid={locators.codeWindow}
-      className="whitespace-pre max-h-60 flex p-4 rounded-md w-full bg-vega-dark-150"
+      className="whitespace-pre max-h-60 flex p-4 rounded-md w-full bg-surface-1 text-surface-1-fg"
     >
       <code
         data-testid={locators.codeWindowContent}

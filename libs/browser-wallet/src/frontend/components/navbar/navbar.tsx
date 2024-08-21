@@ -45,7 +45,7 @@ export const NavBar = () => {
     <nav
       data-testid={locators.navBar}
       className={
-        'z-[5] w-full h-20 grid gap-0 grid-cols-3 border-t border-vega-dark-200 bg-black'
+        'z-[5] w-full h-20 grid gap-0 grid-cols-3 border-t border-vega-dark-200 bg-surface-1 text-surface-1-fg'
       }
     >
       <NavButton
