@@ -28,7 +28,7 @@ export const GetStarted = () => {
           {ITEMS.map((index) => (
             <li key={index} className="flex">
               <div>
-                <Tick size={12} className="mr-2 text-vega-green-550" />
+                <Tick size={12} className="mr-2 text-intent-success" />
               </div>
               <p className="text-surface-0-fg">{index}</p>
             </li>

@@ -25,7 +25,7 @@ export const ConnectionDetails = ({
         <ul className="list-none">
           <li className="flex">
             <div>
-              <Tick size={12} className="mr-2 text-vega-green-550" />
+              <Tick size={12} className="mr-2 text-intent-success" />
             </div>
             <p
               data-testid={locators.connectionModalAccessListAccess}
@@ -36,7 +36,7 @@ export const ConnectionDetails = ({
           </li>
           <li className="flex">
             <div>
-              <Tick size={12} className="mr-2 text-vega-green-550" />
+              <Tick size={12} className="mr-2 text-intent-success" />
             </div>
             <p
               data-testid={locators.connectionModalAccessListAccess}
