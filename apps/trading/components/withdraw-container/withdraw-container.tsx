@@ -288,7 +288,7 @@ const WithdrawForm = ({
                   const asset = a.asset as AssetERC20;
                   return (
                     <TradingRichSelectOption value={asset.id} key={asset.id}>
-                      <AssetOption asset={{ ...asset, balance: a.balance }} />
+                      <AssetOption asset={asset} balance={a.balance} />
                     </TradingRichSelectOption>
                   );
                 })}

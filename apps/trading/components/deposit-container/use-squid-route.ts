@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce';
 import { useEffect, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
-import { type Configs, depositSchema, type FormFields } from './deposit-form';
 import { ChainType } from '@0xsquid/squid-types';
 import {
   ArbitrumSquidReceiver,
@@ -9,12 +8,13 @@ import {
   prepend0x,
   Token,
 } from '@vegaprotocol/smart-contracts';
-import { MIN, removeDecimal } from '@vegaprotocol/utils';
+import { removeDecimal } from '@vegaprotocol/utils';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { useEthersSigner } from './use-ethers-signer';
 import { ARBITRUM_SQUID_RECEIVER_ADDRESS } from './constants';
 import { useQuery } from '@tanstack/react-query';
 import { useSquid } from './use-squid';
+import { type FormFields, type Configs, formSchema } from './form-schema';
 
 export const useSquidRoute = ({
   form,
@@ -42,11 +42,10 @@ export const useSquidRoute = ({
   }, [form]);
 
   const queryResult = useQuery({
-    staleTime: MIN * 1,
     queryKey: ['squidRoute', queryKey],
     enabled: enabled && Boolean(queryKey),
     queryFn: async ({ queryKey }) => {
-      const queryKeyRes = depositSchema.safeParse(queryKey[1]);
+      const queryKeyRes = formSchema.safeParse(queryKey[1]);
 
       if (!queryKeyRes.success) return null;
       if (!squid) return null;
@@ -112,10 +111,6 @@ export const useSquidRoute = ({
         toChain: toAsset.source.chainId,
         toToken: toAsset.source.contractAddress,
         toAddress: fields.fromAddress as `0x${string}`,
-        // @ts-ignore invalid types from squid
-        slippageConfig: {
-          autoMode: 1,
-        },
         quoteOnly: false,
         enableBoost: true,
         postHook: {

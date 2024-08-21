@@ -52,7 +52,16 @@ export const FallbackDepositForm = ({
   const toAsset = assets?.find((a) => a.id === fields.toAsset);
 
   // Data relating to the select asset, like balance on address, allowance
-  const { data, queryKey } = useAssetReadContracts({ asset: toAsset, configs });
+  const { data: balanceData, queryKey } = useAssetReadContracts({
+    token: toAsset
+      ? {
+          address: toAsset.source.contractAddress,
+          chainId: toAsset.source.chainId,
+          decimals: toAsset.decimals,
+        }
+      : undefined,
+    configs,
+  });
 
   const { submitDeposit } = useEvmDeposit({ queryKey });
 
@@ -103,17 +112,16 @@ export const FallbackDepositForm = ({
           toAsset={toAsset}
           queryKey={queryKey}
         />
-
         <Fields.Amount
           control={form.control}
-          toAsset={toAsset}
-          balanceOf={data?.balanceOf}
+          balanceOf={balanceData?.balanceOf}
+          nativeBalanceOf={undefined}
         />
-        {toAsset && data && (
+        {toAsset && balanceData && (
           <Approval
             asset={toAsset}
             amount={fields.amount}
-            data={data}
+            data={balanceData}
             configs={configs}
             queryKey={queryKey}
           />

@@ -19,7 +19,7 @@ export const TradingSelect = forwardRef<HTMLSelectElement, TradingSelectProps>(
         ref={ref}
         {...props}
         className={[
-          defaultSelectElement(hasError, props.disabled),
+          defaultSelectElement(hasError),
           className,
           'appearance-none rounded-md',
         ].join(' ')}

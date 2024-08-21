@@ -5,6 +5,7 @@ export * from './lib/get-nodes';
 export * from './lib/get-user-locale';
 export * from './lib/helpers';
 export * from './lib/is-asset-erc20';
+export * from './lib/is-asset-native';
 export * from './lib/is-valid-url';
 export * from './lib/local-storage';
 export * from './lib/markets';

@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { type Squid } from '@0xsquid/sdk';
@@ -19,6 +19,7 @@ import { useSquidRoute } from './use-squid-route';
 import { Approval } from './approval';
 import { SwapInfo } from './swap-info';
 import { type FormFields, formSchema, type Configs } from './form-schema';
+import { useNativeBalance } from './use-native-balance';
 
 export const DepositForm = ({
   squid,
@@ -53,28 +54,48 @@ export const DepositForm = ({
     },
   });
 
-  const fields = form.watch();
+  const amount = useWatch({ control: form.control, name: 'amount' });
+  const fromChain = useWatch({ control: form.control, name: 'fromChain' });
+  const fromAssetAddress = useWatch({
+    control: form.control,
+    name: 'fromAsset',
+  });
+  const toAssetId = useWatch({ control: form.control, name: 'toAsset' });
 
   const tokens = squid.tokens?.filter((t) => {
-    if (!fields.fromChain) return false;
-    if (t.chainId === fields.fromChain) return true;
+    if (!fromChain) return false;
+    if (t.chainId === fromChain) return true;
     return false;
   });
 
-  const chain = squid.chains.find((c) => c.chainId === fields.fromChain);
-  const toAsset = assets?.find((a) => a.id === fields.toAsset);
+  const chain = squid.chains.find((c) => c.chainId === fromChain);
+  const toAsset = assets?.find((a) => a.id === toAssetId);
+  const fromAsset = tokens?.find((t) => t.address === fromAssetAddress);
 
   // Data relating to the select asset, like balance on address, allowance
-  const { data, queryKey } = useAssetReadContracts({ asset: toAsset, configs });
+  const { data: balanceData, queryKey: balanceDataQueryKey } =
+    useAssetReadContracts({
+      token: fromAsset,
+      configs,
+    });
 
-  const { submitDeposit } = useEvmDeposit({ queryKey });
+  const { data: nativeBalance } = useNativeBalance({
+    address,
+    chainId: fromChain,
+  });
+
+  const { submitDeposit } = useEvmDeposit({ queryKey: balanceDataQueryKey });
 
   const isSwap =
-    fields.fromAsset && toAsset
-      ? fields.fromAsset !== toAsset?.source.contractAddress
+    fromAssetAddress && toAsset
+      ? fromAssetAddress !== toAsset?.source.contractAddress
       : undefined;
 
-  const { data: routeData, isFetching } = useSquidRoute({
+  const {
+    data: routeData,
+    error: routeError,
+    isFetching,
+  } = useSquidRoute({
     form,
     assets,
     configs,
@@ -161,28 +182,28 @@ export const DepositForm = ({
         />
         <Fields.Amount
           control={form.control}
-          toAsset={toAsset}
-          balanceOf={data?.balanceOf}
+          balanceOf={balanceData?.balanceOf}
+          nativeBalanceOf={nativeBalance}
         />
         <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
         <Fields.ToAsset
           control={form.control}
           assets={assets}
           toAsset={toAsset}
-          queryKey={queryKey}
+          queryKey={balanceDataQueryKey}
         />
-        {!isSwap && toAsset && data && (
+        {!isSwap && toAsset && balanceData && (
           <Approval
             asset={toAsset}
-            amount={fields.amount}
-            data={data}
+            amount={amount}
+            data={balanceData}
             configs={configs}
-            queryKey={queryKey}
+            queryKey={balanceDataQueryKey}
           />
         )}
         {isSwap && routeData && (
           <div className="mb-2">
-            <SwapInfo estimate={routeData.route.estimate} />
+            <SwapInfo route={routeData.route} error={routeError} />
           </div>
         )}
         <Button

@@ -3,30 +3,36 @@ import BigNumber from 'bignumber.js';
 import { useAccount, useReadContracts, useStorageAt } from 'wagmi';
 
 import { encodeAbiParameters, keccak256 } from 'viem';
-import { type AssetERC20 } from '@vegaprotocol/assets';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 
 import { getErc20Abi } from '../../lib/utils/get-erc20-abi';
+import { isAssetNative, toBigNum } from '@vegaprotocol/utils';
 
 export const useAssetReadContracts = ({
-  asset,
+  token,
   configs,
 }: {
-  asset?: AssetERC20;
+  token?: {
+    address: string;
+    chainId: string;
+    decimals: number;
+  };
   configs: Array<EthereumConfig | EVMBridgeConfig>;
 }) => {
   const { address } = useAccount();
 
-  const assetAddress = asset?.source.contractAddress as `0x${string}`;
-  const assetChainId = asset?.source.chainId;
+  const assetAddress = token?.address as `0x${string}`;
+  const assetChainId = Number(token?.chainId);
 
-  const config = configs.find((c) => c.chain_id === assetChainId);
+  const config = configs.find((c) => Number(c.chain_id) === assetChainId);
 
   const bridgeAddress = config?.collateral_bridge_contract
     .address as `0x${string}`;
 
-  const enabled = Boolean(assetAddress && bridgeAddress && address);
+  const enabled = Boolean(
+    assetAddress && !isAssetNative(assetAddress) && address
+  );
 
   const slot =
     address && assetAddress
@@ -41,7 +47,7 @@ export const useAssetReadContracts = ({
 
   const tokenAbi = getErc20Abi({ address: assetAddress });
 
-  const { data, ...queryResult } = useReadContracts({
+  const queryResult = useReadContracts({
     contracts: [
       {
         abi: tokenAbi,
@@ -54,7 +60,7 @@ export const useAssetReadContracts = ({
         abi: tokenAbi,
         address: assetAddress,
         functionName: 'allowance',
-        args: address ? [address, bridgeAddress] : undefined,
+        args: address && bridgeAddress ? [address, bridgeAddress] : undefined,
         chainId: Number(assetChainId),
       },
       {
@@ -64,32 +70,34 @@ export const useAssetReadContracts = ({
         args: [assetAddress],
         chainId: Number(assetChainId),
       },
-      {
-        abi: BRIDGE_ABI,
-        address: bridgeAddress,
-        functionName: 'is_exempt_depositor',
-        args: [address],
-        chainId: Number(assetChainId),
-      },
     ],
     query: {
       enabled,
     },
   });
 
+  if (!token || !queryResult.data) {
+    return {
+      ...queryResult,
+      data: undefined,
+    };
+  }
+
+  const data = queryResult.data;
+
   return {
     ...queryResult,
-    data: data
-      ? {
-          balanceOf: data[0].result?.toString() || '0',
-          allowance: data[1].result?.toString() || '0',
-          lifetimeLimit: data[2].result?.toString() || '0',
-          isExempt: data[3].result?.toString() || '0',
-          deposited: depositedData
-            ? new BigNumber(depositedData, 16).toString()
-            : '0',
-        }
-      : undefined,
+    data: {
+      balanceOf: toBigNum(data[0].result?.toString() || '0', token.decimals),
+      allowance: toBigNum(data[1].result?.toString() || '0', token.decimals),
+      lifetimeLimit: toBigNum(
+        data[2].result?.toString() || '0',
+        token.decimals
+      ),
+      deposited: depositedData
+        ? toBigNum(new BigNumber(depositedData, 16).toString(), token.decimals)
+        : BigNumber('0'),
+    },
   };
 };
 

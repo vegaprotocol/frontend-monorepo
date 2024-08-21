@@ -1,4 +1,4 @@
-import { type Control, Controller, useForm } from 'react-hook-form';
+import { type Control, Controller, useFormContext } from 'react-hook-form';
 
 import { useAccount, useDisconnect, useChainId, useAccountEffect } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
@@ -22,7 +22,7 @@ import {
 
 export function FromAddress(props: { control: Control<FormFields> }) {
   const t = useT();
-  const form = useForm();
+  const form = useFormContext();
   const { disconnect } = useDisconnect();
   const { isConnected, address } = useAccount();
   const chainId = useChainId();

@@ -6,7 +6,7 @@ import {
   TradingRichSelectOption,
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
-import { type Control, Controller, useForm } from 'react-hook-form';
+import { type Control, Controller, useFormContext } from 'react-hook-form';
 import { VegaKeySelect } from '../vega-key-select';
 import { type FormFields } from '../form-schema';
 import { type Key } from '@vegaprotocol/wallet';
@@ -17,7 +17,7 @@ export function ToPubKey(props: {
   pubKeys: Key[];
 }) {
   const t = useT();
-  const form = useForm();
+  const form = useFormContext();
   return (
     <Controller
       name="toPubKey"

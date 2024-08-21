@@ -23,9 +23,6 @@ export const useSquid = () => {
 
       await squid.init();
 
-      // TODO: remove this, its just for testing the fallback form
-      squid.initialized = false;
-
       return squid;
     },
   });

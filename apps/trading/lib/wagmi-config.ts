@@ -1,7 +1,6 @@
 import { http, createConfig } from 'wagmi';
 import * as chains from 'wagmi/chains';
 import { getDefaultConfig } from 'connectkit';
-import { ENV, Networks } from '@vegaprotocol/environment';
 
 import { TRANSPORTS } from '@vegaprotocol/web3';
 import { type HttpTransport } from 'viem';
@@ -26,11 +25,7 @@ const transports = allChains.reduce((obj, c) => {
 export const wagmiConfig = createConfig(
   getDefaultConfig({
     // @ts-expect-error not all chains in allChains conform to the chain interface
-    chains:
-      // Provide mainnet chains if on mainnet only
-      ENV.VEGA_ENV === Networks.MAINNET
-        ? allChains
-        : [chains.sepolia, chains.arbitrumSepolia],
+    chains: allChains,
     transports: {
       ...transports,
       [chains.mainnet.id]: http(TRANSPORTS[chains.mainnet.id]),

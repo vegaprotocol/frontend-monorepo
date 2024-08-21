@@ -3,23 +3,23 @@ import {
   TradingInput,
   TradingInputError,
 } from '@vegaprotocol/ui-toolkit';
-import { type Control, Controller, useForm } from 'react-hook-form';
-import { type FormFields } from '../deposit-form';
+import { type Control, Controller, useFormContext } from 'react-hook-form';
+import { type FormFields } from '../form-schema';
 import {
   FormSecondaryActionButton,
   FormSecondaryActionWrapper,
 } from '../../form-secondary-action';
 import { useT } from '../../../lib/use-t';
-import { type AssetERC20 } from '@vegaprotocol/assets';
-import { toBigNum } from '@vegaprotocol/utils';
+import type BigNumber from 'bignumber.js';
+import { isAssetNative } from '@vegaprotocol/utils';
 
 export function Amount(props: {
   control: Control<FormFields>;
-  toAsset: AssetERC20 | undefined;
-  balanceOf: string | undefined;
+  balanceOf: BigNumber | undefined;
+  nativeBalanceOf: BigNumber | undefined;
 }) {
   const t = useT();
-  const form = useForm();
+  const form = useFormContext<FormFields>();
   return (
     <FormGroup label="Amount" labelFor="amount">
       <Controller
@@ -38,23 +38,23 @@ export function Amount(props: {
           );
         }}
       />
-      {props.toAsset && props.balanceOf && (
-        <FormSecondaryActionWrapper>
-          <FormSecondaryActionButton
-            onClick={() => {
-              if (!props.toAsset || !props.balanceOf) return;
-              const amount = toBigNum(
-                props.balanceOf || '0',
-                props.toAsset.decimals
-              ).toFixed(props.toAsset.decimals);
+      <FormSecondaryActionWrapper>
+        <FormSecondaryActionButton
+          onClick={() => {
+            const fromAsset = form.getValues('fromAsset');
 
-              form.setValue('amount', amount, { shouldValidate: true });
-            }}
-          >
-            {t('Use maximum')}
-          </FormSecondaryActionButton>
-        </FormSecondaryActionWrapper>
-      )}
+            const value = isAssetNative(fromAsset)
+              ? props.nativeBalanceOf?.toString() || '0'
+              : props.balanceOf?.toString() || '0';
+
+            form.setValue('amount', value, {
+              shouldValidate: true,
+            });
+          }}
+        >
+          {t('Use maximum')}
+        </FormSecondaryActionButton>
+      </FormSecondaryActionWrapper>
     </FormGroup>
   );
 }

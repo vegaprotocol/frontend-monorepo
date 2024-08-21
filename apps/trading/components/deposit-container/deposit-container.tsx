@@ -32,6 +32,7 @@ export const DepositContainer = ({
 
   if (!squid) return null;
 
+  // If we have squid initialized show the form which allows swaps
   if (squid.initialized) {
     return (
       <DepositForm
@@ -43,6 +44,9 @@ export const DepositContainer = ({
     );
   }
 
+  // If for some reason squid cannto be initialized (api down for example)
+  // use a form which doesn't require squid, but also doesn't allow swaps,
+  // which is better than noting
   return (
     <FallbackDepositForm
       assets={assets as AssetERC20[]}

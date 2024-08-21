@@ -1,12 +1,18 @@
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isAssetNative } from '@vegaprotocol/utils';
 import { useWallet } from '@vegaprotocol/wallet-react';
 import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
-export const AssetOption = ({ asset }: { asset: AssetERC20 }) => {
+export const AssetOption = ({
+  asset,
+  balance,
+}: {
+  asset: AssetERC20;
+  balance?: string;
+}) => {
   const vegaChainId = useWallet((store) => store.chainId);
 
   return (
@@ -22,14 +28,20 @@ export const AssetOption = ({ asset }: { asset: AssetERC20 }) => {
             : asset.source.__typename}
         </div>
       </div>
+      {balance && (
+        <div className="ml-auto text-sm">
+          {addDecimalsFormatNumber(balance, asset.decimals)}
+        </div>
+      )}
     </div>
   );
 };
 
 type AssetBalanceProps = { chainId: string; address: string };
 
+/** Show the balance of an asset on an evm chain */
 export const AssetBalance = (props: AssetBalanceProps) => {
-  if (props.address.toLowerCase() === '0x' + 'e'.repeat(40)) {
+  if (isAssetNative(props.address)) {
     return <NativeTokenBalance {...props} />;
   }
 

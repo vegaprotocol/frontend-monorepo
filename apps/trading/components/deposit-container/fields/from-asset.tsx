@@ -4,9 +4,10 @@ import {
   TradingRichSelect,
   TradingRichSelectOption,
   TradingRichSelectValue,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { type Control, Controller, useForm } from 'react-hook-form';
+import { type Control, Controller, useWatch } from 'react-hook-form';
 import { type ChainData, type Token } from '@0xsquid/squid-types';
 import { type FormFields } from '../form-schema';
 import { FormSecondaryActionWrapper } from '../../form-secondary-action';
@@ -23,9 +24,12 @@ export function FromAsset({
   disabled?: boolean;
 }) {
   const t = useT();
-  const form = useForm();
-  const fromAssetAddress = form.watch('fromAsset');
+  const fromAssetAddress = useWatch({
+    name: 'fromAsset',
+    control: props.control,
+  });
   const fromAsset = props.tokens?.find((t) => t.address === fromAssetAddress);
+
   return (
     <Controller
       name="fromAsset"
@@ -55,14 +59,14 @@ export function FromAsset({
                             src={fromAsset.logoURI}
                             width="30"
                             height="30"
-                            className="rounded-full bg-gs-600 border-gs-600 border-2"
+                            className="rounded-full bg-surface-1 border-surface-1 border-2"
                           />
                           <div className="text-sm text-left leading-4">
                             <div>
                               {fromAsset.name} {fromAsset.symbol}
                             </div>
                             <div className="text-secondary text-xs">
-                              {fromAsset.address}
+                              {truncateMiddle(fromAsset.address)}
                             </div>
                           </div>
                           <div className="ml-auto text-sm">
@@ -96,7 +100,7 @@ export function FromAsset({
                               {token.name} {token.symbol}
                             </div>
                             <div className="text-secondary text-xs">
-                              {token.address}
+                              {truncateMiddle(token.address)}
                             </div>
                           </div>
                         </div>
