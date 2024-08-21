@@ -92,25 +92,18 @@ export default function init({
     onerror,
     methods: {
       async 'client.connect_wallet'(params, context) {
-        const receivedAt = new Date().toISOString();
         doValidate(clientValidation.connectWallet, params);
         if (context.isConnected === true) {
-          if (!params.chainId) return null;
-          if (
-            params.chainId &&
-            params.chainId === (await connections.getChainId(context.origin))
-          )
-            return null;
-        }
-        if ((await connections.has(context.origin)) === false) {
-          const reply = await interactor.reviewConnection({
-            origin: context.origin,
-            chainId: params.chainId,
-            receivedAt,
-          });
-          if (reply.approved === false)
-            throw new JSONRPCServer.Error(...Errors.CONNECTION_DENIED);
+          return null;
+        } else if ((await connections.has(context.origin)) === false) {
           const allWallets = await wallets.list();
+          if (allWallets.length === 0) {
+            throw new JSONRPCServer.Error(
+              'No wallets found',
+              -1,
+              'A wallet must be created before you can connect to the in browser wallet'
+            );
+          }
           const walletPubKeys = await Promise.all(
             allWallets.map((w) => wallets.listKeys({ wallet: w }))
           );
@@ -121,13 +114,7 @@ export default function init({
               publicKeys: walletPubKeys.flatMap((w) => w),
             },
             chainId: params.chainId,
-            networkId: reply.networkId,
           });
-        } else if (
-          params.chainId != null &&
-          (await connections.getChainId(context.origin)) !== params.chainId
-        ) {
-          throw new JSONRPCServer.Error(...Errors.MISMATCHING_CHAIN_ID);
         }
 
         context.isConnected = true;
@@ -136,7 +123,7 @@ export default function init({
       },
       async 'client.disconnect_wallet'(params, context) {
         doValidate(clientValidation.disconnectWallet, params);
-
+        context.isConnected = false;
         return null;
       },
       async 'client.is_connected'(params, context) {
