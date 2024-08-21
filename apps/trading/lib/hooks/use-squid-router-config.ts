@@ -386,7 +386,7 @@ const mapAssetToDestinationTokenConfig = (
         if (asset.contract instanceof ArbitrumSquidReceiver) {
           // DEPOSIT ON ARBITRUM BRIDGE
           // NOTE: This should be calling the SquidReceiver contract `deposit`
-          // method instead of the `deposit_asset` on Arbitrum's collateral
+          // method instead of the `depositAsset` on Arbitrum's collateral
           // bridge.
           const recovery = args.destinationAddress || '';
           const data = asset.contract.encodeDepositData(
@@ -399,7 +399,7 @@ const mapAssetToDestinationTokenConfig = (
         } else {
           // DEPOSIT ON ETHEREUM BRIDGE
           // NOTE: This is a direct call on to the ethereum collateral bridge.
-          // This will call the `deposit_asset` method.
+          // This will call the `depositAsset` method.
           // Although it also should have it's own squid receiver on Ethereum.
           const data = asset.contract.encodeDepositData(
             asset.source.contractAddress,

@@ -313,7 +313,7 @@ describe('useEthWithdrawApprovalsManager', () => {
     await waitForNextTick();
     expect(create).toHaveBeenCalled();
     expect(create.mock.calls[0][0]).toEqual({});
-    expect(create.mock.calls[0][1]).toEqual('withdraw_asset');
+    expect(create.mock.calls[0][1]).toEqual('withdrawAsset');
     expect(create.mock.calls[0][2]).toEqual(
       expect.arrayContaining([
         erc20WithdrawalApproval.assetSource,

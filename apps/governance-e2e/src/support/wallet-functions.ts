@@ -50,7 +50,7 @@ export async function depositAsset(
   ).then(() => {
     const collateralBridge = new CollateralBridge(Erc20BridgeAddress, signer);
     cy.wrap(
-      collateralBridge.deposit_asset(
+      collateralBridge.depositAsset(
         assetEthAddress,
         amount + '0'.repeat(decimalPlaces),
         '0x' + vegaWalletPubKey
@@ -108,7 +108,7 @@ export async function vegaWalletSetSpecifiedApprovalAmount(
 async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
   cy.highlight('Tearing down staking tokens from vega wallet if present');
   cy.wrap(
-    stakingBridgeContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
+    stakingBridgeContract.stakeBalance(ethWalletPubKey, vegaWalletPubKey),
     transactionTimeout
   ).then((stakeBalance) => {
     if (Number(stakeBalance) != 0) {
@@ -118,7 +118,7 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
           .invoke('text')
           .then(($associatedAmount) => {
             cy.wrap(
-              stakingBridgeContract.remove_stake(
+              stakingBridgeContract.removeStake(
                 String(stakeBalance),
                 vegaWalletPubKey
               ),
@@ -177,7 +177,7 @@ export async function vegaWalletAssociate(amount: string) {
 export async function vegaWalletDisassociate(amount: string) {
   cy.highlight('Disassociating tokens');
   amount = amount + '0'.repeat(18);
-  stakingBridgeContract.remove_stake(amount, vegaWalletPubKey);
+  stakingBridgeContract.removeStake(amount, vegaWalletPubKey);
 }
 
 export function vegaWalletFaucetAssetsWithoutCheck(

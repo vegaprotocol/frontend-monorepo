@@ -25,7 +25,7 @@ EOT
 
   pre_start {
     docker_service "ganache-1" {
-      image = "vegaprotocol/ganache:v1.5.2"
+      image = "vegaprotocol/ganache:v1.6.0"
       args  = [
         "--miner.blockTime", "0.5",
         "--chain.chainId", "1440",
@@ -49,7 +49,7 @@ EOT
     }
 
     docker_service "ganache-2" {
-      image = "vegaprotocol/ganache:v1.5.2"
+      image = "vegaprotocol/ganache:v1.6.0"
       args  = [
         "--miner.blockTime", "0.5",
         "--chain.chainId", "1450",

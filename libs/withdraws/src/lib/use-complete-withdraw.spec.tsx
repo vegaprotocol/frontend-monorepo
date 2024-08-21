@@ -14,7 +14,7 @@ jest.mock('@vegaprotocol/web3', () => {
   return {
     ...orig,
     useBridgeContract: jest.fn().mockReturnValue({
-      withdraw_asset: jest.fn(),
+      withdrawAsset: jest.fn(),
     }),
     useEthereumTransaction: jest.fn(),
   };

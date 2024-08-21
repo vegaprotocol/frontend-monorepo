@@ -14,58 +14,58 @@ export class MultisigControl {
     this.address = address;
   }
 
-  async add_signer(newSigner: string, nonce: string, signatures: string) {
+  async addSigner(newSigner: string, nonce: string, signatures: string) {
     const res = await this.contract.estimateGas.add_signer(
       newSigner,
       nonce,
       signatures
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.add_signer(newSigner, nonce, signatures, { gasLimit });
+    return this.contract.addSigner(newSigner, nonce, signatures, { gasLimit });
   }
 
-  async burn_nonce(nonce: string, signatures: string) {
+  async burnNonce(nonce: string, signatures: string) {
     const res = await this.contract.estimateGas.burn_nonce(nonce, signatures);
     const gasLimit = calcGasBuffer(res);
-    return this.contract.burn_nonce(nonce, signatures, { gasLimit });
+    return this.contract.burnNonce(nonce, signatures, { gasLimit });
   }
 
-  get_current_threshold() {
+  getCurrentThreshold() {
     return this.contract.get_current_threshold();
   }
 
-  get_valid_signer_count() {
-    return this.contract.get_valid_signer_count();
+  getValidSignerCount() {
+    return this.contract.getValidSignerCount();
   }
 
-  is_nonce_used(nonce: string) {
-    return this.contract.is_nonce_used(nonce);
+  isNonceUsed(nonce: string) {
+    return this.contract.isNonceUsed(nonce);
   }
 
-  is_valid_signer(signerAddress: string) {
-    return this.contract.is_valid_signer(signerAddress);
+  isValidSigner(signerAddress: string) {
+    return this.contract.isValidSigner(signerAddress);
   }
 
-  async remove_signer(oldSigner: string, nonce: string, signatures: string) {
-    const res = await this.contract.estimateGas.remove_signer(
+  async removeSigner(oldSigner: string, nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.removeSigner(
       oldSigner,
       nonce,
       signatures
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.remove_signer(oldSigner, nonce, signatures, {
+    return this.contract.removeSigner(oldSigner, nonce, signatures, {
       gasLimit,
     });
   }
 
-  async set_threshold(newThreshold: string, nonce: string, signatures: string) {
-    const res = await this.contract.estimateGas.set_threshold(
+  async setThreshold(newThreshold: string, nonce: string, signatures: string) {
+    const res = await this.contract.estimateGas.setThreshold(
       newThreshold,
       nonce,
       signatures
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.set_threshold(newThreshold, nonce, signatures, {
+    return this.contract.setThreshold(newThreshold, nonce, signatures, {
       gasLimit,
     });
   }
@@ -74,14 +74,14 @@ export class MultisigControl {
     return this.contract.signers(address);
   }
 
-  async verify_signatures(nonce: string, message: string, signatures: string) {
-    const res = await this.contract.estimateGas.verify_signatures(
+  async verifySignatures(nonce: string, message: string, signatures: string) {
+    const res = await this.contract.estimateGas.verifySignatures(
       nonce,
       message,
       signatures
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.verify_signatures(nonce, message, signatures, {
+    return this.contract.verifySignatures(nonce, message, signatures, {
       gasLimit,
     });
   }

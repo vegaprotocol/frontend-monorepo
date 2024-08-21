@@ -32,13 +32,13 @@ type Status =
 
 type TxMeta =
   | {
-      functionName: 'deposit_asset';
+      functionName: 'depositAsset';
       asset: AssetERC20;
       amount: string;
       requiredConfirmations: number;
     }
   | {
-      functionName: 'withdraw_asset';
+      functionName: 'withdrawAsset';
       asset: AssetERC20;
       amount: string;
       requiredConfirmations: number;
@@ -187,7 +187,7 @@ export const useEvmTxStore = create<{
     }
 
     // If its a deposit, we need to wait until the deposit has arrived on the network
-    if (config.functionName === 'deposit_asset') {
+    if (config.functionName === 'depositAsset') {
       updateTx(id, { receipt, status: 'complete' });
 
       toastStore.update(id, {
@@ -197,7 +197,7 @@ export const useEvmTxStore = create<{
 
       const client = getApolloClient();
       return new Promise((resolve) => {
-        // subscribe to depoist events and update the tx
+        // subscribe to deposit events and update the tx
         // once the deposit is seen as finalized
         const sub = client
           .subscribe<

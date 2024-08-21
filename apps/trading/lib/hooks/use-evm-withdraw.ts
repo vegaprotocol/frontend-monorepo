@@ -38,7 +38,7 @@ export const useEvmWithdraw = () => {
     await writeContract({
       abi: BRIDGE_ABI,
       address: bridgeAddress,
-      functionName: 'withdraw_asset',
+      functionName: 'withdrawAsset',
       args: [
         approval.assetSource,
         approval.amount,
