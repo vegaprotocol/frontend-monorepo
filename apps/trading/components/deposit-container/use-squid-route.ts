@@ -2,8 +2,7 @@ import debounce from 'lodash/debounce';
 import { useEffect, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 import { type Configs, depositSchema, type FormFields } from './deposit-form';
-import { type Squid } from '@0xsquid/sdk';
-import { type ChainType } from '@0xsquid/squid-types';
+import { ChainType } from '@0xsquid/squid-types';
 import {
   ArbitrumSquidReceiver,
   CollateralBridge,
@@ -15,22 +14,22 @@ import { type AssetERC20 } from '@vegaprotocol/assets';
 import { useEthersSigner } from './use-ethers-signer';
 import { ARBITRUM_SQUID_RECEIVER_ADDRESS } from './constants';
 import { useQuery } from '@tanstack/react-query';
+import { useSquid } from './use-squid';
 
 export const useSquidRoute = ({
   form,
-  squid,
   assets,
   configs,
   enabled = false,
 }: {
   form: UseFormReturn<FormFields>;
-  squid: Squid;
   assets: AssetERC20[] | undefined;
   configs: Configs;
   enabled?: boolean;
 }) => {
   const [queryKey, setQueryKey] = useState<Partial<FormFields>>({});
   const signer = useEthersSigner();
+  const { data: squid } = useSquid();
 
   // List to changes to all fields (debounced) and store into some state
   // that we can use as the query key for the route
@@ -50,6 +49,7 @@ export const useSquidRoute = ({
       const queryKeyRes = depositSchema.safeParse(queryKey[1]);
 
       if (!queryKeyRes.success) return null;
+      if (!squid) return null;
 
       const fields = queryKeyRes.data;
 
@@ -58,23 +58,13 @@ export const useSquidRoute = ({
       );
       const toAsset = assets?.find((a) => a.id === fields.toAsset);
 
-      if (!fromAsset) {
-        return null;
-      }
-
-      if (!toAsset) {
-        return null;
-      }
+      if (!fromAsset) return null;
+      if (!toAsset) return null;
 
       const config = configs.find((c) => c.chain_id === toAsset.source.chainId);
 
-      if (!config) {
-        return null;
-      }
-
-      if (!signer) {
-        return null;
-      }
+      if (!config) return null;
+      if (!signer) return null;
 
       // The default bridgeAddress for the selected toAsset if an arbitrum
       // to asset is selected will get changed to the squid receiver address

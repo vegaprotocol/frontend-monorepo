@@ -70,6 +70,7 @@ export const DepositForm = ({
 
   const { address } = useAccount();
   const { switchChainAsync } = useSwitchChain();
+
   const signer = useEthersSigner();
   const chainId = useChainId();
 
@@ -116,7 +117,6 @@ export const DepositForm = ({
 
   const { data: routeData, isFetching } = useSquidRoute({
     form,
-    squid,
     assets,
     configs,
     enabled: isSwap,
