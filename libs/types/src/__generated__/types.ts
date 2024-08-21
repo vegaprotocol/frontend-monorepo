@@ -537,9 +537,11 @@ export type BenefitTier = {
   minimumRunningNotionalTakerVolume: Scalars['String'];
   /**
    * The proportion of the referee's taker fees to be discounted
-   * @deprecated Use referralRewardFactors
+   * @deprecated Use referralDiscountFactors
    */
   referralDiscountFactor: Scalars['String'];
+  /** The proportion of the referee's taker fees to be discounted */
+  referralDiscountFactors: DiscountFactors;
   /**
    * The proportion of the referee's taker fees to be rewarded to the referrer
    * @deprecated Use referralRewardFactors
@@ -547,8 +549,6 @@ export type BenefitTier = {
   referralRewardFactor: Scalars['String'];
   /** The proportion of the referee's taker fees to be rewarded to the referrer */
   referralRewardFactors: RewardFactors;
-  /** The proportion of the referee's taker fees to be discounted */
-  referrals: DiscountFactors;
 };
 
 /** A Vega builtin asset, mostly for testing purpose */
