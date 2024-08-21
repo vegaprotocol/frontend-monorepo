@@ -34,7 +34,7 @@ export const TransactionsList = ({
             <div className="flex flex-row items-center">
               <div
                 data-testid={locators.transactionListItemTransactionType}
-                className="ml-2 text-white"
+                className="ml-2 text-surface-0-fg"
               >
                 {getTitle(transaction.transaction)}
               </div>

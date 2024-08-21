@@ -16,7 +16,7 @@ export const CreateWallet = () => {
   const navigate = useNavigate();
   return (
     <div className="text-center flex flex-col justify-center h-full px-5">
-      <div className="mx-auto pb-4 text-white">
+      <div className="mx-auto pb-4 text-surface-0-fg">
         <Wallet size={48} squareFill="black" />
       </div>
       <Header content="Create a wallet" />

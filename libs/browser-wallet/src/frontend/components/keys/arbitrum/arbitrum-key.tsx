@@ -30,7 +30,10 @@ export const ArbitrumKey = ({ address }: { address: string }) => {
     <div className="flex items-center">
       <ArbIcon />
       <div className="ml-4">
-        <div data-testid={locators.title} className="text-left text-white">
+        <div
+          data-testid={locators.title}
+          className="text-left text-surface-0-fg"
+        >
           Arbitrum Address
         </div>
         <ExternalLink

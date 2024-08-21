@@ -31,7 +31,7 @@ const DappsHeaderButton = ({
     <Tooltip description={tooltipContent}>
       <div
         data-testid={locators.walletsHeaderItem}
-        className="text-center hover:text-white no-underline"
+        className="text-center hover:text-surface-0-fg no-underline"
       >
         <ExternalLink
           className="flex flex-col items-center"

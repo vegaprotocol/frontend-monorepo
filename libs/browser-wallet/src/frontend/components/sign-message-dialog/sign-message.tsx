@@ -72,7 +72,7 @@ export const SignMessage = ({
     <div className="p-2 text-center text-base  text-vega-dark-400">
       <h1
         data-testid={locators.signMessageHeader}
-        className="text-xl text-white mb-2"
+        className="text-xl text-surface-0-fg mb-2"
       >
         Sign Message
       </h1>

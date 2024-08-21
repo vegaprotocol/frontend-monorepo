@@ -47,7 +47,7 @@ export const WalletsPageKeyList = ({
           </button>
         )}
       />
-      <div className="mt-3 text-white">
+      <div className="mt-3 text-surface-0-fg">
         <ButtonLink
           disabled={creatingKey}
           onClick={createKey}

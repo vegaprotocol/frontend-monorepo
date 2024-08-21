@@ -19,7 +19,7 @@ export const NavButton = ({ icon, text, to }: NavButtonProperties) => {
   return (
     <NavLink data-testid={locators.navButton} to={to} className="text-center">
       {({ isActive }) => {
-        const textColor = isActive ? 'text-white' : 'text-neutral-600';
+        const textColor = isActive ? 'text-surface-0-fg' : 'text-neutral-600';
 
         return (
           <div className="h-full grid gap-0 grid-rows-[1fr_auto_auto]">

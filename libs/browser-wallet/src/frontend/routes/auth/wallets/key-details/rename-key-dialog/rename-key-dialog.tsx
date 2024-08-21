@@ -68,7 +68,7 @@ export const RenameKeyDialog = ({ vegaKey }: RenameKeyDialogProperties) => {
         >
           <h1
             data-testid={locators.renameKeyTitle}
-            className="text-xl text-center text-white mb-2"
+            className="text-xl text-center text-surface-0-fg mb-2"
           >
             Rename Key
           </h1>

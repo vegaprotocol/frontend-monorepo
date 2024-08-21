@@ -30,7 +30,7 @@ export const GetStarted = () => {
               <div>
                 <Tick size={12} className="mr-2 text-vega-green-550" />
               </div>
-              <p className="text-white">{index}</p>
+              <p className="text-surface-0-fg">{index}</p>
             </li>
           ))}
         </ul>

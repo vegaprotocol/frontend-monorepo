@@ -35,7 +35,7 @@ export const VegaKey = ({
           {name ? (
             <div
               data-testid={locators.keyName}
-              className="text-left text-white"
+              className="text-left text-surface-0-fg"
               style={{ wordBreak: 'break-word' }}
             >
               {name}

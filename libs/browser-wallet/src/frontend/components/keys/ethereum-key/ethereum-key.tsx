@@ -31,7 +31,10 @@ export const EthereumKey = ({ address }: { address: string }) => {
     <div className="flex items-center">
       <EthIcon />
       <div className="ml-4">
-        <div data-testid={locators.title} className="text-left text-white">
+        <div
+          data-testid={locators.title}
+          className="text-left text-surface-0-fg"
+        >
           Ethereum Address
         </div>
         <ExternalLink

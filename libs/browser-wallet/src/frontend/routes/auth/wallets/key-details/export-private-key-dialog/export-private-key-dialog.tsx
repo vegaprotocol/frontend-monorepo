@@ -42,7 +42,7 @@ export const ExportPrivateKeysDialog = ({
         <div className="p-2 text-base text-vega-dark-400">
           <h1
             data-testid={locators.privateKeyTitle}
-            className="text-xl  text-center text-white mb-2"
+            className="text-xl  text-center text-surface-0-fg mb-2"
           >
             Export Private Key
           </h1>
