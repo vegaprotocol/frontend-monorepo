@@ -6,7 +6,7 @@ export const locators = {
 
 const TRANSACTION_STATE_COLOR = {
   [TransactionState.Confirmed]: 'text-intent-info-background',
-  [TransactionState.Rejected]: 'text-surface-1-fg',
+  [TransactionState.Rejected]: 'text-surface-0-fg-muted',
   [TransactionState.Error]: 'text-intent-danger-background',
 };
 

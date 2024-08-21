@@ -40,10 +40,10 @@ describe('PasswordFeedback component', () => {
       locators.feedbackStrength
     );
     expect(feedbackStrengthElements).toHaveLength(4);
-    expect(feedbackStrengthElements[0]).toHaveClass('bg-vega-yellow-650');
-    expect(feedbackStrengthElements[1]).toHaveClass('bg-vega-yellow-600');
-    expect(feedbackStrengthElements[2]).toHaveClass('bg-vega-yellow-550');
-    expect(feedbackStrengthElements[3]).toHaveClass('bg-vega-dark-150');
+    expect(feedbackStrengthElements[0]).toHaveClass('bg-yellow-650');
+    expect(feedbackStrengthElements[1]).toHaveClass('bg-yellow-600');
+    expect(feedbackStrengthElements[2]).toHaveClass('bg-yellow-550');
+    expect(feedbackStrengthElements[3]).toHaveClass('bg-surface-1-fg-muted');
   });
 
   it('renders password error feedback correctly', () => {

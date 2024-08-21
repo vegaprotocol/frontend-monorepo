@@ -18,7 +18,7 @@ const EthIcon = () => {
         height: 42,
         width: 42,
       }}
-      className="flex items-center justify-center rounded-md overflow-hidden bg-vega-blue-650"
+      className="flex items-center justify-center rounded-md overflow-hidden bg-blue-650"
     >
       <EthereumIcon />
     </div>

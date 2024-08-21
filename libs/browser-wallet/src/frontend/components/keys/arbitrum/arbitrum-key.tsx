@@ -17,7 +17,7 @@ const ArbIcon = () => {
         height: 42,
         width: 42,
       }}
-      className="flex items-center justify-center rounded-md overflow-hidden bg-vega-pink-650 p-1.5"
+      className="flex items-center justify-center rounded-md overflow-hidden bg-pink-650 p-1.5"
     >
       <ArbitrumLogo />
     </div>
