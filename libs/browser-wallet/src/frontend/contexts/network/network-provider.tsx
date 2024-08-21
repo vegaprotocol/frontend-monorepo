@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useGlobalsStore } from '@/stores/globals';
 import { useInteractionStore } from '@/stores/interaction-store';
 
-import { NetworkContext } from './network-context';
+import { NetworkContext, type NetworkContextShape } from './network-context';
 
 export const locators = {
   networkProviderLoading: 'network-provider-loading',
@@ -15,7 +15,21 @@ export const locators = {
  * @param param0
  * @returns
  */
-export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
+export const NetworkProvider = ({
+  children,
+  ethereumExplorerLink,
+  arbitrumExplorerLink,
+  explorer,
+  docs,
+  governance,
+  console,
+  arbitrumChainId,
+  ethereumChainId,
+  chainId,
+}: { children: JSX.Element } & Omit<
+  NetworkContextShape,
+  'interactionMode'
+>) => {
   const { request } = useJsonRpcClient();
   const { loadGlobals, loading: loadingGlobals } = useGlobalsStore((store) => ({
     loadGlobals: store.loadGlobals,
@@ -28,10 +42,38 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
       connectionModalOpen: store.connectionModalOpen,
     })
   );
+  const interactionMode = transactionModalOpen || connectionModalOpen;
+  const value = useMemo(
+    () => ({
+      ethereumExplorerLink,
+      arbitrumExplorerLink,
+      explorer,
+      docs,
+      governance,
+      console,
+      arbitrumChainId,
+      ethereumChainId,
+      chainId,
+      interactionMode,
+    }),
+    [
+      arbitrumChainId,
+      arbitrumExplorerLink,
+      chainId,
+      console,
+      docs,
+      ethereumChainId,
+      ethereumExplorerLink,
+      explorer,
+      governance,
+      interactionMode,
+    ]
+  );
 
   useEffect(() => {
     loadGlobals(request);
   }, [loadGlobals, request]);
+
   if (loadingGlobals) {
     return (
       <div
@@ -41,22 +83,8 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
     );
   }
 
-  const interactionMode = transactionModalOpen || connectionModalOpen;
-
   // The above if statement ensures that either networkFromChainId or selectedNetwork is defined. So value is always defined.
   return (
-    <NetworkContext.Provider
-      value={{
-        interactionMode,
-        ethereumExplorerLink: 'https://sepolia.etherscan.io',
-        arbitrumExplorerLink: 'https://sepolia.arbiscan.io',
-        explorer: 'https://explorer.fairground.wtf',
-        docs: 'https://docs.fairground.wtf',
-        governance: 'https://governance.fairground.wtf',
-        console: 'https://console.fairground.wtf',
-      }}
-    >
-      {children}
-    </NetworkContext.Provider>
+    <NetworkContext.Provider value={value}>{children}</NetworkContext.Provider>
   );
 };
