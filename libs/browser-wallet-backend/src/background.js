@@ -13,7 +13,6 @@ import { isIos } from './lib/utils.js';
 
 import initAdmin from './src/admin-ns.js';
 import initClient from './src/client-ns.js';
-import config from '../config/beta.js';
 
 import { PortServer } from '@vegaprotocol/json-rpc';
 import NodeRPC from './src/node-rpc.js';
@@ -24,7 +23,7 @@ export const createWalletBackend = ({ node }) => {
 
   const encryptedStore = new EncryptedStorage(
     new ConcurrentStorage(new StorageLocalMap('wallets')),
-    config.encryptionSettings,
+    undefined,
     isIos()
   );
 
