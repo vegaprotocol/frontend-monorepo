@@ -149,9 +149,6 @@ export default function init({
 
         if (keyInfo == null)
           throw new JSONRPCServer.Error(...Errors.UNKNOWN_PUBLIC_KEY);
-        const selectedNetworkId = await connections.getNetworkId(
-          context.origin
-        );
         const selectedChainId = await connections.getChainId(context.origin);
         const connection = await connections.get(context.origin);
         const transactionType = txHelpers.getTransactionType(
@@ -172,7 +169,6 @@ export default function init({
             sendingMode: params.sendingMode,
             origin: context.origin,
             chainId: selectedChainId,
-            networkId: selectedNetworkId,
             receivedAt,
           });
         }
