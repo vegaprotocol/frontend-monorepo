@@ -1,4 +1,3 @@
-import { NetworkCollection } from './src/network.js';
 import { WalletCollection } from './src/wallets.js';
 import { TransactionsCollection } from './src/transactions.js';
 import { ConnectionsCollection } from './src/connections.js';
@@ -17,8 +16,10 @@ import initClient from './src/client-ns.js';
 import config from '../config/beta.js';
 
 import { PortServer } from '@vegaprotocol/json-rpc';
+import NodeRPC from './src/node-rpc.js';
 
-export const createWalletBackend = () => {
+export const createWalletBackend = ({ node }) => {
+  const rpc = new NodeRPC(node);
   const interactor = new PopupClient({});
 
   const encryptedStore = new EncryptedStorage(
@@ -40,9 +41,6 @@ export const createWalletBackend = () => {
     publicKeyIndexStore,
     keySortIndex,
   });
-  const networks = new NetworkCollection(
-    new ConcurrentStorage(new StorageLocalMap('networks'))
-  );
   const connections = new ConnectionsCollection({
     connectionsStore: new ConcurrentStorage(new StorageLocalMap('connections')),
     publicKeyIndexStore,
@@ -65,7 +63,7 @@ export const createWalletBackend = () => {
   const clientServer = initClient({
     settings,
     wallets,
-    networks,
+    rpc,
     connections,
     interactor,
     encryptedStore,
@@ -88,7 +86,7 @@ export const createWalletBackend = () => {
     encryptedStore,
     settings,
     wallets,
-    networks,
+    rpc,
     connections,
     fetchCache,
     transactions,
@@ -147,5 +145,5 @@ export const createWalletBackend = () => {
     }
   });
 
-  setupListeners(networks, settings, clientPorts, popupPorts, interactor);
+  setupListeners(settings, clientPorts, popupPorts, interactor);
 };
