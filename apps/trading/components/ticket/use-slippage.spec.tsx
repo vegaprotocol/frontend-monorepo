@@ -10,7 +10,7 @@ import {
   type MarketDepthQueryVariables,
   MarketDepthUpdateDocument,
 } from '@vegaprotocol/market-depth';
-import { OrderType, type PriceLevel, Side } from '@vegaprotocol/types';
+import { OrderType, Side } from '@vegaprotocol/types';
 
 import { calcSlippage, useSlippage } from './use-slippage';
 
@@ -390,7 +390,10 @@ describe('useSlippage', () => {
   const setup = (
     marketId: string,
     order: Parameters<typeof useSlippage>[0],
-    book: { sell: PriceLevel[]; buy: PriceLevel[] }
+    book: {
+      sell: Array<{ price: string; numberOfOrders: string; volume: string }>;
+      buy: Array<{ price: string; numberOfOrders: string; volume: string }>;
+    }
   ) => {
     const mock: MockedResponse<MarketDepthQuery, MarketDepthQueryVariables> = {
       request: {

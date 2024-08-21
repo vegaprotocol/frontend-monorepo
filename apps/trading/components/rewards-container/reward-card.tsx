@@ -834,6 +834,8 @@ const DispatchMetricColourMap: Record<
   DispatchMetric | StakingRewardMetric,
   CardColour
 > = {
+  [DispatchMetric.DISPATCH_METRIC_AVERAGE_NOTIONAL]: CardColour.BLUE,
+  [DispatchMetric.DISPATCH_METRIC_ELIGIBLE_ENTITIES]: CardColour.PURPLE,
   // Liquidity provision fees received
   [DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED]: CardColour.BLUE,
   // Price maker fees paid

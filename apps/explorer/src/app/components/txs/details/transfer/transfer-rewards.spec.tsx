@@ -145,7 +145,7 @@ describe('TransferRewards', () => {
   });
 
   it('should not render a rank table if recurring.dispatchStrategy.rankTable is not provided', () => {
-    const recurring = {
+    const recurring: Recurring = {
       dispatchStrategy: {
         entityScope: EntityScope.ENTITY_SCOPE_INDIVIDUALS,
         teamScope: ['team1', 'team2', 'team3'],

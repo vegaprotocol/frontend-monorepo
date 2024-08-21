@@ -154,7 +154,9 @@ export const getFeesBreakdown = (
   };
 };
 
-export const isEmptyFeeObj = (feeObj: Schema.TradeFee) => {
+export const isEmptyFeeObj = (
+  feeObj: FillFieldsFragment['buyerFee'] | FillFieldsFragment['sellerFee']
+) => {
   if (!feeObj) return true;
   return (
     feeObj.liquidityFee === '0' &&
