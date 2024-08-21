@@ -60,6 +60,8 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
+  ACCOUNT_TYPE_REWARD_AVERAGE_NOTIONAL: 'Avergae notional reward account',
+  ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES: 'Elibible entities reward account',
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP received fees reward account',
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker received fees reward account',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market proposers reward account',
@@ -375,6 +377,7 @@ export const ProposalChangeMapping: Record<
   UpdateSpotMarket: 'Update spot market',
   UpdateVolumeDiscountProgram: 'Update volume discount program',
   UpdateReferralProgram: 'Update referral program',
+  UpdateVolumeRebateProgram: 'Update volume rebate program',
 };
 
 /**
@@ -401,6 +404,7 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_MARKET: 'Invalid market',
   PROPOSAL_ERROR_INVALID_RISK_PARAMETER: 'Invalid risk parameter',
   PROPOSAL_ERROR_INVALID_SHAPE: 'Invalid shape',
+  PROPOSAL_ERROR_INVALID_VOLUME_REBATE_PROGRAM: 'Invalid rebate program',
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED:
     'Majority threshold not reached',
   PROPOSAL_ERROR_MARKET_MISSING_LIQUIDITY_COMMITMENT:
@@ -686,6 +690,8 @@ type DispatchMetricLabel = {
 };
 
 export const DispatchMetricLabels: DispatchMetricLabel = {
+  DISPATCH_METRIC_AVERAGE_NOTIONAL: 'Average notional value',
+  DISPATCH_METRIC_ELIGIBLE_ENTITIES: 'Eligible entities',
   DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity provision fees received',
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
@@ -699,6 +705,10 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
+  DISPATCH_METRIC_AVERAGE_NOTIONAL:
+    'Get rewards for having a high average notional value.',
+  DISPATCH_METRIC_ELIGIBLE_ENTITIES:
+    'Get rewards for being active on the network.',
   DISPATCH_METRIC_LP_FEES_RECEIVED: 'Get rewards for providing liquidity.',
   DISPATCH_METRIC_MAKER_FEES_PAID:
     'Get rewards for taking prices off the order book and paying fees.',
