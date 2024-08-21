@@ -272,12 +272,12 @@ export default function init({
         doValidate(adminValidation.fetch, params);
 
         try {
-          const cached = await fetchCache.get(params.path, params.networkId);
+          const cached = await fetchCache.get(params.path);
           if (cached) return cached;
 
           const res = await rpc.getJSON(params.path);
 
-          await fetchCache.set(params.path, params.networkId, res);
+          await fetchCache.set(params.path, res);
 
           return res;
         } catch (ex) {
