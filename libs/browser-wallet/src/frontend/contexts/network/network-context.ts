@@ -4,6 +4,10 @@ export interface NetworkContextShape {
   interactionMode: boolean;
   ethereumExplorerLink: string;
   arbitrumExplorerLink: string;
+  explorer: string;
+  docs: string;
+  governance: string;
+  console: string;
 }
 
 export const NetworkContext = createContext<NetworkContextShape | undefined>(

@@ -11,10 +11,11 @@ export const locators = {
 };
 
 export const Transactions = () => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
   const { transactions } = useTransactionsStore((state) => ({
     transactions: state.transactions,
   }));
+  // TODO figure this out
   const filteredTransactions = transactions.filter(
     (tx) => tx.networkId === network.id
   );
@@ -27,7 +28,7 @@ export const Transactions = () => {
           see all transactions you can visit the{' '}
           <ExternalLink
             className="text-surface-0-fg mt-1"
-            href={network.explorer}
+            href={explorer}
           >
             <span className="underline">block explorer.</span>
           </ExternalLink>

@@ -26,7 +26,7 @@ const EthIcon = () => {
 };
 
 export const EthereumKey = ({ address }: { address: string }) => {
-  const { network } = useNetwork();
+  const { ethereumExplorerLink } = useNetwork();
   return (
     <div className="flex items-center">
       <EthIcon />
@@ -40,7 +40,7 @@ export const EthereumKey = ({ address }: { address: string }) => {
         <ExternalLink
           className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
-          href={`${network.ethereumExplorerLink}/address/${address}`}
+          href={`${ethereumExplorerLink}/address/${address}`}
         >
           {truncateMiddle(address)}
         </ExternalLink>

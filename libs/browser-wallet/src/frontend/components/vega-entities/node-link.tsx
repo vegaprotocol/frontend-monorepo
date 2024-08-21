@@ -14,11 +14,11 @@ export const NodeLink = ({
   nodeId: string;
   name?: string;
 }) => {
-  const { network } = useNetwork();
+  const { governance } = useNetwork();
   return (
     <ExternalLink
       data-testid={locators.nodeLink}
-      href={`${network.governance}/validators/${nodeId}`}
+      href={`${governance}/validators/${nodeId}`}
     >
       {name ?? truncateMiddle(nodeId)}
     </ExternalLink>

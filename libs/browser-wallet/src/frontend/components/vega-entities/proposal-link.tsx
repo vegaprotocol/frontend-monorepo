@@ -14,11 +14,11 @@ export const ProposalLink = ({
   proposalId: string;
   name?: string;
 }) => {
-  const { network } = useNetwork();
+  const { governance } = useNetwork();
   return (
     <ExternalLink
       data-testid={locators.proposalLink}
-      href={`${network.governance}/proposals/${proposalId}`}
+      href={`${governance}/proposals/${proposalId}`}
     >
       {name ?? truncateMiddle(proposalId)}
     </ExternalLink>

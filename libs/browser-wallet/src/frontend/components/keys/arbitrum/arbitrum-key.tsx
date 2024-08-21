@@ -25,7 +25,7 @@ const ArbIcon = () => {
 };
 
 export const ArbitrumKey = ({ address }: { address: string }) => {
-  const { network } = useNetwork();
+  const { arbitrumExplorerLink } = useNetwork();
   return (
     <div className="flex items-center">
       <ArbIcon />
@@ -39,7 +39,7 @@ export const ArbitrumKey = ({ address }: { address: string }) => {
         <ExternalLink
           className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
-          href={`${network.arbitrumExplorerLink}/address/${address}`}
+          href={`${arbitrumExplorerLink}/address/${address}`}
         >
           {truncateMiddle(address)}
         </ExternalLink>

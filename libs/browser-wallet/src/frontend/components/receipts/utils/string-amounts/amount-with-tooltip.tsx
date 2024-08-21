@@ -19,9 +19,9 @@ export const AmountWithTooltip = ({
   assetId: string;
   amount: string;
 }) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
 
-  const assetHref = `${network.explorer}/assets/${assetId}`;
+  const assetHref = `${explorer}/assets/${assetId}`;
   return (
     <span
       className="flex items-center flex-wrap"

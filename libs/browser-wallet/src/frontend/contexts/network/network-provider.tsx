@@ -50,6 +50,10 @@ export const NetworkProvider = ({ children }: { children: JSX.Element }) => {
         interactionMode,
         ethereumExplorerLink: 'https://sepolia.etherscan.io',
         arbitrumExplorerLink: 'https://sepolia.arbiscan.io',
+        explorer: 'https://explorer.fairground.wtf',
+        docs: 'https://docs.fairground.wtf',
+        governance: 'https://governance.fairground.wtf',
+        console: 'https://console.fairground.wtf',
       }}
     >
       {children}

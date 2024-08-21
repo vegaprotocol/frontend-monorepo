@@ -16,18 +16,17 @@ import { useAsyncAction } from '../async-action';
  */
 export const useOrder = (orderId: string) => {
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  const { network } = useNetwork();
   const { request } = useJsonRpcClient();
   const loadOrder = useCallback(async () => {
     const response = await request(
       RpcMethods.Fetch,
-      { path: `api/v2/order/${orderId}`, networkId: network.id },
+      { path: `api/v2/order/${orderId}` },
       true
     );
     const { order } = response as v2GetOrderResponse;
     setLastUpdated(Date.now());
     return order;
-  }, [network.id, orderId, request]);
+  }, [orderId, request]);
   const { loaderFunction, ...rest } = useAsyncAction(loadOrder);
   useEffect(() => {
     if (orderId) {

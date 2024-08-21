@@ -13,6 +13,7 @@ export const ReceivingKey = ({
   address: string;
   assetId: string;
 }) => {
+  // TODO: this needs to be fixed
   const { network } = useNetwork();
   const asset = useAsset(assetId);
   const chainId = get(asset, 'details.erc20.chainId');

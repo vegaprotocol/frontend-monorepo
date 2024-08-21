@@ -12,7 +12,7 @@ export const locators = {
 };
 
 export const MarketLozenges = ({ assetId }: { assetId: string }) => {
-  const { network } = useNetwork();
+  const { console } = useNetwork();
 
   const { getMarketsByAssetId } = useMarketsStore((state) => ({
     getMarketsByAssetId: state.getMarketsByAssetId,
@@ -32,7 +32,7 @@ export const MarketLozenges = ({ assetId }: { assetId: string }) => {
           <ExternalLink
             className="text-xs"
             data-testid={locators.marketLozenge}
-            href={`${network.console}/#/markets/${m.id}`}
+            href={`${console}/#/markets/${m.id}`}
             key={m.id}
           >
             <Lozenge>{get(m, 'tradableInstrument.instrument.code')}</Lozenge>

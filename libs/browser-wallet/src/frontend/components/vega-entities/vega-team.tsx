@@ -11,15 +11,10 @@ import { TeamLink } from './team-link';
 
 export const VegaTeam = ({ id }: { id: string }) => {
   const { request } = useJsonRpcClient();
-  const { network } = useNetwork();
   const load = useMemo(
     () => () =>
-      request(
-        RpcMethods.Fetch,
-        { path: `api/v2/teams?teamId=${id}`, networkId: network.id },
-        true
-      ),
-    [id, network.id, request]
+      request(RpcMethods.Fetch, { path: `api/v2/teams?teamId=${id}` }, true),
+    [id, request]
   );
   const { loading, error, data, loaderFunction } =
     useAsyncAction<v2ListTeamsResponse>(load);

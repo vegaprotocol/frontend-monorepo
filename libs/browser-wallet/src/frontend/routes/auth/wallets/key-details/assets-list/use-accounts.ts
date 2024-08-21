@@ -6,7 +6,6 @@ import { useNetwork } from '@/contexts/network/network-context';
 import { useAccountsStore } from './accounts-store';
 
 export const useAccounts = (publicKey: string) => {
-  const { network } = useNetwork();
   const { request } = useJsonRpcClient();
   const { startPoll, stopPoll, reset, fetchParty, accountsByAsset } =
     useAccountsStore((state) => ({
@@ -17,13 +16,13 @@ export const useAccounts = (publicKey: string) => {
       accountsByAsset: state.accountsByAsset,
     }));
   useEffect(() => {
-    fetchParty(request, publicKey, network.id);
-    startPoll(request, publicKey, network.id);
+    fetchParty(request, publicKey);
+    startPoll(request, publicKey);
     return () => {
       stopPoll();
       reset();
     };
-  }, [fetchParty, network.id, publicKey, request, reset, startPoll, stopPoll]);
+  }, [fetchParty, publicKey, request, reset, startPoll, stopPoll]);
   return {
     accountsByAsset,
   };
