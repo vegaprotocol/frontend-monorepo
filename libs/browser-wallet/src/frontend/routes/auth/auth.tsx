@@ -49,13 +49,7 @@ export const Auth = () => {
       loadAssets(request);
       loadMarkets(request);
     }
-  }, [
-    loadingConnections,
-    loadAssets,
-    loadMarkets,
-    loadingWallets,
-    request,
-  ]);
+  }, [loadingConnections, loadAssets, loadMarkets, loadingWallets, request]);
 
   // Only render the UI if the wallets and networks have loaded
   if (loadingWallets) return null;

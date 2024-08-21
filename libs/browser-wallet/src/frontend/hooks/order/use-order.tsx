@@ -2,7 +2,6 @@ import type { v2GetOrderResponse } from '@vegaprotocol/rest-clients/dist/trading
 import { useCallback, useEffect, useState } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';
 
 import { useAsyncAction } from '../async-action';

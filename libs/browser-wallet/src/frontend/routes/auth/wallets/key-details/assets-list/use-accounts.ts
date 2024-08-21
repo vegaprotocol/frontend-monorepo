@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 
 import { useAccountsStore } from './accounts-store';
 

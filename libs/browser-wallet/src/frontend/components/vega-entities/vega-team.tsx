@@ -2,7 +2,6 @@ import { type v2ListTeamsResponse } from '@vegaprotocol/rest-clients/dist/tradin
 import { useEffect, useMemo } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 import { useAsyncAction } from '@/hooks/async-action';
 import { RpcMethods } from '@/lib/client-rpc-methods';
 

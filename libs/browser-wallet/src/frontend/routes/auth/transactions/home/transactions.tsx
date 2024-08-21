@@ -11,13 +11,13 @@ export const locators = {
 };
 
 export const Transactions = () => {
-  const { explorer } = useNetwork();
+  const { explorer, chainId } = useNetwork();
   const { transactions } = useTransactionsStore((state) => ({
     transactions: state.transactions,
   }));
   // TODO figure this out
   const filteredTransactions = transactions.filter(
-    (tx) => tx.networkId === network.id
+    (tx) => tx.chainId === chainId
   );
 
   return (

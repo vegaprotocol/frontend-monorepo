@@ -8,6 +8,9 @@ export interface NetworkContextShape {
   docs: string;
   governance: string;
   console: string;
+  ethereumChainId: number;
+  arbitrumChainId: number;
+  chainId: string;
 }
 
 export const NetworkContext = createContext<NetworkContextShape | undefined>(
