@@ -8,8 +8,8 @@ export interface NetworkContextShape {
   docs: string;
   governance: string;
   console: string;
-  ethereumChainId: number;
-  arbitrumChainId: number;
+  ethereumChainId: string;
+  arbitrumChainId: string;
   chainId: string;
 }
 
