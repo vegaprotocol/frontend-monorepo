@@ -221,8 +221,12 @@ export enum AccountType {
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD = 'ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD',
   /** PendingTransfers - a global account for the pending transfers pool */
   ACCOUNT_TYPE_PENDING_TRANSFERS = 'ACCOUNT_TYPE_PENDING_TRANSFERS',
+  /** Average notional reward account is a per asset per market account for average notional reward funds */
+  ACCOUNT_TYPE_REWARD_AVERAGE_NOTIONAL = 'ACCOUNT_TYPE_REWARD_AVERAGE_NOTIONAL',
   /** Average position reward account is a per asset per market account for average position reward funds */
   ACCOUNT_TYPE_REWARD_AVERAGE_POSITION = 'ACCOUNT_TYPE_REWARD_AVERAGE_POSITION',
+  /** Reward account for the eligible entities metric */
+  ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES = 'ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES',
   /** RewardLpReceivedFees - an account holding rewards for a liquidity provider's received fees */
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES',
   /** RewardMakerPaidFees - an account holding rewards for maker paid fees */
@@ -531,10 +535,20 @@ export type BenefitTier = {
   minimumEpochs: Scalars['Int'];
   /** The minimum running notional for the given benefit tier */
   minimumRunningNotionalTakerVolume: Scalars['String'];
-  /** The proportion of the referee's taker fees to be discounted */
+  /**
+   * The proportion of the referee's taker fees to be discounted
+   * @deprecated Use referralDiscountFactors
+   */
   referralDiscountFactor: Scalars['String'];
-  /** The proportion of the referee's taker fees to be rewarded to the referrer */
+  /** The proportion of the referee's taker fees to be discounted */
+  referralDiscountFactors: DiscountFactors;
+  /**
+   * The proportion of the referee's taker fees to be rewarded to the referrer
+   * @deprecated Use referralRewardFactors
+   */
   referralRewardFactor: Scalars['String'];
+  /** The proportion of the referee's taker fees to be rewarded to the referrer */
+  referralRewardFactors: RewardFactors;
 };
 
 /** A Vega builtin asset, mostly for testing purpose */
@@ -1002,6 +1016,16 @@ export type DepositsConnection = {
   pageInfo?: Maybe<PageInfo>;
 };
 
+export type DiscountFactors = {
+  __typename?: 'DiscountFactors';
+  /** The proportion of the referee's taker infrastructure fees to be discounted */
+  infrastructureFactor: Scalars['String'];
+  /** The proportion of the referee's taker liquidity fees to be discounted */
+  liquidityFactor: Scalars['String'];
+  /** The proportion of the referee's taker maker fees to be discounted */
+  makerFactor: Scalars['String'];
+};
+
 /** Frequent batch auctions trading mode */
 export type DiscreteTrading = {
   __typename?: 'DiscreteTrading';
@@ -1013,8 +1037,12 @@ export type DiscreteTrading = {
 
 /** The type of metric to use for a reward dispatch strategy */
 export enum DispatchMetric {
+  /** Dispatch metric that uses the time weighted notional of the party in the market */
+  DISPATCH_METRIC_AVERAGE_NOTIONAL = 'DISPATCH_METRIC_AVERAGE_NOTIONAL',
   /** Dispatch metric that uses the time weighted position of the party in the market */
   DISPATCH_METRIC_AVERAGE_POSITION = 'DISPATCH_METRIC_AVERAGE_POSITION',
+  /** Dispatch metric that uses the eligibility of entities */
+  DISPATCH_METRIC_ELIGIBLE_ENTITIES = 'DISPATCH_METRIC_ELIGIBLE_ENTITIES',
   /** Dispatch metric that uses the total LP fees received in the market */
   DISPATCH_METRIC_LP_FEES_RECEIVED = 'DISPATCH_METRIC_LP_FEES_RECEIVED',
   /** Dispatch metric that uses the total maker fees paid in the market */
@@ -1072,7 +1100,9 @@ export enum DistributionStrategy {
   /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
   DISTRIBUTION_STRATEGY_PRO_RATA = 'DISTRIBUTION_STRATEGY_PRO_RATA',
   /** Rewards funded using the rank strategy */
-  DISTRIBUTION_STRATEGY_RANK = 'DISTRIBUTION_STRATEGY_RANK'
+  DISTRIBUTION_STRATEGY_RANK = 'DISTRIBUTION_STRATEGY_RANK',
+  /** Rewards funded using the rank lottery strategy */
+  DISTRIBUTION_STRATEGY_RANK_LOTTERY = 'DISTRIBUTION_STRATEGY_RANK_LOTTERY'
 }
 
 /** An asset originated from an Ethereum ERC20 Token */
@@ -1399,6 +1429,8 @@ export type Erc20WithdrawalDetails = {
 
 export type EstimatedAMMBounds = {
   __typename?: 'EstimatedAMMBounds';
+  /** If populated the bounds could be calculated but the AMM is invalid for other reasons. */
+  ammError?: Maybe<EstimatedAMMError>;
   /** Estimated price below the lower bound at which the commitment will be lost. */
   liquidationPriceAtLower?: Maybe<Scalars['String']>;
   /** Estimated price above upper bound at which the commitment will be lost. */
@@ -1412,6 +1444,18 @@ export type EstimatedAMMBounds = {
   /** Theoretical volume at the top of the upper bound. */
   positionSizeAtUpper?: Maybe<Scalars['String']>;
 };
+
+export enum EstimatedAMMError {
+  /** AMM bounds are too wide for the given commitment resulting in zero volume between price levels. */
+  AMM_ERROR_BOTH_BOUNDS_TOO_WIDE = 'AMM_ERROR_BOTH_BOUNDS_TOO_WIDE',
+  /** Commitment is below the global limit set by the network parameter `market.amm.minCommitmentQuantum`. */
+  AMM_ERROR_COMMITMENT_BELOW_MINIMUM = 'AMM_ERROR_COMMITMENT_BELOW_MINIMUM',
+  /** AMM's lower price is too far from the base price for the given commitment resulting in zero volume between price levels. */
+  AMM_ERROR_LOWER_BOUND_TOO_WIDE = 'AMM_ERROR_LOWER_BOUND_TOO_WIDE',
+  AMM_ERROR_UNSPECIFIED = 'AMM_ERROR_UNSPECIFIED',
+  /** AMM's upper price is too far from the base price for the given commitment resulting in zero volume between price levels. */
+  AMM_ERROR_UPPER_BOUND_TOO_WIDE = 'AMM_ERROR_UPPER_BOUND_TOO_WIDE'
+}
 
 /** EstimatedTransferFee Results of estimation of transfer fee and the fee discount */
 export type EstimatedTransferFee = {
@@ -1550,12 +1594,16 @@ export type FeeEstimate = {
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
   __typename?: 'FeeFactors';
+  /** The fee used to purchase governance tokens via regular auctions (network wide) */
+  buyBackFee: Scalars['String'];
   /** The factor applied to calculate InfrastructureFees, a non-negative float */
   infrastructureFee: Scalars['String'];
   /** The factor applied to calculate LiquidityFees, a non-negative float */
   liquidityFee: Scalars['String'];
   /** The factor applied to calculate MakerFees, a non-negative float */
   makerFee: Scalars['String'];
+  /** The fee sent to the network treasury for later use based on governance actions (network wide). */
+  treasuryFee: Scalars['String'];
 };
 
 /** The fees applicable to a market */
@@ -4542,6 +4590,10 @@ export type PositionsFilter = {
 /** Represents a price on either the buy or sell side and all the orders at that price */
 export type PriceLevel = {
   __typename?: 'PriceLevel';
+  /** The total volume of all AMM's at this level (uint64) */
+  ammVolume: Scalars['String'];
+  /** The total estimated volume of all AMM's at this level (uint64) */
+  ammVolumeEstimated: Scalars['String'];
   /** The number of orders at this price level (uint64) */
   numberOfOrders: Scalars['String'];
   /** The price of all the orders at this level (uint64) */
@@ -4674,7 +4726,7 @@ export type Proposal = {
   votes: ProposalVotes;
 };
 
-export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewSpotMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateMarketState | UpdateNetworkParameter | UpdateReferralProgram | UpdateSpotMarket | UpdateVolumeDiscountProgram;
+export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewSpotMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateMarketState | UpdateNetworkParameter | UpdateReferralProgram | UpdateSpotMarket | UpdateVolumeDiscountProgram | UpdateVolumeRebateProgram;
 
 export type ProposalDetail = {
   __typename?: 'ProposalDetail';
@@ -4802,6 +4854,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET = 'PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET',
   /** Volume discount program proposal is invalid */
   PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM = 'PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM',
+  /** Volume rebate program proposal is invalid */
+  PROPOSAL_ERROR_INVALID_VOLUME_REBATE_PROGRAM = 'PROPOSAL_ERROR_INVALID_VOLUME_REBATE_PROGRAM',
   /** Linear slippage factor is out of range, either negative or too large */
   PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE = 'PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE',
   /** LP price range must be larger than 0 */
@@ -5079,6 +5133,8 @@ export type Query = {
   currentReferralProgram?: Maybe<CurrentReferralProgram>;
   /** Get the current volume discount program */
   currentVolumeDiscountProgram?: Maybe<VolumeDiscountProgram>;
+  /** Get the current volume rebate program */
+  currentVolumeRebateProgram?: Maybe<VolumeRebateProgram>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -5269,6 +5325,8 @@ export type Query = {
   transfersConnection?: Maybe<TransferConnection>;
   /** Get volume discount statistics */
   volumeDiscountStats: VolumeDiscountStatsConnection;
+  /** Get volume rebate statistics */
+  volumeRebateStats: VolumeRebateStatsConnection;
   /** Find a withdrawal using its ID */
   withdrawal?: Maybe<Withdrawal>;
   /** Fetch all withdrawals */
@@ -5861,6 +5919,14 @@ export type QueryvolumeDiscountStatsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryvolumeRebateStatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerywithdrawalArgs = {
   id: Scalars['ID'];
 };
@@ -6013,8 +6079,13 @@ export type ReferralSetStats = {
   __typename?: 'ReferralSetStats';
   /** Epoch at which the statistics are updated. */
   atEpoch: Scalars['Int'];
-  /** Discount factor applied to the party. */
+  /**
+   * Discount factor applied to the party.
+   * @deprecated Use discountFactors
+   */
   discountFactor: Scalars['String'];
+  /** Discount factors applied to the party. */
+  discountFactors: DiscountFactors;
   /** Current referee notional taker volume */
   epochNotionalTakerVolume: Scalars['String'];
   /** Unique ID of the party. */
@@ -6023,10 +6094,20 @@ export type ReferralSetStats = {
   referralSetRunningNotionalTakerVolume: Scalars['String'];
   /** The referrer's taker volume */
   referrerTakerVolume: Scalars['String'];
-  /** Reward factor applied to the party. */
+  /**
+   * Reward factor applied to the party.
+   * @deprecated Use rewardFactors
+   */
   rewardFactor: Scalars['String'];
-  /** The proportion of the referees taker fees to be rewarded to the referrer. */
+  /** Reward factors applied to the party. */
+  rewardFactors: RewardFactors;
+  /**
+   * The proportion of the referees taker fees to be rewarded to the referrer.
+   * @deprecated Use rewardsFactorsMultiplier
+   */
   rewardsFactorMultiplier: Scalars['String'];
+  /** The proportion of the referees taker fees to be rewarded to the referrer. */
+  rewardsFactorsMultiplier: RewardFactors;
   /** The multiplier applied to the referral reward factor when calculating referral rewards due to the referrer. */
   rewardsMultiplier: Scalars['String'];
   /** Indicates if the referral set was eligible to be part of the referral program. */
@@ -6099,6 +6180,16 @@ export type RewardEdge = {
   cursor: Scalars['String'];
   /** The reward information */
   node: Reward;
+};
+
+export type RewardFactors = {
+  __typename?: 'RewardFactors';
+  /** The proportion of the referee's taker infrastructure fees to be rewarded to the referrer */
+  infrastructureFactor: Scalars['String'];
+  /** The proportion of the referee's taker liquidity fees to be rewarded to the referrer */
+  liquidityFactor: Scalars['String'];
+  /** The proportion of the referee's taker maker fees to be rewarded to the referrer */
+  makerFactor: Scalars['String'];
 };
 
 export type RewardScore = {
@@ -7072,6 +7163,10 @@ export type TradeEdge = {
 /** The fee paid by the party when a trade occurs */
 export type TradeFee = {
   __typename?: 'TradeFee';
+  /** The fee paid into the protocol buy-back account */
+  buyBackFee: Scalars['String'];
+  /** The fee paid to a high-volume maker as a rebate */
+  highVolumeMakerFee: Scalars['String'];
   /** The infrastructure fee, a fee paid to the validators to maintain the Vega network */
   infrastructureFee: Scalars['String'];
   /** Referral discount on infrastructure fees for the trade */
@@ -7090,6 +7185,8 @@ export type TradeFee = {
   makerFeeReferralDiscount?: Maybe<Scalars['String']>;
   /** Volume discount on maker fees for the trade */
   makerFeeVolumeDiscount?: Maybe<Scalars['String']>;
+  /** The fee paid into the network treasury */
+  treasuryFee: Scalars['String'];
 };
 
 export type TradeSettlement = {
@@ -7598,6 +7695,16 @@ export type UpdateVolumeDiscountProgram = {
   windowLength: Scalars['Int'];
 };
 
+export type UpdateVolumeRebateProgram = {
+  __typename?: 'UpdateVolumeRebateProgram';
+  /** The benefit tiers for the program */
+  benefitTiers: Array<VolumeRebateBenefitTier>;
+  /** Timestamp as Unix time in nanoseconds, after which program ends. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** The window length to consider for the volume discount program */
+  windowLength: Scalars['Int'];
+};
+
 /** Status of a validator node */
 export enum ValidatorStatus {
   /** The node is a candidate to become a Tendermint validator if a slot is made available */
@@ -7612,8 +7719,13 @@ export type VolumeBenefitTier = {
   __typename?: 'VolumeBenefitTier';
   /** The minimum running notional for the given benefit tier */
   minimumRunningNotionalTakerVolume: Scalars['String'];
-  /** Discount given to those in this benefit tier */
+  /**
+   * Discount given to those in this benefit tier
+   * @deprecated Use volumeDiscountFactors
+   */
   volumeDiscountFactor: Scalars['String'];
+  /** Discount factors applied to to those in this benefit tier */
+  volumeDiscountFactors: DiscountFactors;
 };
 
 /** Volume discount program information */
@@ -7637,8 +7749,13 @@ export type VolumeDiscountStats = {
   __typename?: 'VolumeDiscountStats';
   /** Epoch at which the statistics are updated. */
   atEpoch: Scalars['Int'];
-  /** Discount factor applied to the party. */
+  /**
+   * Discount factor applied to the party.
+   * @deprecated Use discountFactors
+   */
   discountFactor: Scalars['String'];
+  /** Discount factors applied to the party. */
+  discountFactors: DiscountFactors;
   /** Unique ID of the party. */
   partyId: Scalars['ID'];
   /** Party's running volume. */
@@ -7661,6 +7778,63 @@ export type VolumeDiscountStatsEdge = {
   cursor: Scalars['String'];
   /** The volume discount statistics */
   node: VolumeDiscountStats;
+};
+
+export type VolumeRebateBenefitTier = {
+  __typename?: 'VolumeRebateBenefitTier';
+  /** The additional rebate factor (in percentage of trade_value_for_fee_purposes a party at this tier will receive when they are the maker side of a trade */
+  additionalMakerRebate: Scalars['String'];
+  /** The required volume fraction for a party to access this tier */
+  minimumPartyMakerVolumeFraction: Scalars['String'];
+};
+
+/** Volume rebate program information */
+export type VolumeRebateProgram = {
+  __typename?: 'VolumeRebateProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<VolumeRebateBenefitTier>;
+  /** Timestamp as Unix time in nanoseconds, after which when the current epoch ends, the program will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /** Incremental version of the program. It is incremented each time the volume discount program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate parties' running volume. */
+  windowLength: Scalars['Int'];
+};
+
+export type VolumeRebateStats = {
+  __typename?: 'VolumeRebateStats';
+  /** Rebate factor applied to the party. */
+  additionalMakerRebate: Scalars['String'];
+  /** Epoch at which the statistics are updated. */
+  atEpoch: Scalars['Int'];
+  /** Party's running volume of maker fee received over the relevant window */
+  makerFeeReceived: Scalars['String'];
+  /** Party's running volume fraction (of maker fee paid over the relevant window) */
+  makerVolumeFraction: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated volume rebate statistics information */
+export type VolumeRebateStatsConnection = {
+  __typename?: 'VolumeRebateStatsConnection';
+  /** The volume rebate statistics in this connection */
+  edges: Array<Maybe<VolumeRebateStatsEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the volume rebate statistics and cursor information returned by a VolumeRebateStatsConnection */
+export type VolumeRebateStatsEdge = {
+  __typename?: 'VolumeRebateStatsEdge';
+  /** The cursor for this volume rebate statistics */
+  cursor: Scalars['String'];
+  /** The volume rebate statistics */
+  node: VolumeRebateStats;
 };
 
 export type Vote = {

@@ -32,6 +32,7 @@ const entityScopeIcons: Record<
 const distributionStrategyLabel: Record<DistributionStrategy, string> = {
   [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: 'Pro Rata',
   [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: 'Ranked',
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK_LOTTERY]: 'Lottery',
 };
 
 interface TransferRewardsProps {

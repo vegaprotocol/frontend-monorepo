@@ -26,6 +26,8 @@ const REQUIRED_PARAMS = [
   NetworkParams.governance_proposal_VolumeDiscountProgram_requiredParticipation,
   NetworkParams.governance_proposal_transfer_requiredParticipation,
   NetworkParams.governance_proposal_transfer_requiredMajority,
+  NetworkParams.governance_proposal_VolumeRebateProgram_requiredParticipation,
+  NetworkParams.governance_proposal_VolumeRebateProgram_requiredMajority,
 ];
 
 export const useProposalNetworkParams = () => {
@@ -182,6 +184,16 @@ export const useProposalNetworkParams = () => {
       ),
       requiredParticipation: new BigNumber(
         params.governance_proposal_transfer_requiredParticipation || 1
+      ),
+    },
+    UpdateVolumeRebateProgram: {
+      ...fallback,
+      requiredMajority: new BigNumber(
+        params.governance_proposal_VolumeRebateProgram_requiredMajority || 1
+      ),
+      requiredParticipation: new BigNumber(
+        params.governance_proposal_VolumeRebateProgram_requiredParticipation ||
+          1
       ),
     },
   };

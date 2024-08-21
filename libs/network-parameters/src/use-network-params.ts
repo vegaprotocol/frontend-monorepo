@@ -51,6 +51,10 @@ export const NetworkParams = {
     'governance_proposal_updateMarket_requiredParticipationLP',
   governance_proposal_updateMarket_minProposerBalance:
     'governance_proposal_updateMarket_minProposerBalance',
+  governance_proposal_VolumeRebateProgram_requiredMajority:
+    'governance_proposal_VolumeRebateProgram_requiredMajority',
+  governance_proposal_VolumeRebateProgram_requiredParticipation:
+    'governance_proposal_VolumeRebateProgram_requiredParticipation',
   governance_proposal_asset_minVoterBalance:
     'governance_proposal_asset_minVoterBalance',
   governance_proposal_asset_minClose: 'governance_proposal_asset_minClose',
