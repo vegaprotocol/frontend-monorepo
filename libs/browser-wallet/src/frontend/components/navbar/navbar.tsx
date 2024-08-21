@@ -30,7 +30,7 @@ export const NavButton = ({ icon, text, to }: NavButtonProperties) => {
             <div
               data-testid={locators.linkActive}
               className={cn('h-1 w-full mt-2', {
-                'bg-vega-yellow': isActive,
+                'bg-intent-primary text-intent-primary-foreground': isActive,
               })}
             />
           </div>

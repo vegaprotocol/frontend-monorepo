@@ -39,7 +39,7 @@ const DappsHeaderButton = ({
           href={href}
         >
           <div
-            className="rounded-full p-2 bg-vega-yellow text-black"
+            className="rounded-full p-2 bg-intent-primary text-intent-primary-foreground"
             style={{ maxWidth: '2.5rem' }}
           >
             {icon}
