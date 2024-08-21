@@ -16,13 +16,13 @@ import { useAMMs, type AMM } from '@vegaprotocol/rest';
 import { createCancelAmmTransaction } from '../../lib/utils/amm';
 import { CancelAMMMethod } from '@vegaprotocol/wallet';
 import type { ICellRendererParams } from 'ag-grid-community';
-import { AgGridReact } from 'ag-grid-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 import { useSimpleTransaction, useWallet } from '@vegaprotocol/wallet-react';
 import { TransactionDialog } from '../../components/transaction-dialog/transaction-dialog';
+import { AgGrid } from '@vegaprotocol/datagrid';
 
 export const Liquidity = () => {
   const [pubKey, status] = useWallet((store) => [store.pubKey, store.status]);
@@ -47,9 +47,12 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
   const { data: amms } = useAMMs({ partyId: pubKey });
 
   return (
-    <div className="ag-theme-quartz-auto-dark">
-      <AgGridReact
+    <div className="h-full border rounded border-gs-300 dark:border-gs-700">
+      <AgGrid
         rowData={amms}
+        rowClass={
+          '!border-b !last:border-b-0 mb-1 border-gs-200 dark:border-gs-800'
+        }
         domLayout="autoHeight"
         suppressDragLeaveHidesColumns
         overlayLoadingTemplate={t('TABLE_LOADING')}

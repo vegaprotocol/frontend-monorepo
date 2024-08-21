@@ -384,7 +384,7 @@ export const LiquidityForm = ({
             }}
           />
         </div>
-        <div className="relative h-[20vw] w-full bg-gray-100">
+        <div className="relative h-[20vw] w-full bg-surface-1">
           <BarChart3Icon
             size={48}
             className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 transform"

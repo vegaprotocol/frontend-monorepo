@@ -27,7 +27,7 @@ import { useAMMs, useMarket, type Market } from '@vegaprotocol/rest';
 
 import { TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { v1AMMStatus } from '@vegaprotocol/rest-clients/dist/trading-data';
-import { BoxIcon, DownloadIcon, Edit2Icon, ShareIcon } from 'lucide-react';
+import { DownloadIcon, Edit2Icon, ShareIcon } from 'lucide-react';
 
 import { Link, useParams } from 'react-router-dom';
 import { useWallet } from '@vegaprotocol/wallet-react';
@@ -35,6 +35,7 @@ import { Links } from 'apps/trading/lib/links';
 import { t } from 'apps/trading/lib/use-t';
 import { CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
 
 export const MarketPage = () => {
   const { marketId } = useParams();
@@ -83,12 +84,9 @@ export const MarketPage = () => {
       </Breadcrumb>
 
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-1">
-          <div>
-            {/** EMBLEM PLACEHOLDER */}
-            <BoxIcon />
-          </div>
-          <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
+        <div className="flex items-center gap-2">
+          <EmblemByMarket market={market.id} />
+          <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt">
             {market.code}
           </h1>
           {DocsLinks?.UPDATE_MARKET_TUTORIAL_URL && (

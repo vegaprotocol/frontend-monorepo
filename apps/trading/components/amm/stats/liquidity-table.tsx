@@ -11,11 +11,9 @@ import {
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import BigNumber from 'bignumber.js';
 import compact from 'lodash/compact';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { AgGridReact } from 'ag-grid-react';
 import { t } from '../../../lib/use-t';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { AgGrid } from '@vegaprotocol/datagrid';
 
 type Commitment = {
   amount: BigNumber;
@@ -31,6 +29,7 @@ export const LiquidityTable = ({ market }: { market: Market }) => {
   );
   const { data: makerFees, status: makerFeesStatus } = useMakerFees(market.id);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loading = [
     provisionsStatus,
     liquidityFeesStatus,
@@ -90,10 +89,12 @@ export const LiquidityTable = ({ market }: { market: Market }) => {
   });
 
   return (
-    <div className="ag-theme-quartz-auto-dark">
-      <AgGridReact
+    <div className="h-full border rounded border-gs-300 dark:border-gs-700">
+      <AgGrid
         rowData={rowData}
-        loading={loading}
+        rowClass={
+          '!border-b !last:border-b-0 mb-1 border-gs-200 dark:border-gs-800'
+        }
         domLayout="autoHeight"
         suppressDragLeaveHidesColumns
         overlayLoadingTemplate={t('TABLE_LOADING')}
