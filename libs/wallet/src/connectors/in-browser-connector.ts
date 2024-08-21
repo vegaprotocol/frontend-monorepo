@@ -47,14 +47,6 @@ const client = new JSONRPCClient({
   },
 });
 
-// TODO this is a bit too magic. This should be done at the correct time, not just randomly
-if (typeof window !== 'undefined') {
-  window.addEventListener('content-script-response', (event) => {
-    const msg = (event as CustomEvent).detail;
-    client.onmessage(msg);
-  });
-}
-
 export class InBrowserConnector implements Connector {
   // @ts-ignore -- will be fixed on rewrite of the jsonrpc client to typescript
   readonly client = client;
@@ -64,7 +56,17 @@ export class InBrowserConnector implements Connector {
     'Connect with In Browser Vega Wallet to get started quickly';
   store: StoreApi<Store> | undefined;
 
-  private messageId = 1;
+  /**
+   *
+   */
+  constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('content-script-response', (event) => {
+        const msg = (event as CustomEvent).detail;
+        client.onmessage(msg);
+      });
+    }
+  }
 
   bindStore(store: StoreApi<Store>) {
     this.store = store;
