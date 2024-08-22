@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { create } from 'zustand';
 
 import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
@@ -21,6 +20,7 @@ export type InteractionStore = {
   transactionModalOpen: boolean;
   handleTransaction: (parameters: TransactionMessage) => Promise<boolean>;
   handleTransactionDecision: (decision: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   transactionPromise: [Function, Function] | null;
   currentTransactionDetails: TransactionMessage | null;
   checkTransaction: (
@@ -29,12 +29,6 @@ export type InteractionStore = {
     publicKey: string,
     origin: string
   ) => Promise<CheckTransactionResponse>;
-
-  connectionModalOpen: boolean;
-  handleConnection: (parameters: ConnectionMessage) => Promise<ConnectionReply>;
-  handleConnectionDecision: (decision: ConnectionReply) => void;
-  connectionPromise: [Function, Function] | null;
-  currentConnectionDetails: ConnectionMessage | null;
 };
 
 export const useInteractionStore = create<InteractionStore>()((set, get) => ({
@@ -81,35 +75,6 @@ export const useInteractionStore = create<InteractionStore>()((set, get) => ({
       },
       true
     );
-    return result;
-  },
-  currentConnectionDetails: null,
-  connectionPromise: null,
-  connectionModalOpen: false,
-  handleConnectionDecision: (reply: ConnectionReply) => {
-    const promise = get().connectionPromise;
-    if (promise) {
-      promise[0](reply);
-    }
-    set({
-      connectionPromise: null,
-      currentConnectionDetails: null,
-      connectionModalOpen: false,
-    });
-  },
-  handleConnection: async (reply: ConnectionMessage) => {
-    set({
-      connectionModalOpen: true,
-    });
-    const connectionPromise = new Promise<ConnectionReply>(
-      (resolve, reject) => {
-        set({
-          currentConnectionDetails: reply,
-          connectionPromise: [resolve, reject],
-        });
-      }
-    );
-    const result = await connectionPromise;
     return result;
   },
 }));

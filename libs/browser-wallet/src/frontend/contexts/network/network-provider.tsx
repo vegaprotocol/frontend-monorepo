@@ -36,13 +36,10 @@ export const NetworkProvider = ({
     loading: store.loading,
   }));
 
-  const { transactionModalOpen, connectionModalOpen } = useInteractionStore(
-    (store) => ({
-      transactionModalOpen: store.transactionModalOpen,
-      connectionModalOpen: store.connectionModalOpen,
-    })
-  );
-  const interactionMode = transactionModalOpen || connectionModalOpen;
+  const { transactionModalOpen } = useInteractionStore((store) => ({
+    transactionModalOpen: store.transactionModalOpen,
+  }));
+  const interactionMode = transactionModalOpen;
   const value = useMemo(
     () => ({
       explorer,
