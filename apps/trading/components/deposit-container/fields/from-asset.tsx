@@ -93,7 +93,7 @@ export function FromAsset({
                             src={token.logoURI}
                             width="30"
                             height="30"
-                            className="rounded-full bg-gs-600 border-gs-600 border-2"
+                            className="rounded-full bg-surface-1 border-surface-1 border-2"
                           />
                           <div className="text-sm text-left leading-4">
                             <div>

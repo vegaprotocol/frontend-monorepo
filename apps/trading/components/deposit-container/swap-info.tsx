@@ -1,5 +1,5 @@
 import groupBy from 'lodash/groupBy';
-import { toBigNum } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { type RouteResponse } from '@0xsquid/sdk/dist/types';
 import { TradingInputError } from '@vegaprotocol/ui-toolkit';
@@ -21,36 +21,46 @@ export const SwapInfo = (props: {
   const gasGroups = groupBy(estimate.gasCosts, 'token.address');
 
   return (
-    <>
-      <dl className="text-xs">
-        {Object.entries(gasGroups).map(([key, group]) => {
-          const fees = group.map((f) => {
-            return toBigNum(f.amount, f.token.decimals);
-          });
-          const total = BigNumber.sum.apply(null, fees);
-          return (
-            <div key={key} className="grid grid-cols-2">
-              <dt className="text-surface-1-fg-muted">Gas costs</dt>
-              <dd className="text-right">
-                {total.toString()} {group[0].token.symbol}
-              </dd>
-            </div>
-          );
-        })}
-        {Object.entries(feeGroups).map(([key, group]) => {
-          const fees = group.map((f) => {
-            return toBigNum(f.amount, f.token.decimals);
-          });
-          const total = BigNumber.sum.apply(null, fees);
-          return (
-            <div key={key} className="grid grid-cols-2">
-              <dt className="text-surface-1-fg-muted">Estimated fees</dt>
-              <dd className="text-right">
-                {total.toString()} {group[0].token.symbol}
-              </dd>
-            </div>
-          );
-        })}
+    <dl className="text-xs">
+      <div className="grid grid-cols-2">
+        <dt className="text-surface-1-fg-muted">{t('Amount')}</dt>
+        <dd className="text-right">
+          {addDecimalsFormatNumber(
+            estimate.toAmount,
+            estimate.toToken.decimals
+          )}{' '}
+          {estimate.toToken.symbol}
+        </dd>
+      </div>
+      {Object.entries(gasGroups).map(([key, group]) => {
+        const fees = group.map((f) => {
+          return toBigNum(f.amount, f.token.decimals);
+        });
+        const total = BigNumber.sum.apply(null, fees);
+        return (
+          <div key={key} className="grid grid-cols-2">
+            <dt className="text-surface-1-fg-muted">Gas costs</dt>
+            <dd className="text-right">
+              {total.toString()} {group[0].token.symbol}
+            </dd>
+          </div>
+        );
+      })}
+      {Object.entries(feeGroups).map(([key, group]) => {
+        const fees = group.map((f) => {
+          return toBigNum(f.amount, f.token.decimals);
+        });
+        const total = BigNumber.sum.apply(null, fees);
+        return (
+          <div key={key} className="grid grid-cols-2">
+            <dt className="text-surface-1-fg-muted">Estimated fees</dt>
+            <dd className="text-right">
+              {total.toString()} {group[0].token.symbol}
+            </dd>
+          </div>
+        );
+      })}
+      <div className="grid grid-cols-2">
         <dt className="text-surface-1-fg-muted">{t('Slippage')}</dt>
         <dd className="text-right">
           {
@@ -58,7 +68,7 @@ export const SwapInfo = (props: {
             estimate.aggregateSlippage
           }
         </dd>
-      </dl>
-    </>
+      </div>
+    </dl>
   );
 };

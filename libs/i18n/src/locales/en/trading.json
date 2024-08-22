@@ -595,6 +595,7 @@
   "Supplied stake": "Supplied stake",
   "Suspended due to price or liquidity monitoring trigger": "Suspended due to price or liquidity monitoring trigger",
   "Swap": "Swap",
+  "Swap and deposit": "Swap and deposit",
   "Switch team": "Switch team",
   "Switching team will move you from '{{fromTeam}}' to '{{toTeam}}' at the end of the epoch. Are you sure?": "Switching team will move you from '{{fromTeam}}' to '{{toTeam}}' at the end of the epoch. Are you sure?",
   "Take profit": "Take profit",

@@ -18,16 +18,16 @@ import { type FormFields, type Configs, formSchema } from './form-schema';
 
 export const useSquidRoute = ({
   form,
-  assets,
+  toAsset,
   configs,
   enabled = false,
 }: {
   form: UseFormReturn<FormFields>;
-  assets: AssetERC20[] | undefined;
+  toAsset?: AssetERC20;
   configs: Configs;
   enabled?: boolean;
 }) => {
-  const [queryKey, setQueryKey] = useState<Partial<FormFields>>({});
+  const [queryKey, setQueryKey] = useState<FormFields>();
   const signer = useEthersSigner();
   const { data: squid } = useSquid();
 
@@ -35,8 +35,12 @@ export const useSquidRoute = ({
   // that we can use as the query key for the route
   useEffect(() => {
     const callback = debounce((fields) => {
-      setQueryKey(fields);
-    }, 1000);
+      if (formSchema.safeParse(fields).success) {
+        setQueryKey(fields);
+      } else {
+        setQueryKey(undefined);
+      }
+    }, 700);
     const subscription = form.watch((x) => callback(x));
     return () => subscription.unsubscribe();
   }, [form]);
@@ -55,10 +59,17 @@ export const useSquidRoute = ({
       const fromAsset = squid.tokens.find(
         (t) => t.address === fields.fromAsset && t.chainId === fields.fromChain
       );
-      const toAsset = assets?.find((a) => a.id === fields.toAsset);
 
       if (!fromAsset) return null;
       if (!toAsset) return null;
+
+      // From token and to token are the same, not a valid swap
+      if (
+        fromAsset.address.toLowerCase() ===
+        toAsset.source.contractAddress.toLowerCase()
+      ) {
+        return null;
+      }
 
       const config = configs.find((c) => c.chain_id === toAsset.source.chainId);
 
