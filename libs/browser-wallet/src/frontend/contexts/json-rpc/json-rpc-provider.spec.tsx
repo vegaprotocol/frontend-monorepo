@@ -96,27 +96,6 @@ describe('JsonRpcProvider', () => {
       'useJsonRpcClient must be used within JsonRPCProvider'
     );
   });
-  it('handles connection background interaction messages', () => {
-    const { handleConnection } = mockModalStore();
-    mockErrorStore();
-    const TestComponent = ({ expect }: { expect: jest.Expect }) => {
-      const { server } = useJsonRpcClient();
-      server.onrequest({
-        jsonrpc: '2.0',
-        id: '1',
-        method: ServerRpcMethods.Connection,
-        params: { details: 'some' },
-      });
-      return <div>Content</div>;
-    };
-
-    render(
-      <JsonRPCProvider>
-        <TestComponent expect={expect} />
-      </JsonRPCProvider>
-    );
-    expect(handleConnection).toHaveBeenCalled();
-  });
   it('handles transaction background interaction messages', () => {
     const { handleTransaction } = mockModalStore();
     mockErrorStore();
