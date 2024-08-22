@@ -21,40 +21,36 @@ export function Amount(props: {
   const t = useT();
   const form = useFormContext<FormFields>();
   return (
-    <FormGroup label="Amount" labelFor="amount">
-      <Controller
-        control={props.control}
-        name="amount"
-        render={({ field, fieldState }) => {
-          return (
-            <>
-              <TradingInput {...field} />
-              {fieldState.error && (
-                <TradingInputError>
-                  {fieldState.error.message}
-                </TradingInputError>
-              )}
-            </>
-          );
-        }}
-      />
-      <FormSecondaryActionWrapper>
-        <FormSecondaryActionButton
-          onClick={() => {
-            const fromAsset = form.getValues('fromAsset');
+    <Controller
+      control={props.control}
+      name="amount"
+      render={({ field, fieldState }) => {
+        return (
+          <FormGroup label="Amount" labelFor="amount">
+            <TradingInput {...field} />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+            <FormSecondaryActionWrapper>
+              <FormSecondaryActionButton
+                onClick={() => {
+                  const fromAsset = form.getValues('fromAsset');
 
-            const value = isAssetNative(fromAsset)
-              ? props.nativeBalanceOf?.toString() || '0'
-              : props.balanceOf?.toString() || '0';
+                  const value = isAssetNative(fromAsset)
+                    ? props.nativeBalanceOf?.toString() || '0'
+                    : props.balanceOf?.toString() || '0';
 
-            form.setValue('amount', value, {
-              shouldValidate: true,
-            });
-          }}
-        >
-          {t('Use maximum')}
-        </FormSecondaryActionButton>
-      </FormSecondaryActionWrapper>
-    </FormGroup>
+                  form.setValue('amount', value, {
+                    shouldValidate: true,
+                  });
+                }}
+              >
+                {t('Use maximum')}
+              </FormSecondaryActionButton>
+            </FormSecondaryActionWrapper>
+          </FormGroup>
+        );
+      }}
+    />
   );
 }

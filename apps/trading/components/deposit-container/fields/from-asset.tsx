@@ -4,7 +4,6 @@ import {
   TradingRichSelect,
   TradingRichSelectOption,
   TradingRichSelectValue,
-  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { type Control, Controller, useWatch } from 'react-hook-form';
@@ -12,6 +11,7 @@ import { type ChainData, type Token } from '@0xsquid/squid-types';
 import { type FormFields } from '../form-schema';
 import { FormSecondaryActionWrapper } from '../../form-secondary-action';
 import { FormSecondaryActionLink } from '../../form-secondary-action/form-secondary-action';
+import { TokenOption } from '../token-option';
 import { AssetBalance } from '../../asset-option';
 
 export function FromAsset({
@@ -50,32 +50,15 @@ export function FromAsset({
                   valueElement={
                     fromAsset && (
                       <TradingRichSelectValue placeholder="Select asset">
-                        <div className="w-full flex items-center gap-2 h-10">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            alt={t('Logo for {{name}}', {
-                              name: fromAsset.name,
-                            })}
-                            src={fromAsset.logoURI}
-                            width="30"
-                            height="30"
-                            className="rounded-full bg-surface-1 border-surface-1 border-2"
-                          />
-                          <div className="text-sm text-left leading-4">
-                            <div>
-                              {fromAsset.name} {fromAsset.symbol}
-                            </div>
-                            <div className="text-secondary text-xs">
-                              {truncateMiddle(fromAsset.address)}
-                            </div>
-                          </div>
-                          <div className="ml-auto text-sm">
+                        <TokenOption
+                          {...fromAsset}
+                          balance={
                             <AssetBalance
                               chainId={fromAsset.chainId}
                               address={fromAsset.address}
                             />
-                          </div>
-                        </div>
+                          }
+                        />
                       </TradingRichSelectValue>
                     )
                   }
@@ -86,24 +69,7 @@ export function FromAsset({
                         value={token.address}
                         key={`${token.chainId}-${token.address}`}
                       >
-                        <div className="w-full flex items-center gap-2 h-10">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            alt={t('Logo for {{name}}', { name: token.name })}
-                            src={token.logoURI}
-                            width="30"
-                            height="30"
-                            className="rounded-full bg-surface-1 border-surface-1 border-2"
-                          />
-                          <div className="text-sm text-left leading-4">
-                            <div>
-                              {token.name} {token.symbol}
-                            </div>
-                            <div className="text-secondary text-xs">
-                              {truncateMiddle(token.address)}
-                            </div>
-                          </div>
-                        </div>
+                        <TokenOption {...token} />
                       </TradingRichSelectOption>
                     );
                   })}
