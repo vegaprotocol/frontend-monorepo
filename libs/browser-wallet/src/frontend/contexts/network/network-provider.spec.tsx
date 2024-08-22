@@ -86,6 +86,7 @@ describe('NetworkProvider', () => {
         governance: 'governance',
         console: 'console',
         chainId: 'chainId',
+        etherscanUrl: 'etherscanUrl',
       })
     );
   });
@@ -110,6 +111,7 @@ describe('NetworkProvider', () => {
         governance: 'governance',
         console: 'console',
         chainId: 'chainId',
+        etherscanUrl: 'etherscanUrl',
         interactionMode: true,
       })
     );
