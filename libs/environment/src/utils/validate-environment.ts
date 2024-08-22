@@ -73,7 +73,6 @@ export const envSchema = z
     VEGA_ENV: z.nativeEnum(Networks),
     VEGA_CONSOLE_URL: z.optional(z.string()),
     VEGA_EXPLORER_URL: z.optional(z.string()),
-    VEGA_GOVERNANCE_URL: z.optional(z.string()),
     VEGA_TOKEN_URL: z.optional(z.string()),
     VEGA_DOCS_URL: z.optional(z.string()),
     VEGA_NETWORKS: z

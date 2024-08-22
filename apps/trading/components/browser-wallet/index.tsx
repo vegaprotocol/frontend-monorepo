@@ -12,7 +12,7 @@ export const BrowserWallet = dynamic(
           <BrowserWallet
             explorer={state.VEGA_EXPLORER_URL ?? ''}
             docs={state.VEGA_DOCS_URL ?? ''}
-            governance={state.VEGA_GOVERNANCE_URL ?? ''}
+            governance={state.VEGA_TOKEN_URL ?? ''}
             console={state.VEGA_CONSOLE_URL ?? ''}
             chainId={vegaChainId}
           />
