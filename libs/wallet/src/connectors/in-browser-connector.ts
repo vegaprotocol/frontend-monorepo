@@ -17,6 +17,7 @@ import {
   sendTransactionError,
   userRejectedError,
 } from '../errors';
+import EventEmitter from 'eventemitter3';
 
 interface InjectedError {
   message: string;
@@ -31,6 +32,8 @@ interface InjectedError {
 }
 
 const USER_REJECTED_CODE = -4;
+
+const emitter = new EventEmitter();
 
 const client = new JSONRPCClient({
   idPrefix: 'vega.in-page-',
@@ -173,18 +176,12 @@ export class InBrowserConnector implements Connector {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   on(event: VegaWalletEvent, callback: () => void): void {
-    // throw new Error('Method not implemented.');
-    // TODO fix
-    // console.log('NOOP, event listener not implemented yet');
+    emitter.on(event, callback);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   off(event: VegaWalletEvent, callback?: () => void): void {
-    // throw new Error('Method not implemented.');
-    // TODO fix
-    // console.log('NOOP, event listener not implemented yet');
+    emitter.off(event, callback);
   }
 
   private isInjectedError(obj: unknown): obj is InjectedError {
