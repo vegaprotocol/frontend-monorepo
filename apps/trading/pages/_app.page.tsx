@@ -52,7 +52,7 @@ const createBrowserWalletBackendLoader = (
       createWalletBackend({
         node: new URL(API_NODE?.restApiUrl),
       });
-    }, []);
+    }, [API_NODE?.restApiUrl]);
     return <>{children}</>;
   };
 };
