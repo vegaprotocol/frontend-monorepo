@@ -19,12 +19,14 @@ function App({
   governance,
   console,
   chainId,
+  etherscanUrl,
 }: {
   explorer: string;
   docs: string;
   governance: string;
   console: string;
   chainId: string;
+  etherscanUrl: string;
 }) {
   return (
     // @ts-ignore -- https://github.com/remix-run/react-router/issues/7375#issuecomment-975431736
@@ -39,6 +41,7 @@ function App({
               governance={governance}
               console={console}
               chainId={chainId}
+              etherscanUrl={etherscanUrl}
             >
               <main
                 data-testid={locators.appWrapper}

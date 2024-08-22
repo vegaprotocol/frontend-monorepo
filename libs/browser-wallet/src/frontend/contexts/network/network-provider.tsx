@@ -21,6 +21,7 @@ export const NetworkProvider = ({
   docs,
   governance,
   console,
+  etherscanUrl,
   chainId,
 }: {
   children: JSX.Element;
@@ -28,6 +29,7 @@ export const NetworkProvider = ({
   docs: string;
   governance: string;
   console: string;
+  etherscanUrl: string;
   chainId: string;
 }) => {
   const { request } = useJsonRpcClient();
@@ -47,9 +49,18 @@ export const NetworkProvider = ({
       governance,
       console,
       chainId,
+      etherscanUrl,
       interactionMode,
     }),
-    [chainId, console, docs, explorer, governance, interactionMode]
+    [
+      chainId,
+      console,
+      docs,
+      etherscanUrl,
+      explorer,
+      governance,
+      interactionMode,
+    ]
   );
 
   useEffect(() => {

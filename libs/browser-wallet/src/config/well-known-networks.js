@@ -31,6 +31,7 @@ export const fairground = {
 export const testingNetwork = {
   ...fairground,
   id: 'test',
+  etherscanUrl: 'https://sepolia.etherscan.io',
   name: 'Test',
   chainId: 'test-chain-id',
   rest: [`http://localhost:${mockPort}`],

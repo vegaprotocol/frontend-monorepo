@@ -15,6 +15,7 @@ export const BrowserWallet = dynamic(
             governance={state.VEGA_TOKEN_URL ?? ''}
             console={state.VEGA_CONSOLE_URL ?? ''}
             chainId={vegaChainId}
+            etherscanUrl={state.ETHERSCAN_URL ?? ''}
           />
         );
       };

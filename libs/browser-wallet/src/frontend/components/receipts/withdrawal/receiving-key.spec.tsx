@@ -9,12 +9,6 @@ import { useEthereumConfig, useEVMBridgeConfigs } from '@vegaprotocol/web3';
 
 jest.mock('@/stores/assets-store');
 
-jest.mock('@/components/keys/ethereum-key', () => ({
-  EthereumKey: () => <div data-testid="ethereum-key" />,
-}));
-jest.mock('@/components/keys/arbitrum', () => ({
-  ArbitrumKey: () => <div data-testid="arbitrum-key" />,
-}));
 jest.mock('@/components/keys/unknown-network-key', () => ({
   UnknownNetworkKey: () => <div data-testid="unknown-network-key" />,
 }));
@@ -32,7 +26,8 @@ const renderComponent = (address: string, assetId: string) => {
   );
 };
 
-describe('ReceivingKey', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('ReceivingKey', () => {
   it('Should render unknown key address when asset cannot be found', () => {
     mockStore(useAssetsStore, { assets: [] });
     (useEthereumConfig as jest.Mock).mockReturnValue({

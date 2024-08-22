@@ -37,6 +37,7 @@ const renderComponent = (
       governance={'governance'}
       console={'console'}
       chainId={'chainId'}
+      etherscanUrl={'etherscanUrl'}
     >
       <TestComponent />
     </NetworkProvider>

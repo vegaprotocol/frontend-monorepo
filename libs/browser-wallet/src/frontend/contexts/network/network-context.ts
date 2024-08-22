@@ -7,6 +7,7 @@ export interface NetworkContextShape {
   governance: string;
   console: string;
   chainId: string;
+  etherscanUrl: string;
 }
 
 export const NetworkContext = createContext<NetworkContextShape | undefined>(
