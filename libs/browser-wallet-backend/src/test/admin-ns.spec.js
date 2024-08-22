@@ -1,17 +1,16 @@
 import initAdminServer from '../src/admin-ns.js';
 import { WalletCollection } from '../src/wallets.js';
-import { NetworkCollection, Network } from '../src/network.js';
 import ConcurrentStorage from '../lib/concurrent-storage.js';
 import EncryptedStorage from '../lib/encrypted-storage.js';
 import { ConnectionsCollection } from '../src/connections.js';
 import { FetchCache } from '../src/fetch-cache.js';
+import NodeRPC from '../src/node-rpc.js';
 
 import { createHTTPServer, createJSONHTTPServer } from './helpers.js';
-import { testingNetwork } from '../../config/well-known-networks.js';
 
 const createAdmin = async ({
   passphrase,
-  datanodeUrls = testingNetwork.rest,
+  datanodeUrl = 'http://localhost:9090',
 } = {}) => {
   const enc = new EncryptedStorage(new Map(), { memory: 10, iterations: 1 });
   const publicKeyIndexStore = new ConcurrentStorage(new Map());
@@ -31,17 +30,7 @@ const createAdmin = async ({
       connectionsStore: new ConcurrentStorage(new Map()),
       publicKeyIndexStore,
     }),
-    networks: new NetworkCollection(
-      new Map([
-        [
-          testingNetwork.id,
-          new Network({
-            ...testingNetwork,
-            rest: datanodeUrls,
-          }),
-        ],
-      ])
-    ),
+    rpc: new NodeRPC(new URL(datanodeUrl)),
     fetchCache: new FetchCache(new Map()),
     onerror(err) {
       throw err;
@@ -165,7 +154,7 @@ const REQ_FETCH = (id, path) => ({
   method: 'admin.fetch',
   params: {
     path,
-    networkId: testingNetwork.id,
+    networkId: 'chainId',
   },
 });
 
@@ -234,43 +223,6 @@ describe('admin-ns', () => {
     expect(generateRecoveryPhrase.result.recoveryPhrase.split(' ').length).toBe(
       24
     );
-  });
-
-  it('should list networks', async () => {
-    const { admin } = await createAdmin();
-
-    const listNetworks = await admin.onrequest({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'admin.list_networks',
-      params: null,
-    });
-
-    expect(listNetworks.result).toEqual({
-      networks: [
-        {
-          _nodeTimeout: null,
-          arbitrumChainId: '421614',
-          arbitrumExplorerLink: 'https://sepolia.arbiscan.io',
-          chainId: 'test-chain-id',
-          console: 'https://console.fairground.wtf',
-          docs: 'https://docs.vega.xyz/testnet/concepts/new-to-vega',
-          ethereumChainId: '11155111',
-          ethereumExplorerLink: 'https://sepolia.etherscan.io',
-          explorer: 'https://explorer.fairground.wtf',
-          governance: 'https://governance.fairground.wtf',
-          hidden: false,
-          color: '#D7FB50',
-          secondaryColor: '#000000',
-          id: 'test',
-          name: 'Test',
-          preferredNode: undefined,
-          probing: false,
-          rest: ['http://localhost:9090'],
-          vegaDapps: 'https://vega.xyz/apps',
-        },
-      ],
-    });
   });
 
   it('should create wallet', async () => {
@@ -496,53 +448,6 @@ describe('admin-ns', () => {
     });
   });
 
-  it('should proxy requests to healthy data node on fetch', async () => {
-    const chainHeight = {
-      height: '2',
-      chainId: 'testnet',
-    };
-
-    const expected = {
-      assets: ['asset1', 'asset2'],
-    };
-
-    const happyServer = await createJSONHTTPServer((req) => {
-      if (req.url === '/blockchain/height') return { body: chainHeight };
-
-      return { body: expected };
-    });
-
-    const sadServer = await createJSONHTTPServer(() => {
-      return { statusCode: 500 };
-    });
-
-    const malformedServer = await createHTTPServer((req, res) => {
-      return res.end('<Malformed JSON>');
-    });
-
-    const { admin } = await createAdmin({
-      datanodeUrls: [happyServer.url, sadServer.url, malformedServer.url],
-    });
-
-    const fetch = await admin.onrequest({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'admin.fetch',
-      params: {
-        networkId: testingNetwork.id,
-        path: '/assets',
-      },
-    });
-
-    expect(fetch.result).toEqual(expected);
-
-    await Promise.all([
-      happyServer.close(),
-      sadServer.close(),
-      malformedServer.close(),
-    ]);
-  });
-
   it(
     'should return errors from unsuccessful fetch (statusCode)',
     setupFaultyFetch({
@@ -576,7 +481,7 @@ describe('admin-ns', () => {
         res.end(faultyResponse.body);
       });
 
-      const { admin } = await createAdmin({ datanodeUrls: [server.url] });
+      const { admin } = await createAdmin({ datanodeUrl: server.url });
 
       const fetch = await admin.onrequest(REQ_FETCH(1, '/assets'));
 
@@ -596,7 +501,7 @@ describe('admin-ns', () => {
 
     const chainHeight = {
       height: '2',
-      chainId: testingNetwork.id,
+      chainId: 'chainId',
     };
 
     const server = await createJSONHTTPServer((req) => {
@@ -605,7 +510,7 @@ describe('admin-ns', () => {
       return { body: Date.now() };
     });
 
-    const { admin } = await createAdmin({ datanodeUrls: [server.url] });
+    const { admin } = await createAdmin({ datanodeUrl: server.url });
 
     const fetch1 = await admin.onrequest(REQ_FETCH(1, '/api/v2/assets'));
     jest.advanceTimersByTime(1);
