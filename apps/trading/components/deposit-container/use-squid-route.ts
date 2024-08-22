@@ -3,19 +3,26 @@ import { useEffect, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 import { ChainType } from '@0xsquid/squid-types';
 import {
-  ArbitrumSquidReceiver,
-  CollateralBridge,
+  ARBITRUM_SQUID_RECEIVER_ABI,
+  BRIDGE_ABI,
   prepend0x,
-  Token,
 } from '@vegaprotocol/smart-contracts';
 import { removeDecimal } from '@vegaprotocol/utils';
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { useEthersSigner } from './use-ethers-signer';
-import { ARBITRUM_SQUID_RECEIVER_ADDRESS } from './constants';
 import { useQuery } from '@tanstack/react-query';
 import { useSquid } from './use-squid';
 import { type FormFields, type Configs, formSchema } from './form-schema';
+import { encodeFunctionData } from 'viem';
+import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
+import {
+  ARBITRUM_CHAIN_ID,
+  ARBITRUM_SQUID_RECEIVER_ADDRESS,
+} from './constants';
 
+/**
+ * Whenever the form changes use the squid sdk to fetch the swap route object
+ * which is needed to execute the swap. Form changes are debounced to avoid overfetching
+ */
 export const useSquidRoute = ({
   form,
   toAsset,
@@ -28,20 +35,23 @@ export const useSquidRoute = ({
   enabled?: boolean;
 }) => {
   const [queryKey, setQueryKey] = useState<FormFields>();
-  const signer = useEthersSigner();
   const { data: squid } = useSquid();
 
   // List to changes to all fields (debounced) and store into some state
   // that we can use as the query key for the route
   useEffect(() => {
     const callback = debounce((fields) => {
+      // Check against the schema so that the queryKey is not set if the form
+      // is invalid, therefore avoiding a failed fetch attempt for a swap route
       if (formSchema.safeParse(fields).success) {
         setQueryKey(fields);
       } else {
         setQueryKey(undefined);
       }
     }, 700);
+
     const subscription = form.watch((x) => callback(x));
+
     return () => subscription.unsubscribe();
   }, [form]);
 
@@ -50,7 +60,6 @@ export const useSquidRoute = ({
     enabled: enabled && Boolean(queryKey),
     queryFn: async ({ queryKey }) => {
       const queryKeyRes = formSchema.safeParse(queryKey[1]);
-
       if (!queryKeyRes.success) return null;
       if (!squid) return null;
 
@@ -74,44 +83,61 @@ export const useSquidRoute = ({
       const config = configs.find((c) => c.chain_id === toAsset.source.chainId);
 
       if (!config) return null;
-      if (!signer) return null;
+
+      const fromAmount = removeDecimal(fields.amount, fromAsset.decimals);
 
       // The default bridgeAddress for the selected toAsset if an arbitrum
       // to asset is selected will get changed to the squid receiver address
       let bridgeAddress = config.collateral_bridge_contract
         .address as `0x${string}`;
-
-      const fromAmount = removeDecimal(fields.amount, fromAsset.decimals);
-      const tokenContract = new Token(toAsset.source.contractAddress, signer);
-
       let approveCallData;
       let depositCallData;
 
-      if (toAsset.source.chainId === '42161') {
+      // Squid cannot guarantee that the funds will make it to the end desitination
+      // so there is a squid reciever contarct we should use if we are making a swap
+      // into an arbitrum asset
+      //
+      // TODO: there will in future be an ethereum squid receiver contract. We will
+      // need to ensure that contracts is used if making a swap to an Ethereum token
+      if (toAsset.source.chainId === ARBITRUM_CHAIN_ID) {
         bridgeAddress = ARBITRUM_SQUID_RECEIVER_ADDRESS;
-        // its arbitrum, use the arbitrum squid receiver contract
-        approveCallData = tokenContract.encodeApproveData(
-          bridgeAddress,
-          fromAmount
-        );
-        const contract = new ArbitrumSquidReceiver(bridgeAddress);
-        depositCallData = contract.encodeDepositData(
-          toAsset.source.contractAddress,
-          '0',
-          prepend0x(fields.toPubKey),
-          fields.fromAddress
-        );
+        approveCallData = encodeFunctionData({
+          abi: getErc20Abi({
+            address: toAsset.source.contractAddress as `0x${string}`,
+          }),
+          functionName: 'approve',
+          args: [bridgeAddress, BigInt(fromAmount)],
+        });
+
+        // NOTE that the squid receiver deposit contract takes a 4th argument which is the recovery
+        // address if squid is unable to fulfill the swap
+        depositCallData = encodeFunctionData({
+          abi: ARBITRUM_SQUID_RECEIVER_ABI,
+          functionName: 'deposit',
+          args: [
+            toAsset.source.contractAddress,
+            '0',
+            prepend0x(fields.toPubKey),
+            fields.fromAddress,
+          ],
+        });
       } else {
-        approveCallData = tokenContract.encodeApproveData(
-          bridgeAddress,
-          fromAmount
-        );
-        const contract = new CollateralBridge(bridgeAddress, signer);
-        depositCallData = contract.encodeDepositData(
-          toAsset.source.contractAddress,
-          '0',
-          prepend0x(fields.toPubKey)
-        );
+        approveCallData = encodeFunctionData({
+          abi: getErc20Abi({
+            address: toAsset.source.contractAddress as `0x${string}`,
+          }),
+          functionName: 'approve',
+          args: [bridgeAddress, BigInt(fromAmount)],
+        });
+        depositCallData = encodeFunctionData({
+          abi: BRIDGE_ABI,
+          functionName: 'deposit_asset',
+          args: [
+            toAsset.source.contractAddress,
+            '0',
+            prepend0x(fields.toPubKey),
+          ],
+        });
       }
 
       const result = await squid.getRoute({

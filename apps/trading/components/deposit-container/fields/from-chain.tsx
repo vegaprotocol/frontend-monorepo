@@ -8,6 +8,7 @@ import { type Control, Controller } from 'react-hook-form';
 import { type FormFields } from '../form-schema';
 import { useT } from '../../../lib/use-t';
 import { type ChainData } from '@0xsquid/squid-types';
+import { useChainId, useSwitchChain } from 'wagmi';
 
 export function FromChain({
   disabled = false,
@@ -18,6 +19,8 @@ export function FromChain({
   disabled?: boolean;
 }) {
   const t = useT();
+  const { switchChainAsync } = useSwitchChain();
+  const chainId = useChainId();
 
   return (
     <Controller
@@ -35,7 +38,13 @@ export function FromChain({
                 <TradingRichSelect
                   placeholder={t('Select chain')}
                   value={field.value}
-                  onValueChange={field.onChange}
+                  onValueChange={async (value) => {
+                    field.onChange(value);
+
+                    if (value !== String(chainId)) {
+                      await switchChainAsync({ chainId: Number(value) });
+                    }
+                  }}
                 >
                   {props.chains?.map((c) => {
                     return (

@@ -6,17 +6,21 @@ import { TradingInputError } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
 export const SwapInfo = (props: {
-  route: RouteResponse['route'];
+  route?: RouteResponse['route'];
   error: Error | null;
 }) => {
   const t = useT();
-  const estimate = props.route.estimate;
   const error = props.error;
 
   if (error) {
     return <TradingInputError>{error.message}</TradingInputError>;
   }
 
+  if (!props.route) {
+    return null;
+  }
+
+  const estimate = props.route.estimate;
   const feeGroups = groupBy(estimate.feeCosts, 'token.address');
   const gasGroups = groupBy(estimate.gasCosts, 'token.address');
 

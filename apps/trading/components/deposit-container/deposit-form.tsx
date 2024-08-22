@@ -1,4 +1,4 @@
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { type Squid } from '@0xsquid/sdk';
@@ -25,6 +25,8 @@ import { SwapInfo } from './swap-info';
 import { type FormFields, formSchema, type Configs } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
 import { useSquidExecute } from './use-squid-execute';
+import { type Estimate } from '@0xsquid/squid-types';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export const DepositForm = ({
   squid,
@@ -44,10 +46,12 @@ export const DepositForm = ({
   const { switchChainAsync } = useSwitchChain();
 
   const chainId = useChainId();
+  const defaultChain = squid.chains.find((c) => c.chainId === String(chainId));
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      fromChain: defaultChain && defaultChain.chainId,
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
@@ -58,39 +62,38 @@ export const DepositForm = ({
     },
   });
 
-  const amount = useWatch({ control: form.control, name: 'amount' });
-  const fromChain = useWatch({ control: form.control, name: 'fromChain' });
-  const fromAssetAddress = useWatch({
-    control: form.control,
-    name: 'fromAsset',
-  });
-  const toAssetId = useWatch({ control: form.control, name: 'toAsset' });
+  const fields = form.watch();
 
   const tokens = squid.tokens?.filter((t) => {
-    if (!fromChain) return false;
-    if (t.chainId === fromChain) return true;
+    if (!fields.fromChain) return false;
+    if (t.chainId === fields.fromChain) return true;
     return false;
   });
 
-  const chain = squid.chains.find((c) => c.chainId === fromChain);
-  const toAsset = assets?.find((a) => a.id === toAssetId);
-  const fromAsset = tokens?.find((t) => t.address === fromAssetAddress);
+  const chain = squid.chains.find((c) => c.chainId === fields.fromChain);
+  const toAsset = assets?.find((a) => a.id === fields.toAsset);
+  const fromAsset = tokens?.find((t) => t.address === fields.toAsset);
 
-  // Data relating to the select asset, like balance on address, allowance
+  // Data relating to the selected from asset, like balance on address and allowance
+  // Only relevant if the asset is not a the chains native asset
   const { data: balanceData, queryKey: balanceDataQueryKey } =
     useAssetReadContracts({
       token: fromAsset,
       configs,
     });
 
+  // Because the read contracts above don't work with native balances we need to
+  // separately get the native token balance
   const { data: nativeBalance } = useNativeBalance({
     address,
-    chainId: fromChain,
+    chainId: fields.fromChain,
   });
 
+  // Check if the from and to asset are the same, if not then we will be using
+  // squid to swap and then deposit via a post hook
   const isSwap =
-    fromAssetAddress && toAsset
-      ? fromAssetAddress.toLowerCase() !==
+    fields.fromAsset && toAsset
+      ? fields.fromAsset.toLowerCase() !==
         toAsset?.source.contractAddress.toLowerCase()
       : undefined;
 
@@ -190,21 +193,22 @@ export const DepositForm = ({
         {!isSwap && toAsset && balanceData && (
           <Approval
             asset={toAsset}
-            amount={amount}
+            amount={fields.amount}
             data={balanceData}
             configs={configs}
             queryKey={balanceDataQueryKey}
           />
         )}
-        {isSwap && routeData && (
+        {isSwap && (
           <div className="mb-2">
-            <SwapInfo route={routeData.route} error={routeError} />
+            <SwapInfo route={routeData?.route} error={routeError} />
           </div>
         )}
         <SubmitButton
           isSwap={isSwap}
           isFetchingRoute={isFetching}
           isExecuting={status === 'pending'}
+          estimate={routeData?.route.estimate}
         />
         {status === 'pending' && (
           <div className="flex flex-col gap-2 items-center text-xs mt-2">
@@ -249,13 +253,20 @@ const SubmitButton = (props: {
   isSwap?: boolean;
   isFetchingRoute?: boolean;
   isExecuting?: boolean;
+  estimate?: Estimate;
 }) => {
   const t = useT();
 
   let text = t('Deposit');
 
-  if (props.isSwap) {
-    t('Swap and deposit');
+  if (props.isSwap && props.estimate) {
+    text = t('Deposit {{amount}} {{symbol}}', {
+      amount: addDecimalsFormatNumber(
+        props.estimate.toAmount,
+        props.estimate.toToken.decimals
+      ),
+      symbol: props.estimate.toToken.symbol,
+    });
   }
 
   if (props.isFetchingRoute) {

@@ -6,7 +6,7 @@ import {
   TradingRichSelectValue,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { type Control, Controller, useWatch } from 'react-hook-form';
+import { type Control, Controller, useFormContext } from 'react-hook-form';
 import { type ChainData, type Token } from '@0xsquid/squid-types';
 import { type FormFields } from '../form-schema';
 import { FormSecondaryActionWrapper } from '../../form-secondary-action';
@@ -24,10 +24,8 @@ export function FromAsset({
   disabled?: boolean;
 }) {
   const t = useT();
-  const fromAssetAddress = useWatch({
-    name: 'fromAsset',
-    control: props.control,
-  });
+  const form = useFormContext();
+  const fromAssetAddress = form.watch('fromAsset');
   const fromAsset = props.tokens?.find((t) => t.address === fromAssetAddress);
 
   return (
