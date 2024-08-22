@@ -14,7 +14,7 @@ jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
 
 jest.mock('@/contexts/network/network-context', () => ({
   useNetwork: () => ({
-    network: { id: 'networkId' },
+    chainId: 'chainId',
   }),
 }));
 
@@ -28,7 +28,7 @@ describe('useOrder', () => {
     expect(view.result.current.data).toEqual({});
     expect(MOCK_REQUEST).toHaveBeenCalledWith(
       RpcMethods.Fetch,
-      { path: 'api/v2/order/orderId', networkId: 'networkId' },
+      { path: 'api/v2/order/orderId', networkId: 'chainId' },
       true
     );
     expect(MOCK_REQUEST).toHaveBeenCalledTimes(1);

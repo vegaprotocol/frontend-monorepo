@@ -36,7 +36,7 @@ describe('VegaTeam', () => {
     renderComponent();
     expect(mockRequest).toHaveBeenCalledWith(
       RpcMethods.Fetch,
-      { networkId: testingNetwork.id, path: 'api/v2/teams?teamId=1' },
+      { networkId: testingNetwork.chainId, path: 'api/v2/teams?teamId=1' },
       true
     );
     expect(screen.getByTestId(locators.teamLink)).toHaveTextContent('1');

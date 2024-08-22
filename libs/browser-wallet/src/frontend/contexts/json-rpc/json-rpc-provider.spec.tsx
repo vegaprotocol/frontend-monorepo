@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 import { RpcMethods } from '@/lib/client-rpc-methods';
 import { ServerRpcMethods } from '@/lib/server-rpc-methods';
-import { useConnectionStore } from '@/stores/connections';
 import { useErrorStore } from '@/stores/error';
 import { useInteractionStore } from '@/stores/interaction-store';
 import { mockClient } from '@/test-helpers/mock-client';
@@ -15,7 +14,6 @@ import { JsonRPCProvider } from './json-rpc-provider';
 
 jest.mock('@/stores/interaction-store');
 jest.mock('@/stores/error');
-jest.mock('@/stores/connections');
 
 const mockModalStore = () => {
   const store = useInteractionStore as jest.MockedFunction<
@@ -30,19 +28,6 @@ const mockModalStore = () => {
   return {
     handleConnection,
     handleTransaction,
-  };
-};
-
-const mockConnectionStore = () => {
-  const store = useConnectionStore as jest.MockedFunction<
-    typeof useConnectionStore
-  >;
-  const addConnection = jest.fn();
-  store.mockImplementation(() => ({
-    addConnection,
-  }));
-  return {
-    addConnection,
   };
 };
 
@@ -95,7 +80,6 @@ describe('JsonRpcProvider', () => {
   });
   it('renders and provides client', () => {
     mockModalStore();
-    mockConnectionStore();
     mockErrorStore();
 
     render(
@@ -107,7 +91,6 @@ describe('JsonRpcProvider', () => {
   });
   it('throws error if hook is called outside context', () => {
     mockModalStore();
-    mockConnectionStore();
     mockErrorStore();
     silenceErrors();
     expect(() => render(<TestComponent expect={expect} />)).toThrow(
@@ -117,7 +100,6 @@ describe('JsonRpcProvider', () => {
   it('handles connection notification messages', () => {
     mockModalStore();
     mockErrorStore();
-    const { addConnection } = mockConnectionStore();
     const TestComponent = ({ expect }: { expect: jest.Expect }) => {
       const { client } = useJsonRpcClient();
       useEffect(() => {
@@ -163,7 +145,6 @@ describe('JsonRpcProvider', () => {
   });
   it('handles connection background interaction messages', () => {
     const { handleConnection } = mockModalStore();
-    mockConnectionStore();
     mockErrorStore();
     const TestComponent = ({ expect }: { expect: jest.Expect }) => {
       const { server } = useJsonRpcClient();
@@ -186,7 +167,6 @@ describe('JsonRpcProvider', () => {
   it('handles transaction background interaction messages', () => {
     const { handleTransaction } = mockModalStore();
     mockErrorStore();
-    mockConnectionStore();
 
     render(
       <JsonRPCProvider>
@@ -205,7 +185,6 @@ describe('JsonRpcProvider', () => {
     });
     mockModalStore();
     mockErrorStore();
-    mockConnectionStore();
 
     render(
       <JsonRPCProvider>
@@ -224,7 +203,6 @@ describe('JsonRpcProvider', () => {
     });
     mockModalStore();
     mockErrorStore();
-    mockConnectionStore();
 
     render(
       <JsonRPCProvider>
@@ -236,7 +214,6 @@ describe('JsonRpcProvider', () => {
   it('sets error message if a request fails when using the request methods', async () => {
     mockClient();
     mockModalStore();
-    mockConnectionStore();
     const { setError } = mockErrorStore();
 
     const TestComponent = () => {
@@ -257,7 +234,6 @@ describe('JsonRpcProvider', () => {
   it('throws error message if a request fails when using the request methods and propagate is true', async () => {
     mockClient();
     mockModalStore();
-    mockConnectionStore();
     const { setError } = mockErrorStore();
 
     let errorCaught = false;

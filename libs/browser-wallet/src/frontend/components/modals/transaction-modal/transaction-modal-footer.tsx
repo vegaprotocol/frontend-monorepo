@@ -7,13 +7,7 @@ import {
 
 // import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 // import { RpcMethods } from '@/lib/client-rpc-methods';
-import {
-  // getTransactionType,
-  type TransactionMessage,
-} from '@/lib/transactions';
-// import { useConnectionStore } from '@/stores/connections';
-
-// import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../../lib/constants';
+import { type TransactionMessage } from '@/lib/transactions';
 
 export const locators = {
   transactionModalDenyButton: 'transaction-deny-button',
