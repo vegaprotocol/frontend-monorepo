@@ -1,7 +1,6 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import type { Asset } from '@vegaprotocol/rest';
 import { t } from '../../lib/use-t';
-import { Badge } from '../ui/badge';
+import { cn, Intent, Pill, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 type AssetPillProps = {
   asset: Asset;
@@ -10,15 +9,8 @@ type AssetPillProps = {
 
 export const AssetPill = ({ asset, className }: AssetPillProps) => {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span className={className}>
-          <Badge variant="outline" className="cursor-help">
-            {asset.symbol}
-          </Badge>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent side="bottom" align="center">
+    <Tooltip
+      description={
         <dl className="flex flex-col gap-1 text-xs">
           <dt>{t('ASSET_PROPERTY_NAME')}</dt>
           <dd className="ml-2 font-mono">{asset.name}</dd>
@@ -32,7 +24,13 @@ export const AssetPill = ({ asset, className }: AssetPillProps) => {
           <dt>{t('ASSET_PROPERTY_CHAIN')}</dt>
           <dd className="ml-2 font-mono">{asset.chainId}</dd>
         </dl>
-      </TooltipContent>
+      }
+    >
+      <div className={cn('flex p-0', className)}>
+        <Pill intent={Intent.None} size="xs" className="cursor-help">
+          {asset.symbol}
+        </Pill>
+      </div>
     </Tooltip>
   );
 };

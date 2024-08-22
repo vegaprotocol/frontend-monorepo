@@ -8,6 +8,7 @@ import { t } from '../../../lib/use-t';
 import { Links } from '../../../lib/links';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { HeaderPage } from '../../../components/header-page';
 
 export const Pools = () => {
   const { data } = useMarkets();
@@ -22,9 +23,7 @@ export const Pools = () => {
 
   return (
     <>
-      <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
-        {t('POOLS_TITLE')}
-      </h1>
+      <HeaderPage>{t('POOLS_TITLE')}</HeaderPage>
 
       <p className="w-3/5">{t('POOLS_DESCRIPTION')}</p>
 

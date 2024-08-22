@@ -3,7 +3,6 @@ import { BarChart3Icon } from 'lucide-react';
 import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -22,6 +21,7 @@ import {
 } from '../../lib/utils/amm';
 import { TransactionDialog } from '../transaction-dialog/transaction-dialog';
 import { t } from '../../lib/use-t';
+import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 const submitAMMFormSchema = z.object({
   marketId: z.string(),
@@ -390,7 +390,7 @@ export const LiquidityForm = ({
             className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 transform"
           />
         </div>
-        <Button className="w-full" type="submit">
+        <Button intent={Intent.Primary} className="w-full" type="submit">
           {t('LIQUIDITY_FORM_SUBMIT')}
         </Button>
         {errors.root?.message && (

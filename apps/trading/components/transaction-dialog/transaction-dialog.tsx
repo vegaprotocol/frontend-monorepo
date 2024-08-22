@@ -1,6 +1,7 @@
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { type Status, type Result } from '@vegaprotocol/wallet-react';
 import { TransactionSteps } from './transaction-steps';
+import { t } from '../../lib/use-t';
 
 type TransactionDialogProps = {
   title: string;
@@ -28,6 +29,7 @@ export const TransactionDialog = ({
         result={result}
         error={error}
         reset={reset}
+        resetLabel={t('Dismiss')}
       />
     </Dialog>
   );

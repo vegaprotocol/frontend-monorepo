@@ -46,7 +46,7 @@ export const getIntentBackground = (intent?: Intent) => {
 
 export const getIntentText = (intent?: Intent) => {
   return {
-    'text-gs-50': intent === Intent.None,
+    'text-surface-0-fg': intent === Intent.None,
     'text-intent-primary': intent === Intent.Primary,
     'text-intent-secondary': intent === Intent.Secondary,
     'text-intent-info': intent === Intent.Info,

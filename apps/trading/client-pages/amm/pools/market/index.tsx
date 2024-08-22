@@ -8,11 +8,6 @@ import { TotalFees } from '../../../../components/amm/stats/total-fee';
 import { Volume24 } from '../../../../components/amm/stats/volume-24';
 import { VolumeChart } from '../../../../components/amm/stats/volume-chart';
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '../../../../components/ui/alert';
-import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -20,7 +15,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../../../../components/ui/breadcrumb';
-import { Button } from '../../../../components/ui/button';
 import { Tabs } from '../../../../components/ui/tabs';
 
 import { useAMMs, useMarket, type Market } from '@vegaprotocol/rest';
@@ -33,9 +27,15 @@ import { Link, useParams } from 'react-router-dom';
 import { useWallet } from '@vegaprotocol/wallet-react';
 import { Links } from 'apps/trading/lib/links';
 import { t } from 'apps/trading/lib/use-t';
-import { CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  CopyWithTooltip,
+  Intent,
+  Notification,
+} from '@vegaprotocol/ui-toolkit';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { HeaderPage } from '../../../../components/header-page';
 
 export const MarketPage = () => {
   const { marketId } = useParams();
@@ -55,17 +55,18 @@ export const MarketPage = () => {
 
   if (!market) {
     return (
-      <>
-        <Alert>
-          <AlertTitle>{t('MARKET_NO_MARKET')}</AlertTitle>
-          <AlertDescription>
-            <p>{t('MARKET_NO_MARKET_DESCRIPTION')}</p>
-            <Link to={Links.AMM_POOLS()}>
-              <Button>{t('POOLS_GOTO_POOLS')}</Button>
+      <Notification
+        title={t('MARKET_NO_MARKET')}
+        intent={Intent.Warning}
+        message={
+          <>
+            <p>{t('MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
+            <Link className="underline" to={Links.AMM_POOLS()}>
+              {t('POOLS_GOTO_POOLS')}
             </Link>
-          </AlertDescription>
-        </Alert>
-      </>
+          </>
+        }
+      />
     );
   }
 
@@ -86,20 +87,15 @@ export const MarketPage = () => {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <EmblemByMarket market={market.id} />
-          <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt">
-            {market.code}
-          </h1>
+          <HeaderPage>{market.code}</HeaderPage>
+
           {DocsLinks?.UPDATE_MARKET_TUTORIAL_URL && (
             <a
               href={DocsLinks.UPDATE_MARKET_TUTORIAL_URL}
               target="_blank"
               rel="noreferrer"
             >
-              <Button
-                variant="outline"
-                size="xs"
-                className="h-6 w-6 rounded-full p-1"
-              >
+              <Button size="xs" className="h-6 w-6 rounded-full p-1">
                 <Edit2Icon size={12} />
               </Button>
             </a>
@@ -107,7 +103,7 @@ export const MarketPage = () => {
         </div>
         <div className="flex gap-1">
           <Link to={Links.AMM_POOL_MANAGE(market.id)}>
-            <Button size="sm" className="flex gap-1">
+            <Button size="sm" className="flex gap-1" intent={Intent.Primary}>
               <DownloadIcon size={16} />{' '}
               {!committed
                 ? t('POOLS_ADD_LIQUIDITY')
@@ -116,13 +112,11 @@ export const MarketPage = () => {
           </Link>
 
           <Link to={Links.MARKET(market.id)}>
-            <Button size="sm" variant="outline">
-              {t('POOLS_MARKET_TRADE')}
-            </Button>
+            <Button size="sm">{t('POOLS_MARKET_TRADE')}</Button>
           </Link>
 
           <CopyWithTooltip text={globalThis.location.href}>
-            <Button size="sm" variant="outline">
+            <Button size="sm">
               <ShareIcon size={12} />
             </Button>
           </CopyWithTooltip>
@@ -139,7 +133,6 @@ export const MarketPage = () => {
               <TabsTrigger value="volume" asChild>
                 <Button
                   size="xs"
-                  variant="outline"
                   className='data-[state="active"]:bg-primary data-[state="active"]:text-primary-foreground'
                 >
                   {t('CHART_VOLUME_TITLE')}
@@ -148,7 +141,6 @@ export const MarketPage = () => {
               <TabsTrigger value="liquidity" asChild>
                 <Button
                   size="xs"
-                  variant="outline"
                   className='data-[state="active"]:bg-primary data-[state="active"]:text-primary-foreground'
                 >
                   {t('CHART_LIQUIDITY_TITLE')}

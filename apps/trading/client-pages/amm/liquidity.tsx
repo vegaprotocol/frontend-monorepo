@@ -1,18 +1,5 @@
 import { WalletNotConnectedAlert } from '../../components/amm/wallet-not-connected-alert';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../../components/ui/alert-dialog';
-import { Button } from '../../components/ui/button';
 import { useAMMs, type AMM } from '@vegaprotocol/rest';
-
 import { createCancelAmmTransaction } from '../../lib/utils/amm';
 import { CancelAMMMethod } from '@vegaprotocol/wallet';
 import type { ICellRendererParams } from 'ag-grid-community';
@@ -23,6 +10,8 @@ import { Links } from '../../lib/links';
 import { useSimpleTransaction, useWallet } from '@vegaprotocol/wallet-react';
 import { TransactionDialog } from '../../components/transaction-dialog/transaction-dialog';
 import { AgGrid } from '@vegaprotocol/datagrid';
+import { HeaderPage } from '../../components/header-page';
+import { Button, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Liquidity = () => {
   const [pubKey, status] = useWallet((store) => [store.pubKey, store.status]);
@@ -30,9 +19,7 @@ export const Liquidity = () => {
 
   return (
     <>
-      <h1 className="text-3xl lg:text-6xl leading-[1em] font-alt calt mb-2 lg:mb-10">
-        {t('MY_LIQUIDITY_TITLE')}
-      </h1>
+      <HeaderPage>{t('MY_LIQUIDITY_TITLE')}</HeaderPage>
 
       {!isConnected ? (
         <WalletNotConnectedAlert />
@@ -73,9 +60,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
               return (
                 <div className="flex h-full items-center justify-end gap-1">
                   <Link to={Links.AMM_POOL_MANAGE(value)}>
-                    <Button variant="outline" size="xs">
-                      {t('LIQUIDITY_ACTION_AMEND')}
-                    </Button>
+                    <Button size="xs">{t('LIQUIDITY_ACTION_AMEND')}</Button>
                   </Link>
                   <CancelLiquidityButton marketId={value} />
                 </div>
@@ -89,6 +74,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
 };
 
 const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [open, setOpen] = useState(false);
   const { error, send, result, status, reset } = useSimpleTransaction();
 
@@ -102,36 +88,45 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
 
   return (
     <>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button onClick={undefined} variant="destructive" size="xs">
-            {t('LIQUIDITY_ACTION_CANCEL')}
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('LIQUIDITY_CANCEL_DIALOG_TITLE')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('LIQUIDITY_CANCEL_DIALOG_DESCRIPTION')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
+      <Button
+        onClick={() => {
+          setOpenConfirm(true);
+        }}
+        intent={Intent.Danger}
+        size="xs"
+      >
+        {t('LIQUIDITY_ACTION_CANCEL')}
+      </Button>
+
+      <Dialog
+        title={t('LIQUIDITY_CANCEL_DIALOG_TITLE')}
+        open={openConfirm}
+        onChange={(open) => setOpenConfirm(open)}
+      >
+        <div className="flex flex-col gap-2">
+          <p>{t('LIQUIDITY_CANCEL_DIALOG_DESCRIPTION')}</p>
+          <div className="flex gap-1 justify-end">
+            <Button
+              onClick={() => {
+                setOpenConfirm(false);
+              }}
+            >
               {t('LIQUIDITY_CANCEL_DIALOG_CANCEL')}
-            </AlertDialogCancel>
-            <AlertDialogAction
+            </Button>
+            <Button
+              intent={Intent.Danger}
               onClick={() => {
                 sendCancelAmmTx();
+                setOpenConfirm(false);
                 setOpen(true);
               }}
             >
               {t('LIQUIDITY_CANCEL_DIALOG_CONTINUE')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
       <TransactionDialog
         open={open}
         onOpenChange={(open) => {
@@ -141,7 +136,10 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
         error={error}
         txStatus={status}
         result={result}
-        reset={reset}
+        reset={() => {
+          setOpen(false);
+          reset();
+        }}
       />
     </>
   );

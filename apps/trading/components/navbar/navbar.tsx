@@ -224,6 +224,26 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
+          <NavbarTrigger>{t('AMM_NAV_ROOT')}</NavbarTrigger>
+          <NavbarContent data-testid="navbar-content-amm">
+            <ul className="lg:p-4">
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM()}>{t('AMM_NAV_EXPLORE')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM_POOLS()}>
+                  {t('AMM_NAV_POOLS')}
+                </NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM_MY_LIQUIDITY()}>
+                  {t('AMM_NAV_MY_LIQUIDITY')}
+                </NavbarLink>
+              </NavbarSubItem>
+            </ul>
+          </NavbarContent>
+        </NavbarItem>
+        <NavbarItem>
           <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
             {t('Competitions')}
           </NavbarLink>
@@ -247,9 +267,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           <NavbarLinkExternal to={GOVERNANCE_LINK}>
             {t('Governance')}
           </NavbarLinkExternal>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.AMM()}>{t('AMM')}</NavbarLink>
         </NavbarItem>
         <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
