@@ -18,7 +18,7 @@ const EthIcon = () => {
         height: 42,
         width: 42,
       }}
-      className="flex items-center justify-center rounded-md overflow-hidden bg-vega-blue-650"
+      className="flex items-center justify-center rounded-md overflow-hidden bg-blue-650"
     >
       <EthereumIcon />
     </div>
@@ -31,11 +31,14 @@ export const EthereumKey = ({ address }: { address: string }) => {
     <div className="flex items-center">
       <EthIcon />
       <div className="ml-4">
-        <div data-testid={locators.title} className="text-left text-white">
+        <div
+          data-testid={locators.title}
+          className="text-left text-surface-0-fg"
+        >
           Ethereum Address
         </div>
         <ExternalLink
-          className="text-vega-dark-400"
+          className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
           href={`${network.ethereumExplorerLink}/address/${address}`}
         >

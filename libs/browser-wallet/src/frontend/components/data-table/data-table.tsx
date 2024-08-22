@@ -21,7 +21,7 @@ export const DataTable = ({ items }: DataTableProperties) => {
         >
           <dt
             data-testid={locators.dataKey}
-            className="text-vega-dark-300 break-words"
+            className="text-surface-0-fg-muted break-words"
           >
             {key}
           </dt>

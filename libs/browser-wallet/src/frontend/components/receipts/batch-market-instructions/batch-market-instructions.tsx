@@ -52,7 +52,10 @@ const CommandSection = ({
           <>
             {items.map((item: any, index: number) => (
               <Fragment key={objectHash(item)}>
-                <h2 data-testid={locators.header} className={'text-white mt-4'}>
+                <h2
+                  data-testid={locators.header}
+                  className={'text-surface-0-fg mt-4'}
+                >
                   {index + 1}. {getBatchTitle(command, item)}
                 </h2>
                 {renderItem(item, index)}

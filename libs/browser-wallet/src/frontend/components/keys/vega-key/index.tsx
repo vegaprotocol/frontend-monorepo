@@ -35,15 +35,14 @@ export const VegaKey = ({
           {name ? (
             <div
               data-testid={locators.keyName}
-              className="text-left text-white"
+              className="text-left text-surface-0-fg"
               style={{ wordBreak: 'break-word' }}
             >
               {name}
             </div>
           ) : null}
-          <div>
+          <div className="text-surface-0-fg-muted">
             <ExternalLink
-              className="text-vega-dark-400"
               data-testid={locators.explorerLink}
               href={`${network.explorer}/parties/${publicKey}`}
             >

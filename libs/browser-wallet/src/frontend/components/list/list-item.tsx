@@ -9,7 +9,7 @@ export function ListItem<T>({
   return (
     <li
       data-testid={locators.listItem}
-      className="border-b border-1 border-vega-dark-200 py-2 last:border-0"
+      className="border-b border-1 border-surface-0-fg-muted py-2 last:border-0"
     >
       {renderItem(item)}
     </li>

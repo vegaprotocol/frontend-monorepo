@@ -34,7 +34,7 @@ export const TransactionsList = ({
             <div className="flex flex-row items-center">
               <div
                 data-testid={locators.transactionListItemTransactionType}
-                className="ml-2 text-white"
+                className="ml-2 text-surface-0-fg"
               >
                 {getTitle(transaction.transaction)}
               </div>
@@ -43,7 +43,7 @@ export const TransactionsList = ({
               <div className="flex flex-row">
                 <div
                   data-testid={locators.transactionListItemKeyName}
-                  className="text-vega-dark-300"
+                  className="text-surface-0-fg-muted"
                 >
                   {transaction.keyName}
                 </div>
@@ -53,7 +53,7 @@ export const TransactionsList = ({
           </div>
           <NavLink
             data-testid={locators.transactionListItemLink}
-            className="hover:bg-vega-dark-200 w-12 h-full border-l border-1 border-vega-dark-150 flex items-center justify-center"
+            className="hover:bg-surface-2 w-12 h-full border-l border-1 border-surface-0-fg-muted flex items-center justify-center"
             to={`${FULL_ROUTES.transactions}/${transaction.id}`}
           >
             <ChevronRight />

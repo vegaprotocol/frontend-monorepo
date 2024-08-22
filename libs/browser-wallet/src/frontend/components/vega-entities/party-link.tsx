@@ -18,7 +18,7 @@ export const PartyLink = ({
 
   return (
     <ExternalLink
-      className={cn('text-vega-dark-400', { 'font-mono': !text })}
+      className={cn('text-surface-0-fg-muted', { 'font-mono': !text })}
       data-testid={locators.partyLink}
       href={`${network.explorer}/parties/${publicKey}`}
     >
