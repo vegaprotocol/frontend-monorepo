@@ -1,6 +1,13 @@
+export interface JsonRpcNotification<T = unknown> {
+  method: string;
+  params: T;
+  jsonrpc: '2.0';
+}
+
 export interface JsonRpcMessage<T = unknown> {
   method: string;
   params: T;
+  error?: JSONRPCError;
   jsonrpc: '2.0';
   id: string;
 }
