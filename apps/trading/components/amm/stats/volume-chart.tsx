@@ -24,7 +24,7 @@ export const VolumeChart = ({ market }: { market: Market }) => {
   const chartConfig = {
     y: {
       label: t('CHART_VOLUME_Y_LABEL'),
-      color: 'hsl(var(--chart-1))',
+      color: 'rgb(var(--surface-1-fg))',
     },
   };
 

@@ -13,7 +13,7 @@ export const LiquidityChart = ({ market }: { market: Market }) => {
   const chartConfig = {
     y: {
       label: t('CHART_LIQUIDITY_Y_LABEL'),
-      color: 'hsl(var(--chart-2))',
+      color: 'rgb(var(--surface-1-fg))',
     },
   };
 
