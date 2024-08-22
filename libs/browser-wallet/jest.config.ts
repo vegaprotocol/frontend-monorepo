@@ -7,6 +7,8 @@ const config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/frontend/$1',
+    'react-markdown':
+      '<rootDir>/../../node_modules/react-markdown/react-markdown.min.js',
   },
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
