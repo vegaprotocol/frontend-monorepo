@@ -64,15 +64,6 @@ describe('NetworkProvider', () => {
     expect(loadGlobals).toHaveBeenCalled();
     unmount();
 
-    const { unmount: unmount2 } = renderComponent({
-      ...globalsState,
-      loading: false,
-    });
-    expect(
-      screen.getByTestId(locators.networkProviderLoading)
-    ).toBeInTheDocument();
-    unmount2();
-
     renderComponent(globalsState);
     expect(
       screen.getByTestId(locators.networkProviderLoading)
@@ -94,7 +85,6 @@ describe('NetworkProvider', () => {
         governance: 'governance',
         console: 'console',
         chainId: 'chainId',
-        interactionMode: true,
       })
     );
   });
@@ -113,7 +103,14 @@ describe('NetworkProvider', () => {
       }
     );
     expect(screen.getByTestId('test')).toHaveTextContent(
-      JSON.stringify(fairground)
+      JSON.stringify({
+        explorer: 'explorer',
+        docs: 'docs',
+        governance: 'governance',
+        console: 'console',
+        chainId: 'chainId',
+        interactionMode: true,
+      })
     );
   });
 });

@@ -47,12 +47,12 @@ describe('Transactions', () => {
 
     mockStore(useTransactionsStore, {
       transactions: [
-        { networkId: 'nope' },
-        { networkId: 'nope' },
-        { networkId: 'nope' },
-        { networkId: 'nope' },
-        { networkId: testingNetwork.id },
-        { networkId: testingNetwork.id },
+        { chainId: 'nope' },
+        { chainId: 'nope' },
+        { chainId: 'nope' },
+        { chainId: 'nope' },
+        { chainId: testingNetwork.chainId },
+        { chainId: testingNetwork.chainId },
       ],
     });
     renderComponent();

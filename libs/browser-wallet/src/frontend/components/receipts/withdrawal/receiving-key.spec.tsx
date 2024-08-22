@@ -5,6 +5,7 @@ import { useAssetsStore } from '@/stores/assets-store';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { ReceivingKey } from './receiving-key';
+import { useEthereumConfig, useEVMBridgeConfigs } from '@vegaprotocol/web3';
 
 jest.mock('@/stores/assets-store');
 
@@ -18,6 +19,11 @@ jest.mock('@/components/keys/unknown-network-key', () => ({
   UnknownNetworkKey: () => <div data-testid="unknown-network-key" />,
 }));
 
+jest.mock('@vegaprotocol/web3', () => ({
+  useEthereumConfig: jest.fn(),
+  useEVMBridgeConfigs: jest.fn(),
+}));
+
 const renderComponent = (address: string, assetId: string) => {
   return render(
     <MockNetworkProvider>
@@ -29,6 +35,13 @@ const renderComponent = (address: string, assetId: string) => {
 describe('ReceivingKey', () => {
   it('Should render unknown key address when asset cannot be found', () => {
     mockStore(useAssetsStore, { assets: [] });
+    (useEthereumConfig as jest.Mock).mockReturnValue({
+      config: {
+        chain_id: '11155111',
+      },
+    });
+    (useEVMBridgeConfigs as jest.Mock).mockReturnValue({ configs: [] });
+
     renderComponent('0x1234567890abcdef', '');
     expect(screen.getByTestId('unknown-network-key')).toBeInTheDocument();
   });
@@ -36,6 +49,12 @@ describe('ReceivingKey', () => {
     mockStore(useAssetsStore, {
       getAssetById: () => ({ id: '0'.repeat(64), details: { erc20: {} } }),
     });
+    (useEthereumConfig as jest.Mock).mockReturnValue({
+      config: {
+        chain_id: '11155111',
+      },
+    });
+    (useEVMBridgeConfigs as jest.Mock).mockReturnValue({ configs: [] });
     renderComponent('0x1234567890abcdef', '0'.repeat(64));
     expect(screen.getByTestId('unknown-network-key')).toBeInTheDocument();
   });
@@ -46,6 +65,12 @@ describe('ReceivingKey', () => {
         details: { erc20: { chainId: '11155111' } },
       }),
     });
+    (useEthereumConfig as jest.Mock).mockReturnValue({
+      config: {
+        chain_id: '11155111',
+      },
+    });
+    (useEVMBridgeConfigs as jest.Mock).mockReturnValue({ configs: [] });
     renderComponent('0x1234567890abcdef', '0'.repeat(64));
     expect(screen.getByTestId('ethereum-key')).toBeInTheDocument();
   });
@@ -55,6 +80,18 @@ describe('ReceivingKey', () => {
         id: '0'.repeat(64),
         details: { erc20: { chainId: '421614' } },
       }),
+    });
+    (useEthereumConfig as jest.Mock).mockReturnValue({
+      config: {
+        chain_id: '11155111',
+      },
+    });
+    (useEVMBridgeConfigs as jest.Mock).mockReturnValue({
+      configs: [
+        {
+          chain_id: '421614',
+        },
+      ],
     });
     renderComponent('0x1234567890abcdef', '0'.repeat(64));
     expect(screen.getByTestId('arbitrum-key')).toBeInTheDocument();
@@ -66,6 +103,12 @@ describe('ReceivingKey', () => {
         details: { erc20: { chainId: 'foo' } },
       }),
     });
+    (useEthereumConfig as jest.Mock).mockReturnValue({
+      config: {
+        chain_id: '11155111',
+      },
+    });
+    (useEVMBridgeConfigs as jest.Mock).mockReturnValue({ configs: [] });
     renderComponent('0x1234567890abcdef', '0'.repeat(64));
     expect(screen.getByTestId('unknown-network-key')).toBeInTheDocument();
   });

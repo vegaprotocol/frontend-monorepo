@@ -23,7 +23,6 @@ export const ReceivingKey = ({
   )?.chain_id;
 
   if (!asset || !chainId) return <UnknownNetworkKey address={address} />;
-
   if (ethereumChainId === chainId) {
     return <EthereumKey address={address} chainId={chainId} />;
   }
