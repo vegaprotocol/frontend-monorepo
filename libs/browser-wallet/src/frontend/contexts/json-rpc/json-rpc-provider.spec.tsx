@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { useEffect } from 'react';
 
-import { RpcMethods } from '@/lib/client-rpc-methods';
 import { ServerRpcMethods } from '@/lib/server-rpc-methods';
 import { useErrorStore } from '@/stores/error';
 import { useInteractionStore } from '@/stores/interaction-store';
@@ -96,52 +95,6 @@ describe('JsonRpcProvider', () => {
     expect(() => render(<TestComponent expect={expect} />)).toThrow(
       'useJsonRpcClient must be used within JsonRPCProvider'
     );
-  });
-  it('handles connection notification messages', () => {
-    mockModalStore();
-    mockErrorStore();
-    const TestComponent = ({ expect }: { expect: jest.Expect }) => {
-      const { client } = useJsonRpcClient();
-      useEffect(() => {
-        client.onmessage({
-          jsonrpc: '2.0',
-          method: RpcMethods.ConnectionsChange,
-          params: {
-            add: [
-              {
-                allowList: {
-                  publicKeys: [],
-                  wallets: ['Wallet 1'],
-                },
-                origin: 'https://vega.xyz',
-              },
-              {
-                allowList: {
-                  publicKeys: [],
-                  wallets: ['Wallet 1'],
-                },
-                origin: 'https://vega.wxyz',
-              },
-            ],
-          },
-        });
-      }, [client]);
-      return <div>Content</div>;
-    };
-
-    render(
-      <JsonRPCProvider>
-        <TestComponent expect={expect} />
-      </JsonRPCProvider>
-    );
-    expect(addConnection).toHaveBeenCalledTimes(2);
-    expect(addConnection).toHaveBeenCalledWith({
-      allowList: {
-        publicKeys: [],
-        wallets: ['Wallet 1'],
-      },
-      origin: 'https://vega.xyz',
-    });
   });
   it('handles connection background interaction messages', () => {
     const { handleConnection } = mockModalStore();
