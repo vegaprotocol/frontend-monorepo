@@ -2,7 +2,6 @@ import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 
-import { StakingMethod } from '../../../components/staking-method-radio';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { TxState } from '../../../hooks/transaction-reducer';
 import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-breakdown';
@@ -22,50 +21,27 @@ export const useAddStake = (
   address: string,
   amount: string,
   vegaKey: string,
-  stakingMethod: StakingMethod | null,
   confirmations: number
 ) => {
-  const { staking, vesting } = useContracts();
+  const { staking } = useContracts();
   const {
     appState: { decimals },
   } = useAppState();
-  const contractAdd = useTransaction(
-    () => vesting.stake_tokens(removeDecimal(amount, decimals), vegaKey),
-    confirmations
-  );
   const walletAdd = useTransaction(
     () => staking.stake(removeDecimal(amount, decimals), vegaKey),
     confirmations
   );
   const refreshBalances = useRefreshBalances(address);
-  const getAssociationBreakdown = useGetAssociationBreakdown(
-    address,
-    staking,
-    vesting
-  );
+  const getAssociationBreakdown = useGetAssociationBreakdown(address, staking);
 
   React.useEffect(() => {
-    if (
-      walletAdd.state.txState === TxState.Complete ||
-      contractAdd.state.txState === TxState.Complete
-    ) {
+    if (walletAdd.state.txState === TxState.Complete) {
       refreshBalances();
       getAssociationBreakdown();
     }
-  }, [
-    contractAdd.state.txState,
-    refreshBalances,
-    walletAdd.state.txState,
-    getAssociationBreakdown,
-  ]);
+  }, [refreshBalances, walletAdd.state.txState, getAssociationBreakdown]);
 
-  return React.useMemo(() => {
-    if (stakingMethod === StakingMethod.Contract) {
-      return contractAdd;
-    } else {
-      return walletAdd;
-    }
-  }, [contractAdd, stakingMethod, walletAdd]);
+  return walletAdd;
 };
 
 export const usePollForStakeLinking = (

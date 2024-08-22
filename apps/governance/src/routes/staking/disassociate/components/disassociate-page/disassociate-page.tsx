@@ -2,7 +2,6 @@ import { DisassociateTransaction } from '../disassociate-transaction';
 import { formatNumber } from '../../../../../lib/format-number';
 import { remove0x, toBigNum } from '@vegaprotocol/utils';
 import { Select } from '@vegaprotocol/ui-toolkit';
-import { StakingMethod } from '../../../../../components/staking-method-radio';
 import { TokenInput } from '../../../../../components/token-input';
 import { TxState } from '../../../../../hooks/transaction-reducer';
 import { useRefreshAssociatedBalances } from '../../../../../hooks/use-refresh-associated-balances';
@@ -28,20 +27,17 @@ type Association = {
    * Amount of associated tokens
    */
   amount: BigNumber;
-  stakingMethod: StakingMethod;
   label: string;
 };
 
-const toListOfAssociations = (
-  obj: { [vegaKey: string]: BigNumber },
-  stakingMethod: StakingMethod
-): Association[] =>
+const toListOfAssociations = (obj: {
+  [vegaKey: string]: BigNumber;
+}): Association[] =>
   Object.keys(obj)
     .map((k) => ({
-      id: `${stakingMethod.toLowerCase()}-${remove0x(k)}`,
+      id: remove0x(k),
       key: remove0x(k),
       amount: obj[k],
-      stakingMethod,
       label: '',
     }))
     .filter((k) => k.amount.isGreaterThan(0));
@@ -55,21 +51,19 @@ export const DisassociatePage = ({
 }) => {
   const { t } = useTranslation();
 
-  const { stakingAssociations, vestingAssociations } = useBalances(
+  const { stakingAssociations } = useBalances(
     (state) => state.associationBreakdown
   );
 
   const associations = useMemo(
     () =>
-      [
-        ...toListOfAssociations(stakingAssociations, StakingMethod.Wallet),
-        ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
-      ].map((a) => ({
+      toListOfAssociations(stakingAssociations).map((a) => ({
         ...a,
-        label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)}
-                (${formatNumber(a.amount, 18)} ${t('tokens')})`,
+        label: `${truncateMiddle(a.key)} (${formatNumber(a.amount, 18)} ${t(
+          'tokens'
+        )})`,
       })),
-    [stakingAssociations, vestingAssociations, t]
+    [stakingAssociations, t]
   );
 
   useEffect(() => {
@@ -86,7 +80,6 @@ export const DisassociatePage = ({
   const payload: RemoveStakePayload = {
     amount,
     vegaKey: chosen?.key || '',
-    stakingMethod: chosen?.stakingMethod || StakingMethod.Unknown,
   };
 
   const {
@@ -119,7 +112,6 @@ export const DisassociatePage = ({
         state={txState}
         amount={amount}
         vegaKey={chosen?.key || ''}
-        stakingMethod={payload.stakingMethod}
         dispatch={txDispatch}
       />
     );

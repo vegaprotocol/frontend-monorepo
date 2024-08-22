@@ -1,7 +1,6 @@
 import type {
   Claim,
   Token,
-  TokenVesting,
   StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import React from 'react';
@@ -9,7 +8,6 @@ import React from 'react';
 export interface ContractsContextShape {
   token: Token;
   staking: StakingBridge;
-  vesting: TokenVesting;
   claim: Claim;
 }
 

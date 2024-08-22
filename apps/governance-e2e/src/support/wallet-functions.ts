@@ -2,7 +2,6 @@ import { promiseWithTimeout } from '@vegaprotocol/cypress';
 import {
   StakingBridge,
   Token,
-  TokenVesting,
   CollateralBridge,
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
@@ -11,7 +10,6 @@ const associatedAmountInWallet = '[data-testid="associated-amount"]:visible';
 const vegaWalletContainer = 'aside [data-testid="vega-wallet"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
-const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 const vegaTokenAddress = Cypress.env('vegaTokenAddress');
 const ethWalletPubKey = Cypress.env('ethWalletPublicKey');
 const ethStakingBridgeContractAddress = Cypress.env(
@@ -32,7 +30,6 @@ const stakingBridgeContract = new StakingBridge(
   ethStakingBridgeContractAddress,
   signer
 );
-const vestingContract = new TokenVesting(vegaTokenContractAddress, signer);
 
 export async function depositAsset(
   assetEthAddress: string,
@@ -75,7 +72,6 @@ export async function vegaWalletTeardown() {
           associatedAmount != '0.00'
         ) {
           vegaWalletTeardownStaking(stakingBridgeContract);
-          vegaWalletTeardownVesting(vestingContract);
         }
       });
       cy.get(vegaWalletContainer).within(() => {
@@ -116,7 +112,7 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
         cy.getByTestId('currency-value')
           .first()
           .invoke('text')
-          .then(($associatedAmount) => {
+          .then(() => {
             cy.wrap(
               stakingBridgeContract.removeStake(
                 String(stakeBalance),
@@ -124,46 +120,8 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
               ),
               transactionTimeout
             );
-            cy.wrap(
-              vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
-              transactionTimeout
-            ).then((vestingAmount) => {
-              if (Number(vestingAmount) != 0) {
-                cy.contains('Associated', transactionTimeout)
-                  .parent()
-                  .parent()
-                  .within(() => {
-                    cy.getByTestId('currency-value', transactionTimeout)
-                      .first()
-                      .invoke('text')
-                      .as('displayedAmount');
-                    cy.get('@displayedAmount', transactionTimeout).should(
-                      'not.eq',
-                      $associatedAmount
-                    );
-                  });
-                // Wait needed to allow Eth transaction to complete - otherwise could result in nonce error
-                // eslint-disable-next-line cypress/no-unnecessary-waiting
-                cy.wait(2000);
-              }
-            });
           });
       });
-    }
-  });
-}
-
-async function vegaWalletTeardownVesting(vestingContract: TokenVesting) {
-  cy.highlight('Tearing down vesting tokens from vega wallet if present');
-  cy.wrap(
-    vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
-    transactionTimeout
-  ).then((vestingAmount) => {
-    if (Number(vestingAmount) != 0) {
-      cy.wrap(
-        vestingContract.remove_stake(String(vestingAmount), vegaWalletPubKey),
-        transactionTimeout
-      );
     }
   });
 }

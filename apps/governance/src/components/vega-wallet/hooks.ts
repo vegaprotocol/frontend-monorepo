@@ -5,9 +5,7 @@ import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
-import vegaVesting from '../../images/vega_vesting.png';
 import { BigNumber } from '../../lib/bignumber';
 import { type WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -113,15 +111,7 @@ export const usePollForDelegations = () => {
                     ? a.asset.source.chainId
                     : undefined;
 
-                  const isVesting =
-                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
-                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS;
-
-                  let icon = noIcon;
-                  if (isVega) {
-                    if (isVesting) icon = vegaVesting;
-                    else icon = vegaBlack;
-                  }
+                  const icon = vegaBlack;
 
                   return {
                     isVega,
