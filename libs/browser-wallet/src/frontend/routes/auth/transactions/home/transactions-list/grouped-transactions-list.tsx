@@ -30,7 +30,7 @@ export const GroupedTransactionList = ({
         <VegaSection key={date}>
           <h1
             data-testid={locators.dateHeader}
-            className="text-vega-dark-300 uppercase"
+            className="text-surface-0-fg-muted uppercase"
           >
             {formatDate(date)}
           </h1>

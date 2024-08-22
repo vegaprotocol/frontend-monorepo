@@ -45,7 +45,7 @@ export const TransactionModal = () => {
           <RawTransaction transaction={details.transaction} />
           <div
             data-testid={locators.transactionTimeAgo}
-            className="text-sm text-vega-dark-300 mt-6 mb-20"
+            className="text-sm text-surface-0-fg-muted mt-6 mb-20"
           >
             Received{' '}
             <ReactTimeAgo

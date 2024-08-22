@@ -31,10 +31,6 @@ jest.mock('@/components/modals', () => ({
   ModalWrapper: () => <div data-testid="modal-wrapper" />,
 }));
 
-jest.mock('@/components/dapps-header', () => ({
-  DappsHeader: () => <div data-testid="dapps-header" />,
-}));
-
 const mockStores = () => {
   const loadWallets = jest.fn();
   const fetchAssets = jest.fn();

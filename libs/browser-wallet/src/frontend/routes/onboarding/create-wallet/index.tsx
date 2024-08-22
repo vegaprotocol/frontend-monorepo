@@ -9,16 +9,28 @@ import { FULL_ROUTES } from '../../route-names';
 export const locators = {
   createNewWalletButton: 'create-new-wallet',
   importWalletButton: 'import-wallet',
+  createDerivedWalletButton: 'create-derived-wallet',
 };
 
 export const CreateWallet = () => {
   const navigate = useNavigate();
   return (
     <div className="text-center flex flex-col justify-center h-full px-5">
-      <div className="mx-auto pb-4 text-white">
+      <div className="mx-auto pb-4 text-surface-0-fg">
         <Wallet size={48} squareFill="black" />
       </div>
       <Header content="Create a wallet" />
+      <Button
+        autoFocus
+        data-testid={locators.createDerivedWalletButton}
+        onClick={() => {
+          navigate(FULL_ROUTES.createDerivedWallet);
+        }}
+        className="mt-6 mb-4"
+        intent={Intent.Primary}
+      >
+        Create a wallet from Ethereum wallet
+      </Button>
       <Button
         autoFocus
         data-testid={locators.createNewWalletButton}
@@ -26,7 +38,6 @@ export const CreateWallet = () => {
           navigate(FULL_ROUTES.saveMnemonic);
         }}
         className="mt-6 mb-4"
-        intent={Intent.Primary}
       >
         Create a wallet
       </Button>

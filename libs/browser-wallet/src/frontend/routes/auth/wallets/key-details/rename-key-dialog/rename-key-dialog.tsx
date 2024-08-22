@@ -39,7 +39,7 @@ export const RenameKeyDialog = ({ vegaKey }: RenameKeyDialogProperties) => {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="ml-2 flex flex-col justify-center text-vega-dark-400"
+        className="ml-2 flex flex-col justify-center text-surface-0-fg-muted"
         data-testid={locators.renameKeyTrigger}
       >
         <svg
@@ -63,12 +63,12 @@ export const RenameKeyDialog = ({ vegaKey }: RenameKeyDialogProperties) => {
         onChange={resetDialog}
       >
         <div
-          className="p-2 text-base text-vega-dark-400 overflow-hidden"
+          className="p-2 text-base text-surface-0-fg-muted overflow-hidden"
           style={{ maxWidth: CONSTANTS.width - 60 }}
         >
           <h1
             data-testid={locators.renameKeyTitle}
-            className="text-xl text-center text-white mb-2"
+            className="text-xl text-center text-surface-0-fg mb-2"
           >
             Rename Key
           </h1>

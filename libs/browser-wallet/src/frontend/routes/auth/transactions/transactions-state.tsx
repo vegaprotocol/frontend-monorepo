@@ -5,9 +5,9 @@ export const locators = {
 };
 
 const TRANSACTION_STATE_COLOR = {
-  [TransactionState.Confirmed]: 'text-vega-blue-500',
-  [TransactionState.Rejected]: 'text-vega-dark-300',
-  [TransactionState.Error]: 'text-vega-pink-500',
+  [TransactionState.Confirmed]: 'text-intent-info-background',
+  [TransactionState.Rejected]: 'text-surface-0-fg-muted',
+  [TransactionState.Error]: 'text-intent-danger-background',
 };
 
 export const VegaTransactionState = ({

@@ -7,6 +7,7 @@ export const RpcMethods = {
   ExportKey: 'admin.export_key',
   ExportRecoveryPhrase: 'admin.export_recovery_phrase',
   RenameKey: 'admin.rename_key',
+  CreateDerivedMnemonic: 'admin.create_derived_mnemonic',
 
   // Onboarding
   CreatePassphrase: 'admin.create_passphrase',

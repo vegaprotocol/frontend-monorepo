@@ -59,12 +59,7 @@ export const Notification = ({
       <div className={cn('pt-px flex items-start', getIntentText(intent))}>
         <Icon size={4} name={getIcon(intent)} />
       </div>
-      <div
-        className={cn(
-          'flex flex-col items-start overflow-hidden gap-1.5',
-          'text-surface-0-fg text-sm'
-        )}
-      >
+      <div className="flex flex-col items-start overflow-hidden gap-1.5 text-sm">
         {title && (
           <h4
             key="title"

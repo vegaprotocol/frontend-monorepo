@@ -41,7 +41,7 @@ export const AssetsList = ({ publicKey }: { publicKey: string }) => {
             <SubHeader content="Balances" />
             <p
               data-testid={locators.assetListDescription}
-              className="text-vega-dark-400 my-3"
+              className="text-surface-0-fg-muted my-3"
             >
               Recent balance changes caused by your open positions may not be
               reflected below

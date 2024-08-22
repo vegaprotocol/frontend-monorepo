@@ -49,7 +49,7 @@ export const Transfer = ({ transaction }: ReceiptComponentProperties) => {
   const time = getTime(transaction);
   return (
     <ReceiptWrapper>
-      <h1 className="text-vega-dark-300">Amount</h1>
+      <h1 className="text-surface-0-fg-muted">Amount</h1>
 
       {assetsLoading ? (
         <BasicTransferView transaction={transaction} />
@@ -57,7 +57,7 @@ export const Transfer = ({ transaction }: ReceiptComponentProperties) => {
         <EnrichedTransferView transaction={transaction} />
       )}
 
-      <h1 className="text-vega-dark-300 mt-4">To</h1>
+      <h1 className="text-surface-0-fg-muted mt-4">To</h1>
       <VegaKey publicKey={transaction.transfer.to} name={'Receiving key'} />
       {!isOwnKey && (
         <div className="mt-4">
@@ -68,7 +68,7 @@ export const Transfer = ({ transaction }: ReceiptComponentProperties) => {
         </div>
       )}
       <h1
-        className="text-vega-dark-300 mt-4"
+        className="text-surface-0-fg-muted mt-4"
         data-testid={locators.whenSection}
       >
         When
