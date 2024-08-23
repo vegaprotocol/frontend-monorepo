@@ -1,12 +1,14 @@
-import { toBigNum } from '@vegaprotocol/utils';
+import { type Address } from 'viem';
 import { useBalance } from 'wagmi';
+
+import { toBigNum } from '@vegaprotocol/utils';
 
 export const useNativeBalance = (args: {
   address?: string;
   chainId: string | number;
 }) => {
   const queryResult = useBalance({
-    address: args.address as `0x${string}`,
+    address: args.address as Address,
     chainId: Number(args.chainId),
   });
   const nativeBalance = queryResult.data

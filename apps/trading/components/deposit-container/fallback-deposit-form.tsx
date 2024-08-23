@@ -86,8 +86,7 @@ export const FallbackDepositForm = ({
 
           // The default bridgeAddress for the selected toAsset if an arbitrum
           // to asset is selected will get changed to the squid receiver address
-          const bridgeAddress = config.collateral_bridge_contract
-            .address as `0x${string}`;
+          const bridgeAddress = config.collateral_bridge_contract.address;
 
           if (Number(toAsset.source.chainId) !== chainId) {
             await switchChainAsync({ chainId: Number(toAsset.source.chainId) });

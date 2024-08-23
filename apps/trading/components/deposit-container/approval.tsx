@@ -38,8 +38,7 @@ export const Approval = ({
   const handleActionClick = () => {
     const assetChainId = asset.source.chainId;
     const config = configs.find((c) => c.chain_id === assetChainId);
-    const bridgeAddress = config?.collateral_bridge_contract
-      .address as `0x${string}`;
+    const bridgeAddress = config?.collateral_bridge_contract.address;
 
     if (!bridgeAddress) {
       throw new Error(`no bridge found for asset ${asset.id}`);

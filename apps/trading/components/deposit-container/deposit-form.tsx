@@ -141,8 +141,7 @@ export const DepositForm = ({
 
           // The default bridgeAddress for the selected toAsset if an arbitrum
           // to asset is selected will get changed to the squid receiver address
-          const bridgeAddress = config.collateral_bridge_contract
-            .address as `0x${string}`;
+          const bridgeAddress = config.collateral_bridge_contract.address;
 
           if (!fromAsset) {
             throw new Error('no from asset');
@@ -213,7 +212,7 @@ export const DepositForm = ({
         {status === 'pending' && (
           <div className="flex flex-col gap-2 items-center text-xs mt-2">
             <p>
-              Swap and deposit in progress.{' '}
+              {t('Swap and deposit in progress')}{' '}
               {hash && (
                 <a
                   href={`https://axelarscan.io/gmp/${hash}`}
@@ -231,7 +230,7 @@ export const DepositForm = ({
           <div className="flex flex-col items-center gap-2 mt-2">
             <div className="flex items-center gap-1 text-xs">
               <VegaIcon name={VegaIconNames.CROSS} />
-              <p>Deposit failed</p>
+              <p>{t('Swap and deposit failed')}</p>
             </div>
             <p>{squidExecuteError.message}</p>
           </div>
@@ -240,7 +239,7 @@ export const DepositForm = ({
           <div className="flex flex-col items-center gap-2 mt-2">
             <div className="flex items-center gap-1 text-xs">
               <VegaIcon name={VegaIconNames.TICK} />
-              <p>Swap and deposit complete</p>
+              <p>{t('Swap and deposit complete')}</p>
             </div>
           </div>
         )}

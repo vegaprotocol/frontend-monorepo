@@ -15,9 +15,11 @@ import { type FormFields, type Configs, formSchema } from './form-schema';
 import { encodeFunctionData } from 'viem';
 import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
 import {
+  type Address,
   ARBITRUM_CHAIN_ID,
   ARBITRUM_SQUID_RECEIVER_ADDRESS,
 } from './constants';
+import { useT } from '../../lib/use-t';
 
 /**
  * Whenever the form changes use the squid sdk to fetch the swap route object
@@ -34,6 +36,7 @@ export const useSquidRoute = ({
   configs: Configs;
   enabled?: boolean;
 }) => {
+  const t = useT();
   const [queryKey, setQueryKey] = useState<FormFields>();
   const { data: squid } = useSquid();
 
@@ -88,8 +91,7 @@ export const useSquidRoute = ({
 
       // The default bridgeAddress for the selected toAsset if an arbitrum
       // to asset is selected will get changed to the squid receiver address
-      let bridgeAddress = config.collateral_bridge_contract
-        .address as `0x${string}`;
+      let bridgeAddress = config.collateral_bridge_contract.address as Address;
       let approveCallData;
       let depositCallData;
 
@@ -103,7 +105,7 @@ export const useSquidRoute = ({
         bridgeAddress = ARBITRUM_SQUID_RECEIVER_ADDRESS;
         approveCallData = encodeFunctionData({
           abi: getErc20Abi({
-            address: toAsset.source.contractAddress as `0x${string}`,
+            address: toAsset.source.contractAddress,
           }),
           functionName: 'approve',
           args: [bridgeAddress, BigInt(fromAmount)],
@@ -124,7 +126,7 @@ export const useSquidRoute = ({
       } else {
         approveCallData = encodeFunctionData({
           abi: getErc20Abi({
-            address: toAsset.source.contractAddress as `0x${string}`,
+            address: toAsset.source.contractAddress,
           }),
           functionName: 'approve',
           args: [bridgeAddress, BigInt(fromAmount)],
@@ -141,13 +143,13 @@ export const useSquidRoute = ({
       }
 
       const result = await squid.getRoute({
-        fromAddress: fields.fromAddress as `0x${string}`,
+        fromAddress: fields.fromAddress,
         fromChain: fields.fromChain,
         fromToken: fields.fromAsset,
         fromAmount,
         toChain: toAsset.source.chainId,
         toToken: toAsset.source.contractAddress,
-        toAddress: fields.fromAddress as `0x${string}`,
+        toAddress: fields.fromAddress,
         quoteOnly: false,
         enableBoost: true,
         postHook: {
@@ -156,11 +158,11 @@ export const useSquidRoute = ({
             {
               chainType: ChainType.EVM,
               callType: 1, // SquidCallType.FULL_TOKEN_BALANCE
-              target: toAsset.source.contractAddress as `0x${string}`,
+              target: toAsset.source.contractAddress,
               value: '0', // this will be replaced by the full native balance of the multicall after the swap
               callData: approveCallData,
               payload: {
-                tokenAddress: toAsset.source.contractAddress as `0x${string}`,
+                tokenAddress: toAsset.source.contractAddress,
                 inputPos: 1,
               },
               estimatedGas: '50000',
@@ -172,13 +174,13 @@ export const useSquidRoute = ({
               value: '0',
               callData: depositCallData,
               payload: {
-                tokenAddress: toAsset.source.contractAddress as `0x${string}`,
+                tokenAddress: toAsset.source.contractAddress,
                 inputPos: 1,
               },
               estimatedGas: '50000',
             },
           ],
-          description: 'Swap and deposit',
+          description: t('Swap and deposit'),
           logoURI: 'https://v2.app.squidrouter.com/images/icons/squid_logo.svg',
           provider: fields.fromAddress,
         },

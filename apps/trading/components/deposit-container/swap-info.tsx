@@ -43,7 +43,7 @@ export const SwapInfo = (props: {
         const total = BigNumber.sum.apply(null, fees);
         return (
           <div key={key} className="grid grid-cols-2">
-            <dt className="text-surface-1-fg-muted">Gas costs</dt>
+            <dt className="text-surface-1-fg-muted">{t('Gas costs')}</dt>
             <dd className="text-right">
               {total.toString()} {group[0].token.symbol}
             </dd>
@@ -57,7 +57,7 @@ export const SwapInfo = (props: {
         const total = BigNumber.sum.apply(null, fees);
         return (
           <div key={key} className="grid grid-cols-2">
-            <dt className="text-surface-1-fg-muted">Estimated fees</dt>
+            <dt className="text-surface-1-fg-muted">{t('Estimated fees')}</dt>
             <dd className="text-right">
               {total.toString()} {group[0].token.symbol}
             </dd>
