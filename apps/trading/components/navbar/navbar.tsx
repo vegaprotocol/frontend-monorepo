@@ -178,7 +178,7 @@ export const Navbar = () => {
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const t = useT();
   const envNameMapping = useEnvNameMapping();
-  const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
+  const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
   const GOVERNANCE_LINK = useLinks(DApp.Governance)();
   const EXPLORER_LINK = useLinks(DApp.Explorer)();
@@ -208,11 +208,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
       <NavbarListDivider />
       <NavbarList>
         <NavbarItem>
-          <NavbarLink to={Links.MARKETS()} onClick={onClick}>
-            {t('Markets')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
           <NavbarLink to={Links.MARKET(marketId || '')} onClick={onClick}>
             {t('Trading')}
           </NavbarLink>
@@ -229,29 +224,26 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
-            {t('Referrals')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.FEES()} onClick={onClick}>
-            {t('Fees')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.REWARDS()} onClick={onClick}>
-            {t('Rewards')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLinkExternal to={GOVERNANCE_LINK}>
-            {t('Governance')}
-          </NavbarLinkExternal>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarTrigger>{t('Resources')}</NavbarTrigger>
+          <NavbarTrigger>{t('More')}</NavbarTrigger>
           <NavbarContent data-testid="navbar-content-resources">
             <ul className="lg:p-4">
+              <NavbarSubItem>
+                <NavbarLink to={Links.MARKETS()}>{t('Markets')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.FEES()}>{t('Fees')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.REWARDS()}>{t('Rewards')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.REFERRALS()}>{t('Referrals')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLinkExternal to={GOVERNANCE_LINK}>
+                  {t('Governance')}
+                </NavbarLinkExternal>
+              </NavbarSubItem>
               {EXPLORER_LINK && (
                 <NavbarSubItem>
                   <NavbarLinkExternal to={EXPLORER_LINK}>
@@ -263,13 +255,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
                 <NavbarSubItem>
                   <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
                     {t('Docs')}
-                  </NavbarLinkExternal>
-                </NavbarSubItem>
-              )}
-              {GITHUB_FEEDBACK_URL && (
-                <NavbarSubItem>
-                  <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
-                    {t('Give Feedback')}
                   </NavbarLinkExternal>
                 </NavbarSubItem>
               )}
