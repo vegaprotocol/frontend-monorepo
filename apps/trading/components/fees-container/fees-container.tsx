@@ -407,7 +407,12 @@ const TotalDiscount = ({
   isVolumeDiscountProgramRunning: boolean;
 }) => {
   const t = useT();
-  const totalDiscount = 1 - (1 - volumeDiscount) * (1 - referralDiscount);
+
+  // 1 - (1 - volumeDiscount) * (1 - referralDiscount)
+  const vd = BigNumber(1).minus(volumeDiscount);
+  const rd = BigNumber(1).minus(referralDiscount);
+  const totalDiscount = BigNumber(1).minus(vd.multipliedBy(rd));
+
   const totalDiscountDescription = t(
     'The total discount is calculated according to the following formula: '
   );

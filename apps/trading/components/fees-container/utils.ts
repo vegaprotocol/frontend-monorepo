@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
  * returns a string and includes extra 0s on the end. We need these
  * values in aggrid as numbers for sorting
  */
-export const formatPercentage = (num: number) => {
+export const formatPercentage = (num: number | BigNumber) => {
   const pct = new BigNumber(num).times(100);
   const dps = pct.decimalPlaces();
   const formatter = new Intl.NumberFormat(getUserLocale(), {
