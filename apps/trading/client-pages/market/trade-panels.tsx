@@ -182,7 +182,7 @@ const ViewButton = ({
 }) => {
   const label = useViewLabel(view);
   const className = cn('py-2 px-4 capitalize text-sm whitespace-nowrap', {
-    'bg-gs-500 ': isActive,
+    'bg-surface-2': isActive,
   });
 
   return (
