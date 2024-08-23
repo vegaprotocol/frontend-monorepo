@@ -19,10 +19,12 @@ export const NavButton = ({ icon, text, to }: NavButtonProperties) => {
   return (
     <NavLink data-testid={locators.navButton} to={to} className="text-center">
       {({ isActive }) => {
-        const textColor = isActive ? 'text-white' : 'text-neutral-600';
+        const textColor = isActive
+          ? 'text-surface-1-fg'
+          : 'text-surface-1-fg-muted';
 
         return (
-          <div className="h-full grid gap-0 grid-rows-[1fr_auto_auto]">
+          <div className="hover:bg-surface-2 h-full grid gap-0 grid-rows-[1fr_auto_auto]">
             <div className={cn('grid items-center mt-5', textColor)}>
               {icon}
             </div>
@@ -30,7 +32,7 @@ export const NavButton = ({ icon, text, to }: NavButtonProperties) => {
             <div
               data-testid={locators.linkActive}
               className={cn('h-1 w-full mt-2', {
-                'bg-vega-yellow': isActive,
+                'bg-intent-primary text-intent-primary-foreground': isActive,
               })}
             />
           </div>
@@ -45,7 +47,7 @@ export const NavBar = () => {
     <nav
       data-testid={locators.navBar}
       className={
-        'z-[5] w-full h-20 grid gap-0 grid-cols-3 border-t border-vega-dark-200 bg-black'
+        'z-[5] w-full h-20 grid gap-0 grid-cols-3 border-t border-surface-0-fg-muted bg-surface-1 text-surface-1-fg'
       }
     >
       <NavButton

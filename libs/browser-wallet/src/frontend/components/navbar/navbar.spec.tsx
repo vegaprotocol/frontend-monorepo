@@ -44,7 +44,9 @@ describe('NavButton', () => {
     expect(screen.getByTestId('nav-button')).toBeInTheDocument();
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
     expect(screen.getByText('Test Button')).toBeInTheDocument();
-    expect(screen.getByTestId('link-active')).not.toHaveClass('bg-vega-yellow');
+    expect(screen.getByTestId('link-active')).not.toHaveClass(
+      'bg-intent-primary'
+    );
   });
 
   it('renders with active link styles when active', () => {
@@ -58,7 +60,7 @@ describe('NavButton', () => {
       ['/settings']
     );
 
-    expect(screen.getByTestId('link-active')).toHaveClass('bg-vega-yellow');
+    expect(screen.getByTestId('link-active')).toHaveClass('bg-intent-primary');
   });
 });
 
@@ -66,7 +68,7 @@ describe('NavBar', () => {
   it('renders with all three NavButtons', () => {
     renderNav();
     expect(screen.getByTestId('nav-bar')).toBeInTheDocument();
-    expect(screen.getByTestId('nav-bar')).toHaveClass('bg-black');
+    expect(screen.getByTestId('nav-bar')).toHaveClass('bg-surface-1');
     expect(screen.getAllByTestId('nav-button')).toHaveLength(3);
     const [wallets, transactions, settings] =
       screen.getAllByTestId('nav-button');

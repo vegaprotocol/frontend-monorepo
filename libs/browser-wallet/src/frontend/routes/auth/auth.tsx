@@ -71,7 +71,7 @@ export const Auth = () => {
   if (loadingWallets || loadingNetworks) return null;
 
   return (
-    <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-vega-dark-100">
+    <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-surface-0 text-surface-0-fg">
       <ModalWrapper />
       <section className="w-full h-full overflow-y-auto">
         <div className="px-5 pt-3">

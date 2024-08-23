@@ -17,7 +17,7 @@ describe('Header component', () => {
       'justify-center',
       'flex-col',
       'text-2xl',
-      'text-white'
+      'text-surface-0-fg'
     );
   });
 });

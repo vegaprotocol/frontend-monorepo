@@ -30,7 +30,7 @@ export const ConnectionSuccess = ({
       <Header content="Connected" />
       <h2
         data-testid={locators.connectionSuccessHostname}
-        className="mt-1 break-all text-center text-vega-dark-400"
+        className="mt-1 break-all text-center text-surface-0-fg-muted"
       >
         {hostname}
       </h2>

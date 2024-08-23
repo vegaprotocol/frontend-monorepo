@@ -32,7 +32,7 @@ export const PeggedOrderInfo = ({
   return (
     <span className="flex items-center">
       {priceToDisplay}
-      <span className="pl-1 text-vega-dark-400">
+      <span className="pl-1 text-surface-0-fg-muted">
         from {PEGGED_REFERENCE_MAP[peggedReference]}
       </span>
     </span>

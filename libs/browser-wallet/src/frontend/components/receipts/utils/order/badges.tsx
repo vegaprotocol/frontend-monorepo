@@ -7,7 +7,7 @@ import { formatNanoDate } from '@/lib/utils';
 
 const OrderBadge = ({ children }: { children: ReactNode }) => {
   return (
-    <Lozenge className="text-xs mr-0.5 text-vega-dark-400 whitespace-nowrap">
+    <Lozenge className="text-xs mr-0.5 text-surface-0-fg-muted whitespace-nowrap">
       {children}
     </Lozenge>
   );

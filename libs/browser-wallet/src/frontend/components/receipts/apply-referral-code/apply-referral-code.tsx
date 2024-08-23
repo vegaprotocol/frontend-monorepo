@@ -12,7 +12,7 @@ export const ApplyReferralCode = ({
   return (
     <ReceiptWrapper>
       <h1
-        className="text-vega-dark-300"
+        className="text-surface-0-fg-muted"
         data-testid={locators.referralCodeTitle}
       >
         Code

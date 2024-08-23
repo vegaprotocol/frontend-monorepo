@@ -25,11 +25,11 @@ export const HiddenContainer = ({
       <code
         style={wrapContent ? { wordBreak: 'break-all' } : undefined}
         data-testid={locators.mnemonicContainerMnemonic}
-        className="flex justify-center items-center w-full border border-vega-dark-200 rounded-md p-6 text-left overflow-y-auto overflow-x-auto w-full scrollbar-hide"
+        className="flex justify-center items-center w-full border border-surface-0-fg-muted rounded-md p-6 text-left overflow-y-auto overflow-x-auto w-full scrollbar-hide"
       >
         {hiddenInformation}
       </code>
-      <div className="text-vega-dark-300 flex justify-between">
+      <div className="text-surface-0-fg-muted flex justify-between">
         <CopyWithCheckmark text={hiddenInformation} iconSide="left">
           Copy to clipboard
         </CopyWithCheckmark>
@@ -53,7 +53,7 @@ export const HiddenContainer = ({
         setShowInformation(true);
         onChange?.(true);
       }}
-      className="flex justify-center items-center w-full border border-vega-dark-200 rounded-md p-6"
+      className="flex justify-center items-center w-full border border-surface-0-fg-muted rounded-md p-6"
     >
       <div className="flex flex-col items-center">
         <Show />

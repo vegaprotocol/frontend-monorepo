@@ -40,7 +40,10 @@ const AssetHeader = ({
   return (
     <div className="flex items-center justify-between w-full">
       <div className="text-left">
-        <div data-testid={locators.assetHeaderSymbol} className="text-white">
+        <div
+          data-testid={locators.assetHeaderSymbol}
+          className="text-surface-0-fg"
+        >
           {symbol}
         </div>
         <div data-testid={locators.assetHeaderName} className="text-sm">
@@ -49,7 +52,7 @@ const AssetHeader = ({
       </div>
       <div
         data-testid={locators.assetHeaderTotal}
-        className="text-right text-white"
+        className="text-right text-surface-0-fg"
       >
         {formatNumber(total, decimals)}
       </div>
@@ -92,7 +95,7 @@ export const AssetCard = ({
   return (
     <div
       data-testid={locators.assetCard}
-      className="border border-vega-dark-150 mb-4"
+      className="border border-surface-0-fg-muted mb-4"
     >
       <CollapsibleCard
         title={

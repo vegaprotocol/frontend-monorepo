@@ -17,7 +17,7 @@ const ArbIcon = () => {
         height: 42,
         width: 42,
       }}
-      className="flex items-center justify-center rounded-md overflow-hidden bg-vega-pink-650 p-1.5"
+      className="flex items-center justify-center rounded-md overflow-hidden bg-pink-650 p-1.5"
     >
       <ArbitrumLogo />
     </div>
@@ -30,11 +30,14 @@ export const ArbitrumKey = ({ address }: { address: string }) => {
     <div className="flex items-center">
       <ArbIcon />
       <div className="ml-4">
-        <div data-testid={locators.title} className="text-left text-white">
+        <div
+          data-testid={locators.title}
+          className="text-left text-surface-0-fg"
+        >
           Arbitrum Address
         </div>
         <ExternalLink
-          className="text-vega-dark-400"
+          className="text-surface-0-fg-muted"
           data-testid={locators.explorerLink}
           href={`${network.arbitrumExplorerLink}/address/${address}`}
         >

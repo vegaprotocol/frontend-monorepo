@@ -9,7 +9,7 @@ export const Header = ({ content }: { content: ReactNode }) => {
     <h1
       style={{ wordBreak: 'break-word' }}
       data-testid={locators.header}
-      className="flex justify-center flex-col text-2xl text-white"
+      className="flex justify-center flex-col text-2xl text-surface-0-fg"
     >
       {content}
     </h1>

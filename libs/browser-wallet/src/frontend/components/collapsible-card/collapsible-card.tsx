@@ -23,7 +23,7 @@ export const CollapsibleCard = ({
   return (
     <div data-testid={locators.collapsibleCard}>
       <button
-        className="p-3 hover:bg-vega-dark-200 flex w-full justify-between items-center"
+        className="p-3 hover:bg-surface-2 flex w-full justify-between items-center"
         onClick={() => setIsOpen(!isOpen)}
         data-testid={locators.collapsibleCardButton}
       >

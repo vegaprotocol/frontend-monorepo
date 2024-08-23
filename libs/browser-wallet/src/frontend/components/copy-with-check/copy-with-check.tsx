@@ -40,7 +40,7 @@ export function CopyWithCheckmark({
       <>
         {children}&nbsp;
         {copied ? (
-          <Tick size={16} className="text-vega-green-550" />
+          <Tick size={16} className="text-intent-success" />
         ) : (
           <Copy className="w-4" />
         )}
@@ -48,7 +48,7 @@ export function CopyWithCheckmark({
     ) : (
       <>
         {copied ? (
-          <Tick size={16} className="text-vega-green-550" />
+          <Tick size={16} className="text-intent-success" />
         ) : (
           <Copy className="w-4" />
         )}

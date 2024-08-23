@@ -36,7 +36,10 @@ export const AssetListEmptyState = ({ publicKey }: { publicKey: string }) => {
     <div>
       <SubHeader content="Balances" />
 
-      <p data-testid={locators.noAssets} className="text-vega-dark-400 my-3">
+      <p
+        data-testid={locators.noAssets}
+        className="text-surface-0-fg-muted my-3"
+      >
         Currently you have no assets.
       </p>
       {top2Assets.map(({ asset }) => {

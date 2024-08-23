@@ -3,11 +3,10 @@ import { cn } from '@vegaprotocol/ui-toolkit';
 import zxcvbn from 'zxcvbn';
 
 const COLORS = [
-  'bg-vega-yellow-650',
-  'bg-vega-yellow-600',
-  'bg-vega-yellow-550',
-  'bg-vega-yellow-500',
-  'bg-vega-yellow-450',
+  'bg-yellow-600',
+  'bg-yellow-550',
+  'bg-yellow-500',
+  'bg-yellow-450',
 ];
 
 export const locators = {
@@ -37,7 +36,7 @@ export const PasswordFeedback = ({ password }: { password: string }) => {
               data-testid={locators.feedbackStrength}
               key={`password-feedback-bar-${index}`}
               className={cn('h-1 rounded-md', {
-                'bg-vega-dark-150': passwordStrength.score < index + 1,
+                'bg-surface-1-fg-muted': passwordStrength.score < index + 1,
                 [COLORS[index]]: passwordStrength.score >= index + 1,
               })}
             ></div>

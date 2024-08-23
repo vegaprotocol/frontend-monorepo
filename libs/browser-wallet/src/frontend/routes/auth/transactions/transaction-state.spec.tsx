@@ -12,19 +12,19 @@ describe('TransactionState', () => {
   it('renders info color when transaction state is confirmed', () => {
     renderComponent(TransactionState.Confirmed);
     expect(screen.getByTestId(locators.transactionState)).toHaveClass(
-      'text-vega-blue-500'
+      'text-intent-info-background'
     );
   });
   it('renders error color when transaction state is error', () => {
     renderComponent(TransactionState.Error);
     expect(screen.getByTestId(locators.transactionState)).toHaveClass(
-      'text-vega-pink-500'
+      'text-intent-danger-background'
     );
   });
   it('renders neutral color when transaction state is rejected', () => {
     renderComponent(TransactionState.Rejected);
     expect(screen.getByTestId(locators.transactionState)).toHaveClass(
-      'text-vega-dark-300'
+      'text-surface-0-fg-muted'
     );
   });
 });

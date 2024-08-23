@@ -18,7 +18,7 @@ export const UnknownNetworkKey = ({ address }: { address: string }) => {
             <div>
               {' '}
               <span
-                className="text-vega-dark-400"
+                className="text-surface-0-fg-muted"
                 data-testid={locators.explorerLink}
               >
                 {truncateMiddle(address)}
