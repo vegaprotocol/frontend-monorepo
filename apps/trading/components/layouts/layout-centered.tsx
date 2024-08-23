@@ -1,6 +1,13 @@
+import { type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 
-export const LayoutCentered = ({ variant }: { variant?: 'gradient' }) => {
+export const LayoutCentered = ({
+  variant,
+  children,
+}: {
+  variant?: 'gradient';
+  children?: ReactNode;
+}) => {
   return (
     <div className="overflow-y-auto h-full relative">
       {variant === 'gradient' && (
@@ -9,7 +16,7 @@ export const LayoutCentered = ({ variant }: { variant?: 'gradient' }) => {
         </div>
       )}
       <div className="flex flex-col gap-6 container min-h-full max-w-screen-xl mx-auto py-12 px-4">
-        <Outlet />
+        {children || <Outlet />}
       </div>
     </div>
   );

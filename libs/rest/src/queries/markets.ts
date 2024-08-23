@@ -18,6 +18,7 @@ import type { QueryClient } from '@tanstack/react-query';
 const marketSchema = z.object({
   id: z.string(),
   code: z.string(),
+  name: z.string(),
   decimalPlaces: z.number(),
   positionDecimalPlaces: z.number(),
   baseAsset: z.nullable(erc20AssetSchema),
@@ -74,6 +75,7 @@ export const retrieveMarkets = async (queryClient: QueryClient) => {
     return {
       id: m.id,
       code: m.tradableInstrument?.instrument?.code,
+      name: m.tradableInstrument?.instrument?.name,
       decimalPlaces: Number(m.decimalPlaces),
       positionDecimalPlaces: Number(m.positionDecimalPlaces),
       baseAsset,

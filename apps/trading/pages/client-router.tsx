@@ -51,9 +51,8 @@ const Portfolio = lazy(() => import('../client-pages/portfolio'));
 export const useRouterConfig = (): RouteObject[] => {
   const routeConfig = compact([
     {
-      path: AppRoutes.HOME,
-      element: <LayoutCentered />,
-      children: [{ index: true, element: <Home /> }],
+      index: true,
+      element: <Home />,
     },
     {
       path: AppRoutes.DISCLAIMER,
