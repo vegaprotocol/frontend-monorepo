@@ -16,14 +16,6 @@ def page(vega, browser, request):
     with init_page(vega, browser, request) as page:
         yield page
 
-
-@pytest.mark.usefixtures("risk_accepted")
-def test_network_switcher(page: Page):
-    page.goto("/#/disclaimer")
-    navbar = page.locator('nav[aria-label="Main"]')
-    assert_network_switcher(navbar)
-
-
 @pytest.mark.usefixtures("risk_accepted")
 def test_navbar_pages(page: Page):
     page.goto("/#/disclaimer")
@@ -44,7 +36,6 @@ def test_navigation_mobile(page: Page):
     menu = navbar.get_by_test_id("navbar-menu-content")
     expect(menu).to_be_visible()
     assert_links(menu)
-    assert_network_switcher(menu)
     menu.get_by_role("button", name="Close menu").click()
     # endregion
 
@@ -59,9 +50,9 @@ def test_navigation_mobile(page: Page):
 
 def assert_links(container: Locator):
     pages = [
-        {"name": "Markets", "href": "#/markets"},
         {"name": "Trading", "href": "#/markets/"},
         {"name": "Portfolio", "href": "#/portfolio"},
+        {"name": "Competitions", "href": "#/competitions"},
     ]
 
     for page in pages:
@@ -70,9 +61,15 @@ def assert_links(container: Locator):
         expect(link).to_have_attribute("href", page["href"])
 
     # False indicates external link configured by env var
-    resource_pages = [
+    more_pages = [
+        {"name": "Markets", "href": "#/markets"},
+        {"name": "Fees", "href": "#/fees"},
+        {"name": "Rewards", "href": "#/rewards"},
+        {"name": "Referrals", "href": "#/referrals"},
         {"name": "Docs", "href": False},
-        {"name": "Give Feedback", "href": False},
+        {"name": "Governance", "href": False},
+        {"name": "Explorer", "href": False},
+        {"name": "Docs", "href": False},
         {"name": "Disclaimer", "href": "#/disclaimer"},
     ]
 
@@ -80,9 +77,9 @@ def assert_links(container: Locator):
 
     dropdown = container.get_by_test_id("navbar-content-resources")
 
-    for resource_page in resource_pages:
-        page_name = resource_page["name"]
-        page_href = resource_page["href"]
+    for more_page in more_pages:
+        page_name = more_page["name"]
+        page_href = more_page["href"]
         link = dropdown.get_by_role("link", name=page_name)
         expect(link).to_be_visible()
         if not page_href:
@@ -92,20 +89,3 @@ def assert_links(container: Locator):
         else:
             expect(link).to_have_attribute("href", page_href)
 
-
-def assert_network_switcher(container: Locator):
-    network_switcher_trigger = container.get_by_test_id(
-        "navbar-network-switcher-trigger"
-    )
-    # 0006-NETW-002
-    expect(network_switcher_trigger).to_have_text = "Fairground testnet"
-    network_switcher_trigger.click()
-    dropdown = container.get_by_test_id("navbar-content-network-switcher")
-    expect(dropdown).to_be_visible()
-    links = dropdown.get_by_role("link")
-    expect(links).to_have_count(2)
-    mainnet_link = container.get_by_role("link", name="Mainnet")
-    expect(mainnet_link).to_be_visible()
-    # 0006-NETW-003
-    expect(mainnet_link).to_have_attribute("href", "https://console.vega.xyz")
-    expect(container.get_by_role("link", name="Fairground testnet")).to_be_visible()
