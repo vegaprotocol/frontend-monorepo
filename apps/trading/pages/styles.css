@@ -170,12 +170,12 @@
     --intent-success-background: var(--color-green-300);
 
     --dir-down: var(--color-red);
-    --dir-down-bg: var(--color-red);
+    --dir-down-bg: var(--color-red-450);
     --dir-down-fg: var(--color-red);
     --dir-down-outline: var(--color-red);
 
     --dir-up: var(--color-green);
-    --dir-up-bg: var(--color-green);
+    --dir-up-bg: var(--color-green-450);
     --dir-up-fg: var(--color-green);
     --dir-up-outline: var(--color-green);
 
@@ -236,6 +236,9 @@
     --intent-info-background: var(--color-blue-700);
     --intent-warning-background: var(--color-orange-700);
     --intent-success-background: var(--color-green-700);
+
+    --dir-up-bg: var(--color-green-450);
+    --dir-down-bg: var(--color-red-450);
   }
 }
 
