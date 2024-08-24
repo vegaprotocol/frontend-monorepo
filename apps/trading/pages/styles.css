@@ -16,19 +16,6 @@
     --color-white: 255 255 255;
     --color-black: 0 0 0;
 
-    --color-blue-300: 214 233 255;
-    --color-blue-400: 161 204 255;
-    --color-blue: 0 117 255;
-    --color-blue-700: 1 20 42;
-
-    --color-red-300: 248 163 185;
-    --color-red: 236 0 60;
-    --color-red-700: 47 0 12;
-
-    --color-orange-300: 255 236 214;
-    --color-orange: 255 135 0;
-    --color-orange-700: 42 23 1;
-
     --color-pink-700: 33 2 21;
     --color-pink-650: 96 3 48;
     --color-pink-600: 149 5 75;
@@ -79,17 +66,16 @@
     --color-purple-350: 208 176 255;
     --color-purple-300: 235 221 255;
 
-    --color-red-700: 1 20 42;
-    --color-red-650: 1 44 96;
-    --color-red-600: 1 69 149;
-    --color-red-550: 1 94 203;
-    --color-red: 0 117 255;
-    --color-red-450: 55 147 255;
-    --color-red-400: 108 175 255;
-    --color-red-350: 161 204 255;
-    --color-red-300: 214 233 255;
+    --color-red-700: 47 0 12;
+    --color-red-650: 85 0 22;
+    --color-red-600: 123 0 31;
+    --color-red-550: 179 0 46;
+    --color-red: 236 0 60;
+    --color-red-450: 240 61 107;
+    --color-red-400: 244 102 138;
+    --color-red-350: 247 143 169;
+    --color-red-300: 248 163 185;
 
-    /* convert the below hex values in to rgb */
     --color-orange-700: 42 23 1;
     --color-orange-650: 96 51 1;
     --color-orange-600: 149 79 1;
@@ -100,6 +86,7 @@
     --color-orange-350: 255 211 161;
     --color-orange-300: 255 236 214;
 
+    /* gs (grayscale) */
     --gs-50: 250 250 250;
     --gs-50-hex: #fafafa;
     --gs-100: 244 244 245;
@@ -123,17 +110,9 @@
     --gs-950: 9 9 11;
     --gs-950-hex: #09090b;
 
-    /* Semantic colors
-     *
-     * - surface: standard background and foreground colors
-     * - intent: base bg color, eg buttons
-     * - intent-outline: borders
-     * - intent-foreground: card text color
-     * - intent-background: card bg color
-     * - intent-from: 'from' color if using gradient, can be omitted and only works with none, primary and secondary buttons
-     * - intent-to: 'to' color if using gradient, can be omitted and only works with none, primary and secondary buttons
-     */
+    /* Semantic colors */
 
+    /* - surface: standard background and foreground colors */
     --surface-0: var(--color-white);
     --surface-0-fg: var(--gs-950);
     --surface-0-fg-muted: var(--gs-200);
@@ -147,6 +126,14 @@
     --surface-3-fg: var(--gs-900);
     --surface-3-fg-muted: var(--gs-400);
 
+    /*
+     * - intent: base bg color, eg buttons
+     * - intent-outline: borders
+     * - intent-foreground: card text color
+     * - intent-background: card bg color
+     * - intent-from: 'from' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     * - intent-to: 'to' color if using gradient, can be omitted and only works with none, primary and secondary buttons
+     */
     --intent-none: var(--gs-300);
     --intent-none-outline: var(--gs-300);
     --intent-none-foreground: var(--gs-950);

@@ -199,7 +199,7 @@ export const theme = {
     market: {
       red: {
         // same as vega-red
-        650: '#550016',
+        650: '',
         DEFAULT: '#EC003C',
         300: '#FDD9DC',
       },
