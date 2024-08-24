@@ -277,40 +277,44 @@ body,
 html [data-theme='dark'],
 html [data-theme='light'] {
   /* fonts */
-  --pennant-font-family-base: theme(fontFamily.sans);
-  --pennant-font-family-monospace: theme(fontFamily.mono);
+  --pennant-font-family-base: var(--font-sans);
+  --pennant-font-family-monospace: var(--font-mono);
 
   /* reduce space between candles */
   --pennant-candlestick-inner-padding: 0.25;
 
   /* sell uses stroke for fill and stroke */
-  --pennant-color-sell-stroke: theme(colors.dir.down.outline);
-  --pennant-color-sell-fill: theme(colors.dir.down.bg);
-  --pennant-color-buy-stroke: theme(colors.dir.up.outline);
-  --pennant-color-buy-fill: theme(colors.dir.up.bg);
+  --pennant-color-sell-stroke: rgb(var(--dir-down-outline));
+  --pennant-color-sell-fill: rgb(var(--dir-down-bg));
+  --pennant-color-buy-stroke: rgb(var(--dir-up-outline));
+  --pennant-color-buy-fill: rgb(var(--dir-up-bg));
 
-  --pennant-color-volume-buy: theme(colors.dir.up.bg);
-  --pennant-color-volume-sell: theme(colors.dir.down.bg);
+  --pennant-color-volume-buy: rgb(var(--dir-up-bg));
+  --pennant-color-volume-sell: rgb(var(--dir-down-bg));
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme(colors.dir.up.bg);
-  --pennant-color-depth-buy-stroke: theme(colors.dir.up.outline);
-  --pennant-color-depth-sell-fill: theme(colors.dir.down.bg);
-  --pennant-color-depth-sell-stroke: theme(colors.dir.down.outline);
+  --pennant-color-depth-buy-fill: rgb(var(--dir-up-bg));
+  --pennant-color-depth-buy-stroke: rgb(var(--dir-up-outline));
+  --pennant-color-depth-sell-fill: rgb(var(--dir-down-bg));
+  --pennant-color-depth-sell-stroke: rgb(var(--dir-down-outline));
 }
 
 html [data-theme='light'] {
+  /* Pennant expects some colors in hex, not using hex results
+  in colors not being applied correctly */
   --pennant-background-surface-color: var(--gs-50-hex);
-  --pennant-hover-overlay: rgb(var(--gs-50) / 0.5);
   --separator-border: var(--gs-400-hex);
   --pennant-background-label-color: var(--gs-50-hex);
+  --pennant-hover-overlay: rgb(var(--gs-50) / 0.5);
 }
 
 html [data-theme='dark'] {
+  /* Pennant expects some colors in hex, not using hex results
+  in colors not being applied correctly */
   --pennant-background-surface-color: var(--gs-950-hex);
-  --pennant-hover-overlay: rgb(var(--gs-950) / 0.5);
   --separator-border: var(--gs-600-hex);
   --pennant-background-label-color: var(--gs-950-hex);
+  --pennant-hover-overlay: rgb(var(--gs-950) / 0.5);
 }
 
 /**
@@ -363,29 +367,29 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.gs.100);
-  --ag-border-color: theme(colors.gs.100);
-  --ag-header-background-color: theme(colors.gs.100);
+  --ag-background-color: rgb(var(--gs-100));
+  --ag-border-color: rgb(var(--gs-100));
+  --ag-header-background-color: rgb(var(--gs-100));
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.gs.300);
-  --ag-row-border-color: theme(colors.gs.200);
-  --ag-row-hover-color: theme(colors.gs.200);
+  --ag-header-column-separator-color: rgb(var(--gs-300));
+  --ag-row-border-color: rgb(var(--gs-200));
+  --ag-row-hover-color: rgb(var(--gs-200));
   --ag-modal-overlay-background-color: rgb(var(--gs-50) / 50%);
 }
 
 .ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
-  background: theme(colors.blue.300);
+  background: rgb(var(--color-blue-300));
 }
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.gs.900);
-  --ag-border-color: theme(colors.gs.900);
-  --ag-header-background-color: theme(colors.gs.900);
+  --ag-background-color: rgb(var(--gs-900));
+  --ag-border-color: rgb(var(--gs-900));
+  --ag-header-background-color: rgb(var(--gs-900));
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.gs.700);
-  --ag-row-border-color: theme(colors.gs.700);
-  --ag-row-hover-color: theme(colors.gs.800);
+  --ag-header-column-separator-color: rgb(var(--gs-700));
+  --ag-row-border-color: rgb(var(--gs-700));
+  --ag-row-hover-color: rgb(var(--gs-800));
   --ag-modal-overlay-background-color: rgb(var(--gs-950) / 50%);
 }
 
@@ -397,7 +401,7 @@ html [data-theme='dark'] {
 }
 
 .ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
-  background: theme(colors.blue.700);
+  background: rgb(var(--color-blue-700));
 }
 
 /**
