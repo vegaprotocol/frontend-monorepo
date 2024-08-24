@@ -40,7 +40,7 @@ describe('Sparkline', () => {
     const paths = screen.getAllByTestId('sparkline-path');
     const path = paths[0];
     expect(path).toHaveClass(
-      '[vector-effect:non-scaling-stroke] stroke-market-red dark:stroke-market-red'
+      '[vector-effect:non-scaling-stroke] stroke-dir-down-outline'
     );
   });
 
@@ -51,7 +51,7 @@ describe('Sparkline', () => {
     const paths = screen.getAllByTestId('sparkline-path');
     const path = paths[0];
     expect(path).toHaveClass(
-      '[vector-effect:non-scaling-stroke] stroke-market-green-600 dark:stroke-market-green'
+      '[vector-effect:non-scaling-stroke] stroke-dir-up-outline'
     );
   });
 

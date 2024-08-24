@@ -67,9 +67,8 @@ export const OrderbookRow = memo(
                 priceFormatDecimalPlaces
               )}
               className={cn({
-                'text-market-red dark:text-market-red': type === VolumeType.ask,
-                'text-market-green-600 dark:text-market-green':
-                  type === VolumeType.bid,
+                'text-dir-down-fg': type === VolumeType.ask,
+                'text-dir-up-fg': type === VolumeType.bid,
               })}
             />
           </OrderBookRowCell>
@@ -147,9 +146,7 @@ const CumulationBar = ({
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
       className={cn(
         'absolute left-0 top-0 h-full',
-        type === VolumeType.bid
-          ? 'bg-market-green/10 dark:bg-market-green/10'
-          : 'bg-market-red/10 dark:bg-market-red/10'
+        type === VolumeType.bid ? 'bg-dir-up/10' : 'bg-dir-down/10'
       )}
       style={{
         width: `${width}%`,

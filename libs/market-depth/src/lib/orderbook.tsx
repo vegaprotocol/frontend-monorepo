@@ -131,10 +131,8 @@ export const OrderbookMid = ({
         {priceChangeRef.current !== 'none' && (
           <span
             className={cn('flex flex-col justify-center', {
-              'text-market-green-600 dark:text-market-green':
-                priceChangeRef.current === 'up',
-              'text-market-red dark:text-market-red':
-                priceChangeRef.current === 'down',
+              'text-dir-up-fg': priceChangeRef.current === 'up',
+              'text-dir-down-fg': priceChangeRef.current === 'down',
             })}
           >
             <VegaIcon

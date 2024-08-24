@@ -196,20 +196,18 @@ export const theme = {
       350: 'rgb(var(--color-orange-200) / <alpha-value>)',
       300: 'rgb(var(--color-orange-100) / <alpha-value>)',
     },
-    market: {
-      red: {
-        // same as vega-red
-        650: '',
-        DEFAULT: '#EC003C',
-        300: '#FDD9DC',
+    dir: {
+      down: {
+        DEFAULT: 'rgb(var(--dir-down) / <alpha-value>)',
+        bg: 'rgb(var(--dir-down-bg) / <alpha-value>)',
+        fg: 'rgb(var(--dir-down-fg) / <alpha-value>)',
+        outline: 'rgb(var(--dir-down-outline) / <alpha-value>)',
       },
-      green: {
-        // same as vega-green
-        650: '#015D30',
-        600: '#01914B',
-        550: '#01C566',
-        DEFAULT: '#00F780',
-        300: '#DDFEE8',
+      up: {
+        DEFAULT: 'rgb(var(--dir-up) / <alpha-value>)',
+        bg: 'rgb(var(--dir-up-bg) / <alpha-value>)',
+        fg: 'rgb(var(--dir-up-fg) / <alpha-value>)',
+        outline: 'rgb(var(--dir-up-outline) / <alpha-value>)',
       },
     },
   },

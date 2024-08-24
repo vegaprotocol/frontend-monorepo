@@ -16,11 +16,8 @@ export const Size = ({
     <span
       data-testid="size"
       className={cn('text-right', {
-        // BUY
-        'text-market-green-600 dark:text-market-green':
-          side === Schema.Side.SIDE_BUY,
-        // SELL
-        'text-market-red': side === Schema.Side.SIDE_SELL,
+        'text-dir-up-fg': side === Schema.Side.SIDE_BUY,
+        'text-dir-down-fg': side === Schema.Side.SIDE_SELL,
       })}
     >
       {side === Schema.Side.SIDE_BUY

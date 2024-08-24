@@ -169,6 +169,16 @@
     --intent-success-foreground: var(--color-white);
     --intent-success-background: var(--color-green-300);
 
+    --dir-down: var(--color-red);
+    --dir-down-bg: var(--color-red);
+    --dir-down-fg: var(--color-red);
+    --dir-down-outline: var(--color-red);
+
+    --dir-up: var(--color-green);
+    --dir-up-bg: var(--color-green);
+    --dir-up-fg: var(--color-green);
+    --dir-up-outline: var(--color-green);
+
     /* Fonts */
     --font-sans: AlphaLyrae, -apple-system, BlinkMacSystemFont, 'Segoe UI',
       sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
@@ -270,22 +280,23 @@ html [data-theme='light'] {
   --pennant-font-family-base: theme(fontFamily.sans);
   --pennant-font-family-monospace: theme(fontFamily.mono);
 
-  /* sell candles only use stroke as the candle is solid (without border) */
-  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
-
-  /* studies */
-  --pennant-color-eldar-ray-bear-power: theme(colors.market.red.DEFAULT);
-  --pennant-color-eldar-ray-bull-power: theme(colors.market.green.600);
-
-  --pennant-color-macd-divergence-buy: theme(colors.market.green.600);
-  --pennant-color-macd-divergence-sell: theme(colors.market.red.DEFAULT);
-  --pennant-color-macd-signal: theme(colors.blue.DEFAULT);
-  --pennant-color-macd-macd: theme(colors.yellow.500);
-
-  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-
   /* reduce space between candles */
   --pennant-candlestick-inner-padding: 0.25;
+
+  /* sell uses stroke for fill and stroke */
+  --pennant-color-sell-stroke: theme(colors.dir.down.outline);
+  --pennant-color-sell-fill: theme(colors.dir.down.bg);
+  --pennant-color-buy-stroke: theme(colors.dir.up.outline);
+  --pennant-color-buy-fill: theme(colors.dir.up.bg);
+
+  --pennant-color-volume-buy: theme(colors.dir.up.bg);
+  --pennant-color-volume-sell: theme(colors.dir.down.bg);
+
+  /* depth chart */
+  --pennant-color-depth-buy-fill: theme(colors.dir.up.bg);
+  --pennant-color-depth-buy-stroke: theme(colors.dir.up.outline);
+  --pennant-color-depth-sell-fill: theme(colors.dir.down.bg);
+  --pennant-color-depth-sell-stroke: theme(colors.dir.down.outline);
 }
 
 html [data-theme='light'] {
@@ -293,22 +304,6 @@ html [data-theme='light'] {
   --pennant-hover-overlay: rgb(var(--gs-50) / 0.5);
   --separator-border: var(--gs-400-hex);
   --pennant-background-label-color: var(--gs-50-hex);
-
-  /* candles */
-  --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
-  --pennant-color-buy-stroke: theme(colors.market.green.600);
-
-  /* sell uses stroke for fill and stroke */
-  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
-
-  /* depth chart */
-  --pennant-color-depth-buy-fill: theme(colors.market.green.DEFAULT);
-  --pennant-color-depth-buy-stroke: theme(colors.market.green.600);
-  --pennant-color-depth-sell-fill: theme(colors.market.red.DEFAULT);
-  --pennant-color-depth-sell-stroke: theme(colors.market.red.650);
-
-  --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
-  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 }
 
 html [data-theme='dark'] {
@@ -316,22 +311,6 @@ html [data-theme='dark'] {
   --pennant-hover-overlay: rgb(var(--gs-950) / 0.5);
   --separator-border: var(--gs-600-hex);
   --pennant-background-label-color: var(--gs-950-hex);
-
-  /* candles */
-  --pennant-color-buy-fill: theme(colors.market.green.600);
-  --pennant-color-buy-stroke: theme(colors.market.green.DEFAULT);
-
-  /* sell uses stroke for fill and stroke */
-  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
-
-  /* depth chart */
-  --pennant-color-depth-buy-fill: theme(colors.market.green.600);
-  --pennant-color-depth-buy-stroke: theme(colors.market.green.DEFAULT);
-  --pennant-color-depth-sell-fill: theme(colors.market.red.650);
-  --pennant-color-depth-sell-stroke: theme(colors.market.red.DEFAULT);
-
-  --pennant-color-volume-buy: theme(colors.market.green.600);
-  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 }
 
 /**
