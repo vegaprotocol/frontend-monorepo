@@ -170,14 +170,14 @@
     --intent-success-background: var(--color-green-300);
 
     --dir-down: var(--color-red);
-    --dir-down-bg: var(--color-red-450);
-    --dir-down-fg: var(--color-red);
-    --dir-down-outline: var(--color-red);
+    --dir-down-bg: var(--color-red-450); /* candle/depth bg */
+    --dir-down-outline: var(--color-red); /* candle outline */
+    --dir-down-fg: var(--color-red); /* 'up' text color */
 
     --dir-up: var(--color-green);
-    --dir-up-bg: var(--color-green-450);
-    --dir-up-fg: var(--color-green);
-    --dir-up-outline: var(--color-green);
+    --dir-up-bg: var(--color-green);
+    --dir-up-outline: var(--color-green-600);
+    --dir-up-fg: var(--color-green-600);
 
     /* Fonts */
     --font-sans: AlphaLyrae, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -237,8 +237,15 @@
     --intent-warning-background: var(--color-orange-700);
     --intent-success-background: var(--color-green-700);
 
-    --dir-up-bg: var(--color-green-450);
-    --dir-down-bg: var(--color-red-450);
+    --dir-down: var(--color-red);
+    --dir-down-bg: var(--color-red-650);
+    --dir-down-outline: var(--color-red);
+    --dir-down-fg: var(--color-red);
+
+    --dir-up: var(--color-green-600);
+    --dir-up-bg: var(--color-green-600);
+    --dir-up-outline: var(--color-green-450);
+    --dir-up-fg: var(--color-green);
   }
 }
 
@@ -288,12 +295,12 @@ html [data-theme='light'] {
 
   /* sell uses stroke for fill and stroke */
   --pennant-color-sell-stroke: rgb(var(--dir-down-outline));
-  --pennant-color-sell-fill: rgb(var(--dir-down-bg));
+  --pennant-color-sell-fill: rgb(var(--dir-down-outline));
   --pennant-color-buy-stroke: rgb(var(--dir-up-outline));
   --pennant-color-buy-fill: rgb(var(--dir-up-bg));
 
-  --pennant-color-volume-buy: rgb(var(--dir-up-bg));
-  --pennant-color-volume-sell: rgb(var(--dir-down-bg));
+  --pennant-color-volume-buy: rgb(var(--dir-up));
+  --pennant-color-volume-sell: rgb(var(--dir-down));
 
   /* depth chart */
   --pennant-color-depth-buy-fill: rgb(var(--dir-up-bg));
