@@ -21,13 +21,16 @@ import { type Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 import { useT } from './use-t';
 
+export const BUY_CLASS = 'text-dir-up-fg';
+export const SELL_CLASS = 'text-dir-down-fg';
+
 const changeCellClass = ({ node }: CellClassParams) => {
   let colorClass = '';
 
   if (node.data?.aggressor === Side.SIDE_BUY) {
-    colorClass = 'text-dir-up-fg';
+    colorClass = BUY_CLASS;
   } else if (node.data?.aggressor === Side.SIDE_SELL) {
-    colorClass = 'text-dir-down-fg';
+    colorClass = SELL_CLASS;
   }
 
   return ['font-mono text-right', colorClass].join(' ');
