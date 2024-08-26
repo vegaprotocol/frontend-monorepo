@@ -1,5 +1,5 @@
 import { DAY, getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
-import { WithdrawalStatusMapping } from '@vegaprotocol/types';
+import { WithdrawalStatus, WithdrawalStatusMapping } from '@vegaprotocol/types';
 import {
   useEVMBridgeConfigs,
   useEthereumConfig,
@@ -20,7 +20,10 @@ type Props = {
 };
 
 export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
-  if (!data.detail.txHash) {
+  if (
+    data.detail.status !== WithdrawalStatus.STATUS_REJECTED &&
+    !data.detail.txHash
+  ) {
     return <WithdrawalStatusOpen data={data} openDialog={openDialog} />;
   }
 
@@ -39,7 +42,13 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     },
   });
 
-  const [status, setStatus] = useState<'idle' | 'delayed' | 'ready'>(() => {
+  const [status, setStatus] = useState<
+    'idle' | 'delayed' | 'ready' | 'rejected'
+  >(() => {
+    if (data.detail.status === WithdrawalStatus.STATUS_REJECTED) {
+      return 'rejected';
+    }
+
     if (data.asset?.source.__typename === 'ERC20') {
       if (data.asset.source.withdrawThreshold === '0') {
         return 'ready';
@@ -70,6 +79,11 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
         data.asset?.source.__typename === 'ERC20' &&
         data.asset?.source.withdrawThreshold !== '0';
 
+      if (data.detail.status === WithdrawalStatus.STATUS_REJECTED) {
+        setStatus('rejected');
+        return;
+      }
+
       if (hasThreshold && delay) {
         const readyTimestamp =
           new Date(data.detail.createdTimestamp).getTime() +
@@ -86,6 +100,8 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
         } else {
           setStatus('ready');
         }
+      } else {
+        setStatus('ready');
       }
     };
 
@@ -94,7 +110,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     return () => {
       clearTimeout(timeoutRef.current);
     };
-  }, [delay, data.asset, data.detail.createdTimestamp]);
+  }, [delay, data.asset, data.detail.createdTimestamp, data.detail.status]);
 
   if (status === 'idle') {
     return <>-</>;
