@@ -1,20 +1,17 @@
 import pytest
 import re
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page, expect, Locator
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import change_keys
 
 
-def check_pnl_cell(element, dir, expected_value):
-    value = element.inner_text()
-
+def check_pnl_cell(element: Locator, dir, expected_value):
+    expect(element).to_have_text(expected_value)
     if dir == "up":
         expect(element).to_have_class(re.compile(r"text-dir-up-fg"))
     elif dir == "down":
         expect(element).to_have_class(re.compile(r"text-dir-down-fg"))
-
-    assert value == expected_value, f"Unexpected value: {value}"
 
 # TODO move this test to jest
 
@@ -33,6 +30,8 @@ def test_pnl(continuous_market, vega: VegaServiceNull, page: Page):
     )
     realised_pnl = row.locator("[col-id='realisedPNL']")
     unrealised_pnl = row.locator("[col-id='unrealisedPNL']")
+
+    page.pause()
 
     check_pnl_cell(realised_pnl, "none", "0.00")
     check_pnl_cell(unrealised_pnl, "down", "-4.00")
@@ -56,30 +55,24 @@ def test_pnl(continuous_market, vega: VegaServiceNull, page: Page):
         state="visible",
     )
 
-    key_1 = page.query_selector(
-        '//div[@role="row" and .//div[@col-id="partyId"]/div/span[text()="Key 1"]]'
-    )
-    key_mm = page.query_selector(
-        '//div[@role="row" and .//div[@col-id="partyId"]/div/span[text()="market_maker"]]'
-    )
-    key_mm2 = page.query_selector(
-        '//div[@role="row" and .//div[@col-id="partyId"]/div/span[text()="market_maker_2"]]'
-    )
+    page.pause()
 
-    key_1_unrealised_pnl = key_1.query_selector(
-        'xpath=./div[@col-id="unrealisedPNL"]')
-    key_1_realised_pnl = key_1.query_selector(
-        'xpath=./div[@col-id="realisedPNL"]')
-    key_mm_unrealised_pnl = key_mm.query_selector(
-        'xpath=./div[@col-id="unrealisedPNL"]'
-    )
-    key_mm_realised_pnl = key_mm.query_selector(
-        'xpath=./div[@col-id="realisedPNL"]')
-    key_mm2_unrealised_pnl = key_mm2.query_selector(
-        'xpath=./div[@col-id="unrealisedPNL"]'
-    )
-    key_mm2_realised_pnl = key_mm2.query_selector(
-        'xpath=./div[@col-id="realisedPNL"]')
+    key_1_cell = page.get_by_role('gridcell', name="Key 1", exact=True)
+    key_1 = page.get_by_role('row').filter(has=key_1_cell)
+
+    key_mm_cell = page.get_by_role('gridcell', name='market_maker', exact=True)
+    key_mm = page.get_by_role('row').filter(has=key_mm_cell)
+
+    key_mm2_cell = page.get_by_role('gridcell', name='market_maker_2', exact=True)
+    key_mm2 = page.get_by_role('row').filter(has=key_mm2_cell)
+
+    key_1_unrealised_pnl = key_1.locator('[col-id="unrealisedPNL"]')
+    key_1_realised_pnl = key_1.locator('[col-id="realisedPNL"]')
+    key_mm_unrealised_pnl = key_mm.locator('[col-id="unrealisedPNL"]')
+    key_mm_realised_pnl = key_mm.locator('[col-id="realisedPNL"]')
+    key_mm2_unrealised_pnl = key_mm2.locator('[col-id="unrealisedPNL"]')
+    key_mm2_realised_pnl = key_mm2.locator('[col-id="realisedPNL"]')
+
     check_pnl_cell(key_1_realised_pnl, "none", "0.00")
     check_pnl_cell(key_1_unrealised_pnl, "down", "-4.00")
 
