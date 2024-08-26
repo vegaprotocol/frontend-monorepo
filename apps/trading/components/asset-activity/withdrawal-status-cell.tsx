@@ -40,7 +40,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   });
 
   const [status, setStatus] = useState<
-    'idle' | 'delayed' | 'ready' | 'rejected' | 'finalized'
+    'idle' | 'delayed' | 'ready' | 'rejected'
   >(() => {
     if (data.detail.status === WithdrawalStatus.STATUS_REJECTED) {
       return 'rejected';
@@ -104,7 +104,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     return () => {
       clearTimeout(timeoutRef.current);
     };
-  }, [delay, data.asset, data.detail.createdTimestamp]);
+  }, [delay, data.asset, data.detail.createdTimestamp, data.detail.status]);
 
   if (status === 'idle') {
     return <>-</>;
