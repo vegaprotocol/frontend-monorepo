@@ -10,8 +10,6 @@ The environment variables needed to be present for any app consuming this librar
 
 `NX_VEGA_NETWORKS` - JSON object with key-value pairs for environments and their deployed URLs
 
-`NX_GITHUB_FEEDBACK_URL` - the repository's feedback URL to point to
-
 `NX_ETHEREUM_PROVIDER_URL` - the Ethereum provider url
 
 For examples, see Block Explorer's .env files [here](../../apps/explorer)

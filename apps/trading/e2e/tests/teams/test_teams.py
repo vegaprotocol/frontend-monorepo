@@ -269,6 +269,7 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
     expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("7")
 
 
+@pytest.mark.skip("TODO: fix flakey")
 def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)

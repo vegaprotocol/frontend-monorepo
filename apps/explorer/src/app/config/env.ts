@@ -18,8 +18,5 @@ export const ENV = {
     governanceUrl: windowOrDefault('NX_VEGA_GOVERNANCE_URL'),
     vegaRepoUrl: windowOrDefault('NX_VEGA_REPO_URL'),
   },
-  addresses: {
-    feedback: windowOrDefault('NX_GITHUB_FEEDBACK_URL'),
-  },
   vegaChainId: windowOrDefault('NX_VEGA_CHAIN_ID'),
 };
