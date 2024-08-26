@@ -66,16 +66,15 @@ def assert_links(container: Locator):
         {"name": "Fees", "href": "#/fees"},
         {"name": "Rewards", "href": "#/rewards"},
         {"name": "Referrals", "href": "#/referrals"},
-        {"name": "Docs", "href": False},
         {"name": "Governance", "href": False},
         {"name": "Explorer", "href": False},
         {"name": "Docs", "href": False},
         {"name": "Disclaimer", "href": "#/disclaimer"},
     ]
 
-    container.get_by_role("button", name="Resources").click()
+    container.get_by_role("button", name="More").click()
 
-    dropdown = container.get_by_test_id("navbar-content-resources")
+    dropdown = container.get_by_test_id("navbar-content-more")
 
     for more_page in more_pages:
         page_name = more_page["name"]

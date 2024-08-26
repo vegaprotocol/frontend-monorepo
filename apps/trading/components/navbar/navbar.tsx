@@ -199,7 +199,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         </NavbarItem>
         <NavbarItem>
           <NavbarTrigger>{t('More')}</NavbarTrigger>
-          <NavbarContent data-testid="navbar-content-resources">
+          <NavbarContent data-testid="navbar-content-more">
             <ul className="flex flex-col gap-0 lg:gap-4 p-4">
               <NavbarSubItem>
                 <NavbarLink to={Links.MARKETS()}>{t('Markets')}</NavbarLink>
