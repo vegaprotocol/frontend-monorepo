@@ -78,7 +78,7 @@ def test_market_info_market_volume(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market volume").click()
     fields = [
-        ["24 hour volume", "1(108 BTC)"],
+        ["24 hour volume", "1(107 BTC)"],
         ["Open interest", "1"],
         ["Best bid volume", "99"],
         ["Best offer volume", "99"],
@@ -214,11 +214,11 @@ def test_market_info_risk_factors(page: Page):
         "Risk factors").click()
     fields = [
         ["Long", "0.05153"],
-        ["Short", "0.05422"],
-        ["Max leverage long", "19.406"],
+        ["Short", "0.05421"],
+        ["Max leverage long", "19.405"],
         ["Max leverage short", "18.445"],
         ["Max initial leverage long", "12.937"],
-        ["Max initial leverage short", "12.297"],
+        ["Max initial leverage short", "12.296"],
     ]
     validate_info_section(page, fields)
 

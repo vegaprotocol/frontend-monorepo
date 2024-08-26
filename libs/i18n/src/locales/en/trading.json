@@ -177,6 +177,7 @@
   "Disconnect": "Disconnect",
   "Discount": "Discount",
   "Discounts are applied automatically during trading based on the key(s) used": "Discounts are applied automatically during trading based on the key(s) used",
+  "Dismiss": "Dismiss",
   "Docs": "Docs",
   "Earn commission & stake rewards": "Earn commission & stake rewards",
   "Earned by me": "Earned by me",
@@ -838,5 +839,152 @@
   "{{distance}} ago": "{{distance}} ago",
   "{{entity}} scope": "{{entity}} scope",
   "{{instrumentCode}} liquidity provision": "{{instrumentCode}} liquidity provision",
-  "{{reward}}x": "{{reward}}x"
+  "{{reward}}x": "{{reward}}x",
+
+  "// AMM": "",
+
+  "AMM_NAV_ROOT": "AMM",
+  "AMM_NAV_EXPLORE": "Explore",
+  "AMM_NAV_POOLS": "Pools",
+  "AMM_NAV_MY_LIQUIDITY": "My liquidity",
+
+  "EXPLORE_TITLE": "Explore",
+  "EXPLORE_DESCRIPTION": "See our pools",
+
+  "BOOT_FAILED_TITLE": "Startup failed",
+  "BOOT_FAILED_DESCRIPTION": "The app could not be initialized",
+  "BOOT_LOADING_TITLE": "Initializing",
+  "BOOT_LOADING_DESCRIPTION": "The app is being initialized",
+
+  "WALLET_CONNECT": "Connect",
+  "WALLET_CONNECTING": "Connecting...",
+  "WALLET_DISCONNECT": "Disconnect",
+  "WALLET_KEY": "Key",
+  "WALLET_UNKNOWN_KEY": "Unknown key",
+  "WALLET_ALERT_NOT_CONNECTED": "Not connected",
+  "WALLET_ALERT_NOT_CONNECTED_DESCRIPTION": "Please, connect to your wallet before continuing.",
+
+  "GRID_NO_DATA": "No data",
+  "GRID_LOADING": "Loading...",
+
+  "POOLS_TITLE": "Pools",
+  "POOLS_DESCRIPTION": "When you add liquidity to a pool, you can receive a share of its trading volume and potentially snag extra rewards when there are incentives involved!",
+  "POOLS_VIEW": "View market",
+  "POOLS_ADD_LIQUIDITY": "Add liquidity",
+  "POOLS_MANAGE_LIQUIDITY": "Manage liquidity",
+  "POOLS_GOTO_POOLS": "Go to Pools",
+  "POOLS_MARKET_TRADE": "Trade",
+
+  "POOLS_TABLE_TH_NAME": "Name",
+
+  "TABLE_LOADING": "Loading...",
+  "TABLE_NO_DATA": "No data",
+
+  "MARKET_NO_MARKET": "Not found",
+  "MARKET_NO_MARKET_DESCRIPTION": "We're sorry but we couldn't find market by given id: {{marketId}}",
+
+  "LIQUIDITY_TITLE": "Add liquidity",
+
+  "LIQUIDITY_FORM_SECTION_COMMITMENT": "Commitment",
+  "LIQUIDITY_FORM_SECTION_PRICING": "Pricing",
+
+  "LIQUIDITY_FORM_AMOUNT_LABEL": "Amount",
+  "LIQUIDITY_FORM_AMOUNT_PLACEHOLDER": "Amount",
+  "LIQUIDITY_FORM_AMOUNT_ERROR_TYPE": "The commitment amount needs to be a number",
+  "LIQUIDITY_FORM_AMOUNT_ERROR_MIN": "The commitment amount has to be larger than {{min}}",
+
+  "LIQUIDITY_FORM_FEE_LABEL": "Proposed fee",
+  "LIQUIDITY_FORM_FEE_PLACEHOLDER": "Proposed fee",
+  "LIQUIDITY_FORM_FEE_ERROR_TYPE": "The proposed fee needs to be a number",
+  "LIQUIDITY_FORM_FEE_ERROR_MIN": "The proposed fee has to be larger than {{min}}",
+  "LIQUIDITY_FORM_FEE_ERROR_MAX": "The proposed cannot be larger than {{max}}",
+
+  "LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_LABEL": "Slippage tolerance",
+  "LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_PLACEHOLDER": "Slippage tolerance",
+  "LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE": "The slippage tolerance value needs to be a number",
+  "LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN": "The slippage tolerance fee has to be larger than {{min}}",
+  "LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX": "The slippage tolerance cannot be larger than {{max}}",
+
+  "LIQUIDITY_FORM_UPPER_BOUND_LABEL": "Upper bound price",
+  "LIQUIDITY_FORM_UPPER_BOUND_PLACEHOLDER": "Upper bound price",
+  "LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE": "The upper bound value needs to be a number",
+
+  "LIQUIDITY_FORM_LOWER_BOUND_LABEL": "Lower bound price",
+  "LIQUIDITY_FORM_LOWER_BOUND_PLACEHOLDER": "lower bound price",
+  "LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE": "The lower bound value needs to be a number",
+
+  "LIQUIDITY_FORM_BASE_LABEL": "Base price",
+  "LIQUIDITY_FORM_BASE_PLACEHOLDER": "Base price",
+  "LIQUIDITY_FORM_BASE_ERROR_TYPE": "The base value needs to be a number",
+
+  "LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_LABEL": "Leverage at upper bound",
+  "LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_PLACEHOLDER": "Leverage at upper bound",
+  "LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE": "The leverage value needs to be a number",
+
+  "LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_LABEL": "Leverage at lower bound",
+  "LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_PLACEHOLDER": "Leverage at lower bound",
+  "LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE": "The leverage value needs to be a number",
+
+  "LIQUIDITY_FORM_SUBMIT": "Commit liquidity",
+  "LIQUIDITY_FORM_ROOT_ERROR": "Invalid form values",
+
+  "LIQUIDITY_TABLE_TH_NAME": "Name",
+  "LIQUIDITY_TABLE_TH_ACTIONS": "Actions",
+
+  "LIQUIDITY_ACTION_AMEND": "Amend",
+  "LIQUIDITY_ACTION_CANCEL": "Cancel",
+
+  "LIQUIDITY_CANCEL_DIALOG_TITLE": "Are you sure?",
+  "LIQUIDITY_CANCEL_DIALOG_DESCRIPTION": "You are about to cancel your full commitment. Are you sure you want to continue?",
+  "LIQUIDITY_CANCEL_DIALOG_CONTINUE": "Continue",
+  "LIQUIDITY_CANCEL_DIALOG_CANCEL": "Cancel",
+
+  "LIQUIDITY_CANCEL_TX_DIALOG_TITLE": "Cancel liquidity commitment",
+
+  "MY_LIQUIDITY_TITLE": "My liquidity",
+
+  "NAVIGATION_ITEM_HOME": "Nebula",
+  "NAVIGATION_ITEM_EXPLORE": "Explore",
+  "NAVIGATION_ITEM_POOLS": "Pools",
+  "NAVIGATION_ITEM_LIQUIDITY": "My liquidity",
+
+  "ASSET_PROPERTY_NAME": "Name",
+  "ASSET_PROPERTY_SYMBOL": "Symbol",
+  "ASSET_PROPERTY_CHAIN": "Chain",
+  "ASSET_PROPERTY_ADDRESS": "Address",
+
+  "TX_STATUS_IDLE": "Idle",
+  "TX_STATUS_REQUESTED": "Requested",
+  "TX_STATUS_PENDING": "Pending",
+  "TX_STATUS_CONFIRMED": "Confirmed",
+  "TX_STATUS_REJECTED": "Rejected",
+  "TX_STATUS_FAILED": "Failed",
+
+  "TX_DIALOG_DESCRIPTION": "Approve the transaction in your Vega wallet. If you have multiple wallets, you'll need to choose which to approve with.",
+  "TX_DIALOG_CURRENT_STATUS": "Current status",
+  "TX_DIALOG_DISMISS": "Dismiss",
+
+  "LINK_VIEW_ON_EXPLORER": "View on Explorer",
+
+  "MARKET_DETAILS_MARK_PRICE": "Price",
+  "MARKET_DETAILS_TOTAL_REWARD": "Total rewards",
+  "MARKET_DETAILS_VOLUME_24": "Volume 24h",
+  "MARKET_DETAILS_ORDER_BOOK_DEPTH": "Order book depth",
+  "MARKET_DETAILS_TOTAL_FEES_24": "Total fees",
+  "MARKET_DETAILS_LIQUIDITY_COMMITTED": "Liquidity committed",
+
+  "MARKET_DETAILS_AMM_LIQUIDITY_COMMITTED": "AMM liquidity committed",
+  "MARKET_DETAILS_LP_LIQUIDITY_COMMITTED": "Order book liquidity committed",
+
+  "CLIPBOARD_COPIED": "Copied",
+
+  "CHART_VOLUME_TITLE": "Volume",
+  "CHART_VOLUME_Y_LABEL": "Volume",
+
+  "CHART_LIQUIDITY_TITLE": "Liquidity",
+  "CHART_LIQUIDITY_Y_LABEL": "Cumulative depth",
+
+  "LIQUIDITY_TABLE_PARTY": "Party ID",
+  "LIQUIDITY_TABLE_COMMITMENT": "Total commitment",
+  "LIQUIDITY_TABLE_FEES": "Fees earned (24h)"
 }
