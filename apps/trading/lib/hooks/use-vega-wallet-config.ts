@@ -27,7 +27,8 @@ export const useVegaWalletConfig = () => {
   const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
 
   return useMemo(() => {
-    if (!API_NODE || !VEGA_WALLET_URL) return;
+    const url = API_NODE?.graphQLApiUrl || API_NODE?.restApiUrl;
+    if (!url || !VEGA_WALLET_URL) return;
 
     const injected = new InjectedConnector();
     const inBrowser = new InBrowserConnector();
@@ -37,7 +38,7 @@ export const useVegaWalletConfig = () => {
     });
 
     const snap = new SnapConnector({
-      node: new URL(API_NODE.graphQLApiUrl).origin,
+      node: new URL(url).origin,
       snapId: 'npm:@vegaprotocol/snap',
       version: '1.0.1',
     });
