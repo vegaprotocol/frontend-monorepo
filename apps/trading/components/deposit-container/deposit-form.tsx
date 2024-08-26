@@ -119,7 +119,7 @@ export const DepositForm = ({
   return (
     <FormProvider {...form}>
       <form
-        uata-testid="deposit-form"
+        data-testid="deposit-form"
         onSubmit={form.handleSubmit(async (fields) => {
           const fromAsset = tokens.find(
             (t) =>
