@@ -25,7 +25,7 @@ export const VegaKey = ({
   children,
   actions,
 }: VegaKeyProperties) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
 
   return (
     <div className="flex items-center justify-between h-12">
@@ -44,7 +44,7 @@ export const VegaKey = ({
           <div className="text-surface-0-fg-muted">
             <ExternalLink
               data-testid={locators.explorerLink}
-              href={`${network.explorer}/parties/${publicKey}`}
+              href={`${explorer}/parties/${publicKey}`}
             >
               {truncateMiddle(publicKey)}
             </ExternalLink>

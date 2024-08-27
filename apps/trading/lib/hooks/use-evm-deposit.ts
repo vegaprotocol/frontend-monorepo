@@ -23,7 +23,7 @@ export const useEvmDeposit = ({ queryKey }: { queryKey: QueryKey }) => {
     requiredConfirmations,
   }: {
     asset: AssetFieldsFragment;
-    bridgeAddress: `0x${string}`;
+    bridgeAddress: string;
     amount: string;
     toPubKey: string;
     requiredConfirmations: number;
@@ -48,7 +48,7 @@ export const useEvmDeposit = ({ queryKey }: { queryKey: QueryKey }) => {
     await writeContract(
       {
         abi: BRIDGE_ABI,
-        address: bridgeAddress,
+        address: bridgeAddress as `0x${string}`,
         functionName: 'depositAsset',
         args: [
           assetAddress,

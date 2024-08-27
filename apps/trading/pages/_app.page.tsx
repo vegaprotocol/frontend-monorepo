@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense, useEffect } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
@@ -31,17 +31,38 @@ import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
 import dynamic from 'next/dynamic';
+import type { createWalletBackend as createWalletBackendType } from '@vegaprotocol/browser-wallet-backend';
 
-const BrowserWalletBackendLoader = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => <>{children}</>;
+const createBrowserWalletBackendLoader = (
+  createWalletBackend: typeof createWalletBackendType
+) => {
+  return function BrowserWalletBackendLoader({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) {
+    const { API_NODE } = useEnvironment((state) => ({
+      error: state.error,
+      API_NODE: state.API_NODE,
+    }));
+    if (!API_NODE) {
+      throw new Error('Could not find URL');
+    }
+    useEffect(() => {
+      createWalletBackend({
+        node: new URL(API_NODE?.restApiUrl),
+      });
+    }, [API_NODE?.restApiUrl]);
+    return <>{children}</>;
+  };
+};
 
 export const BrowserWalletBackend = dynamic(
   () =>
     import('@vegaprotocol/browser-wallet-backend').then(
-      () => BrowserWalletBackendLoader
+      ({ createWalletBackend }) => {
+        return createBrowserWalletBackendLoader(createWalletBackend);
+      }
     ),
   {
     ssr: false,
@@ -130,17 +151,14 @@ function VegaTradingApp(props: AppProps) {
 
   return (
     <Suspense fallback={<AppLoader />}>
-      <BrowserWalletBackend>
-        <HashRouter>
-          <Bootstrapper>
+      <HashRouter>
+        <Bootstrapper>
+          <BrowserWalletBackend>
             <AppBody {...props} />
-          </Bootstrapper>
-          <NodeSwitcherDialog
-            open={nodeSwitcherOpen}
-            setOpen={setNodeSwitcher}
-          />
-        </HashRouter>
-      </BrowserWalletBackend>
+          </BrowserWalletBackend>
+        </Bootstrapper>
+        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      </HashRouter>
     </Suspense>
   );
 }

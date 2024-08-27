@@ -43,6 +43,7 @@ export interface Network {
   governance: string;
   docs: string;
   vegaDapps: string;
+  etherscanUrl: string;
 }
 
 export interface CheckTransactionResponse {

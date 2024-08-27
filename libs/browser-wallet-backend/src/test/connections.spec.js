@@ -416,21 +416,6 @@ describe('ConnectionsCollection', () => {
     expect(await connections.getChainId('https://example.com')).toBe('chainId');
     expect(await connections.getChainId('foo')).toBe(null);
   });
-  it('should get the networkId of an origin', async () => {
-    const { connections } = createConnections();
-
-    await connections.set('https://example.com', {
-      allowList: {
-        wallets: ['w1'],
-        publicKeys: [],
-      },
-      networkId: 'networkId',
-    });
-
-    expect(await connections.getNetworkId('https://example.com')).toBe(
-      'networkId'
-    );
-  });
   it('should clear connections, index and emit events', async () => {
     const { connections } = createConnections();
 

@@ -4,16 +4,14 @@ import { useEffect } from 'react';
 import { ModalWrapper } from '@/components/modals';
 import { NavBar } from '@/components/navbar';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 import { useAssetsStore } from '@/stores/assets-store';
-import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
-import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
+import { useNetwork } from '@/contexts/network/network-context';
+
 export const Auth = () => {
   const { request } = useJsonRpcClient();
-  const { network } = useNetwork();
-
+  const { chainId } = useNetwork();
   // Wallets store
   const { loadWallets, loading: loadingWallets } = useWalletStore((state) => ({
     loadWallets: state.loadWallets,
@@ -30,45 +28,22 @@ export const Auth = () => {
     loadMarkets: state.fetchMarkets,
   }));
 
-  // Connections store
-  const { loading: loadingConnections, loadConnections } = useConnectionStore(
-    (state) => ({
-      loading: state.loading,
-      loadConnections: state.loadConnections,
-    })
-  );
-
-  // Networks store
-  const { loading: loadingNetworks } = useNetworksStore((state) => ({
-    loading: state.loading,
-  }));
-
   useEffect(() => {
     loadWallets(request);
-    loadConnections(request);
-  }, [request, loadWallets, loadConnections]);
+  }, [request, loadWallets]);
 
   // TODO: Remove
   // HACK: This is work around to ensure that the wallets are loaded before network requests.
   // Ideally the backend should be capable of doing this in parallel, but increases perceived performance for now.
   useEffect(() => {
-    if (!loadingWallets && !loadingConnections && !loadingNetworks) {
-      loadAssets(request, network.id);
-      loadMarkets(request, network.id);
+    if (!loadingWallets) {
+      loadAssets(request, chainId);
+      loadMarkets(request, chainId);
     }
-  }, [
-    loadingConnections,
-    loadAssets,
-    loadMarkets,
-    loadingWallets,
-    network.id,
-    request,
-    loadingNetworks,
-  ]);
-  // const isWallets = !!useMatch(FULL_ROUTES.wallets);
+  }, [chainId, loadAssets, loadMarkets, loadingWallets, request]);
 
   // Only render the UI if the wallets and networks have loaded
-  if (loadingWallets || loadingNetworks) return null;
+  if (loadingWallets) return null;
 
   return (
     <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-surface-0 text-surface-0-fg">

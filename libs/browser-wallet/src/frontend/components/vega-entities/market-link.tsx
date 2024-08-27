@@ -15,11 +15,12 @@ export const MarketLink = ({
   marketId: string;
   name?: string;
 }) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
+
   return (
     <ExternalLink
       data-testid={locators.marketLink}
-      href={`${network.explorer}/markets/${marketId}`}
+      href={`${explorer}/markets/${marketId}`}
     >
       {name ?? truncateMiddle(marketId)}
     </ExternalLink>

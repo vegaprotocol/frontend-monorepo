@@ -16,12 +16,12 @@ export const TeamLink = ({
   children?: ReactNode;
   id: string;
 }) => {
-  const { network } = useNetwork();
+  const { console } = useNetwork();
   return (
     <ExternalLink
       data-testid={locators.teamLink}
       className="font-mono"
-      href={`${network.console}/#/competitions/teams/${id}`}
+      href={`${console}/#/competitions/teams/${id}`}
     >
       {children ?? truncateMiddle(id)}
     </ExternalLink>

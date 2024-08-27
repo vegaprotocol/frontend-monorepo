@@ -91,7 +91,6 @@ export const AccountManager = ({
             onClickAsset={props.onClickAsset}
             onClickWithdraw={props.onClickWithdraw}
             onClickDeposit={props.onClickDeposit}
-            onClickCrossChainDeposit={props.onClickCrossChainDeposit}
             onClickTransfer={props.onClickTransfer}
             onClickSwap={props.onClickSwap}
           />

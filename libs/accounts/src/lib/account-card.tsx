@@ -6,10 +6,6 @@ import {
   VegaIcon,
   VegaIconNames,
   ProgressBar,
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -36,7 +32,6 @@ export interface AssetActions {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
-  onClickCrossChainDeposit?: (assetId: string) => void;
   onClickSwap?: (assetId: string) => void;
   onClickTransfer?: (assetId: string) => void;
 }
@@ -139,9 +134,6 @@ export const AccountCard = ({
               onClickDeposit={() => {
                 actions.onClickDeposit?.(asset.id);
               }}
-              onClickCrossChainDeposit={() => {
-                actions.onClickCrossChainDeposit?.(asset.id);
-              }}
               onClickWithdraw={() => {
                 actions.onClickWithdraw?.(asset.id);
               }}
@@ -187,36 +179,12 @@ export const AccountCard = ({
       </div>
       {!isReadOnly && expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 p-3 pt-0">
-          <DropdownMenu
-            trigger={
-              <DropdownMenuTrigger asChild>
-                <ActionButton
-                  label={t('Deposit')}
-                  icon={VegaIconNames.DEPOSIT}
-                />
-              </DropdownMenuTrigger>
-            }
-          >
-            <DropdownMenuContent side="bottom" align="start">
-              <DropdownMenuItem
-                data-testid="account-action-deposit"
-                onClick={() => {
-                  actions.onClickDeposit?.(asset.id);
-                }}
-              >
-                <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                data-testid="account-action-cross-deposit"
-                onClick={() => {
-                  actions.onClickCrossChainDeposit?.(asset.id);
-                }}
-              >
-                <VegaIcon name={VegaIconNames.DEPOSIT} />{' '}
-                {t('Cross-chain deposit')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ActionButton
+            data-testid="account-action-deposit"
+            onClick={() => actions.onClickDeposit?.(asset.id)}
+            label={t('Deposit')}
+            icon={VegaIconNames.DEPOSIT}
+          />
           <ActionButton
             data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}

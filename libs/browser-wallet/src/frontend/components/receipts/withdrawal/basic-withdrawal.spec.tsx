@@ -8,6 +8,10 @@ jest.mock('../utils/string-amounts/amount-with-tooltip', () => ({
   AmountWithTooltip: () => <div data-testid="amount-with-tooltip" />,
 }));
 
+jest.mock('./receiving-key', () => ({
+  ReceivingKey: () => <div data-testid="receiving-key" />,
+}));
+
 describe('BasicWithdrawal', () => {
   it('renders AmountWithTooltip with the correct amount and asset props', () => {
     // 1123-WITH-002 I can see a the [amount being withdrawn with tooltip](./1127-DECM-decimal_numbers.md)

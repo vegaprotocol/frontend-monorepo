@@ -2,11 +2,12 @@ import { type QueryKey } from '@tanstack/react-query';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { Intent, Notification, Tooltip } from '@vegaprotocol/ui-toolkit';
 
-import { toBigNum, formatNumber } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useEvmApprove } from '../../lib/hooks/use-evm-approve';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 import { Trans } from 'react-i18next';
+import BigNumber from 'bignumber.js';
 
 export const Approval = ({
   asset,
@@ -18,29 +19,26 @@ export const Approval = ({
   asset: AssetERC20;
   amount: string;
   data: {
-    balanceOf: string;
-    allowance: string;
-    lifetimeLimit: string;
-    isExempt: string;
-    deposited: string;
+    balanceOf: BigNumber;
+    allowance: BigNumber;
+    lifetimeLimit: BigNumber;
+    deposited: BigNumber;
   };
   configs: Array<EthereumConfig | EVMBridgeConfig>;
   queryKey: QueryKey;
 }) => {
+  const { allowance, deposited, lifetimeLimit } = data;
+
   const t = useT();
 
   const { submitApprove, data: dataApprove } = useEvmApprove({ queryKey });
 
-  const allowance = toBigNum(data.allowance, asset.decimals);
-  const deposited = toBigNum(data.deposited, asset.decimals);
-  const cap = toBigNum(data.lifetimeLimit, asset.decimals);
-  const amount = toBigNum(_amount, 0); // amount is raw user input so no need for decimals
+  const amount = BigNumber(_amount); // amount is raw user input so no need for decimals
 
   const handleActionClick = () => {
     const assetChainId = asset.source.chainId;
     const config = configs.find((c) => c.chain_id === assetChainId);
-    const bridgeAddress = config?.collateral_bridge_contract
-      .address as `0x${string}`;
+    const bridgeAddress = config?.collateral_bridge_contract.address;
 
     if (!bridgeAddress) {
       throw new Error(`no bridge found for asset ${asset.id}`);
@@ -49,7 +47,7 @@ export const Approval = ({
     submitApprove({ asset, bridgeAddress });
   };
 
-  if (deposited.isGreaterThanOrEqualTo(cap)) {
+  if (deposited.isGreaterThanOrEqualTo(lifetimeLimit)) {
     return (
       <div className="mb-4">
         <Notification
@@ -64,7 +62,7 @@ export const Approval = ({
                     <dd className="text-right">{formatNumber(deposited)}</dd>
                     <dt>{t('Capped at')}</dt>
                     <dd className="text-right break-all">
-                      {formatNumber(cap)}
+                      {formatNumber(lifetimeLimit)}
                     </dd>
                   </dl>
                 }

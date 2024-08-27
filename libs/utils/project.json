@@ -14,7 +14,7 @@
         "assets": [],
         "project": "libs/utils/package.json",
         "compiler": "swc",
-        "format": ["esm"],
+        "format": ["esm", "cjs"],
         "external": ["@vegaprotocol/types"]
       }
     },

@@ -21,9 +21,9 @@ export const DecimalTooltip = ({
   entityText: string;
   variableName: string;
 }) => {
-  const { network } = useNetwork();
+  const { docs } = useNetwork();
 
-  const documentationHref = `${network.docs}/api/using-the-apis#decimal-precision`;
+  const documentationHref = `${docs}/api/using-the-apis#decimal-precision`;
   return (
     <div
       data-testid={locators.decimalTooltip}

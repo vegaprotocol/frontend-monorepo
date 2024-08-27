@@ -39,11 +39,6 @@ export const Assets = () => {
             <DropdownMenuItem onClick={() => navigate(Links.DEPOSIT())}>
               {t('Deposit')}
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate(Links.DEPOSIT_CROSS_CHAIN())}
-            >
-              {t('Deposit (cross chain)')}
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate(Links.WITHDRAW())}>
               {t('Withdraw')}
             </DropdownMenuItem>
@@ -59,9 +54,6 @@ export const Assets = () => {
       <nav className="hidden lg:flex mb-6 text-lg gap-4">
         <NavLink to={Links.DEPOSIT()} className={linkClasses}>
           {t('Deposit')}
-        </NavLink>
-        <NavLink to={Links.DEPOSIT_CROSS_CHAIN()} className={linkClasses}>
-          {t('Deposit (cross chain)')}
         </NavLink>
         <NavLink to={Links.WITHDRAW()} className={linkClasses}>
           {t('Withdraw')}
@@ -86,10 +78,6 @@ const useTitle = () => {
 
   if (pathname === Routes.DEPOSIT) {
     return t('Deposit');
-  }
-
-  if (pathname === Routes.DEPOSIT_CROSS_CHAIN) {
-    return t('Deposit (cross chain)');
   }
 
   if (pathname === Routes.WITHDRAW) {

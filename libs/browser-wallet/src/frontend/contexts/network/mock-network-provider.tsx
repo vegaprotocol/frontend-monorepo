@@ -24,7 +24,7 @@ export const MockNetworkProvider = ({
   children: JSX.Element;
 }) => {
   const value = useMemo(
-    () => ({ network, interactionMode }),
+    () => ({ ...network, interactionMode }),
     [network, interactionMode]
   );
   return (

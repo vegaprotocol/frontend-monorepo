@@ -2,11 +2,6 @@ import { useEnvironment, useFeatureFlags } from '@vegaprotocol/environment';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMemo } from 'react';
 import {
-  type AppConfig,
-  type DestinationTokenConfig,
-} from '@0xsquid/staking-widget/widget/core/types/config';
-import { SquidCallType } from '@0xsquid/sdk';
-import {
   ARBITRUM_CHAIN_ID,
   ARBITRUM_SEPOLIA_CHAIN_ID,
   ETHEREUM_CHAIN_ID,
@@ -259,7 +254,8 @@ export enum SquidRouterConfigError {
 }
 
 export const useSquidRouterConfig = (): {
-  config: AppConfig | undefined;
+  // eslint-disable-next-line
+  config: any | undefined;
   loading: boolean;
   error: SquidRouterConfigError | undefined;
 } => {
@@ -290,7 +286,7 @@ export const useSquidRouterConfig = (): {
     const tokens = assets.map((asset) =>
       mapAssetToDestinationTokenConfig(asset, pubKey, chainId)
     );
-    const config: AppConfig = {
+    const config = {
       integratorId: SQUID_INTEGRATOR_ID,
       companyName: 'Vega',
       slippage: 1,
@@ -307,8 +303,6 @@ export const useSquidRouterConfig = (): {
         swap: 'Deposit',
         stakedTokens: 'Available tokens',
       },
-      // @ts-expect-error theme declarations don't appease
-      // `#${string}${string}${string}${string}${string}${string}` type
       style,
     };
 
@@ -352,17 +346,17 @@ const mapAssetToDestinationTokenConfig = (
   asset: EnrichedSquidFriendlyAsset,
   pubKey: string,
   vegaChainId: string
-): DestinationTokenConfig => {
+) => {
   const tokenContractAddress = asset.source.contractAddress;
 
   // FIXME: Could use some better icon getting
   const assetLogo = getVegaAssetLogoUrl(vegaChainId, asset.id);
 
-  const route: DestinationTokenConfig['customContractCalls'] = [
+  const route = [
     // 0: SWAP
     // 1: APPROVE ASSET
     {
-      callType: SquidCallType.FULL_TOKEN_BALANCE,
+      callType: 1,
       target: tokenContractAddress,
       value: '0',
       callData: () => {
@@ -379,10 +373,11 @@ const mapAssetToDestinationTokenConfig = (
     },
     // 2: DEPOSIT ASSET
     {
-      callType: SquidCallType.FULL_TOKEN_BALANCE,
+      callType: 1,
       target: asset.bridgeAddress,
       value: '0',
-      callData: (args) => {
+      // eslint-disable-next-line
+      callData: (args: any) => {
         if (asset.contract instanceof ArbitrumSquidReceiver) {
           // DEPOSIT ON ARBITRUM BRIDGE
           // NOTE: This should be calling the SquidReceiver contract `deposit`
@@ -416,7 +411,8 @@ const mapAssetToDestinationTokenConfig = (
       estimatedGas: '50000',
     },
   ];
-  const cfg: DestinationTokenConfig = {
+
+  const cfg = {
     stakedToken: {
       chainId: Number(asset.source.chainId),
       address: asset.source.contractAddress,

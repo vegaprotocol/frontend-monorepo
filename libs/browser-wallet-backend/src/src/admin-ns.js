@@ -29,7 +29,7 @@ const Errors = {
  *
  * @param {Store} settings Map-like implementation to store settings.
  * @param {WalletCollection} wallets
- * @param {NetworkCollection} networks
+ * @param {NodeRPC} rpc
  * @param {ConnectionCollection} connections
  * @param {FetchCache} fetchCache
  * @param {Function} onerror Error handler
@@ -39,7 +39,7 @@ export default function init({
   encryptedStore,
   settings,
   wallets,
-  networks,
+  rpc,
   connections,
   fetchCache,
   transactions,
@@ -129,12 +129,6 @@ export default function init({
         await encryptedStore.lock();
 
         return null;
-      },
-
-      async 'admin.list_networks'(params) {
-        doValidate(adminValidation.listNetworks, params);
-        const nets = await networks.listNetworkDetails();
-        return { networks: nets };
       },
 
       async 'admin.generate_recovery_phrase'(params) {
@@ -278,9 +272,6 @@ export default function init({
         doValidate(adminValidation.fetch, params);
 
         try {
-          const network = await networks.getByNetworkId(params.networkId);
-          const rpc = await network.rpc();
-
           const cached = await fetchCache.get(params.path, params.networkId);
           if (cached) return cached;
 
@@ -309,12 +300,6 @@ export default function init({
         if (keyInfo == null)
           throw new JSONRPCServer.Error(...Errors.UNKNOWN_PUBLIC_KEY);
         const key = await wallets.getKeypair({ publicKey: params.publicKey });
-
-        const selectedNetworkId = await connections.getNetworkId(params.origin);
-        const selectedChainId = await connections.getChainId(params.origin);
-        const network = await networks.get(selectedNetworkId, selectedChainId);
-
-        const rpc = await network.rpc();
 
         const res = await txHelpers.checkTransaction({
           keys: key.keyPair,

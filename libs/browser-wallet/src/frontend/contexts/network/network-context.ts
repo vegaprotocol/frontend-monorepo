@@ -1,10 +1,13 @@
 import { createContext, useContext } from 'react';
 
-import type { Network } from '@/types/backend';
-
 export interface NetworkContextShape {
-  network: Network;
   interactionMode: boolean;
+  explorer: string;
+  docs: string;
+  governance: string;
+  console: string;
+  chainId: string;
+  etherscanUrl: string;
 }
 
 export const NetworkContext = createContext<NetworkContextShape | undefined>(

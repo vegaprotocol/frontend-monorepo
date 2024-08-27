@@ -13,6 +13,10 @@ jest.mock('./enriched-withdrawal', () => ({
   EnrichedWithdrawal: () => <div data-testid="enriched-withdrawal" />,
 }));
 
+jest.mock('./receiving-key', () => ({
+  ReceivingKey: () => <div data-testid="receiving-key" />,
+}));
+
 jest.mock('@/stores/assets-store');
 
 describe('Withdrawal', () => {

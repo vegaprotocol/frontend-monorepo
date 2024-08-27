@@ -168,19 +168,4 @@ export class ConnectionsCollection {
 
     return conn.chainId ?? null;
   }
-
-  /**
-   * Get the networkId that was approved for a given origin on initial connection.
-   * The networkId is only facing the extension and references a specific
-   * network configuration.
-   *
-   * @param {string} origin - The origin of the connection
-   * @returns {string | null} The networkId
-   */
-  async getNetworkId(origin) {
-    const conn = await this.store.get(origin);
-    if (conn == null) return null;
-
-    return conn.networkId ?? null;
-  }
 }

@@ -34,7 +34,6 @@ export class TransactionsCollection {
     autoApproved,
     node,
   }) {
-    const networkId = await this.connections.getNetworkId(origin);
     const chainId = await this.connections.getChainId(origin);
     return {
       // Cannot use tx hash as an id as rejected transactions do not have a hash
@@ -45,7 +44,6 @@ export class TransactionsCollection {
       keyName,
       walletName,
       origin,
-      networkId,
       chainId,
       decision: new Date().toISOString(),
       state,

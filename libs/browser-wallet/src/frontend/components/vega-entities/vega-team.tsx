@@ -2,24 +2,24 @@ import { type v2ListTeamsResponse } from '@vegaprotocol/rest-clients/dist/tradin
 import { useEffect, useMemo } from 'react';
 
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-import { useNetwork } from '@/contexts/network/network-context';
 import { useAsyncAction } from '@/hooks/async-action';
 import { RpcMethods } from '@/lib/client-rpc-methods';
 
 import { AsyncRenderer } from '../async-renderer';
 import { TeamLink } from './team-link';
+import { useNetwork } from '@/contexts/network/network-context';
 
 export const VegaTeam = ({ id }: { id: string }) => {
   const { request } = useJsonRpcClient();
-  const { network } = useNetwork();
+  const { chainId } = useNetwork();
   const load = useMemo(
     () => () =>
       request(
         RpcMethods.Fetch,
-        { path: `api/v2/teams?teamId=${id}`, networkId: network.id },
+        { path: `api/v2/teams?teamId=${id}`, networkId: chainId },
         true
       ),
-    [id, network.id, request]
+    [chainId, id, request]
   );
   const { loading, error, data, loaderFunction } =
     useAsyncAction<v2ListTeamsResponse>(load);

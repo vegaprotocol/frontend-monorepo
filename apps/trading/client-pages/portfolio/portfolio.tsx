@@ -46,13 +46,11 @@ import {
 import { useT } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
-import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
 
 import { ErrorBoundary } from '../../components/error-boundary';
 import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
-import { SquidContainer } from '../../components/squid-container';
 import { AssetActivity } from '../../components/asset-activity';
 
 export const Portfolio = () => {
@@ -70,13 +68,12 @@ const PortfolioGrid = () => {
   const [sizesHorizontal, handleOnHorizontalChange] = usePaneLayout({
     id: 'portfolio-horizontal',
   });
-  const sidebarMinWidth = useSquidSidebarMinWidth();
 
   return (
     <div className="p-0.5 h-full max-h-full flex flex-col">
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={sidebarMinWidth}
+          minSize={350}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <ResizableGridPanelChild>
@@ -206,21 +203,6 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
-      {flags.CROSS_CHAIN_DEPOSITS_ENABLED ? (
-        <Tab id="cross-chain-deposit" name={t('Deposit (Cross-chain)')}>
-          <ErrorBoundary feature="portfolio-transfer">
-            <div className="p-2 flex flex-col gap-4">
-              <Notification
-                intent={Intent.Info}
-                message={t(
-                  'This form only supports deposits in Arbitrum USDT since the majority of markets on Vega settle in this asset. If you wish to deposit a different asset please use the normal deposit flow.'
-                )}
-              />
-              <SquidContainer />
-            </div>
-          </ErrorBoundary>
-        </Tab>
-      ) : null}
       <Tab id="withdraw" name={t('Withdraw')}>
         <ErrorBoundary feature="portfolio-withdraw">
           <div className="p-2">

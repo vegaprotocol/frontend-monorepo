@@ -20,11 +20,7 @@ export const TradingInputError = ({
     'text-xs flex items-center first-letter:uppercase',
     'mt-1',
     {
-      'border-danger': intent === 'danger',
-      'border-warning': intent === 'warning',
-    },
-    {
-      'text-warning': intent === 'warning',
+      'text-intent-warning': intent === 'warning',
       'text-intent-danger': intent === 'danger',
     }
   );
