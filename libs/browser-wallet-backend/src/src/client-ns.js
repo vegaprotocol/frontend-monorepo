@@ -244,8 +244,8 @@ export default function init({
         doValidate(clientValidation.getChainId, params);
 
         if (context.isConnected === true) {
-          // TODO fix this
-          return { chainID: '123' };
+          const selectedChainId = await connections.getChainId(context.origin);
+          return { chainID: selectedChainId };
         }
         return { chainID: null };
       },
