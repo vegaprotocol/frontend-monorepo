@@ -2,10 +2,7 @@ import React from 'react';
 import type { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 import { addDecimal } from '@vegaprotocol/utils';
-import type {
-  StakingBridge,
-  TokenVesting,
-} from '@vegaprotocol/smart-contracts';
+import type { StakingBridge } from '@vegaprotocol/smart-contracts';
 
 import { useAppState } from '../contexts/app-state/app-state-context';
 import BigNumber from 'bignumber.js';
@@ -18,8 +15,7 @@ export enum StakingEventType {
 
 export function useGetAssociationBreakdown(
   ethAddress: string,
-  staking: StakingBridge,
-  vesting: TokenVesting
+  staking: StakingBridge
 ): () => Promise<void> {
   const {
     appState: { decimals },
@@ -28,25 +24,23 @@ export function useGetAssociationBreakdown(
 
   const getAssociationBreakdown = React.useCallback(async () => {
     try {
-      const [stakingAssociations, vestingAssociations] = await Promise.all([
+      const [stakingAssociations] = await Promise.all([
         userTotalStakedByVegaKey(staking, ethAddress, decimals),
-        userTotalStakedByVegaKey(vesting, ethAddress, decimals),
       ]);
 
       setAssociationBreakdown({
         stakingAssociations,
-        vestingAssociations,
       });
     } catch (err) {
       Sentry.captureException(err);
     }
-  }, [ethAddress, staking, vesting, decimals, setAssociationBreakdown]);
+  }, [ethAddress, staking, decimals, setAssociationBreakdown]);
 
   return getAssociationBreakdown;
 }
 
 async function userTotalStakedByVegaKey(
-  contract: StakingBridge | TokenVesting,
+  contract: StakingBridge,
   ethereumAccount: string,
   decimals: number
 ): Promise<{ [vegaKey: string]: BigNumber }> {

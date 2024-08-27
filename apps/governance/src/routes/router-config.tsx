@@ -6,52 +6,10 @@ import NotPermitted from './not-permitted';
 import Routes from './routes';
 import Restricted from './restricted';
 
-const LazyTranches = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-tranches", webpackPrefetch: true */ './tranches'
-    )
-);
-
-const LazyTranchesTranche = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-tranches-tranche", webpackPrefetch: true */ './tranches/tranche'
-    )
-);
-
-const LazyTranchesTranches = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-tranches-tranches", webpackPrefetch: true */ './tranches/tranches'
-    )
-);
-
 const LazyClaim = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-claim", webpackPrefetch: true */ './claim'
-    )
-);
-
-const LazyRedemption = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-redemption", webpackPrefetch: true */ './redemption'
-    )
-);
-
-const LazyRedemptionIndex = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-redemption-index", webpackPrefetch: true */ './redemption/home/redemption-information'
-    )
-);
-
-const LazyRedemptionTranche = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-redemption-tranche", webpackPrefetch: true */ './redemption/tranche'
     )
 );
 const LazyStaking = React.lazy(
@@ -214,16 +172,8 @@ const redirects = [
     element: <Navigate to={Routes.VALIDATORS} replace />,
   },
   {
-    path: '/tranches',
-    element: <Navigate to={Routes.SUPPLY} replace />,
-  },
-  {
     path: '/withdrawals',
     element: <Navigate to={Routes.WITHDRAWALS} replace />,
-  },
-  {
-    path: '/vesting',
-    element: <Navigate to={Routes.REDEEM} replace />,
   },
   {
     path: Routes.PROTOCOL_UPGRADES,
@@ -299,35 +249,8 @@ const routerConfig = [
         index: true,
       },
       {
-        path: Routes.SUPPLY,
-        element: <LazyTranches name="Tranches" />,
-        children: [
-          { index: true, element: <LazyTranchesTranches /> },
-          { path: ':trancheId', element: <LazyTranchesTranche /> },
-        ],
-      },
-      {
         path: Routes.WITHDRAWALS,
         element: <LazyWithdrawals name="Withdrawals" />,
-      },
-      {
-        path: Routes.REDEEM,
-        element: <LazyRedemption name="Vesting" />,
-        children: [
-          {
-            path: ':address',
-            children: [
-              {
-                index: true,
-                element: <LazyRedemptionIndex />,
-              },
-              {
-                path: ':id',
-                element: <LazyRedemptionTranche />,
-              },
-            ],
-          },
-        ],
       },
       { path: 'associate', element: <LazyStakingAssociate name="Associate" /> },
       {

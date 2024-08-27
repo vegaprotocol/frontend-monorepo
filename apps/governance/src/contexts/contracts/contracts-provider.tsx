@@ -1,9 +1,4 @@
-import {
-  Token,
-  TokenVesting,
-  Claim,
-  StakingBridge,
-} from '@vegaprotocol/smart-contracts';
+import { Token, Claim, StakingBridge } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -53,13 +48,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           signer = provider.getSigner(account);
         }
 
-        const tokenVestingAddress =
-          config.token_vesting_contract?.address ||
-          ENV.addresses.tokenVestingAddress;
-        if (!tokenVestingAddress) {
-          throw new Error('No token vesting address found');
-        }
-
         if (provider && config) {
           const staking = new StakingBridge(
             config.staking_bridge_contract.address,
@@ -71,10 +59,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
               token: new Token(vegaAddress, signer || provider),
               staking: new StakingBridge(
                 config.staking_bridge_contract.address,
-                signer || provider
-              ),
-              vesting: new TokenVesting(
-                tokenVestingAddress,
                 signer || provider
               ),
               claim: new Claim(ENV.addresses.claimAddress, signer || provider),

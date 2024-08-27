@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading, SubHeading } from '../../components/heading';
@@ -10,7 +10,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useNodeDataQuery } from './__generated__/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {
@@ -39,33 +39,10 @@ const Home = ({ name }: RouteChildProps) => {
           )}
         </p>
         <p>
-          <Trans
-            i18nKey="Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked."
-            components={{
-              trancheLink: (
-                <Link
-                  data-testid="tranches-link"
-                  to={Routes.SUPPLY}
-                  className="underline text-white"
-                />
-              ),
-            }}
-          />
-        </p>
-        <p>
           {t(
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
         </p>
-        <Link to={Routes.REDEEM}>
-          <Button
-            intent={Intent.Primary}
-            size="md"
-            data-testid="check-vesting-page-btn"
-          >
-            {t('Check to see if you can redeem unlocked VEGA tokens')}
-          </Button>
-        </Link>
       </HomeSection>
       <HomeSection>
         <SubHeading title={t('Use your Vega tokens')} />

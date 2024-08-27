@@ -6,7 +6,7 @@ import { useAppState } from '../contexts/app-state/app-state-context';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 
 export const useGetUserBalances = (account: string | undefined) => {
-  const { token, vesting } = useContracts();
+  const { token } = useContracts();
   const { config } = useEthereumConfig();
   const {
     appState: { decimals },
@@ -14,28 +14,21 @@ export const useGetUserBalances = (account: string | undefined) => {
   return useCallback(async () => {
     if (!account || !config) return;
     try {
-      const [b, w, stats, a] = await Promise.all([
-        vesting.user_total_all_tranches(account),
+      const [w, a] = await Promise.all([
         token.balanceOf(account),
-        vesting.user_stats(account),
         token.allowance(account, config.staking_bridge_contract.address),
       ]);
 
-      const balance = toBigNum(b.toString(), decimals);
       const walletBalance = toBigNum(w.toString(), decimals);
-      const lien = toBigNum(stats.lien.toString(), decimals);
       const allowance = toBigNum(a.toString(), decimals);
 
       return {
-        balanceFormatted: balance,
         walletBalance,
-        lien,
         allowance,
-        balance,
       };
     } catch (err) {
       Sentry.captureException(err);
       return null;
     }
-  }, [account, config, decimals, token, vesting]);
+  }, [account, config, decimals, token]);
 };

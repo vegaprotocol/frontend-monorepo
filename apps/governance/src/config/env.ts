@@ -12,7 +12,6 @@ const TRUTHY = ['1', 'true'];
 interface VegaContracts {
   claimAddress: string;
   lockedAddress: string;
-  tokenVestingAddress?: string;
 }
 
 const customClaimAddress = process.env['NX_CUSTOM_CLAIM_ADDRESS'] as string;
@@ -44,9 +43,6 @@ export const ContractAddresses: {
   VALIDATORS_TESTNET: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
-    // This is a fallback contract address for the validator testnet network which does not
-    // have a vesting contract address set and is therefore not in the ethereum config
-    tokenVestingAddress: '0xadFcb7f93a24F8743a8e548d74d2ecB373c92866',
   },
   MAINNET: {
     claimAddress: '0x0ee1fb382caf98e86e97e51f9f42f8b4654020f3',

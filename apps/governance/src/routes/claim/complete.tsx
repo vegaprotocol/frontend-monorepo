@@ -1,11 +1,9 @@
-import { Callout, Intent, Link, Button } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouteLink } from 'react-router-dom';
 
 import type { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
-import Routes from '../routes';
 
 export const Complete = ({
   address,
@@ -56,9 +54,6 @@ export const Complete = ({
           </Link>
         </p>
       )}
-      <RouteLink to={Routes.REDEEM}>
-        <Button>{t('Check your vesting VEGA tokens')}</Button>
-      </RouteLink>
     </Callout>
   );
 };

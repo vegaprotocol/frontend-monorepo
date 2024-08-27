@@ -55,21 +55,20 @@ export const DisassociatePage = ({
 }) => {
   const { t } = useTranslation();
 
-  const { stakingAssociations, vestingAssociations } = useBalances(
+  const { stakingAssociations } = useBalances(
     (state) => state.associationBreakdown
   );
 
   const associations = useMemo(
     () =>
-      [
-        ...toListOfAssociations(stakingAssociations, StakingMethod.Wallet),
-        ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
-      ].map((a) => ({
-        ...a,
-        label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)}
+      [...toListOfAssociations(stakingAssociations, StakingMethod.Wallet)].map(
+        (a) => ({
+          ...a,
+          label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)}
                 (${formatNumber(a.amount, 18)} ${t('tokens')})`,
-      })),
-    [stakingAssociations, vestingAssociations, t]
+        })
+      ),
+    [stakingAssociations, t]
   );
 
   useEffect(() => {

@@ -28,16 +28,11 @@ export const useRemoveStake = (
   payload: RemoveStakePayload
 ) => {
   const { appState } = useAppState();
-  const { staking, vesting } = useContracts();
+  const { staking } = useContracts();
   // Cannot use call on these as they check wallet balance
   // which if staked > wallet balance means you cannot unstaked
   // even worse if you stake everything then you can't unstake anything!
-  const contractRemove = useTransaction(() =>
-    vesting.remove_stake(
-      removeDecimal(payload.amount, appState.decimals),
-      payload.vegaKey
-    )
-  );
+
   const walletRemove = useTransaction(() =>
     staking.removeStake(
       removeDecimal(payload.amount, appState.decimals),
@@ -46,35 +41,21 @@ export const useRemoveStake = (
   );
 
   const refreshBalances = useRefreshBalances(address);
-  const getAssociationBreakdown = useGetAssociationBreakdown(
-    address,
-    staking,
-    vesting
-  );
+  const getAssociationBreakdown = useGetAssociationBreakdown(address, staking);
 
   React.useEffect(() => {
-    if (
-      walletRemove.state.txState === TxState.Complete ||
-      contractRemove.state.txState === TxState.Complete
-    ) {
+    if (walletRemove.state.txState === TxState.Complete) {
       refreshBalances();
       getAssociationBreakdown();
     }
-  }, [
-    contractRemove.state.txState,
-    walletRemove.state.txState,
-    refreshBalances,
-    getAssociationBreakdown,
-  ]);
+  }, [walletRemove.state.txState, refreshBalances, getAssociationBreakdown]);
 
   return React.useMemo(() => {
     switch (payload.stakingMethod) {
-      case StakingMethod.Contract:
-        return contractRemove;
       case StakingMethod.Wallet:
         return walletRemove;
       default:
         return EMPTY_REMOVE;
     }
-  }, [contractRemove, payload, walletRemove]);
+  }, [payload, walletRemove]);
 };

@@ -11,9 +11,7 @@ const Routes = {
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
   TOKEN: '/token',
-  REDEEM: '/token/redeem',
   WITHDRAWALS: '/token/withdraw',
-  SUPPLY: '/token/tranches',
   ASSOCIATE: '/token/associate',
   DISASSOCIATE: '/token/disassociate',
   DISCLAIMER: '/disclaimer',
@@ -43,16 +41,8 @@ export const TOKEN_DROPDOWN_ROUTES = [
     end: true,
   },
   {
-    name: 'Supply & Vesting',
-    path: Routes.SUPPLY,
-  },
-  {
     name: 'Withdraw',
     path: Routes.WITHDRAWALS,
-  },
-  {
-    name: 'Redeem',
-    path: Routes.REDEEM,
   },
   {
     name: 'Associate',
