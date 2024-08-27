@@ -30,7 +30,6 @@ import { CompetitionsCreateTeam } from '../client-pages/competitions/competition
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
 import { Swap } from '../client-pages/swap/swap';
-import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
 import { NotFound } from '../client-pages/not-found';
 
 import { LayoutCentered } from '../components/layouts';
@@ -186,10 +185,6 @@ export const useRouterConfig = (): RouteObject[] => {
             { path: 'deposit', element: <Deposit /> },
             { path: 'withdraw', element: <Withdraw /> },
             { path: 'transfer', element: <Transfer /> },
-            {
-              path: 'deposit-cross-chain',
-              element: <DepositCrossChain />,
-            },
             { path: 'swap', element: <Swap /> },
           ],
         },

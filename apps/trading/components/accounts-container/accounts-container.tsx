@@ -17,7 +17,6 @@ export const AccountsContainer = ({
   hideZeroBalance,
   onClickAsset,
   onClickDeposit,
-  onClickCrossChainDeposit,
   onClickSwap,
   onClickTransfer,
   onClickWithdraw,
@@ -44,9 +43,6 @@ export const AccountsContainer = ({
     onClickDeposit: (assetId) => {
       navigateToAssetAction(Links.DEPOSIT(), assetId);
     },
-    onClickCrossChainDeposit: (assetId) => {
-      navigateToAssetAction(Links.DEPOSIT_CROSS_CHAIN(), assetId);
-    },
     onClickSwap: (assetId) => {
       navigateToAssetAction(Links.SWAP(), assetId);
     },
@@ -64,9 +60,6 @@ export const AccountsContainer = ({
       onClickAsset={onClickAsset || defaultActions.onClickAsset}
       onClickWithdraw={onClickWithdraw || defaultActions.onClickWithdraw}
       onClickDeposit={onClickDeposit || defaultActions.onClickDeposit}
-      onClickCrossChainDeposit={
-        onClickCrossChainDeposit || defaultActions.onClickCrossChainDeposit
-      }
       onClickTransfer={onClickTransfer || defaultActions.onClickTransfer}
       onClickSwap={onClickSwap || defaultActions.onClickSwap}
       isReadOnly={isReadOnly}

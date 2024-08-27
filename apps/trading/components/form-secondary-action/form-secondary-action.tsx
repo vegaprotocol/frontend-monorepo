@@ -1,4 +1,8 @@
-import { type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
+import {
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+} from 'react';
 
 export const FormSecondaryActionWrapper = (
   props: HTMLAttributes<HTMLDivElement>
@@ -18,4 +22,11 @@ export const FormSecondaryActionButton = (
       className="text-xs underline underline-offset-4"
     />
   );
+};
+
+export const FormSecondaryActionLink = (
+  props: AnchorHTMLAttributes<HTMLAnchorElement>
+) => {
+  // eslint-disable-next-line
+  return <a {...props} className="text-xs underline underline-offset-4" />;
 };

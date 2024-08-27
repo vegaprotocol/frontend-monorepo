@@ -17,7 +17,6 @@ export const useSidebar = create<{
 
 export enum SidebarAccountsViewType {
   Deposit = 'Deposit',
-  CrossChainDeposit = 'Cross-chain deposit',
   Swap = 'Swap',
   Transfer = 'Transfer',
   Withdraw = 'Withdraw',
@@ -36,16 +35,3 @@ export const useSidebarAccountsInnerView =
     view: undefined,
     setView: (view) => set({ view }),
   }));
-
-/**
- * Returns a minimum width for the sidebar, if the squid widget
- * is shown its increased to allow room for full display
- */
-export const useSquidSidebarMinWidth = () => {
-  const sidebarInner = useSidebarAccountsInnerView((store) => store.view);
-  const isSquidShowing =
-    sidebarInner &&
-    sidebarInner[0] === SidebarAccountsViewType.CrossChainDeposit;
-
-  return isSquidShowing ? 463 : 350;
-};

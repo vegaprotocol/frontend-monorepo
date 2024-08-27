@@ -7,13 +7,7 @@ import {
 } from '../accounts-container/accounts-container';
 import { DepositContainer } from '../deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
-import {
-  VegaIcon,
-  VegaIconNames,
-  Notification,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
-import { SquidContainer } from '../squid-container';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
   type InnerView,
   useSidebarAccountsInnerView,
@@ -63,9 +57,6 @@ export const SidebarAccountsContainer = ({
           onClickDeposit={(assetId) => {
             setInnerView([SidebarAccountsViewType.Deposit, assetId]);
           }}
-          onClickCrossChainDeposit={(assetId) => {
-            setInnerView([SidebarAccountsViewType.CrossChainDeposit, assetId]);
-          }}
           onClickSwap={(assetId) => {
             setInnerView([SidebarAccountsViewType.Swap, assetId]);
           }}
@@ -89,24 +80,10 @@ const InnerContainer = ({
   innerView: InnerView;
   setInnerView?: (innerView: InnerView | undefined) => void;
 }) => {
-  const t = useT();
   const [view, assetId] = innerView;
   switch (view) {
     case SidebarAccountsViewType.Deposit:
       return <DepositContainer initialAssetId={assetId} />;
-
-    case SidebarAccountsViewType.CrossChainDeposit:
-      return (
-        <div className="flex flex-col gap-1">
-          <Notification
-            intent={Intent.Info}
-            message={t(
-              'This form only supports deposits in Arbitrum USDT since the majority of markets on Vega settle in this asset. If you wish to deposit a different asset please use the normal deposit flow.'
-            )}
-          />
-          <SquidContainer />
-        </div>
-      );
 
     case SidebarAccountsViewType.Swap:
       return (
