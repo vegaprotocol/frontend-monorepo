@@ -23,15 +23,12 @@ export interface JsonRpcNotification {
  */
 export const JsonRPCProvider = ({ children }: { children: JSX.Element }) => {
   const { client, request } = useCreateClient();
-  const { handleConnection, handleTransaction } = useInteractionStore(
-    (store) => ({
-      handleConnection: store.handleConnection,
-      handleTransaction: store.handleTransaction,
-    })
-  );
+  const { handleTransaction } = useInteractionStore((store) => ({
+    handleTransaction: store.handleTransaction,
+  }));
   const server = useMemo(
-    () => createServer(handleConnection, handleTransaction),
-    [handleConnection, handleTransaction]
+    () => createServer(handleTransaction),
+    [handleTransaction]
   );
   const value = useMemo(
     () => ({

@@ -4,9 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import locators from '@/components/locators';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { useAssetsStore } from '@/stores/assets-store';
-import { useConnectionStore } from '@/stores/connections';
 import { useMarketsStore } from '@/stores/markets-store';
-import { useNetworksStore } from '@/stores/networks-store';
 import { useWalletStore } from '@/stores/wallets';
 import { mockStore } from '@/test-helpers/mock-store';
 
@@ -23,9 +21,7 @@ jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
 
 jest.mock('@/stores/wallets');
 jest.mock('@/stores/assets-store');
-jest.mock('@/stores/networks-store');
 jest.mock('@/stores/markets-store');
-jest.mock('@/stores/connections');
 
 jest.mock('@/components/modals', () => ({
   ModalWrapper: () => <div data-testid="modal-wrapper" />,
@@ -35,13 +31,8 @@ const mockStores = () => {
   const loadWallets = jest.fn();
   const fetchAssets = jest.fn();
   const fetchMarkets = jest.fn();
-  const loadNetworks = jest.fn();
-  const loadConnections = jest.fn();
   mockStore(useWalletStore, {
     loadWallets,
-  });
-  mockStore(useNetworksStore, {
-    loadNetworks,
   });
   mockStore(useAssetsStore, {
     fetchAssets,
@@ -49,16 +40,11 @@ const mockStores = () => {
   mockStore(useMarketsStore, {
     fetchMarkets,
   });
-  mockStore(useConnectionStore, {
-    loadConnections,
-  });
-  mockStore(useNetworksStore, {});
 
   return {
     loadWallets,
     fetchAssets,
     fetchMarkets,
-    loadConnections,
   };
 };
 
@@ -82,12 +68,10 @@ describe('Auth', () => {
     expect(screen.getByTestId('modal-wrapper')).toBeInTheDocument();
   });
   it('loads the users wallets, networks, assets and markets', () => {
-    const { loadWallets, fetchAssets, fetchMarkets, loadConnections } =
-      mockStores();
+    const { loadWallets, fetchAssets, fetchMarkets } = mockStores();
     renderComponent();
 
     expect(loadWallets).toHaveBeenCalledTimes(1);
-    expect(loadConnections).toHaveBeenCalledTimes(1);
     expect(fetchAssets).toHaveBeenCalledTimes(1);
     expect(fetchMarkets).toHaveBeenCalledTimes(1);
   });
@@ -102,25 +86,8 @@ describe('Auth', () => {
     mockStore(useMarketsStore, {
       fetchMarkets: jest.fn(),
     });
-    mockStore(useNetworksStore, {});
     const { container } = renderComponent();
 
-    expect(container).toBeEmptyDOMElement();
-  });
-  it('renders nothing if networks are loading', () => {
-    mockStore(useWalletStore, {
-      loadWallets: jest.fn(),
-    });
-    mockStore(useAssetsStore, {
-      fetchAssets: jest.fn(),
-    });
-    mockStore(useMarketsStore, {
-      fetchMarkets: jest.fn(),
-    });
-    mockStore(useNetworksStore, {
-      loading: true,
-    });
-    const { container } = renderComponent();
     expect(container).toBeEmptyDOMElement();
   });
 });

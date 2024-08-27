@@ -17,9 +17,9 @@ export const PriceWithTooltip = ({
   marketId: string;
   price: string;
 }) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
 
-  const marketHref = `${network.explorer}/markets/${marketId}`;
+  const marketHref = `${explorer}/markets/${marketId}`;
   return (
     <span className="flex items-center" data-testid={locators.priceWithTooltip}>
       <Tooltip

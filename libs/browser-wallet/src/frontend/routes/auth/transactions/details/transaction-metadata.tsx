@@ -36,7 +36,7 @@ interface TransactionSectionProperties {
 export const TransactionMetadata = ({
   transaction,
 }: TransactionSectionProperties) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
   const cols = [
     [
       'From',
@@ -44,7 +44,7 @@ export const TransactionMetadata = ({
         data-testid={locators.transactionMetadataPublicKey}
         key="transaction-details-public-key"
         className="text-surface-0-fg-muted"
-        href={`${network.explorer}/parties/${transaction.publicKey}`}
+        href={`${explorer}/parties/${transaction.publicKey}`}
       >
         {truncateMiddle(transaction.publicKey)}
       </ExternalLink>,
@@ -55,7 +55,7 @@ export const TransactionMetadata = ({
           <ExternalLink
             data-testid={locators.transactionMetadataHash}
             key="transaction-details-hash"
-            href={`${network.explorer}/txs/${transaction.hash}`}
+            href={`${explorer}/txs/${transaction.hash}`}
           >
             {truncateMiddle(transaction.hash)}
           </ExternalLink>,

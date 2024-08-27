@@ -82,7 +82,7 @@ export default function init({
   onerror,
   settings,
   wallets,
-  networks,
+  rpc,
   connections,
   interactor,
   transactions,
@@ -92,42 +92,18 @@ export default function init({
     onerror,
     methods: {
       async 'client.connect_wallet'(params, context) {
-        const receivedAt = new Date().toISOString();
         doValidate(clientValidation.connectWallet, params);
         if (context.isConnected === true) {
-          if (!params.chainId) return null;
-          if (
-            params.chainId &&
-            params.chainId === (await connections.getChainId(context.origin))
-          )
-            return null;
-        }
-        if ((await connections.has(context.origin)) === false) {
-          // If this is a connection request, without a chainId we look up the default one for the extension
-          if (params.chainId == null) {
-            const selectedNetworkId = await settings.get('selectedNetwork');
-            params.chainId = (
-              await networks.getByNetworkId(selectedNetworkId)
-            ).chainId;
-          }
-          const network = await networks.getByChainId(params.chainId);
-          if (network == null) {
-            throw new JSONRPCServer.Error(...Errors.UNKNOWN_CHAIN_ID);
-          }
-          const hiddenNetworksEnabled = await settings.get(
-            'showHiddenNetworks'
-          );
-          if (network.hidden && hiddenNetworksEnabled !== true) {
-            throw new JSONRPCServer.Error(...Errors.DEVELOPMENT_CHAIN_ID);
-          }
-          const reply = await interactor.reviewConnection({
-            origin: context.origin,
-            chainId: params.chainId,
-            receivedAt,
-          });
-          if (reply.approved === false)
-            throw new JSONRPCServer.Error(...Errors.CONNECTION_DENIED);
+          return null;
+        } else if ((await connections.has(context.origin)) === false) {
           const allWallets = await wallets.list();
+          if (allWallets.length === 0) {
+            throw new JSONRPCServer.Error(
+              'No wallets found',
+              -1,
+              'A wallet must be created before you can connect to the in browser wallet'
+            );
+          }
           const walletPubKeys = await Promise.all(
             allWallets.map((w) => wallets.listKeys({ wallet: w }))
           );
@@ -138,13 +114,7 @@ export default function init({
               publicKeys: walletPubKeys.flatMap((w) => w),
             },
             chainId: params.chainId,
-            networkId: reply.networkId,
           });
-        } else if (
-          params.chainId != null &&
-          (await connections.getChainId(context.origin)) !== params.chainId
-        ) {
-          throw new JSONRPCServer.Error(...Errors.MISMATCHING_CHAIN_ID);
         }
 
         context.isConnected = true;
@@ -153,8 +123,7 @@ export default function init({
       },
       async 'client.disconnect_wallet'(params, context) {
         doValidate(clientValidation.disconnectWallet, params);
-        // context.isConnected = false
-
+        context.isConnected = false;
         return null;
       },
       async 'client.is_connected'(params, context) {
@@ -180,9 +149,6 @@ export default function init({
 
         if (keyInfo == null)
           throw new JSONRPCServer.Error(...Errors.UNKNOWN_PUBLIC_KEY);
-        const selectedNetworkId = await connections.getNetworkId(
-          context.origin
-        );
         const selectedChainId = await connections.getChainId(context.origin);
         const connection = await connections.get(context.origin);
         const transactionType = txHelpers.getTransactionType(
@@ -203,13 +169,11 @@ export default function init({
             sendingMode: params.sendingMode,
             origin: context.origin,
             chainId: selectedChainId,
-            networkId: selectedNetworkId,
             receivedAt,
           });
         }
 
         const key = await wallets.getKeypair({ publicKey: params.publicKey });
-        const network = await networks.get(selectedNetworkId, selectedChainId);
 
         if (approved === false) {
           const storedTx = await transactions.generateStoreTx({
@@ -231,7 +195,6 @@ export default function init({
           throw new JSONRPCServer.Error(...Errors.TRANSACTION_DENIED);
         }
 
-        const rpc = await network.rpc();
         const storedTx = await transactions.generateStoreTx({
           transaction: params.transaction,
           publicKey: params.publicKey,
@@ -277,29 +240,14 @@ export default function init({
           );
         }
       },
-      async 'client.sign_transaction'(params, context) {
-        throw new JSONRPCServer.Error('Not Implemented', -32601);
-      },
       async 'client.get_chain_id'(params, context) {
         doValidate(clientValidation.getChainId, params);
 
         if (context.isConnected === true) {
-          const selectedNetworkId = await connections.getNetworkId(
-            context.origin
-          );
           const selectedChainId = await connections.getChainId(context.origin);
-          const network = await networks.get(
-            selectedNetworkId,
-            selectedChainId
-          );
-
-          return { chainID: network.chainId };
+          return { chainID: selectedChainId };
         }
-
-        const selectedNetworkId = await settings.get('selectedNetwork');
-        const network = await networks.getByNetworkId(selectedNetworkId);
-
-        return { chainID: network.chainId };
+        return { chainID: null };
       },
       async 'client.list_keys'(params, context) {
         doValidate(clientValidation.listKeys, params);

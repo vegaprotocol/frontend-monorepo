@@ -10,6 +10,10 @@ jest.mock('../utils/string-amounts/amount-with-symbol', () => ({
   AmountWithSymbol: () => <div data-testid="amount-with-symbol" />,
 }));
 
+jest.mock('./receiving-key', () => ({
+  ReceivingKey: () => <div data-testid="receiving-key" />,
+}));
+
 const renderComponent = ({
   amount,
   asset,

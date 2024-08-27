@@ -13,7 +13,21 @@ export const locators = {
 
 TimeAgo.addDefaultLocale(en);
 
-function App() {
+function App({
+  explorer,
+  docs,
+  governance,
+  console,
+  chainId,
+  etherscanUrl,
+}: {
+  explorer: string;
+  docs: string;
+  governance: string;
+  console: string;
+  chainId: string;
+  etherscanUrl: string;
+}) {
   return (
     // @ts-ignore -- https://github.com/remix-run/react-router/issues/7375#issuecomment-975431736
     // eslint-disable-next-line react/jsx-pascal-case
@@ -21,7 +35,14 @@ function App() {
       <Router>
         <GlobalErrorBoundary>
           <JsonRPCProvider>
-            <NetworkProvider>
+            <NetworkProvider
+              explorer={explorer}
+              docs={docs}
+              governance={governance}
+              console={console}
+              chainId={chainId}
+              etherscanUrl={etherscanUrl}
+            >
               <main
                 data-testid={locators.appWrapper}
                 className="w-full h-full bg-surface-0 text-surface-0-fg font-sans overflow-hidden"

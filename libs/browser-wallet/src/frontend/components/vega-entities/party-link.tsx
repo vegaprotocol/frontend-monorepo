@@ -14,13 +14,13 @@ export const PartyLink = ({
   publicKey: string;
   text?: string;
 }) => {
-  const { network } = useNetwork();
+  const { explorer } = useNetwork();
 
   return (
     <ExternalLink
       className={cn('text-surface-0-fg-muted', { 'font-mono': !text })}
       data-testid={locators.partyLink}
-      href={`${network.explorer}/parties/${publicKey}`}
+      href={`${explorer}/parties/${publicKey}`}
     >
       {text ?? truncateMiddle(publicKey)}
     </ExternalLink>

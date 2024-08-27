@@ -11,12 +11,13 @@ export const locators = {
 };
 
 export const Transactions = () => {
-  const { network } = useNetwork();
+  const { explorer, chainId } = useNetwork();
   const { transactions } = useTransactionsStore((state) => ({
     transactions: state.transactions,
   }));
+  // TODO figure this out
   const filteredTransactions = transactions.filter(
-    (tx) => tx.networkId === network.id
+    (tx) => tx.chainId === chainId
   );
 
   return (
@@ -25,10 +26,7 @@ export const Transactions = () => {
         <p data-testid={locators.transactionsDescription} className="text-sm">
           This only includes transactions placed from this wallet, in order to
           see all transactions you can visit the{' '}
-          <ExternalLink
-            className="text-surface-0-fg mt-1"
-            href={network.explorer}
-          >
+          <ExternalLink className="text-surface-0-fg mt-1" href={explorer}>
             <span className="underline">block explorer.</span>
           </ExternalLink>
         </p>

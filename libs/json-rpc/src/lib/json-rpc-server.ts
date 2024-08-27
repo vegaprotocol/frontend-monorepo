@@ -70,7 +70,7 @@ export class JSONRPCServer {
     return () => this._notificationListeners.delete(listener);
   }
 
-  async onrequest(req: JsonRpcMessage, context: unknown) {
+  async onrequest(req: JsonRpcMessage, context?: unknown) {
     // Will match Arrays also but those will be caught below
     if (req == null || typeof req !== 'object') {
       return { jsonrpc: '2.0', error: Errors.JSONRPC_PARSE_ERROR };
