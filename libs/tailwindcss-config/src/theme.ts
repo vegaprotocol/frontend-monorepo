@@ -11,6 +11,9 @@ export const theme = {
     xxl: '1440px',
     xxxl: '1800px',
   },
+  borderColor: {
+    DEFAULT: 'var(--border)',
+  },
   borderRadius: {
     'button-xs': 'var(--button-border-radius-xs)',
     'button-sm': 'var(--button-border-radius-sm)',
