@@ -211,7 +211,7 @@
     --button-border-radius-lg: theme(borderRadius.lg);
 
     /* Border */
-    --border: rgb(var(--gs-200));
+    --border: rgb(var(--gs-300));
   }
 
   .dark {
