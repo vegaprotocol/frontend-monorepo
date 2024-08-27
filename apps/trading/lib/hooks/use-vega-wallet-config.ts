@@ -49,7 +49,7 @@ export const useVegaWalletConfig = () => {
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: IN_BROWSER_WALLET
-        ? [injected, snap, jsonRpc, inBrowser, viewParty]
+        ? [inBrowser, viewParty]
         : [injected, snap, jsonRpc, viewParty],
     });
 
