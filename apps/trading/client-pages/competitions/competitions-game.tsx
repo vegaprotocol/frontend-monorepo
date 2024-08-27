@@ -16,9 +16,14 @@ import {
   DispatchMetric,
   type StakingDispatchStrategy,
   DispatchMetricDescription,
+  EntityScope,
+  IndividualScope,
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
+  Button,
+  Dialog,
+  Intent,
   Loader,
   Splash,
   Tooltip,
@@ -34,8 +39,11 @@ import {
 } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-import { useT } from '../../lib/use-t';
-import { useReward } from '../../lib/hooks/use-rewards';
+import { t, useT } from '../../lib/use-t';
+import {
+  type EnrichedRewardTransfer,
+  useReward,
+} from '../../lib/hooks/use-rewards';
 import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
 import { useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
@@ -56,6 +64,12 @@ import { Card } from '../../components/card';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
 import { RankPayoutTable } from '../../components/rewards-container/rank-table';
+import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
+import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
+import { CompetitionsActions } from '../../components/competitions/competitions-cta';
+import { useState } from 'react';
+import { MarketSelector } from '../../components/market-selector';
+import { DApp, TOKEN_ASSOCIATE, useLinks } from '@vegaprotocol/environment';
 
 type Metric = DispatchMetric | 'STAKING_REWARD_METRIC';
 
@@ -172,6 +186,7 @@ export const CompetitionsGame = () => {
           )}{' '}
           <span className="calt">{asset.symbol}</span>
         </p>
+        <TradeToPlayButton reward={reward} />
         <p>{DispatchMetricDescription[dispatchMetric]}</p>
       </header>
       <section className="flex flex-col lg:flex-row gap-4">
@@ -759,4 +774,142 @@ export const getPayouts = (
     lastPayout,
     nextPayout,
   };
+};
+
+const TradeToPlayButton = ({
+  reward,
+}: {
+  reward: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
+}) => {
+  const [signUpOpen, setSignUpOpen] = useState(false);
+  const [tradeOpen, setTradeOpen] = useState(false);
+
+  const governanceLink = useLinks(DApp.Governance);
+
+  const { pubKey } = useVegaWallet();
+  const { stakeAvailable } = useStakeAvailable(pubKey);
+  const { team: myTeam, teamId: myTeamId, role: myRole } = useMyTeam();
+
+  const entityScope = reward.transfer.kind.dispatchStrategy.entityScope;
+  const individualScope = reward.transfer.kind.dispatchStrategy.individualScope;
+  const teamScope = reward.transfer.kind.dispatchStrategy.teamScope;
+
+  const currentStake = toBigNum(String(stakeAvailable || 0), 18);
+  const requiredStake = toBigNum(
+    reward.transfer.kind.dispatchStrategy.stakingRequirement || 0,
+    18
+  );
+
+  const openSignUpDialog = () => {
+    setSignUpOpen(true);
+  };
+
+  const openMarketSelectorDialog = () => {
+    setTradeOpen(true);
+  };
+
+  let disabled = false;
+  let needsStake = false;
+  let needsSignUp = false;
+
+  if (entityScope === EntityScope.ENTITY_SCOPE_TEAMS) {
+    if (!myTeamId) {
+      needsSignUp = true;
+    }
+    if (myTeamId) {
+      const scopedToTeam = teamScope && teamScope.length > 0;
+      if (scopedToTeam) {
+        if (!teamScope.includes(myTeamId) && myRole === Role.TEAM_MEMBER) {
+          needsSignUp = true;
+        }
+        if (!teamScope.includes(myTeamId) && myRole === Role.TEAM_OWNER) {
+          disabled = true;
+        }
+      }
+    }
+  }
+
+  if (entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS) {
+    if (
+      individualScope === IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM &&
+      !myTeam
+    ) {
+      needsSignUp = true;
+    }
+    if (
+      individualScope === IndividualScope.INDIVIDUAL_SCOPE_NOT_IN_TEAM &&
+      myTeamId
+    ) {
+      disabled = true;
+    }
+  }
+
+  needsStake = currentStake.isLessThan(requiredStake);
+
+  let props = {
+    intent: Intent.Primary,
+    children: t('COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_DEFAULT_LABEL'),
+    onClick: openMarketSelectorDialog,
+    disabled,
+  };
+
+  if (needsSignUp) {
+    props = {
+      ...props,
+      children: t('COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_SIGN_UP_LABEL'),
+      onClick: openSignUpDialog,
+    };
+  } else if (needsStake) {
+    props = {
+      ...props,
+      children: t('COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_STAKE_LABEL'),
+      onClick: () => undefined, // link to associate page
+    };
+  }
+
+  return (
+    <>
+      <p>
+        {needsStake ? (
+          <a
+            href={governanceLink(TOKEN_ASSOCIATE)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Button {...props} />
+          </a>
+        ) : (
+          <Button {...props} />
+        )}
+      </p>
+
+      <Dialog
+        size="large"
+        open={signUpOpen}
+        onChange={(open) => {
+          setSignUpOpen(open);
+        }}
+        title={t('COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_SIGN_UP_TITLE')}
+      >
+        <CompetitionsActions myRole={myRole} myTeamId={myTeamId} />
+      </Dialog>
+
+      <Dialog
+        size="large"
+        open={tradeOpen}
+        onChange={(open) => {
+          setTradeOpen(open);
+        }}
+        title={t('COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_DEFAULT_TITLE')}
+      >
+        <MarketSelector
+          onSelect={() => {
+            setTradeOpen(false);
+          }}
+          showFilters={false}
+          marketIdsInScope={reward.markets?.map((m) => m.id)}
+        />
+      </Dialog>
+    </>
+  );
 };

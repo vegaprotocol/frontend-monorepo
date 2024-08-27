@@ -72,6 +72,7 @@ export const MobileMarketHeader = () => {
         <MarketSelector
           currentMarketId={marketId}
           onSelect={() => setOpenMarket(false)}
+          className="md:w-[680px]"
         />
       </FullScreenPopover>
       <FullScreenPopover

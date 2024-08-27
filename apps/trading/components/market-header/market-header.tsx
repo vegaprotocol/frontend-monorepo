@@ -70,6 +70,7 @@ export const MarketHeader = () => {
           <MarketSelector
             currentMarketId={marketId}
             onSelect={() => setOpen(false)}
+            className="md:w-[680px]"
           />
         </Popover>
       }

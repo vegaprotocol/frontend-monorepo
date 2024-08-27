@@ -44,6 +44,7 @@ export type ISortOption = keyof typeof SortOption;
 export type Filters = {
   marketTypes: IMarketType[];
   marketStates: IMarketState[];
+  marketIds: string[];
   assets: string[];
   searchTerm: string | undefined;
   sortOrder: ISortOption;
@@ -61,6 +62,7 @@ type Actions = {
 export const DEFAULT_FILTERS: Filters = {
   marketTypes: [],
   marketStates: ['OPEN'],
+  marketIds: [],
   assets: [],
   searchTerm: '',
   sortOrder: SortOption.TOP_TRADED,
@@ -130,7 +132,7 @@ export const filterMarket = (
   filters: Partial<Filters>
 ) => {
   let passes = true;
-  const { marketTypes, marketStates, assets, searchTerm } = filters;
+  const { marketTypes, marketStates, marketIds, assets, searchTerm } = filters;
 
   // filter by market type
   if (
@@ -161,6 +163,11 @@ export const filterMarket = (
     searchTerm.length > 0 &&
     !nameOrCodeMatches(market, searchTerm)
   ) {
+    passes = false;
+  }
+
+  // filter by market id
+  if (marketIds && marketIds.length > 0 && !marketIds.includes(market.id)) {
     passes = false;
   }
 
