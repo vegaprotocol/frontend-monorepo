@@ -5,6 +5,7 @@ import { type AssetERC20, useEnabledAssets } from '@vegaprotocol/assets';
 import { useSquid } from './use-squid';
 import { FallbackDepositForm } from './fallback-deposit-form';
 import { useT } from '../../lib/use-t';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 /**
  * Gets env vars, assets, and configs required for the deposit form
@@ -15,6 +16,7 @@ export const DepositContainer = ({
   initialAssetId?: string;
 }) => {
   const t = useT();
+  const { VEGA_ENV } = useEnvironment();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
   const { data: assets, loading } = useEnabledAssets();
@@ -33,7 +35,7 @@ export const DepositContainer = ({
   }
 
   // If we have squid initialized show the form which allows swaps
-  if (squid.initialized) {
+  if (VEGA_ENV === Networks.MAINNET && squid.initialized) {
     return (
       <DepositForm
         squid={squid}
