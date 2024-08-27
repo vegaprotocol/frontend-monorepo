@@ -47,7 +47,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
         'relative flex items-center h-8 w-14 leading-[0] shrink-0',
         {
           'w-14': size === 30,
-          'w-10': size === 26,
+          'w-12': size === 26,
         }
       )}
     >
@@ -82,8 +82,8 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           size={12}
           alt={t('Chain logo')}
           className={cn(`align-text-top absolute`, {
-            'bottom-0 right-0': size === 30,
-            'bottom-1 right-2': size === 26,
+            'bottom-0 right-1': size === 30,
+            'bottom-1 right-1': size === 26,
           })}
         />
       )}
