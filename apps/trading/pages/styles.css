@@ -209,6 +209,9 @@
     --button-border-radius-sm: theme(borderRadius.DEFAULT);
     --button-border-radius-md: theme(borderRadius.DEFAULT);
     --button-border-radius-lg: theme(borderRadius.lg);
+
+    /* Border */
+    --border: rgb(var(--gs-300));
   }
 
   .dark {
@@ -246,6 +249,9 @@
     --dir-up-bg: var(--color-green-600);
     --dir-up-outline: var(--color-green-450);
     --dir-up-fg: var(--color-green);
+
+    /* Border */
+    --border: rgb(var(--gs-700));
   }
 }
 
