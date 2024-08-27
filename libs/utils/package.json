@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/utils",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "dependencies": {
     "@vegaprotocol/types": "0.0.7",
     "bignumber.js": "^9.0.2",
