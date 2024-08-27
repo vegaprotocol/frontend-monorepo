@@ -6,18 +6,18 @@ import React from 'react';
 
 function colorByChange(a: number, b: number) {
   if (a < b) {
-    return 'stroke-market-green-600 dark:stroke-market-green';
+    return 'stroke-dir-up-outline';
   } else if (a > b) {
-    return 'stroke-market-red dark:stroke-market-red';
+    return 'stroke-dir-down-outline';
   }
   return 'stroke-black/40 dark:stroke-white/40';
 }
 
 function shadedColor(a: number, b: number) {
   if (a < b) {
-    return 'fill-market-green-600';
+    return 'fill-dir-up';
   } else if (a > b) {
-    return 'fill-market-red';
+    return 'fill-dir-down';
   }
   return 'fill-black dark:fill-white';
 }

@@ -21,8 +21,8 @@ import { type Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 import { useT } from './use-t';
 
-export const BUY_CLASS = 'text-market-green-600 dark:text-market-green';
-export const SELL_CLASS = 'text-market-red dark:text-market-red';
+export const BUY_CLASS = 'text-dir-up-fg';
+export const SELL_CLASS = 'text-dir-down-fg';
 
 const changeCellClass = ({ node }: CellClassParams) => {
   let colorClass = '';

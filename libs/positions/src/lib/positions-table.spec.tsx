@@ -81,8 +81,8 @@ describe('Positions', () => {
     const cells = screen.getAllByRole('gridcell');
     const cell = cells[1];
 
-    expect(cell).toHaveClass('text-market-green-600');
-    expect(cell).not.toHaveClass('text-market-red');
+    expect(cell).toHaveClass('text-dir-up-fg');
+    expect(cell).not.toHaveClass('text-dir-down-fg');
 
     expect(within(cell).getByTestId('stack-cell-primary')).toHaveTextContent(
       '+100'
@@ -97,8 +97,8 @@ describe('Positions', () => {
     const cells = screen.getAllByRole('gridcell');
     const cell = cells[1];
 
-    expect(cell).not.toHaveClass('text-market-green-600');
-    expect(cell).toHaveClass('text-market-red');
+    expect(cell).not.toHaveClass('text-dir-up-fg');
+    expect(cell).toHaveClass('text-dir-down-fg');
 
     expect(within(cell).getByTestId('stack-cell-primary')).toHaveTextContent(
       '-100'

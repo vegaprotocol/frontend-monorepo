@@ -57,11 +57,8 @@ export const OrderViewDialog = ({
           <div
             data-testid={`order-side-value`}
             className={cn({
-              // BUY
-              'text-market-green-600 dark:text-market-green':
-                order.side === Schema.Side.SIDE_BUY,
-              // SELL
-              'text-market-red': order.side === Schema.Side.SIDE_SELL,
+              'text-dir-up-fg': order.side === Schema.Side.SIDE_BUY,
+              'text-dir-down-fg': order.side === Schema.Side.SIDE_SELL,
             })}
           >
             {Schema.SideMapping[order.side as Schema.Side]}

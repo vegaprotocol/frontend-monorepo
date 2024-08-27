@@ -36,9 +36,8 @@ export const Toggle = ({
     {
       'peer-checked:bg-gs-900 peer-checked:text-surface-1-fg peer-checked:dark:bg-gs-100 peer-checked:dark:text-gs-900':
         type === 'primary',
-      'peer-checked:bg-market-green-550 peer-checked:text-white':
-        type === 'buy',
-      'peer-checked:bg-market-red peer-checked:text-white': type === 'sell',
+      'peer-checked:bg-dir-up peer-checked:text-white': type === 'buy',
+      'peer-checked:bg-dir-down peer-checked:text-white': type === 'sell',
     },
     'cursor-pointer peer-checked:cursor-auto select-none',
     {
