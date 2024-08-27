@@ -14,7 +14,7 @@
         "assets": [],
         "project": "libs/types/package.json",
         "compiler": "swc",
-        "format": ["esm"]
+        "format": ["esm", "cjs"]
       }
     },
     "publish": {
