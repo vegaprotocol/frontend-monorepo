@@ -100,6 +100,7 @@ describe('Navbar', () => {
       ['/', ''],
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
+      ['/amm/pools', 'Pools'],
       ['/competitions', 'Competitions'],
     ];
 
@@ -123,9 +124,11 @@ describe('Navbar', () => {
     const expectedLinks = [
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
+      ['/amm/pools', 'Pools'],
       ['/competitions', 'Competitions'],
     ];
     const links = menu.getAllByRole('link');
+
     links.forEach((link, i) => {
       const [href, text] = expectedLinks[i];
       expect(link).toHaveAttribute('href', href);
