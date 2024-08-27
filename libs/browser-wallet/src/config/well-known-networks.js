@@ -5,7 +5,7 @@ export const fairground = {
   secondaryColor: '#000000',
   id: 'fairground',
   name: 'Fairground',
-  chainId: 'vega-fairground-202305051805',
+  chainId: 'fairground-20240816',
   hidden: false,
   rest: [
     'https://api.n00.testnet.vega.rocks',
