@@ -1,6 +1,6 @@
 export { useAMMs } from './use-amms';
 export { useAsset, useAssets, useSuspenseAssets } from './use-assets';
-export { useCandles } from './use-candles';
+export { useCandles, useVolume24 } from './use-candles';
 export { useLiquidityFees, useMakerFees } from './use-fees';
 export {
   useLiquidityProviders,

@@ -258,5 +258,5 @@
 
 .jsondiffpatch-moved .jsondiffpatch-moved-destination {
   background: theme(colors.yellow[350]) !important;
-  color: theme(colors.vega.dark[200]) !important;
+  color: theme(colors.gs[800]) !important;
 }

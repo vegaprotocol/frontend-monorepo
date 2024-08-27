@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js';
 
-export const positiveClassNames =
-  'text-market-green-600 dark:text-market-green';
-export const negativeClassNames = 'text-market-red dark:text-market-red';
-
-export const zeroClassNames = 'text-orange dark:text-orange';
+export const positiveClassNames = 'text-dir-up-fg';
+export const negativeClassNames = 'text-dir-down-fg';
+export const zeroClassNames = 'text-orange';
 
 const isPositive = ({ value }: { value: string | bigint | number }) =>
   !!value &&

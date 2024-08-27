@@ -18,21 +18,25 @@ export function restApiUrl(
 
   const base = trimEnd(baseUrl, '/');
 
-  if (apiPath && replacements) {
+  if (apiPath) {
     const pathParameters = tradingDataApi[apiPath] as string[];
-    const parameters = Object.keys(replacements);
+    let p = apiPath as string;
 
-    for (const param of parameters) {
-      if (!pathParameters.includes(param)) {
+    if (pathParameters.length > 0) {
+      if (!replacements) {
         throw new Error(
-          `The path ${apiPath} does not have ${param} as a path parameter`
+          `The path ${apiPath} requires the following parameters: ${pathParameters.join(
+            ', '
+          )}`
         );
       }
-    }
 
-    let p = apiPath as string;
-    if (p && replacements) {
       for (const [k, v] of Object.entries(replacements)) {
+        if (!pathParameters.includes(k)) {
+          throw new Error(
+            `The path ${apiPath} does not have ${k} as a path parameter`
+          );
+        }
         p = p.replace(`{${k}}`, v);
       }
     }

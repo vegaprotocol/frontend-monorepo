@@ -351,10 +351,6 @@ const compileEnvVars = () => {
       'VEGA_TOKEN_URL',
       process.env['NX_VEGA_TOKEN_URL']
     ),
-    GITHUB_FEEDBACK_URL: windowOrDefault(
-      'GITHUB_FEEDBACK_URL',
-      process.env['NX_GITHUB_FEEDBACK_URL']
-    ),
     GIT_BRANCH: windowOrDefault(
       'GIT_COMMIT_BRANCH',
       process.env['GIT_COMMIT_BRANCH']

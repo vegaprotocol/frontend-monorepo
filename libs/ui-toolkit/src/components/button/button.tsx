@@ -21,7 +21,10 @@ const getClassName = (
   className?: string
 ) =>
   cn(
-    'inline-flex gap-2 items-center justify-center disabled:opacity-40 border-999',
+    'inline-flex gap-2 items-center justify-center disabled:opacity-40',
+    // work around for ensuring we have a specifc border width for buttons,
+    // giving it a name like border-btn doesnt work
+    'border-999',
     // size
     {
       'h-12 px-6 rounded-button-lg text-base': size === 'lg',

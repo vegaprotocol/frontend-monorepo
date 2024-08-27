@@ -71,8 +71,8 @@ export const FlashCell = memo(({ children, value }: FlashCellProps) => {
     if (value < previousValue) {
       ref.current?.animate(
         [
-          { color: theme.colors.market.red.DEFAULT },
-          { color: theme.colors.market.red.DEFAULT, offset: 0.8 },
+          { color: theme.colors.dir.down.DEFAULT },
+          { color: theme.colors.dir.down.DEFAULT, offset: 0.8 },
           { color: 'inherit' },
         ],
         FLASH_DURATION
@@ -80,8 +80,8 @@ export const FlashCell = memo(({ children, value }: FlashCellProps) => {
     } else if (value > previousValue) {
       ref.current?.animate(
         [
-          { color: theme.colors.market.green.DEFAULT },
-          { color: theme.colors.market.green.DEFAULT, offset: 0.8 },
+          { color: theme.colors.dir.up.DEFAULT },
+          { color: theme.colors.dir.up.DEFAULT, offset: 0.8 },
           { color: 'inherit' },
         ],
         FLASH_DURATION

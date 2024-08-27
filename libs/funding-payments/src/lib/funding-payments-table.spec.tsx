@@ -65,7 +65,7 @@ describe('FundingPaymentsTable', () => {
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'amount');
     expect(
       amountCell?.querySelector('.ag-cell-value span')?.firstElementChild
-    ).toHaveClass('text-market-green-600');
+    ).toHaveClass('text-dir-up-fg');
   });
 
   it('formats negative cells', async () => {
@@ -87,6 +87,6 @@ describe('FundingPaymentsTable', () => {
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'amount');
     expect(
       amountCell?.querySelector('.ag-cell-value span')?.firstElementChild
-    ).toHaveClass('text-market-red dark:text-market-red');
+    ).toHaveClass('text-dir-down-fg');
   });
 });

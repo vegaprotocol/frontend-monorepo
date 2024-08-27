@@ -69,7 +69,6 @@ export const envSchema = z
     GIT_BRANCH: z.optional(z.string()),
     GIT_COMMIT_HASH: z.optional(z.string()),
     GIT_ORIGIN_URL: z.optional(z.string()),
-    GITHUB_FEEDBACK_URL: z.optional(z.string()),
     ORACLE_PROOFS_URL: z.optional(z.string().url()),
     VEGA_ENV: z.nativeEnum(Networks),
     VEGA_CONSOLE_URL: z.optional(z.string()),

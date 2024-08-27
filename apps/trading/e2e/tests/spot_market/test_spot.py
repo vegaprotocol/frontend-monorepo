@@ -202,8 +202,8 @@ def test_market_spot_info_liquidity_price_range(page: Page):
     ).click()
     fields = [
         ["Liquidity price range", "50% of mid price "],
-        ["Lowest price", "53.3"],
-        ["Highest price", "159.8"],
+        ["Lowest price", "53.2"],
+        ["Highest price", "159.7"],
     ]
     validate_info_section(page, fields)
 

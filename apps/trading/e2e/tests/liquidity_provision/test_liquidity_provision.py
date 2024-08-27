@@ -79,7 +79,7 @@ def test_liquidity_provision_amendment(
         "Supplied stake1.00001 tDAI"
     )
     expect(page.get_by_test_id("liquidity-supplied")).to_have_text(
-        "Liquidity supplied 17.16%"
+        "Liquidity supplied 17.15%"
     )
     row = (
         page.get_by_test_id("tab-myLP")

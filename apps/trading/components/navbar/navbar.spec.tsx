@@ -98,14 +98,9 @@ describe('Navbar', () => {
 
     const expectedLinks = [
       ['/', ''],
-      ['/markets', 'Markets'],
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
       ['/competitions', 'Competitions'],
-      ['/referrals', 'Referrals'],
-      ['/fees', 'Fees'],
-      ['/rewards', 'Rewards'],
-      [expect.stringContaining('governance'), 'Governance'],
     ];
 
     const links = screen.getAllByRole('link');
@@ -117,14 +112,6 @@ describe('Navbar', () => {
     });
   });
 
-  it('Markets page route should not match empty market page', () => {
-    renderComponent(['/markets']);
-    expect(screen.getByRole('link', { name: 'Markets' })).toHaveClass('active');
-    expect(screen.getByRole('link', { name: 'Trading' })).not.toHaveClass(
-      'active'
-    );
-  });
-
   it('can open menu and navigate on small screens', async () => {
     renderComponent();
     await userEvent.click(screen.getByRole('button', { name: 'Menu' }));
@@ -134,14 +121,9 @@ describe('Navbar', () => {
     const menu = within(menuEl);
 
     const expectedLinks = [
-      ['/markets', 'Markets'],
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
       ['/competitions', 'Competitions'],
-      ['/referrals', 'Referrals'],
-      ['/fees', 'Fees'],
-      ['/rewards', 'Rewards'],
-      [expect.stringContaining('governance'), 'Governance'],
     ];
     const links = menu.getAllByRole('link');
     links.forEach((link, i) => {

@@ -1,12 +1,9 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
 import {
-  useEnvironment,
   DocsLinks,
-  Networks,
   DApp,
   useLinks,
-  useEnvNameMapping,
   useFeatureFlags,
 } from '@vegaprotocol/environment';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
@@ -177,8 +174,6 @@ export const Navbar = () => {
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const t = useT();
-  const envNameMapping = useEnvNameMapping();
-  const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
   const GOVERNANCE_LINK = useLinks(DApp.Governance)();
   const EXPLORER_LINK = useLinks(DApp.Explorer)();
@@ -186,32 +181,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className="gap-3 lg:flex lg:h-full">
       <NavbarList>
-        <NavbarItem>
-          <NavbarTrigger data-testid="navbar-network-switcher-trigger">
-            {envNameMapping[VEGA_ENV]}
-          </NavbarTrigger>
-          <NavbarContent data-testid="navbar-content-network-switcher">
-            <ul className="lg:p-4">
-              {[Networks.MAINNET, Networks.TESTNET].map((n) => {
-                const url = VEGA_NETWORKS[n];
-                if (!url) return;
-                return (
-                  <NavbarSubItem key={n}>
-                    <NavbarLink to={url}>{envNameMapping[n]}</NavbarLink>
-                  </NavbarSubItem>
-                );
-              })}
-            </ul>
-          </NavbarContent>
-        </NavbarItem>
-      </NavbarList>
-      <NavbarListDivider />
-      <NavbarList>
-        <NavbarItem>
-          <NavbarLink to={Links.MARKETS()} onClick={onClick}>
-            {t('Markets')}
-          </NavbarLink>
-        </NavbarItem>
         <NavbarItem>
           <NavbarLink to={Links.MARKET(marketId || '')} onClick={onClick}>
             {t('Trading')}
@@ -224,34 +193,51 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
+          <NavbarTrigger>{t('AMM_NAV_ROOT')}</NavbarTrigger>
+          <NavbarContent data-testid="navbar-content-amm">
+            <ul className="lg:p-4">
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM()}>{t('AMM_NAV_EXPLORE')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM_POOLS()}>
+                  {t('AMM_NAV_POOLS')}
+                </NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.AMM_MY_LIQUIDITY()}>
+                  {t('AMM_NAV_MY_LIQUIDITY')}
+                </NavbarLink>
+              </NavbarSubItem>
+            </ul>
+          </NavbarContent>
+        </NavbarItem>
+        <NavbarItem>
           <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
             {t('Competitions')}
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
-            {t('Referrals')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.FEES()} onClick={onClick}>
-            {t('Fees')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.REWARDS()} onClick={onClick}>
-            {t('Rewards')}
-          </NavbarLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarLinkExternal to={GOVERNANCE_LINK}>
-            {t('Governance')}
-          </NavbarLinkExternal>
-        </NavbarItem>
-        <NavbarItem>
-          <NavbarTrigger>{t('Resources')}</NavbarTrigger>
-          <NavbarContent data-testid="navbar-content-resources">
-            <ul className="lg:p-4">
+          <NavbarTrigger>{t('More')}</NavbarTrigger>
+          <NavbarContent data-testid="navbar-content-more">
+            <ul className="flex flex-col gap-0 lg:gap-4 p-4">
+              <NavbarSubItem>
+                <NavbarLink to={Links.MARKETS()}>{t('Markets')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.FEES()}>{t('Fees')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.REWARDS()}>{t('Rewards')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLink to={Links.REFERRALS()}>{t('Referrals')}</NavbarLink>
+              </NavbarSubItem>
+              <NavbarSubItem>
+                <NavbarLinkExternal to={GOVERNANCE_LINK}>
+                  {t('Governance')}
+                </NavbarLinkExternal>
+              </NavbarSubItem>
               {EXPLORER_LINK && (
                 <NavbarSubItem>
                   <NavbarLinkExternal to={EXPLORER_LINK}>
@@ -263,13 +249,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
                 <NavbarSubItem>
                   <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
                     {t('Docs')}
-                  </NavbarLinkExternal>
-                </NavbarSubItem>
-              )}
-              {GITHUB_FEEDBACK_URL && (
-                <NavbarSubItem>
-                  <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
-                    {t('Give Feedback')}
                   </NavbarLinkExternal>
                 </NavbarSubItem>
               )}
@@ -376,7 +355,7 @@ const NavbarItem = (props: N.NavigationMenuItemProps) => {
 };
 
 const NavbarSubItem = (props: LiHTMLAttributes<HTMLElement>) => {
-  return <li {...props} className="lg:mb-4 lg:last:mb-0" />;
+  return <li {...props} />;
 };
 
 const NavbarList = (props: N.NavigationMenuListProps) => {
@@ -392,7 +371,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       {...props}
       className={cn(
         'navbar-content group',
-        'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
+        'z-20 lg:absolute lg:mt-2 lg:min-w-[290px]',
         'bg-surface-2 border-gs-300 dark:border-gs-700 lg:rounded lg:border'
       )}
       onPointerEnter={preventHover}
@@ -443,14 +422,6 @@ const BurgerIcon = () => (
     <line x1={0.5} x2={15.5} y1={11.5} y2={11.5} />
   </svg>
 );
-
-const NavbarListDivider = () => {
-  return (
-    <div className="px-6 py-2 lg:px-0" role="separator">
-      <div className="bg-surface-3  h-px w-full lg:h-full lg:w-px" />
-    </div>
-  );
-};
 
 /**
  * Button component to avoid repeating styles for buttons shown on small screens

@@ -3,10 +3,7 @@ import {
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { Link, ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useMemo } from 'react';
-import { ENV } from '../../config/env';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../routes/route-names';
 import { Link as RouteLink } from 'react-router-dom';
 
@@ -14,12 +11,6 @@ export const Footer = () => {
   const { API_NODE, GIT_COMMIT_HASH, GIT_ORIGIN_URL } = useEnvironment();
   const setNodeSwitcherOpen = useNodeSwitcherStore(
     (store) => store.setDialogOpen
-  );
-
-  const { screenSize } = useScreenDimensions();
-  const showFullFeedbackLabel = useMemo(
-    () => ['md', 'lg', 'xl', 'xxl', 'xxxl'].includes(screenSize),
-    [screenSize]
   );
 
   return (
@@ -55,14 +46,6 @@ export const Footer = () => {
             {t('Change')}
           </Link>
         </div>
-
-        {ENV.addresses.feedback ? (
-          <div className="flex pl-2 content-center">
-            <ExternalLink href={ENV.addresses.feedback}>
-              {showFullFeedbackLabel ? t('Share your feedback') : t('Feedback')}
-            </ExternalLink>
-          </div>
-        ) : null}
       </div>
       <div className="pl-2 align-center lg:align-right lg:flex lg:justify-end gap-2 align-middle lg:max-w-xs lg:ml-auto">
         <RouteLink
