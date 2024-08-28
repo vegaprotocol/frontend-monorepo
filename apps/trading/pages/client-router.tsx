@@ -32,8 +32,7 @@ import { CompetitionsGame } from '../client-pages/competitions/competitions-game
 import { Swap } from '../client-pages/swap/swap';
 import { NotFound } from '../client-pages/not-found';
 
-import { LayoutCentered } from '../components/layouts';
-import { LayoutFull } from '../components/layouts/layout-full';
+import { LayoutCentered, LayoutFull } from '../components/layouts';
 
 import { Routes as AppRoutes } from '../lib/links';
 import { Explore } from '../client-pages/amm/explore';
@@ -53,7 +52,7 @@ export const useRouterConfig = (): RouteObject[] => {
     {
       index: true,
       element: (
-        <LayoutCentered variant="full-gradient">
+        <LayoutCentered backdrop={1}>
           <Home />
         </LayoutCentered>
       ),
@@ -92,7 +91,7 @@ export const useRouterConfig = (): RouteObject[] => {
       children: [
         // with planet/stars
         {
-          element: <LayoutCentered />,
+          element: <LayoutCentered backdrop={1} />,
           children: [
             { index: true, element: <CompetitionsHome /> },
             {
@@ -103,7 +102,7 @@ export const useRouterConfig = (): RouteObject[] => {
         },
         // pages with blurred background
         {
-          element: <LayoutCentered variant="gradient" />,
+          element: <LayoutCentered backdrop={2} />,
           children: [
             {
               path: AppRoutes.COMPETITIONS_CREATE_TEAM,
@@ -147,7 +146,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS_DETAIL,
-      element: <LayoutCentered variant="gradient" />,
+      element: <LayoutCentered />,
       children: [
         {
           index: true,
@@ -157,11 +156,15 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.MARKETS,
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={2} />,
       children: [
         {
-          element: <LayoutCentered />,
-          children: [{ index: true, element: <MarketsPage /> }],
+          index: true,
+          element: (
+            <LayoutCentered>
+              <MarketsPage />
+            </LayoutCentered>
+          ),
         },
         {
           path: 'all',
