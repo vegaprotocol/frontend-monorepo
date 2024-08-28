@@ -32,13 +32,13 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   const { vegaChain, market, size = 30 } = props;
 
   const chain = getVegaChain(vegaChain);
-  const data = useMarketInfo(chain, market);
+  const { data } = useMarketInfo(chain, market);
   const { base, quote, baseChain, quoteChain, settlementChain } = getLogoPaths(
-    data.data?.baseLogo,
-    data.data?.quoteLogo,
-    data.data?.baseChainLogo,
-    data.data?.quoteChainLogo,
-    data.data?.settlementChainLogo
+    data?.baseLogo,
+    data?.quoteLogo,
+    data?.baseChainLogo,
+    data?.quoteChainLogo,
+    data?.settlementChainLogo
   );
 
   return (
