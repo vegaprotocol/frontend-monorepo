@@ -19,7 +19,7 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
   return (
     <div
       key={market.id}
-      className="bg-white/50 dark:bg-black/40 flex flex-col items-start gap-4 p-8 rounded-lg"
+      className="bg-black/5 dark:bg-black/40 flex flex-col items-start gap-4 p-8 rounded-lg"
     >
       <header className="flex justify-between gap-2 w-full">
         <div className="flex gap-2 items-start min-w-0">

@@ -31,7 +31,7 @@ export const Home = () => {
             return (
               <li
                 key={i}
-                className="bg-white/50 dark:bg-black/40 grid grid-rows-[subgrid] row-span-4 gap-4 p-8 rounded-lg"
+                className="bg-black/5 dark:bg-black/40 grid grid-rows-[subgrid] row-span-4 gap-4 p-8 rounded-lg"
               >
                 <div>
                   <Pill intent={Intent.Primary}>Liquidity</Pill>

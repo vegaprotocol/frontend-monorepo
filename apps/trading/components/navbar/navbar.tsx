@@ -358,7 +358,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       className={cn(
         'navbar-content group',
         'z-20 lg:absolute lg:mt-2 lg:min-w-[290px]',
-        'bg-surface-2 border-gs-300 dark:border-gs-700 lg:rounded lg:border'
+        'bg-surface-1 lg:border lg:rounded'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
