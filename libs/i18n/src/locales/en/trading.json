@@ -98,6 +98,11 @@
   "Code must be be valid hex": "Code must be be valid hex",
   "Collateral": "Collateral",
   "Competitions": "Competitions",
+  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_DEFAULT_LABEL": "Trade to play",
+  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_SIGN_UP_LABEL": "Sign up",
+  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_STAKE_LABEL": "Stake Vega",
+  "COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_DEFAULT_TITLE": "Choose a market",
+  "COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_SIGN_UP_TITLE": "Sign up to get started",
   "Complete the withdrawal to release your funds": "Complete the withdrawal to release your funds",
   "Complete these {{count}} withdrawals to release your funds": "Complete these {{count}} withdrawals to release your funds",
   "Complete withdrawal": "Complete withdrawal",
@@ -996,12 +1001,5 @@
 
   "LIQUIDITY_TABLE_PARTY": "Party ID",
   "LIQUIDITY_TABLE_COMMITMENT": "Total commitment",
-  "LIQUIDITY_TABLE_FEES": "Fees earned (24h)",
-
-  "// COMPETITION": "",
-  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_DEFAULT_LABEL": "Trade to play",
-  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_SIGN_UP_LABEL": "Sign up",
-  "COMPETITION_GAME_TRADE_TO_PLAY_BUTTON_STAKE_LABEL": "Stake Vega",
-  "COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_DEFAULT_TITLE": "Choose a market",
-  "COMPETITION_GAME_TRADE_TO_PLAY_DIALOG_SIGN_UP_TITLE": "Sign up to get started"
+  "LIQUIDITY_TABLE_FEES": "Fees earned (24h)"
 }

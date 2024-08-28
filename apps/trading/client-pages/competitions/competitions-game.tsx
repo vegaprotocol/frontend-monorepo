@@ -21,6 +21,7 @@ import {
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
+  AnchorButton,
   Button,
   Dialog,
   Intent,
@@ -871,13 +872,12 @@ const TradeToPlayButton = ({
     <>
       <p>
         {needsStake ? (
-          <a
+          <AnchorButton
+            {...props}
             href={governanceLink(TOKEN_ASSOCIATE)}
             target="_blank"
             rel="noreferrer"
-          >
-            <Button {...props} />
-          </a>
+          />
         ) : (
           <Button {...props} />
         )}
