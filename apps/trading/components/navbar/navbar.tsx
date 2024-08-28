@@ -15,6 +15,7 @@ import {
   LanguageSelector,
   ThemeSwitcher,
   Icon,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
@@ -49,34 +50,34 @@ export const Navbar = () => {
 
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
-  const rootClasses = cn(
-    'flex gap-3 h-10 pr-1',
-    'bg-surface-1 text-surface-1-fg-muted'
-  );
   return (
-    <N.Root className={rootClasses}>
-      <NavLink
-        to="/"
-        className={cn(
-          'flex items-center px-3',
-          'bg-[image:var(--nav-logo-bg-img-dark)] dark:bg-[image:var(--nav-logo-bg-img-dark)]',
-          'bg-[color:var(--nav-logo-bg-light)] dark:bg-[color:var(--nav-logo-bg-dark)]'
-        )}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          alt="Logo"
-          src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
-          className="block w-4"
-        />
-      </NavLink>
-      {/* Used to show header in nav on mobile */}
+    <N.Root className="flex justify-between gap-3 h-10 pr-1 text-surface-1-fg">
+      {/* Left section */}
+      <div className="grow basis-0 flex justify-start items-center">
+        <NavLink
+          to="/"
+          className={cn(
+            'flex items-center px-3',
+            'bg-[image:var(--nav-logo-bg-img-dark)] dark:bg-[image:var(--nav-logo-bg-img-dark)]',
+            'bg-[color:var(--nav-logo-bg-light)] dark:bg-[color:var(--nav-logo-bg-dark)]'
+          )}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt="Logo"
+            src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
+            className="block w-4"
+          />
+        </NavLink>
+      </div>
+
+      {/* Middle section */}
       <div className="hidden lg:block">
         <NavbarMenu onClick={() => setMenu(null)} />
       </div>
 
       {/* Right section */}
-      <div className="ml-auto flex items-center justify-end gap-2">
+      <div className="grow basis-0 flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
         <div className="flex items-center">
           <ThemeSwitcher />
@@ -130,7 +131,7 @@ export const Navbar = () => {
           <BurgerIcon />
         </NavbarMobileButton>
         <div className="hidden lg:block">
-          <VegaWalletConnectButton />
+          <VegaWalletConnectButton intent={Intent.Primary} />
         </div>
       </div>
       {menu !== null && (

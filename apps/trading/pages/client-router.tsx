@@ -89,7 +89,6 @@ export const useRouterConfig = (): RouteObject[] => {
       path: AppRoutes.COMPETITIONS,
       element: <Outlet />,
       children: [
-        // with planet/stars
         {
           element: <LayoutCentered backdrop={1} />,
           children: [
@@ -100,7 +99,6 @@ export const useRouterConfig = (): RouteObject[] => {
             },
           ],
         },
-        // pages with blurred background
         {
           element: <LayoutCentered backdrop={2} />,
           children: [
@@ -178,7 +176,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.PORTFOLIO,
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={2} />,
       children: [
         {
           index: true,
@@ -199,7 +197,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'liquidity',
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={2} />,
       children: [
         {
           path: ':marketId',
@@ -211,7 +209,7 @@ export const useRouterConfig = (): RouteObject[] => {
       path: AppRoutes.AMM,
       element: (
         <AmmWrapper>
-          <LayoutCentered />
+          <LayoutCentered backdrop={3} />
         </AmmWrapper>
       ),
       children: [
