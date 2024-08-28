@@ -76,3 +76,23 @@ export function useVolume24(marketId: string) {
     volume,
   };
 }
+
+/** Get the last 24 hour 1hr candles, useful for sparklines */
+export function useSparkline(marketId: string) {
+  const queryResult = useCandles(
+    marketId,
+    Interval.HOURS_1,
+    toNanoSeconds(yesterday())
+  );
+
+  const data = queryResult.data
+    ? queryResult.data
+        .filter((d) => Boolean(d.close && d.close.rawValue))
+        .map((d) => Number(d.close?.rawValue))
+    : [];
+
+  return {
+    ...queryResult,
+    data,
+  };
+}

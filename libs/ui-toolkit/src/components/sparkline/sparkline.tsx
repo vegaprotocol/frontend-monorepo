@@ -126,12 +126,9 @@ export const SparklineView = ({
 
 SparklineView.displayName = 'SparklineView';
 
-// Use react memo to only re-render if props change
 export const Sparkline = React.memo(
   SparklineView,
   function (prevProps, nextProps) {
-    // Warning! The return value here is the opposite of shouldComponentUpdate.
-    // Return true if you DON NOT want a re-render
     if (
       prevProps.width !== nextProps.width ||
       prevProps.height !== nextProps.height

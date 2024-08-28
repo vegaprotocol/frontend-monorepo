@@ -52,7 +52,11 @@ export const useRouterConfig = (): RouteObject[] => {
   const routeConfig = compact([
     {
       index: true,
-      element: <Home />,
+      element: (
+        <LayoutCentered variant="full-gradient">
+          <Home />
+        </LayoutCentered>
+      ),
     },
     {
       path: AppRoutes.DISCLAIMER,
