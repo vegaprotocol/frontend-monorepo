@@ -189,7 +189,7 @@ export const CompetitionsHome = () => {
 
           <CompetitionsActionsContainer>
             <CompetitionsAction
-              variant="A"
+              variant="create-team"
               title={t('Create a team')}
               description={t(
                 'Create a new team, share your code with potential members, or set a whitelist for an exclusive group.'
@@ -197,7 +197,7 @@ export const CompetitionsHome = () => {
               actionElement={<ActionButton {...createTeamBtnProps} />}
             />
             <CompetitionsAction
-              variant="B"
+              variant="create-solo-team"
               title={t('Solo team / lone wolf')}
               description={t(
                 'Want to compete but think the best team size is one? This is the option for you.'
@@ -205,7 +205,7 @@ export const CompetitionsHome = () => {
               actionElement={<ActionButton {...createPrivateTeamBtnProps} />}
             />
             <CompetitionsAction
-              variant="C"
+              variant="join-team"
               title={t('Join a team')}
               description={t(
                 'Browse existing public teams to find your perfect match.'
