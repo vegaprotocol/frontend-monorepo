@@ -9,3 +9,4 @@ export {
 export { useMarketDepth } from './use-market-depth';
 export { useMarketData, useMarketsData } from './use-markets-data';
 export { useMarket, useMarkets, useSuspenseMarkets } from './use-markets';
+export { useRewards, useSuspenseRewards } from './use-rewards';
