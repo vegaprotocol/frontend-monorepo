@@ -1,10 +1,11 @@
-import { ComponentProps, type ReactElement, type ReactNode } from 'react';
+import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Tooltip,
   Button,
   type ButtonProps,
   Intent,
+  cn,
 } from '@vegaprotocol/ui-toolkit';
 import { Role } from '../../lib/hooks/use-my-team';
 import { Links } from '../../lib/links';
@@ -41,11 +42,22 @@ export const CompetitionsAction = ({
     <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
       <div className="flex justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`/${variant}.svg`}
-          className="rounded-full w-24 h-24"
-          alt={`Icon for ${title}`}
-        />
+        <div
+          className={cn(
+            'rounded-full flex items-center justify-center w-24 h-24',
+            {
+              'bg-blue': variant === 'create-team',
+              'bg-green': variant === 'create-solo-team',
+              'bg-pink': variant === 'join-team',
+            }
+          )}
+        >
+          <img
+            src={`/${variant}.svg`}
+            className="w-18 h-18"
+            alt={`Icon for ${title}`}
+          />
+        </div>
       </div>
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-surface-1-fg-muted">{description}</p>}
