@@ -41,7 +41,6 @@ export const CompetitionsAction = ({
   return (
     <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
       <div className="flex justify-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <div
           className={cn(
             'rounded-full flex items-center justify-center w-24 h-24',
@@ -52,6 +51,7 @@ export const CompetitionsAction = ({
             }
           )}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`/${variant}.svg`}
             className="w-18 h-18"
