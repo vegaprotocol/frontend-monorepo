@@ -10,6 +10,7 @@ import axios from 'axios';
 import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
+import { type QueryClient } from '@tanstack/react-query';
 
 export const erc20AssetSchema = z.object({
   id: z.string(),
@@ -62,6 +63,16 @@ export const enabledAssets = (assets?: vegaAsset[]) => {
     assets?.filter((a) => a.status === vegaAssetStatus.STATUS_ENABLED)
   );
 };
+
+export function getAssetFromCache(queryClient: QueryClient, assetId: string) {
+  const asset = queryClient.getQueryData<Asset>(queryKeys.single(assetId));
+
+  if (!asset) {
+    throw new Error('asset not fuond');
+  }
+
+  return asset;
+}
 
 export const queryKeys = {
   all: ['assets'],
