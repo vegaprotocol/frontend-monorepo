@@ -18,16 +18,26 @@ export const CompetitionsActionsContainer = ({
 );
 
 export const CompetitionsAction = ({
+  variant,
   title,
   description,
   actionElement,
 }: {
+  variant: 'create-team' | 'create-solo-team' | 'join-team';
   title: string;
   description?: string;
   actionElement: ReactNode;
 }) => {
   return (
-    <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-3 text-center">
+    <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
+      <div className="flex justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`/${variant}.svg`}
+          className="rounded-full w-24 h-24"
+          alt={`Icon for ${title}`}
+        />
+      </div>
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-surface-1-fg-muted">{description}</p>}
       <div className="flex justify-center">{actionElement}</div>
