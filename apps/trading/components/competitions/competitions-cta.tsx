@@ -1,6 +1,5 @@
 import { Box } from './box';
-import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
-import { DudeBadge } from './graphics/dude-badge';
+import { type ReactElement, type ReactNode } from 'react';
 import { Tooltip, Button, type ButtonProps } from '@vegaprotocol/ui-toolkit';
 
 export const CompetitionsActionsContainer = ({
@@ -19,21 +18,16 @@ export const CompetitionsActionsContainer = ({
 );
 
 export const CompetitionsAction = ({
-  variant,
   title,
   description,
   actionElement,
 }: {
-  variant: ComponentProps<typeof DudeBadge>['variant'];
   title: string;
   description?: string;
   actionElement: ReactNode;
 }) => {
   return (
-    <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
-      <div className="flex justify-center">
-        <DudeBadge variant={variant} />
-      </div>
+    <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-3 text-center">
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-surface-1-fg-muted">{description}</p>}
       <div className="flex justify-center">{actionElement}</div>
