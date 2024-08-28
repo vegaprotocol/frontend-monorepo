@@ -1,4 +1,4 @@
-import { useVolume24, type Market } from '@vegaprotocol/rest';
+import { useCandleData, type Market } from '@vegaprotocol/rest';
 
 import { LoaderCircleIcon } from 'lucide-react';
 import { Currency } from '../currency';
@@ -6,7 +6,7 @@ import { CompactNumber } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 
 export const Volume24 = ({ market }: { market: Market }) => {
-  const { notional, status } = useVolume24(market.id);
+  const { notional, status } = useCandleData(market.id);
 
   if (status === 'pending') {
     return (

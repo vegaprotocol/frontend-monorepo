@@ -117,8 +117,23 @@ export const queryKeys = {
   single: (marketId?: string) => [...queryKeys.all, 'single', { marketId }],
 } as const;
 
+export function getMarketsFromCache(queryClient: QueryClient) {
+  const markets = queryClient.getQueryData<Markets>(queryKeys.all);
+
+  if (!markets) {
+    throw new Error('markets not fuond');
+  }
+
+  return markets;
+}
+
 export function getMarketFromCache(queryClient: QueryClient, marketId: string) {
-  if (!marketId) return;
   const markets = queryClient.getQueryData<Markets>(queryKeys.list());
-  return markets?.get(marketId);
+  const market = markets?.get(marketId);
+
+  if (!market) {
+    throw new Error('market not fuond');
+  }
+
+  return market;
 }

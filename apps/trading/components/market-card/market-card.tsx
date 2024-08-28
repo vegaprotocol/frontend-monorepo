@@ -1,12 +1,13 @@
 import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useMarket, useSparkline } from '@vegaprotocol/rest';
+import { useMarket, useMarketData, useCandleData } from '@vegaprotocol/rest';
 import { Sparkline, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const MarketCard = ({ marketId }: { marketId: string }) => {
   const { chainId } = useChainId();
-  const { data: sparklineData } = useSparkline(marketId);
   const { data: market } = useMarket(marketId);
+  const { data: marketData } = useMarketData(marketId);
+  const { sparkline, volume, priceChange, pctChange } = useCandleData(marketId);
 
   if (!market) return null;
 
@@ -24,23 +25,32 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
           </div>
         </div>
         <div>
-          <p className="text-2xl">$72,123</p>
-          <p className="flex items-center gap-1">
-            <VegaIcon name={VegaIconNames.CHEVRON_UP} /> 16.2%
+          <p className="text-2xl">{marketData?.markPrice.toFormat()}</p>
+          <p className="flex items-center justify-end gap-1">
+            <VegaIcon
+              name={
+                priceChange?.isPositive()
+                  ? VegaIconNames.CHEVRON_UP
+                  : VegaIconNames.CHEVRON_DOWN
+              }
+            />{' '}
+            {pctChange?.toFixed(2)}%
           </p>
         </div>
       </header>
-      <div className="w-full">
-        <Sparkline data={sparklineData} className="w-full h-20" />
-      </div>
+      {sparkline && (
+        <div className="w-full">
+          <Sparkline data={sparkline} className="w-full h-20" />
+        </div>
+      )}
       <dl className="flex justify-between gap-2 w-full">
         <div className="text-left">
           <dt className="text-surface-0-fg-muted text-sm">24h Volume</dt>
-          <dd>$40,123</dd>
+          <dd>{volume?.toFormat()}</dd>
         </div>
         <div className="text-right">
           <dt className="text-surface-0-fg-muted text-sm">Open interest</dt>
-          <dd>$5,682</dd>
+          <dd>{marketData?.openInterest.toFormat()}</dd>
         </div>
       </dl>
     </div>

@@ -66,14 +66,8 @@ export const Home = () => {
         <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
           {new Array(4).fill(null).map((_, i) => {
             return (
-              <li key={i} className="flex flex-col gap-4 items-center">
-                <VegaIcon name={VegaIconNames.GLOBE} size={32} />
-                <p className="text-center flex flex-col">
-                  <span className="text-sm uppercase text-surface-1-fg-muted">
-                    Total markets
-                  </span>
-                  <span className="text-4xl">23.5k</span>
-                </p>
+              <li key={i}>
+                <Stat />
               </li>
             );
           })}
@@ -91,5 +85,19 @@ export const Home = () => {
         </ul>
       </section>
     </>
+  );
+};
+
+const Stat = () => {
+  return (
+    <div className="flex flex-col gap-4 items-center">
+      <VegaIcon name={VegaIconNames.GLOBE} size={32} />
+      <p className="text-center flex flex-col">
+        <span className="text-sm uppercase text-surface-1-fg-muted">
+          Total markets
+        </span>
+        <span className="text-5xl">23.5k</span>
+      </p>
+    </div>
   );
 };

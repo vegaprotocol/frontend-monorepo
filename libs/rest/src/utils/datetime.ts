@@ -14,8 +14,7 @@ export function toNanoSeconds(timestamp: number) {
   return timestamp * 1_000_000;
 }
 
-export function fromNanoSeconds(timestamp: number | string | undefined) {
-  if (!timestamp) return;
+export function fromNanoSeconds(timestamp: number | string) {
   return new Date(Number(timestamp) / 1_000_000);
 }
 
@@ -23,6 +22,6 @@ export function now(roundBy = 1) {
   return Math.floor((Math.round(Date.now() / 1000) * 1000) / roundBy) * roundBy;
 }
 
-export function yesterday(roundBy = 1) {
+export function yesterday(roundBy = Time.MIN) {
   return now(roundBy) - DAY;
 }

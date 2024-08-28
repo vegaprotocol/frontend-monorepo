@@ -24,10 +24,10 @@ export type QueryParams = z.infer<typeof parametersSchema>;
 const candleSchema = z.object({
   start: z.date(),
   lastUpdate: z.date(),
-  high: z.optional(z.instanceof(Decimal)),
-  low: z.optional(z.instanceof(Decimal)),
-  open: z.optional(z.instanceof(Decimal)),
-  close: z.optional(z.instanceof(Decimal)),
+  high: z.instanceof(Decimal),
+  low: z.instanceof(Decimal),
+  open: z.instanceof(Decimal),
+  close: z.instanceof(Decimal),
   volume: z.instanceof(Decimal),
   notional: z.instanceof(Decimal),
 });
@@ -79,8 +79,8 @@ export async function retrieveCandleData(
       );
 
       const candle: Candle = {
-        start: fromNanoSeconds(start) as Date,
-        lastUpdate: fromNanoSeconds(lastUpdate) as Date,
+        start: fromNanoSeconds(start),
+        lastUpdate: fromNanoSeconds(lastUpdate),
         high: highPrice,
         low: lowPrice,
         open: openPrice,
