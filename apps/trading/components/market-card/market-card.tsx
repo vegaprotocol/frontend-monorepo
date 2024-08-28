@@ -1,6 +1,11 @@
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useMarket, useMarketData, useCandleData } from '@vegaprotocol/rest';
-import { Sparkline, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  cn,
+  Sparkline,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const MarketCard = ({ marketId }: { marketId: string }) => {
@@ -16,17 +21,24 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
       key={market.id}
       className="bg-white/50 dark:bg-black/40 flex flex-col items-start gap-4 p-8 rounded-lg"
     >
-      <header className="flex justify-between gap-1">
-        <div className="flex gap-2 items-start">
+      <header className="flex justify-between gap-2 w-full">
+        <div className="flex gap-2 items-start min-w-0">
           <EmblemByMarket market={market.id} vegaChain={chainId} />
-          <div>
-            <h4 className="text-2xl">{market.code}</h4>
-            <p className="text-sm text-surface-0-fg-muted">{market.name}</p>
+          <div className="min-w-0">
+            <h4 className="text-2xl truncate">{market.code}</h4>
+            <p className="text-sm text-surface-0-fg-muted truncate">
+              {market.name}
+            </p>
           </div>
         </div>
         <div>
           <p className="text-2xl">{marketData?.markPrice.toFormat()}</p>
-          <p className="flex items-center justify-end gap-1">
+          <p
+            className={cn('flex items-center justify-end gap-1', {
+              'text-dir-up-fg': priceChange?.isPositive(),
+              'text-dir-down-fg': priceChange?.isNegative(),
+            })}
+          >
             <VegaIcon
               name={
                 priceChange?.isPositive()
