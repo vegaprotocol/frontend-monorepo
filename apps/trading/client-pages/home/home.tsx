@@ -21,7 +21,7 @@ export const Home = () => {
           Explore the <span className="text-accent">Console</span>
         </HeaderPage>
         <p>Earn on the newest, most exciting markets on the Vega network.</p>
-        <Button intent={Intent.Primary}>
+        <Button intent={Intent.Primary} size="lg">
           Get started <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
         </Button>
       </header>
@@ -31,9 +31,11 @@ export const Home = () => {
             return (
               <li
                 key={i}
-                className="bg-white/50 dark:bg-black/40 flex flex-col items-start gap-4 p-8 rounded-lg"
+                className="bg-white/50 dark:bg-black/40 grid grid-rows-[subgrid] row-span-4 gap-4 p-8 rounded-lg"
               >
-                <Pill intent={Intent.Primary}>Liquidity</Pill>
+                <div>
+                  <Pill intent={Intent.Primary}>Liquidity</Pill>
+                </div>
                 <h4 className="text-2xl">Share of all fees</h4>
                 <p>
                   Commit liquidity to an AMM and receive a share of all fees
