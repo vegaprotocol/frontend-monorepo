@@ -41,9 +41,15 @@ import { FilterSummary } from './filter-summary';
 export const MarketSelector = ({
   currentMarketId,
   onSelect,
+  marketIdsInScope,
+  showFilters = true,
+  className,
 }: {
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
+  marketIdsInScope?: string[];
+  showFilters?: boolean;
+  className?: string;
 }) => {
   const t = useT();
 
@@ -116,55 +122,64 @@ export const MarketSelector = ({
       a.source.__typename === 'ERC20' ? Number(a.source.chainId) : undefined,
   }));
 
+  const visibleMarkets = markets.filter((m) => {
+    if (marketIdsInScope && marketIdsInScope.length > 0) {
+      return marketIdsInScope.includes(m.id);
+    }
+    return true;
+  });
+
   return (
-    <div data-testid="market-selector" className="md:w-[680px]">
-      <div className="px-2 pt-2 mb-2">
-        <ProductSelector
-          marketTypes={marketTypes}
-          onSelect={(marketType) => {
-            if (marketType) {
-              setMarketTypes([marketType]);
-            } else {
-              setMarketTypes([]);
-            }
-          }}
-        />
-        <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
-          <div className="flex-1">
-            <TradingInput
-              onChange={(e) => {
-                const searchTerm = e.target.value;
-                setSearchTerm(searchTerm);
-              }}
-              value={searchTerm}
-              type="text"
-              placeholder={t('Search')}
-              data-testid="search-term"
-              prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
-            />
-          </div>
-          <AssetDropdown
-            assets={marketAssets}
-            checkedAssets={assets}
-            onSelect={(id: string, checked) => {
-              if (checked) {
-                setAssets(uniq([...assets, id]));
+    <div data-testid="market-selector" className={className}>
+      {showFilters && (
+        <div className="px-2 pt-2 mb-2">
+          <ProductSelector
+            marketTypes={marketTypes}
+            onSelect={(marketType) => {
+              if (marketType) {
+                setMarketTypes([marketType]);
               } else {
-                setAssets(assets.filter((a) => a !== id));
+                setMarketTypes([]);
               }
             }}
           />
-          <SortDropdown
-            currentSort={sortOrder}
-            onSelect={(sortOrder) => {
-              setSortOrder(sortOrder);
-            }}
-          />
+          <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
+            <div className="flex-1">
+              <TradingInput
+                onChange={(e) => {
+                  const searchTerm = e.target.value;
+                  setSearchTerm(searchTerm);
+                }}
+                value={searchTerm}
+                type="text"
+                placeholder={t('Search')}
+                data-testid="search-term"
+                prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
+              />
+            </div>
+            <AssetDropdown
+              assets={marketAssets}
+              checkedAssets={assets}
+              onSelect={(id: string, checked) => {
+                if (checked) {
+                  setAssets(uniq([...assets, id]));
+                } else {
+                  setAssets(assets.filter((a) => a !== id));
+                }
+              }}
+            />
+            <SortDropdown
+              currentSort={sortOrder}
+              onSelect={(sortOrder) => {
+                setSortOrder(sortOrder);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div data-testid="market-selector-list">
         <MarketList
-          data={markets}
+          data={visibleMarkets}
           loading={loading && !data}
           error={error}
           currentMarketId={currentMarketId}
