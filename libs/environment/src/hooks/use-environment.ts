@@ -529,6 +529,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_VOLUME_DISCOUNTS']
       ) as string
     ),
+    ENABLE_HOMEPAGE: TRUTHY.includes(
+      windowOrDefault(
+        'NX_ENABLE_HOMEPAGE',
+        process.env['NX_ENABLE_HOMEPAGE']
+      ) as string
+    ),
   };
 
   const EXPLORER_FLAGS = {

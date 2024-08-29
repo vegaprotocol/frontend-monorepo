@@ -41,6 +41,7 @@ import { MarketPage as Pool } from '../client-pages/amm/pools/market/index';
 import { Liquidity as MyLiquidity } from '../client-pages/amm/liquidity';
 import { ManageLiquidity } from '../client-pages/amm/pools/market/manage-liquidity';
 import { AmmWrapper } from '../client-pages/amm/amm-wrapper';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -48,13 +49,16 @@ const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
 export const useRouterConfig = (): RouteObject[] => {
+  const { flags } = useFeatureFlags();
   const routeConfig = compact([
     {
       index: true,
-      element: (
+      element: flags.ENABLE_HOMEPAGE ? (
         <LayoutCentered backdrop={1}>
           <Home />
         </LayoutCentered>
+      ) : (
+        <Navigate to={AppRoutes.MARKETS} />
       ),
     },
     {
