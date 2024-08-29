@@ -147,6 +147,7 @@ export const CONSOLE_MARKET_PAGE = '#/markets/:marketId';
 export const CONSOLE_REWARDS_PAGE = '#/rewards';
 
 // Governance pages
+export const TOKEN_ASSOCIATE = '/token/associate';
 export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =
   '/proposals/propose/network-parameter';

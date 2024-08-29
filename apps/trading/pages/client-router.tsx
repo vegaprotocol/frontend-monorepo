@@ -61,7 +61,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REFERRALS,
-      element: <LayoutCentered variant="sky" />,
+      element: <LayoutCentered />,
       children: [
         {
           element: <Referrals />,
@@ -88,7 +88,7 @@ export const useRouterConfig = (): RouteObject[] => {
       children: [
         // with planet/stars
         {
-          element: <LayoutCentered variant="sky" />,
+          element: <LayoutCentered />,
           children: [
             { index: true, element: <CompetitionsHome /> },
             {
