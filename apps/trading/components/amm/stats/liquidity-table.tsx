@@ -97,25 +97,25 @@ export const LiquidityTable = ({ market }: { market: Market }) => {
         }
         domLayout="autoHeight"
         suppressDragLeaveHidesColumns
-        overlayLoadingTemplate={t('TABLE_LOADING')}
-        overlayNoRowsTemplate={t('TABLE_NO_DATA')}
+        overlayLoadingTemplate={t('AMM_TABLE_LOADING')}
+        overlayNoRowsTemplate={t('AMM_TABLE_NO_DATA')}
         columnDefs={[
           {
-            headerName: t('LIQUIDITY_TABLE_PARTY'),
+            headerName: t('AMM_LIQUIDITY_TABLE_PARTY'),
             field: 'partyId',
             valueFormatter: (value) =>
               truncateMiddle(value.data?.partyId || ''),
             flex: 1,
           },
           {
-            headerName: t('LIQUIDITY_TABLE_COMMITMENT'),
+            headerName: t('AMM_LIQUIDITY_TABLE_COMMITMENT'),
             field: 'amount',
             valueFormatter: (value) =>
               value.data?.amount.toFormat(market.decimalPlaces) || '-',
             flex: 1,
           },
           {
-            headerName: t('LIQUIDITY_TABLE_FEES'),
+            headerName: t('AMM_LIQUIDITY_TABLE_FEES'),
             field: 'fees',
             valueFormatter: (value) =>
               value.data?.fees.toFormat(market.decimalPlaces) || '-',

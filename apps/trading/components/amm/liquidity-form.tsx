@@ -28,46 +28,46 @@ const submitAMMFormSchema = z.object({
   amount: z
     .number({
       coerce: true,
-      invalid_type_error: t('LIQUIDITY_FORM_AMOUNT_ERROR_TYPE'),
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_TYPE'),
     })
-    .gt(0, t('LIQUIDITY_FORM_AMOUNT_ERROR_MIN', { min: 0 })),
+    .gt(0, t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_MIN', { min: 0 })),
   fee: z
     .number({
       coerce: true,
-      invalid_type_error: t('LIQUIDITY_FORM_FEE_ERROR_TYPE'),
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_FEE_ERROR_TYPE'),
     })
-    .gt(0, t('LIQUIDITY_FORM_FEE_ERROR_MIN', { min: 0 }))
-    .lt(1, t('LIQUIDITY_FORM_FEE_ERROR_MAX', { max: 1 })), // TODO: net param "market.liquidity.maximumLiquidityFeeFactorLevel"
+    .gt(0, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MIN', { min: 0 }))
+    .lt(1, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MAX', { max: 1 })), // TODO: net param "market.liquidity.maximumLiquidityFeeFactorLevel"
   slippageTolerance: z
     .number({
       coerce: true,
-      invalid_type_error: t('LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE'),
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE'),
     })
-    .gt(0, t('LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN', { min: 0 }))
-    .lt(1, t('LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX', { max: 1 })),
+    .gt(0, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN', { min: 0 }))
+    .lt(1, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX', { max: 1 })),
 
   // ConcentratedLiquidityParameters
   upperBound: z.optional(
     z.number({
       coerce: true,
-      invalid_type_error: t('LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE'),
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE'),
     })
   ),
   lowerBound: z.optional(
     z.number({
       coerce: true,
-      invalid_type_error: t('LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE'),
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE'),
     })
   ),
   base: z.number({
     coerce: true,
-    invalid_type_error: t('LIQUIDITY_FORM_BASE_ERROR_TYPE'),
+    invalid_type_error: t('AMM_LIQUIDITY_FORM_BASE_ERROR_TYPE'),
   }),
   leverageAtUpperBound: z.optional(
     z.number({
       coerce: true,
       invalid_type_error: t(
-        'LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE'
+        'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE'
       ),
     })
   ),
@@ -75,7 +75,7 @@ const submitAMMFormSchema = z.object({
     z.number({
       coerce: true,
       invalid_type_error: t(
-        'LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE'
+        'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE'
       ),
     })
   ),
@@ -129,7 +129,7 @@ export const LiquidityForm = ({
 
   const onSubmit = (values: SubmitAMMData | AmendAMMData) => {
     if (!pubKey || !market) {
-      form.setError('root', { message: t('LIQUIDITY_FORM_ROOT_ERROR') });
+      form.setError('root', { message: t('AMM_LIQUIDITY_FORM_ROOT_ERROR') });
       return;
     }
 
@@ -160,7 +160,7 @@ export const LiquidityForm = ({
           setOpen(open);
           reset();
         }}
-        title={t('LIQUIDITY_TITLE')}
+        title={t('AMM_LIQUIDITY_TITLE')}
         txStatus={status}
         error={error}
         result={result}
@@ -170,7 +170,9 @@ export const LiquidityForm = ({
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h2 className="text-xl">{t('LIQUIDITY_FORM_SECTION_COMMITMENT')}</h2>
+        <h2 className="text-xl">
+          {t('AMM_LIQUIDITY_FORM_SECTION_COMMITMENT')}
+        </h2>
         <div className="flex flex-col gap-4 md:flex-row">
           <FormField
             control={form.control}
@@ -178,11 +180,11 @@ export const LiquidityForm = ({
             render={({ field }) => {
               return (
                 <FormItem className="flex-1">
-                  <FormLabel>{t('LIQUIDITY_FORM_AMOUNT_LABEL')}</FormLabel>
+                  <FormLabel>{t('AMM_LIQUIDITY_FORM_AMOUNT_LABEL')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder={t('LIQUIDITY_FORM_AMOUNT_PLACEHOLDER')}
+                        placeholder={t('AMM_LIQUIDITY_FORM_AMOUNT_PLACEHOLDER')}
                         type="number"
                         {...field}
                       />
@@ -203,10 +205,10 @@ export const LiquidityForm = ({
             render={({ field }) => {
               return (
                 <FormItem className="flex-1">
-                  <FormLabel>{t('LIQUIDITY_FORM_FEE_LABEL')}</FormLabel>
+                  <FormLabel>{t('AMM_LIQUIDITY_FORM_FEE_LABEL')}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={t('LIQUIDITY_FORM_FEE_PLACEHOLDER')}
+                      placeholder={t('AMM_LIQUIDITY_FORM_FEE_PLACEHOLDER')}
                       type="number"
                       step="0.01"
                       {...field}
@@ -224,12 +226,12 @@ export const LiquidityForm = ({
               return (
                 <FormItem className="flex-1">
                   <FormLabel>
-                    {t('LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_LABEL')}
+                    {t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_LABEL')}
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t(
-                        'LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_PLACEHOLDER'
+                        'AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_PLACEHOLDER'
                       )}
                       type="number"
                       step="0.01"
@@ -242,18 +244,18 @@ export const LiquidityForm = ({
             }}
           />
         </div>
-        <h2 className="text-xl">{t('LIQUIDITY_FORM_SECTION_PRICING')}</h2>
+        <h2 className="text-xl">{t('AMM_LIQUIDITY_FORM_SECTION_PRICING')}</h2>
         <FormField
           control={form.control}
           name="base"
           render={({ field }) => {
             return (
               <FormItem className="flex-1">
-                <FormLabel>{t('LIQUIDITY_FORM_BASE_LABEL')}</FormLabel>
+                <FormLabel>{t('AMM_LIQUIDITY_FORM_BASE_LABEL')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      placeholder={t('LIQUIDITY_FORM_BASE_PLACEHOLDER')}
+                      placeholder={t('AMM_LIQUIDITY_FORM_BASE_PLACEHOLDER')}
                       type="number"
                       {...field}
                     />
@@ -275,12 +277,14 @@ export const LiquidityForm = ({
             render={({ field }) => {
               return (
                 <FormItem className="flex-1">
-                  <FormLabel>{t('LIQUIDITY_FORM_UPPER_BOUND_LABEL')}</FormLabel>
+                  <FormLabel>
+                    {t('AMM_LIQUIDITY_FORM_UPPER_BOUND_LABEL')}
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         placeholder={t(
-                          'LIQUIDITY_FORM_UPPER_BOUND_PLACEHOLDER'
+                          'AMM_LIQUIDITY_FORM_UPPER_BOUND_PLACEHOLDER'
                         )}
                         type="number"
                         {...field}
@@ -303,13 +307,13 @@ export const LiquidityForm = ({
               return (
                 <FormItem className="flex-1">
                   <FormLabel>
-                    {t('LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_LABEL')}
+                    {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_LABEL')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         placeholder={t(
-                          'LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_PLACEHOLDER'
+                          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_PLACEHOLDER'
                         )}
                         type="number"
                         {...field}
@@ -333,12 +337,14 @@ export const LiquidityForm = ({
             render={({ field }) => {
               return (
                 <FormItem className="flex-1">
-                  <FormLabel>{t('LIQUIDITY_FORM_LOWER_BOUND_LABEL')}</FormLabel>
+                  <FormLabel>
+                    {t('AMM_LIQUIDITY_FORM_LOWER_BOUND_LABEL')}
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         placeholder={t(
-                          'LIQUIDITY_FORM_LOWER_BOUND_PLACEHOLDER'
+                          'AMM_LIQUIDITY_FORM_LOWER_BOUND_PLACEHOLDER'
                         )}
                         type="number"
                         {...field}
@@ -361,13 +367,13 @@ export const LiquidityForm = ({
               return (
                 <FormItem className="flex-1">
                   <FormLabel>
-                    {t('LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_LABEL')}
+                    {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_LABEL')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         placeholder={t(
-                          'LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_PLACEHOLDER'
+                          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_PLACEHOLDER'
                         )}
                         type="number"
                         {...field}
@@ -391,7 +397,7 @@ export const LiquidityForm = ({
           />
         </div>
         <Button intent={Intent.Primary} className="w-full" type="submit">
-          {t('LIQUIDITY_FORM_SUBMIT')}
+          {t('AMM_LIQUIDITY_FORM_SUBMIT')}
         </Button>
         {errors.root?.message && (
           <FormMessage>{errors.root.message}</FormMessage>

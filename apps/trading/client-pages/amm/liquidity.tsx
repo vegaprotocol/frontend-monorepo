@@ -19,7 +19,7 @@ export const Liquidity = () => {
 
   return (
     <>
-      <HeaderPage>{t('MY_LIQUIDITY_TITLE')}</HeaderPage>
+      <HeaderPage>{t('AMM_MY_LIQUIDITY_TITLE')}</HeaderPage>
 
       {!isConnected ? (
         <WalletNotConnectedAlert />
@@ -42,17 +42,17 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
         }
         domLayout="autoHeight"
         suppressDragLeaveHidesColumns
-        overlayLoadingTemplate={t('TABLE_LOADING')}
-        overlayNoRowsTemplate={t('TABLE_NO_DATA')}
+        overlayLoadingTemplate={t('AMM_TABLE_LOADING')}
+        overlayNoRowsTemplate={t('AMM_TABLE_NO_DATA')}
         columnDefs={[
           {
-            headerName: t('LIQUIDITY_TABLE_TH_NAME'),
+            headerName: t('AMM_LIQUIDITY_TABLE_TH_NAME'),
             field: 'market.code',
             flex: 1,
             cellClass: 'cursor-pointer',
           },
           {
-            headerName: t('LIQUIDITY_TABLE_TH_ACTIONS'),
+            headerName: t('AMM_LIQUIDITY_TABLE_TH_ACTIONS'),
             field: 'marketId',
             cellRenderer: ({ value }: ICellRendererParams<AMM, string>) => {
               if (!value) return null;
@@ -60,7 +60,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
               return (
                 <div className="flex h-full items-center justify-end gap-1">
                   <Link to={Links.AMM_POOL_MANAGE(value)}>
-                    <Button size="xs">{t('LIQUIDITY_ACTION_AMEND')}</Button>
+                    <Button size="xs">{t('AMM_LIQUIDITY_ACTION_AMEND')}</Button>
                   </Link>
                   <CancelLiquidityButton marketId={value} />
                 </div>
@@ -95,23 +95,23 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
         intent={Intent.Danger}
         size="xs"
       >
-        {t('LIQUIDITY_ACTION_CANCEL')}
+        {t('AMM_LIQUIDITY_ACTION_CANCEL')}
       </Button>
 
       <Dialog
-        title={t('LIQUIDITY_CANCEL_DIALOG_TITLE')}
+        title={t('AMM_LIQUIDITY_CANCEL_DIALOG_TITLE')}
         open={openConfirm}
         onChange={(open) => setOpenConfirm(open)}
       >
         <div className="flex flex-col gap-2">
-          <p>{t('LIQUIDITY_CANCEL_DIALOG_DESCRIPTION')}</p>
+          <p>{t('AMM_LIQUIDITY_CANCEL_DIALOG_DESCRIPTION')}</p>
           <div className="flex gap-1 justify-end">
             <Button
               onClick={() => {
                 setOpenConfirm(false);
               }}
             >
-              {t('LIQUIDITY_CANCEL_DIALOG_CANCEL')}
+              {t('AMM_LIQUIDITY_CANCEL_DIALOG_CANCEL')}
             </Button>
             <Button
               intent={Intent.Danger}
@@ -121,7 +121,7 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
                 setOpen(true);
               }}
             >
-              {t('LIQUIDITY_CANCEL_DIALOG_CONTINUE')}
+              {t('AMM_LIQUIDITY_CANCEL_DIALOG_CONTINUE')}
             </Button>
           </div>
         </div>
@@ -132,7 +132,7 @@ const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
         onOpenChange={(open) => {
           setOpen(open);
         }}
-        title={t('LIQUIDITY_CANCEL_TX_DIALOG_TITLE')}
+        title={t('AMM_LIQUIDITY_CANCEL_TX_DIALOG_TITLE')}
         error={error}
         txStatus={status}
         result={result}

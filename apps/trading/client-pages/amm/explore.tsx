@@ -9,11 +9,11 @@ export const Explore = () => {
   usePageTitle(t('Referrals'));
   return (
     <>
-      <HeaderPage>{t('EXPLORE_TITLE')}</HeaderPage>
-      <p>{t('EXPLORE_DESCRIPTION')}</p>
+      <HeaderPage>{t('AMM_EXPLORE_TITLE')}</HeaderPage>
+      <p>{t('AMM_EXPLORE_DESCRIPTION')}</p>
       <p>
         <Link to={Links.AMM_POOLS()}>
-          <Button>{t('POOLS_GOTO_POOLS')}</Button>
+          <Button>{t('AMM_POOLS_GOTO_POOLS')}</Button>
         </Link>
       </p>
     </>

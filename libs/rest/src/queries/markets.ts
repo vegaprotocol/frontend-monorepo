@@ -22,6 +22,7 @@ const marketSchema = z.object({
   positionDecimalPlaces: z.number(),
   baseAsset: z.nullable(erc20AssetSchema),
   quoteAsset: erc20AssetSchema,
+  liquidityFee: z.number(),
   data: z.object({
     state: z.nativeEnum(vegaMarketState),
   }),
@@ -77,6 +78,7 @@ export const retrieveMarkets = async (queryClient: QueryClient) => {
       positionDecimalPlaces: Number(m.positionDecimalPlaces),
       baseAsset,
       quoteAsset,
+      liquidityFee: Number(m.fees?.factors?.liquidityFee),
       data: {
         state: m.state,
       },
@@ -114,6 +116,7 @@ export const queryKeys = {
 } as const;
 
 export function getMarketFromCache(queryClient: QueryClient, marketId: string) {
-  const market = queryClient.getQueryData<Market>(queryKeys.single(marketId));
-  return market;
+  if (!marketId) return;
+  const markets = queryClient.getQueryData<Markets>(queryKeys.list());
+  return markets?.get(marketId);
 }

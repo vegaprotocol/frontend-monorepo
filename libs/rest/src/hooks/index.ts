@@ -7,5 +7,5 @@ export {
   useLiquidityProvisions,
 } from './use-liquidity-provisions';
 export { useMarketDepth } from './use-market-depth';
-export { useMarketData } from './use-markets-data';
+export { useMarketData, useMarketsData } from './use-markets-data';
 export { useMarket, useMarkets, useSuspenseMarkets } from './use-markets';

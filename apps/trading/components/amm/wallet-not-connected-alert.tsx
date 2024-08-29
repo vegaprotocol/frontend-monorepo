@@ -4,11 +4,13 @@ import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 
 export const WalletNotConnectedAlert = () => (
   <Notification
-    title={t('WALLET_ALERT_NOT_CONNECTED')}
+    title={t('AMM_WALLET_ALERT_NOT_CONNECTED')}
     intent={Intent.Warning}
     message={
       <>
-        <p className="mb-2">{t('WALLET_ALERT_NOT_CONNECTED_DESCRIPTION')}</p>
+        <p className="mb-2">
+          {t('AMM_WALLET_ALERT_NOT_CONNECTED_DESCRIPTION')}
+        </p>
         <VegaWalletConnectButton />
       </>
     }

@@ -56,13 +56,13 @@ export const MarketPage = () => {
   if (!market) {
     return (
       <Notification
-        title={t('MARKET_NO_MARKET')}
+        title={t('AMM_MARKET_NO_MARKET')}
         intent={Intent.Warning}
         message={
           <>
-            <p>{t('MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
+            <p>{t('AMM_MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
             <Link className="underline" to={Links.AMM_POOLS()}>
-              {t('POOLS_GOTO_POOLS')}
+              {t('AMM_POOLS_GOTO_POOLS')}
             </Link>
           </>
         }
@@ -76,7 +76,7 @@ export const MarketPage = () => {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={Links.AMM_POOLS()}>{t('POOLS_TITLE')}</Link>
+              <Link to={Links.AMM_POOLS()}>{t('AMM_POOLS_TITLE')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -106,13 +106,13 @@ export const MarketPage = () => {
             <Button size="sm" className="flex gap-1" intent={Intent.Primary}>
               <DownloadIcon size={16} />{' '}
               {!committed
-                ? t('POOLS_ADD_LIQUIDITY')
-                : t('POOLS_MANAGE_LIQUIDITY')}
+                ? t('AMM_POOLS_ADD_LIQUIDITY')
+                : t('AMM_POOLS_MANAGE_LIQUIDITY')}
             </Button>
           </Link>
 
           <Link to={Links.MARKET(market.id)}>
-            <Button size="sm">{t('POOLS_MARKET_TRADE')}</Button>
+            <Button size="sm">{t('AMM_POOLS_MARKET_TRADE')}</Button>
           </Link>
 
           <CopyWithTooltip text={globalThis.location.href}>
@@ -135,7 +135,7 @@ export const MarketPage = () => {
                   size="xs"
                   className='data-[state="active"]:bg-primary data-[state="active"]:text-primary-foreground'
                 >
-                  {t('CHART_VOLUME_TITLE')}
+                  {t('AMM_CHART_VOLUME_TITLE')}
                 </Button>
               </TabsTrigger>
               <TabsTrigger value="liquidity" asChild>
@@ -143,7 +143,7 @@ export const MarketPage = () => {
                   size="xs"
                   className='data-[state="active"]:bg-primary data-[state="active"]:text-primary-foreground'
                 >
-                  {t('CHART_LIQUIDITY_TITLE')}
+                  {t('AMM_CHART_LIQUIDITY_TITLE')}
                 </Button>
               </TabsTrigger>
             </TabsList>
@@ -160,7 +160,7 @@ export const MarketPage = () => {
       <dl className="flex divide-x-2 rounded border">
         <div className="flex-1 p-2">
           <dt className="text-xs uppercase">
-            {t('MARKET_DETAILS_AMM_LIQUIDITY_COMMITTED')}
+            {t('AMM_MARKET_DETAILS_AMM_LIQUIDITY_COMMITTED')}
           </dt>
           <dd>
             <AMMTotalLiquidity market={market} />
@@ -168,7 +168,7 @@ export const MarketPage = () => {
         </div>
         <div className="flex-1 p-2">
           <dt className="text-xs uppercase">
-            {t('MARKET_DETAILS_LP_LIQUIDITY_COMMITTED')}
+            {t('AMM_MARKET_DETAILS_LP_LIQUIDITY_COMMITTED')}
           </dt>
           <dd>
             <LPTotalLiquidity market={market} />
@@ -187,7 +187,9 @@ const MarketStats = ({ market }: { market: Market }) => {
   return (
     <dl className="flex flex-col gap-2">
       <div>
-        <dt className="text-xs uppercase">{t('MARKET_DETAILS_MARK_PRICE')}</dt>
+        <dt className="text-xs uppercase">
+          {t('AMM_MARKET_DETAILS_MARK_PRICE')}
+        </dt>
         <dd>
           <MarkPrice market={market} />
         </dd>
@@ -195,13 +197,15 @@ const MarketStats = ({ market }: { market: Market }) => {
 
       <div>
         <dt className="text-xs uppercase">
-          {t('MARKET_DETAILS_TOTAL_REWARD')}
+          {t('AMM_MARKET_DETAILS_TOTAL_REWARD')}
         </dt>
         <dd>-</dd>
       </div>
 
       <div>
-        <dt className="text-xs uppercase">{t('MARKET_DETAILS_VOLUME_24')}</dt>
+        <dt className="text-xs uppercase">
+          {t('AMM_MARKET_DETAILS_VOLUME_24')}
+        </dt>
         <dd>
           <Volume24 market={market} />
         </dd>
@@ -209,7 +213,7 @@ const MarketStats = ({ market }: { market: Market }) => {
 
       <div>
         <dt className="text-xs uppercase">
-          {t('MARKET_DETAILS_ORDER_BOOK_DEPTH')}
+          {t('AMM_MARKET_DETAILS_ORDER_BOOK_DEPTH')}
         </dt>
         <dd>
           <MarketDepth market={market} />
@@ -217,7 +221,7 @@ const MarketStats = ({ market }: { market: Market }) => {
       </div>
       <div>
         <dt className="text-xs uppercase">
-          {t('MARKET_DETAILS_TOTAL_FEES_24')}
+          {t('AMM_MARKET_DETAILS_TOTAL_FEES_24')}
         </dt>
         <dd>
           <TotalFees market={market} />
