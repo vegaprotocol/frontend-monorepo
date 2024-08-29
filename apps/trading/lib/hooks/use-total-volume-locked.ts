@@ -50,6 +50,13 @@ export const useTotalValueLocked = () => {
     return val;
   });
 
+  if (!result.length) {
+    return {
+      ...queryResult,
+      data: undefined,
+    };
+  }
+
   const tvl = BigNumber.sum.apply(null, result);
 
   return {

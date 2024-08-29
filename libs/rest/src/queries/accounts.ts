@@ -18,7 +18,7 @@ const queryParamSchema = z.object({
   'filter.assetId': z.string().optional(),
 });
 
-export type AccountsQueryParams = z.infer<typeof queryParamSchema>;
+export type QueryParams = z.input<typeof queryParamSchema>;
 
 export const accountSchema = z.object({
   type: accountTypeSchema,
@@ -33,7 +33,7 @@ const accountsSchema = z.array(accountSchema);
 
 export const retrieveAccounts = async (
   queryClient: QueryClient,
-  params?: AccountsQueryParams
+  params?: QueryParams
 ) => {
   const endpoint = restApiUrl('/api/v2/accounts');
   const queryParams = queryParamSchema.parse(params);
@@ -65,5 +65,5 @@ export const retrieveAccounts = async (
 
 export const queryKeys = {
   all: ['accounts'],
-  list: (params: AccountsQueryParams) => [...queryKeys.all, params],
+  list: (params?: QueryParams) => [...queryKeys.all, params],
 } as const;

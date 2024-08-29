@@ -1,5 +1,4 @@
 import { getAsset, type MarketMaybeWithCandles } from '@vegaprotocol/markets';
-import { AccountType } from '@vegaprotocol/types';
 import { priceChangePercentage, toBigNum, toQUSD } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { orderBy } from 'lodash';
@@ -71,28 +70,4 @@ export const useNewListings = (
     [(m) => new Date(m.marketTimestamps.open).getTime()],
     ['desc']
   ).slice(0, 3);
-};
-
-/**
- * useTotalVolumeLocked returns the total value locked in the network
- * by summing the balances of all insurance accounts
- *
- * @param activeMarkets
- * @returns MarketMaybeWithCandles[] | null
- */
-export const useTotalVolumeLocked = (
-  activeMarkets: MarketMaybeWithCandles[] | null
-) => {
-  const tvl = activeMarkets?.reduce((acc, market) => {
-    const accounts = market.accountsConnection?.edges
-      ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
-      .map((e) => e?.node);
-    const balance = accounts?.reduce((acc, a) => {
-      const balance = toQUSD(a?.balance || 0, a?.asset.quantum || 1);
-      return balance.plus(acc);
-    }, new BigNumber(0));
-    if (!balance) return acc;
-    return balance.plus(acc);
-  }, new BigNumber(0));
-  return tvl?.toNumber();
 };

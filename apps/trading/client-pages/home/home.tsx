@@ -9,17 +9,25 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { vegaAccountType } from '@vegaprotocol/rest-clients/dist/trading-data';
-import { useSuspenseAccounts, useSuspenseMarkets } from '@vegaprotocol/rest';
+import {
+  useSuspenseAccounts,
+  useSuspenseMarkets,
+  useTotalVolume,
+  useTransferRewards,
+} from '@vegaprotocol/rest';
+import { formatNumberRounded } from '@vegaprotocol/utils';
 
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 
 import { MarketCard } from '../../components/market-card';
 import { HeaderPage } from '../../components/header-page';
+import { useTotalValueLocked } from 'apps/trading/lib/hooks/use-total-volume-locked';
 
 export const Home = () => {
   const t = useT();
   const { data: markets } = useSuspenseMarkets();
+  const { data: transfers } = useTransferRewards({ count: 3 });
 
   return (
     <>
@@ -34,23 +42,22 @@ export const Home = () => {
       </header>
 
       <section className="py-10">
-        <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
+        <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
           <li>
             <ActiveUsersStat />
           </li>
-          {new Array(3).fill(null).map((_, i) => {
-            return (
-              <li key={i}>
-                <Stat label="foo" value="bar" />
-              </li>
-            );
-          })}
+          <li>
+            <TotalValueLockedStat />
+          </li>
+          <li>
+            <Volume24hrStat />
+          </li>
         </ul>
       </section>
 
       <section className="py-10">
         <ul className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {new Array(3).fill(null).map((reward, i) => {
+          {transfers.map((transfer, i) => {
             return (
               <li
                 key={i}
@@ -59,7 +66,9 @@ export const Home = () => {
                 <div>
                   <Pill intent={Intent.Primary}>Liquidity</Pill>
                 </div>
-                <h4 className="text-2xl">Share of all fees</h4>
+                <h4 className="text-2xl">
+                  Share of all fees ({transfer.amount.toFormat()})
+                </h4>
                 <p>
                   Commit liquidity to an AMM and receive a share of all fees
                   paid on that market
@@ -122,4 +131,18 @@ const ActiveUsersStat = () => {
   });
 
   return <Stat label="Active users" value={data.length} />;
+};
+
+const TotalValueLockedStat = () => {
+  const { data } = useTotalValueLocked();
+
+  return <Stat label="TVL" value={data ? formatNumberRounded(data) : '-'} />;
+};
+
+const Volume24hrStat = () => {
+  const { data } = useTotalVolume();
+
+  return (
+    <Stat label="24hr volume" value={data ? formatNumberRounded(data) : '-'} />
+  );
 };

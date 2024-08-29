@@ -8,7 +8,6 @@ import omit from 'lodash/omit';
 import { z } from 'zod';
 import { Decimal } from '../utils';
 import { fromNanoSeconds } from '../utils/datetime';
-import type { Interval } from './candle-intervals';
 import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
@@ -97,12 +96,12 @@ export const queryKeys = {
   all: ['candle-data'],
   single: (
     marketId: string,
-    interval: Interval,
+    candleId: string,
     fromTimestamp?: string,
     toTimestamp?: string
   ) => [
     ...queryKeys.all,
     'single',
-    { marketId, interval, fromTimestamp, toTimestamp },
+    { marketId, candleId, fromTimestamp, toTimestamp },
   ],
 } as const;
