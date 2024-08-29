@@ -34,8 +34,6 @@ interface InjectedError {
 const USER_REJECTED_CODE = -4;
 
 export class InBrowserConnector implements Connector {
-  // @ts-ignore -- will be fixed on rewrite of the jsonrpc client to typescript
-  readonly client = client;
   readonly id = 'in-browser-wallet';
   readonly name = 'In browser wallet';
   readonly description =
@@ -85,7 +83,7 @@ export class InBrowserConnector implements Connector {
 
   async connectWallet(chainId?: string): Promise<{ success: boolean }> {
     try {
-      await this.client.request('client.connect_wallet', {
+      await InBrowserConnector.client.request('client.connect_wallet', {
         chainId,
       });
       return { success: true };
