@@ -5,25 +5,29 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { queryKeys, retrieveAccounts } from '../queries/accounts';
+import {
+  queryKeys,
+  type AccountsQueryParams,
+  retrieveAccounts,
+} from '../queries/accounts';
 import { Time } from '../utils';
 
-function accountsOptions(client: QueryClient) {
+function accountsOptions(client: QueryClient, params: AccountsQueryParams) {
   return queryOptions({
-    queryKey: queryKeys.list(),
-    queryFn: () => retrieveAccounts(client),
+    queryKey: queryKeys.filtered(params),
+    queryFn: () => retrieveAccounts(client, params),
     staleTime: Time.MIN,
   });
 }
 
-export function useAccounts() {
+export function useAccounts(params: AccountsQueryParams) {
   const client = useQueryClient();
-  const queryResult = useQuery(accountsOptions(client));
+  const queryResult = useQuery(accountsOptions(client, params));
   return queryResult;
 }
 
-export function useSuspenseAccounts() {
+export function useSuspenseAccounts(params: AccountsQueryParams) {
   const client = useQueryClient();
-  const queryResult = useSuspenseQuery(accountsOptions(client));
+  const queryResult = useSuspenseQuery(accountsOptions(client, params));
   return queryResult;
 }

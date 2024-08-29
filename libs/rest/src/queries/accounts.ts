@@ -10,14 +10,17 @@ import { erc20AssetSchema, getAssetFromCache } from './assets';
 import { Decimal } from '../utils';
 import { type QueryClient } from '@tanstack/react-query';
 
+const accountTypeSchema = z.nativeEnum(vegaAccountType);
+export type AccountType = z.infer<typeof accountTypeSchema>;
+
 const queryParamSchema = z.object({
-  'filter.accountTypes': z.string(),
+  'filter.accountTypes': accountTypeSchema,
 });
 
-type QueryParams = z.infer<typeof queryParamSchema>;
+export type AccountsQueryParams = z.infer<typeof queryParamSchema>;
 
 export const accountSchema = z.object({
-  type: z.nativeEnum(vegaAccountType),
+  type: accountTypeSchema,
   asset: erc20AssetSchema,
   balance: z.instanceof(Decimal),
   marketId: z.string(),
@@ -29,13 +32,15 @@ const accountsSchema = z.array(accountSchema);
 
 export const retrieveAccounts = async (
   queryClient: QueryClient,
-  params?: QueryParams
+  params?: AccountsQueryParams
 ) => {
   const endpoint = restApiUrl('/api/v2/accounts');
   const queryParams = queryParamSchema.parse(params);
   const res = await axios.get<v2ListAccountsResponse>(endpoint, {
     params: new URLSearchParams(queryParams),
   });
+
+  console.log(res);
 
   const accounts = removePaginationWrapper(res.data.accounts?.edges).map(
     (account) => {
@@ -56,6 +61,6 @@ export const retrieveAccounts = async (
 };
 
 export const queryKeys = {
-  all: ['rewards'],
-  list: () => [...queryKeys.all, 'list'],
+  all: ['accounts'],
+  filtered: (params: AccountsQueryParams) => [...queryKeys.all, params],
 } as const;

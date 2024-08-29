@@ -128,8 +128,8 @@ export function getMarketsFromCache(queryClient: QueryClient) {
 }
 
 export function getMarketFromCache(queryClient: QueryClient, marketId: string) {
-  const markets = queryClient.getQueryData<Markets>(queryKeys.list());
-  const market = markets?.get(marketId);
+  const markets = getMarketsFromCache(queryClient);
+  const market = markets.get(marketId);
 
   if (!market) {
     throw new Error('market not fuond');

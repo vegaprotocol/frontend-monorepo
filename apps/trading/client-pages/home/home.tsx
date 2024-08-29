@@ -8,6 +8,7 @@ import {
 import { HeaderPage } from 'apps/trading/components/header-page';
 import { Links } from '../../lib/links';
 import {
+  useAccounts,
   useSuspenseAssets,
   useSuspenseMarkets,
   // useSuspenseRewards,
@@ -15,12 +16,21 @@ import {
 import { MarketCard } from 'apps/trading/components/market-card';
 import { Link } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
+import { useQuery } from '@tanstack/react-query';
+import { vegaAccountType } from '@vegaprotocol/rest-clients/dist/trading-data';
+import { ReactNode } from 'react';
 
 export const Home = () => {
   const t = useT();
-  useSuspenseAssets();
+  const { data: assets } = useSuspenseAssets();
+  console.log(assets);
   const { data: markets } = useSuspenseMarkets();
   // const { data: rewards } = useSuspenseRewards();
+
+  // TODO: fix this, it should not be required if using suspense
+  if (!assets || !markets) {
+    return null;
+  }
 
   return (
     <>
@@ -36,10 +46,13 @@ export const Home = () => {
 
       <section className="py-10">
         <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
-          {new Array(4).fill(null).map((_, i) => {
+          <li>
+            <ActiveUsersStat />
+          </li>
+          {new Array(3).fill(null).map((_, i) => {
             return (
               <li key={i}>
-                <Stat />
+                <Stat label="foo" value="bar" />
               </li>
             );
           })}
@@ -100,16 +113,26 @@ export const Home = () => {
   );
 };
 
-const Stat = () => {
+const Stat = (props: { label: ReactNode; value: ReactNode }) => {
   return (
     <div className="flex flex-col gap-4 items-center">
       <VegaIcon name={VegaIconNames.GLOBE} size={32} />
       <p className="text-center flex flex-col">
         <span className="text-sm uppercase text-surface-1-fg-muted">
-          Total markets
+          {props.label}
         </span>
-        <span className="text-5xl">23.5k</span>
+        <span className="text-5xl">{props.value}</span>
       </p>
     </div>
   );
+};
+
+const ActiveUsersStat = () => {
+  const { data, error } = useAccounts({
+    'filter.accountTypes': vegaAccountType.ACCOUNT_TYPE_GENERAL,
+  });
+
+  console.log(data, error);
+
+  return <Stat label="Active users" value="foo" />;
 };

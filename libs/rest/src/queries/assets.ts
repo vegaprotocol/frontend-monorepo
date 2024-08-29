@@ -64,11 +64,22 @@ export const enabledAssets = (assets?: vegaAsset[]) => {
   );
 };
 
+export function getAssetsFromCache(queryClient: QueryClient) {
+  const assets = queryClient.getQueryData<Assets>(queryKeys.all);
+
+  if (!assets) {
+    throw new Error('assets not cached');
+  }
+
+  return assets;
+}
+
 export function getAssetFromCache(queryClient: QueryClient, assetId: string) {
-  const asset = queryClient.getQueryData<Asset>(queryKeys.single(assetId));
+  const assets = getAssetsFromCache(queryClient);
+  const asset = assets.get(assetId);
 
   if (!asset) {
-    throw new Error('asset not fuond');
+    throw new Error(`asset ${assetId} not fuond`);
   }
 
   return asset;
