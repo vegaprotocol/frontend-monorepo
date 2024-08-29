@@ -100,6 +100,7 @@
   "AMM_NAV_ROOT": "Pools",
   "AMM_POOLS_ADD_LIQUIDITY": "Add liquidity",
   "AMM_POOLS_DESCRIPTION": "When you add liquidity to a pool, you can receive a share of its trading volume and potentially snag extra rewards when there are incentives involved!",
+  "AMM_POOLS_FILTER_PLACEHOLDER": "Search by code or id",
   "AMM_POOLS_GOTO_POOLS": "Go to Pools",
   "AMM_POOLS_MANAGE_LIQUIDITY": "Manage liquidity",
   "AMM_POOLS_MARKET_TRADE": "Trade",

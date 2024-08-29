@@ -8,6 +8,7 @@ import {
 } from '@vegaprotocol/rest';
 import type {
   ICellRendererParams,
+  IRowNode,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import filter from 'lodash/filter';
@@ -21,9 +22,14 @@ import BigNumber from 'bignumber.js';
 import { PriceChange } from '../../../components/amm/stats/price-change';
 import { CompactVolume24 } from '../../../components/amm/stats/volume-24';
 import { MyLiquidity } from 'apps/trading/components/amm/stats/my-liquidity';
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Input, Intent, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { type ReactNode, useState } from 'react';
+import trim from 'lodash/trim';
+import { FilterSummary } from '../../../components/market-selector/filter-summary';
 
 export const Pools = () => {
+  const [filterTerm, setFilterTerm] = useState('');
+
   const { data } = useMarkets();
   const { data: marketsData } = useMarketsData();
 
@@ -40,11 +46,43 @@ export const Pools = () => {
     'asc'
   );
 
+  const isExternalFilterPresent = () => true;
+  const doesExternalFilterPass = (node: IRowNode<Market>) => {
+    if (!node.data) return true;
+    return filterMarket(node.data, filterTerm);
+  };
+
+  let filterSummary: ReactNode = undefined;
+  const filteredMarkets = rowData.filter((m) => filterMarket(m, filterTerm));
+  if (filteredMarkets.length != rowData.length) {
+    const diff = rowData.length - filteredMarkets.length;
+    filterSummary = (
+      <FilterSummary
+        diff={diff}
+        resetFilters={() => {
+          setFilterTerm('');
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <HeaderPage>{t('AMM_POOLS_TITLE')}</HeaderPage>
 
       <p className="w-3/5">{t('AMM_POOLS_DESCRIPTION')}</p>
+
+      <div className="flex justify-end">
+        <Input
+          prependIconName={VegaIconNames.SEARCH}
+          placeholder={t('AMM_POOLS_FILTER_PLACEHOLDER')}
+          onChange={(event) => {
+            const value = trim(event.target.value);
+            setFilterTerm(value);
+          }}
+          value={filterTerm}
+        />
+      </div>
 
       <div className="h-full border rounded border-gs-300 dark:border-gs-700">
         <AgGrid
@@ -57,6 +95,16 @@ export const Pools = () => {
           suppressDragLeaveHidesColumns
           overlayLoadingTemplate={t('AMM_TABLE_LOADING')}
           overlayNoRowsTemplate={t('AMM_TABLE_NO_DATA')}
+          isExternalFilterPresent={isExternalFilterPresent}
+          doesExternalFilterPass={doesExternalFilterPass}
+          pinnedTopRowData={
+            filterSummary ? [{ id: 'filter-summary', filterSummary }] : []
+          }
+          isFullWidthRow={(params) => {
+            const data = params.rowNode.data;
+            return 'filterSummary' in data;
+          }}
+          fullWidthCellRenderer={FullWidthCellRenderer}
           columnDefs={[
             {
               headerName: t('AMM_POOLS_TABLE_TH_NAME'),
@@ -165,4 +213,19 @@ export const Pools = () => {
       </div>
     </>
   );
+};
+
+const filterMarket = (market: Market, filterTerm: string) => {
+  const re = new RegExp(filterTerm, 'ig');
+  const code = re.test(market.code);
+  const id = re.test(market.id);
+
+  return code || id;
+};
+
+const FullWidthCellRenderer = ({ data }: ICellRendererParams) => {
+  if ('filterSummary' in data) {
+    return <div className="py-4">{data.filterSummary}</div>;
+  }
+  return null;
 };
