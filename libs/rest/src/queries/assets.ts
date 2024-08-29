@@ -64,18 +64,22 @@ export const enabledAssets = (assets?: vegaAsset[]) => {
   );
 };
 
-export function getAssetsFromCache(queryClient: QueryClient) {
-  const assets = queryClient.getQueryData<Assets>(queryKeys.all);
+export async function getAssets(queryClient: QueryClient) {
+  const assets = await queryClient.fetchQuery({
+    queryKey: queryKeys.all,
+    queryFn: retrieveAssets,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
 
   if (!assets) {
-    throw new Error('assets not cached');
+    throw new Error('no assets');
   }
 
   return assets;
 }
 
-export function getAssetFromCache(queryClient: QueryClient, assetId: string) {
-  const assets = getAssetsFromCache(queryClient);
+export async function getAsset(queryClient: QueryClient, assetId: string) {
+  const assets = await getAssets(queryClient);
   const asset = assets.get(assetId);
 
   if (!asset) {

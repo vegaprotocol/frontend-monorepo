@@ -3,7 +3,7 @@ import { type vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-da
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
@@ -32,16 +32,11 @@ export async function retrieveMarketDepth(
   queryClient: QueryClient
 ) {
   const searchParams = parametersSchema.parse(params);
-
-  const market = getMarketFromCache(queryClient, searchParams.marketId);
-  if (!market) {
-    throw new Error('market not found');
-  }
-
   const endpoint = restApiUrl('/api/v2/market/depth/{marketId}/latest', {
     marketId: searchParams.marketId,
   });
 
+  const market = await getMarket(queryClient, searchParams.marketId);
   const res = await axios.get<vegaMarketDepth>(endpoint);
 
   const data = res.data;

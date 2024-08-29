@@ -8,12 +8,9 @@ import axios from 'axios';
 import get from 'lodash/get';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import {
-  type Assets,
-  queryKeys as assetQueryKeys,
-  erc20AssetSchema,
-} from './assets';
+import { erc20AssetSchema, getAssets } from './assets';
 import type { QueryClient } from '@tanstack/react-query';
+import { Time } from '../utils';
 
 const marketSchema = z.object({
   id: z.string(),
@@ -39,8 +36,7 @@ export type Markets = z.infer<typeof marketsSchema>;
  */
 export const retrieveMarkets = async (queryClient: QueryClient) => {
   const endpoint = restApiUrl('/api/v2/markets');
-
-  const assets = queryClient.getQueryData<Assets>(assetQueryKeys.list());
+  const assets = await getAssets(queryClient);
 
   if (!assets) {
     throw new Error('assets not cached');
@@ -117,18 +113,22 @@ export const queryKeys = {
   single: (marketId?: string) => [...queryKeys.all, 'single', { marketId }],
 } as const;
 
-export function getMarketsFromCache(queryClient: QueryClient) {
-  const markets = queryClient.getQueryData<Markets>(queryKeys.all);
+export async function getMarkets(queryClient: QueryClient) {
+  const markets = queryClient.fetchQuery({
+    queryKey: queryKeys.all,
+    queryFn: () => retrieveMarkets(queryClient),
+    staleTime: Time.HOUR,
+  });
 
   if (!markets) {
-    throw new Error('markets not fuond');
+    throw new Error('no markets');
   }
 
   return markets;
 }
 
-export function getMarketFromCache(queryClient: QueryClient, marketId: string) {
-  const markets = getMarketsFromCache(queryClient);
+export async function getMarket(queryClient: QueryClient, marketId: string) {
+  const markets = await getMarkets(queryClient);
   const market = markets.get(marketId);
 
   if (!market) {

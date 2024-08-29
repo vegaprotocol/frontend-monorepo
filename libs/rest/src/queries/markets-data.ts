@@ -11,11 +11,7 @@ import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import {
-  type Market,
-  getMarketFromCache,
-  getMarketsFromCache,
-} from './markets';
+import { type Market, getMarket, getMarkets } from './markets';
 import type { QueryClient } from '@tanstack/react-query';
 
 export const marketDataSchema = z.object({
@@ -40,16 +36,16 @@ export type MarketsData = z.infer<typeof marketsDataSchema>;
 export async function retrieveMarketsData(queryClient: QueryClient) {
   const endpoint = restApiUrl('/api/v2/markets/data');
 
-  const markets = getMarketsFromCache(queryClient);
-
+  const markets = await getMarkets(queryClient);
   const res = await axios.get<v2ListLatestMarketDataResponse>(endpoint);
 
   const data = compact(
     res.data.marketsData?.map((d) => {
-      if (!d.market) return undefined;
+      if (!d.market) return null;
 
-      const market = markets?.get(d.market);
-      if (!market) return undefined;
+      const market = markets.get(d.market);
+
+      if (!market) return null;
 
       return mapMarketData(d, market);
     })
@@ -78,7 +74,7 @@ export async function retrieveMarketData(
     marketId: pathParams.marketId,
   });
 
-  const market = getMarketFromCache(queryClient, pathParams.marketId);
+  const market = await getMarket(queryClient, pathParams.marketId);
   const res = await axios.get<v2GetLatestMarketDataResponse>(endpoint);
 
   const data = res.data.marketData;

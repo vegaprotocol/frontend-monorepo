@@ -14,7 +14,7 @@ import { Time } from '../utils';
 
 function accountsOptions(client: QueryClient, params: AccountsQueryParams) {
   return queryOptions({
-    queryKey: queryKeys.filtered(params),
+    queryKey: queryKeys.list(params),
     queryFn: () => retrieveAccounts(client, params),
     staleTime: Time.MIN,
   });

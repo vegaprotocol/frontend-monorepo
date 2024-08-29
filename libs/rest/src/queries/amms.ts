@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarkets } from './markets';
 import type { QueryClient } from '@tanstack/react-query';
 
 export { v1AMMStatus as AMMStatus };
@@ -62,13 +62,14 @@ export const retrieveAMMs = async (
 
   const edges = res.data.amms?.edges;
   const rawAMMs = removePaginationWrapper(edges);
+  const markets = await getMarkets(queryClient);
 
   const amms = rawAMMs.map((a) => {
     if (!a.marketId) {
       throw new Error('missing marketId');
     }
 
-    const market = getMarketFromCache(queryClient, a.marketId);
+    const market = markets.get(a.marketId);
 
     if (!market) {
       throw new Error('market for amm not found');

@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { Decimal } from '../utils';
 import { fromNanoSeconds } from '../utils/datetime';
 import type { Interval } from './candle-intervals';
-import { getMarketFromCache } from './markets';
+import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
@@ -51,10 +51,7 @@ export async function retrieveCandleData(
     searchParams = omit(searchParams, 'toTimestamp');
   }
 
-  const market = getMarketFromCache(queryClient, searchParams.marketId);
-  if (!market) {
-    throw new Error('market not found');
-  }
+  const market = await getMarket(queryClient, searchParams.marketId);
 
   const res = await axios.get<v2ListCandleDataResponse>(endpoint, {
     params: new URLSearchParams(omit(searchParams, 'marketId')),

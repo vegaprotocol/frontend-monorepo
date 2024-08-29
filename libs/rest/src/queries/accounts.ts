@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import { z } from 'zod';
-import { erc20AssetSchema, getAssetFromCache } from './assets';
+import { erc20AssetSchema, getAssets } from './assets';
 import { Decimal } from '../utils';
 import { type QueryClient } from '@tanstack/react-query';
 
@@ -14,7 +14,8 @@ const accountTypeSchema = z.nativeEnum(vegaAccountType);
 export type AccountType = z.infer<typeof accountTypeSchema>;
 
 const queryParamSchema = z.object({
-  'filter.accountTypes': accountTypeSchema,
+  'filter.accountTypes': accountTypeSchema.optional(),
+  'filter.assetId': z.string().optional(),
 });
 
 export type AccountsQueryParams = z.infer<typeof queryParamSchema>;
@@ -39,14 +40,16 @@ export const retrieveAccounts = async (
   const res = await axios.get<v2ListAccountsResponse>(endpoint, {
     params: new URLSearchParams(queryParams),
   });
-
-  console.log(res);
+  const assets = await getAssets(queryClient);
 
   const accounts = removePaginationWrapper(res.data.accounts?.edges).map(
     (account) => {
       if (!account.asset) return null;
 
-      const asset = getAssetFromCache(queryClient, account.asset);
+      const asset = assets.get(account.asset);
+
+      if (!asset) return null;
+
       return {
         type: account.type,
         asset,
@@ -62,5 +65,5 @@ export const retrieveAccounts = async (
 
 export const queryKeys = {
   all: ['accounts'],
-  filtered: (params: AccountsQueryParams) => [...queryKeys.all, params],
+  list: (params: AccountsQueryParams) => [...queryKeys.all, params],
 } as const;
