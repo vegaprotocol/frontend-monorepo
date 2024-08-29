@@ -1,3 +1,6 @@
+import { type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+
 import {
   Button,
   Intent,
@@ -5,32 +8,18 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { HeaderPage } from 'apps/trading/components/header-page';
-import { Links } from '../../lib/links';
-import {
-  useAccounts,
-  useSuspenseAssets,
-  useSuspenseMarkets,
-  // useSuspenseRewards,
-} from '@vegaprotocol/rest';
-import { MarketCard } from 'apps/trading/components/market-card';
-import { Link } from 'react-router-dom';
-import { useT } from '../../lib/use-t';
-import { useQuery } from '@tanstack/react-query';
 import { vegaAccountType } from '@vegaprotocol/rest-clients/dist/trading-data';
-import { ReactNode } from 'react';
+import { useSuspenseAccounts, useSuspenseMarkets } from '@vegaprotocol/rest';
+
+import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
+
+import { MarketCard } from '../../components/market-card';
+import { HeaderPage } from '../../components/header-page';
 
 export const Home = () => {
   const t = useT();
-  const { data: assets } = useSuspenseAssets();
-  console.log(assets);
   const { data: markets } = useSuspenseMarkets();
-  // const { data: rewards } = useSuspenseRewards();
-
-  // TODO: fix this, it should not be required if using suspense
-  if (!assets || !markets) {
-    return null;
-  }
 
   return (
     <>
@@ -128,11 +117,9 @@ const Stat = (props: { label: ReactNode; value: ReactNode }) => {
 };
 
 const ActiveUsersStat = () => {
-  const { data, error } = useAccounts({
+  const { data } = useSuspenseAccounts({
     'filter.accountTypes': vegaAccountType.ACCOUNT_TYPE_GENERAL,
   });
 
-  console.log(data, error);
-
-  return <Stat label="Active users" value="foo" />;
+  return <Stat label="Active users" value={data.length} />;
 };
