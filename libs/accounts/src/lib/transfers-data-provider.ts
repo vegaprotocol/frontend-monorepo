@@ -12,7 +12,6 @@ import {
   type TransfersQueryVariables,
 } from './__generated__/Transfers';
 import { type Pagination } from '@vegaprotocol/types';
-import { useEffect } from 'react';
 
 export const transfersProvider = makeDataProvider<
   TransfersQuery,
@@ -50,16 +49,6 @@ export const useTransfers = ({
     variables: { partyId: pubKey || '', pagination },
     skip: !pubKey,
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, 5000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
 
   return queryResult;
 };
