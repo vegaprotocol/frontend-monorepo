@@ -32,7 +32,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
       try {
         const [supply, totalAssociatedWallet, decimals] = await Promise.all([
           token.totalSupply(),
-          staking.total_staked(),
+          staking.totalStaked(),
           token.decimals(),
         ]);
 

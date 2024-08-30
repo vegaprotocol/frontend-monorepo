@@ -24,7 +24,7 @@ export const useRefreshBalances = (address: string) => {
         token.balanceOf(address),
         token.allowance(address, config.staking_bridge_contract.address),
         // Refresh connected vega key balances as well if we are connected to a vega key
-        pubKey ? staking.stake_balance(address, pubKey) : null,
+        pubKey ? staking.stakeBalance(address, pubKey) : null,
       ]);
 
       const walletBalance = toBigNum(w.toString(), decimals);
