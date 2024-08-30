@@ -11,8 +11,6 @@ const ethWalletDissociateButton = '[href="/token/disassociate"]:visible';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]:visible';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
-const associateContractRadioButton = '[data-testid="associate-radio-contract"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
 const stakeValidatorListTotalStake = 'total-stake';
@@ -69,17 +67,6 @@ export function stakingPageAssociateTokens(
 
   cy.highlight(`Associating ${amount} tokens from ${type}`);
   cy.get(ethWalletAssociateButton).first().click();
-  if (type === 'wallet') {
-    cy.get(associateWalletRadioButton, { timeout: 30000 }).click({
-      force: true,
-    });
-  } else if (type === 'contract') {
-    cy.get(associateContractRadioButton, { timeout: 30000 }).click({
-      force: true,
-    });
-  } else {
-    cy.highlight(`${type} is not association option`);
-  }
   cy.get(tokenAmountInputBox, epochTimeout).type(amount);
   if (approve) {
     cy.getByTestId('wallet-associate').then((walletAssociateField) => {
