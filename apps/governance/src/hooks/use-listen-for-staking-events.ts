@@ -19,7 +19,7 @@ export const useListenForStakingEvents = (
     }));
   const addFilter = useMemo(() => {
     if (!account || !vegaPublicKey || !contract) return null;
-    return contract.filters.Stake_Deposited(
+    return contract.filters.StakeDeposited(
       null,
       null,
       prepend0x(vegaPublicKey)
@@ -27,7 +27,7 @@ export const useListenForStakingEvents = (
   }, [contract, vegaPublicKey, account]);
   const removeFilter = useMemo(() => {
     if (!account || !vegaPublicKey || !contract) return null;
-    return contract.filters.Stake_Removed(null, null, prepend0x(vegaPublicKey));
+    return contract.filters.StakeRemoved(null, null, prepend0x(vegaPublicKey));
   }, [contract, vegaPublicKey, account]);
 
   /**

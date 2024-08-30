@@ -9,8 +9,8 @@ import BigNumber from 'bignumber.js';
 import { useBalances } from '../lib/balances/balances-store';
 
 export enum StakingEventType {
-  Stake_Removed = 'Stake_Removed',
-  Stake_Deposited = 'Stake_Deposited',
+  Stake_Removed = 'StakeRemoved',
+  Stake_Deposited = 'StakeDeposited',
 }
 
 export function useGetAssociationBreakdown(
@@ -44,8 +44,8 @@ async function userTotalStakedByVegaKey(
   ethereumAccount: string,
   decimals: number
 ): Promise<{ [vegaKey: string]: BigNumber }> {
-  const addFilter = contract.contract.filters.Stake_Deposited(ethereumAccount);
-  const removeFilter = contract.contract.filters.Stake_Removed(ethereumAccount);
+  const addFilter = contract.contract.filters.StakeDeposited(ethereumAccount);
+  const removeFilter = contract.contract.filters.StakeRemoved(ethereumAccount);
   const addEvents = await contract.contract.queryFilter(addFilter);
   const removeEvents = await contract.contract.queryFilter(removeFilter);
   const res = combineStakeEventsByVegaKey(
