@@ -32,28 +32,10 @@ const Home = ({ name }: RouteChildProps) => {
         />
       </HomeSection>
       <HomeSection>
-        <SubHeading title={t('Token Vesting')} />
-        <p>
-          {t(
-            'The vesting contract holds VEGA tokens until they have become unlocked.'
-          )}
-        </p>
-        <p>
-          {t(
-            'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
-          )}
-        </p>
-      </HomeSection>
-      <HomeSection>
         <SubHeading title={t('Use your Vega tokens')} />
         <p>
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
-          )}
-        </p>
-        <p>
-          {t(
-            'This can happen both while held in the vesting contract as well as when redeemed.'
           )}
         </p>
         <p>
