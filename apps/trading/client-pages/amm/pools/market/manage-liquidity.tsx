@@ -37,13 +37,13 @@ export const ManageLiquidity = () => {
   if (!market) {
     return (
       <Notification
-        title={t('MARKET_NO_MARKET')}
+        title={t('AMM_MARKET_NO_MARKET')}
         intent={Intent.Warning}
         message={
           <>
-            <p>{t('MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
+            <p>{t('AMM_MARKET_NO_MARKET_DESCRIPTION', { marketId })}</p>
             <Link className="underline" to={Links.AMM_POOLS()}>
-              {t('POOLS_GOTO_POOLS')}
+              {t('AMM_POOLS_GOTO_POOLS')}
             </Link>
           </>
         }
@@ -73,7 +73,7 @@ export const ManageLiquidity = () => {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={Links.AMM_POOLS()}>{t('POOLS_TITLE')}</Link>
+              <Link to={Links.AMM_POOLS()}>{t('AMM_POOLS_TITLE')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -83,7 +83,7 @@ export const ManageLiquidity = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbPage>{t('LIQUIDITY_TITLE')}</BreadcrumbPage>
+          <BreadcrumbPage>{t('AMM_LIQUIDITY_TITLE')}</BreadcrumbPage>
         </BreadcrumbList>
       </Breadcrumb>
 

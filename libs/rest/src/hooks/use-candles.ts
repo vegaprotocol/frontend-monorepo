@@ -52,7 +52,7 @@ export function useCandles(
 export function useVolume24(marketId: string) {
   const { data, ...queryResult } = useCandles(
     marketId,
-    Interval.DAYS_1,
+    Interval.HOURS_1,
     toNanoSeconds(yesterday())
   );
 

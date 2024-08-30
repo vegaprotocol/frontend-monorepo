@@ -23,7 +23,7 @@ export const VolumeChart = ({ market }: { market: Market }) => {
 
   const chartConfig = {
     y: {
-      label: t('CHART_VOLUME_Y_LABEL'),
+      label: t('AMM_CHART_VOLUME_Y_LABEL'),
       color: 'rgb(var(--surface-1-fg))',
     },
   };
