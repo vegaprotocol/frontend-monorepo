@@ -1,14 +1,9 @@
-import type {
-  Claim,
-  Token,
-  StakingBridge,
-} from '@vegaprotocol/smart-contracts';
+import type { Token, StakingBridge } from '@vegaprotocol/smart-contracts';
 import React from 'react';
 
 export interface ContractsContextShape {
   token: Token;
   staking: StakingBridge;
-  claim: Claim;
 }
 
 export const ContractsContext = React.createContext<

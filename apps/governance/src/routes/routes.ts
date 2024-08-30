@@ -1,6 +1,5 @@
 const Routes = {
   HOME: '/',
-  CLAIM: '/claim',
   VALIDATORS: '/validators',
   REWARDS: '/rewards',
   PROPOSALS: '/proposals',

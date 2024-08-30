@@ -1,4 +1,4 @@
-import { Token, Claim, StakingBridge } from '@vegaprotocol/smart-contracts';
+import { Token, StakingBridge } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -9,7 +9,6 @@ import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { ENV } from '../../config';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -61,7 +60,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
                 config.staking_bridge_contract.address,
                 signer || provider
               ),
-              claim: new Claim(ENV.addresses.claimAddress, signer || provider),
             });
           }
         }

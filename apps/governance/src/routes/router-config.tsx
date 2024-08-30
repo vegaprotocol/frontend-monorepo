@@ -6,12 +6,6 @@ import NotPermitted from './not-permitted';
 import Routes from './routes';
 import Restricted from './restricted';
 
-const LazyClaim = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-claim", webpackPrefetch: true */ './claim'
-    )
-);
 const LazyStaking = React.lazy(
   () =>
     import(
@@ -258,10 +252,6 @@ const routerConfig = [
         element: <LazyStakingDisassociate name="Disassociate" />,
       },
     ],
-  },
-  {
-    path: Routes.CLAIM,
-    element: <LazyClaim name="Claim" />,
   },
   {
     path: Routes.NOT_PERMITTED,
