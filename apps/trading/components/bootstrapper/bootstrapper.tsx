@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import { ConnectKitProvider } from 'connectkit';
 import { useEffect, type ReactNode, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
@@ -19,6 +19,9 @@ import { wagmiConfig } from '../../lib/wagmi-config';
 import { queryClient } from '../../lib/query-client';
 import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
 import { DataLoader } from './data-loader';
+
+// Render this for handy query/cache info
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
   const t = useT();
@@ -124,7 +127,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
             </DataLoader>
           </GraphQLProvider>
         </ConnectKitProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </WagmiProvider>
   );
