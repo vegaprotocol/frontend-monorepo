@@ -1,12 +1,13 @@
 import {
   JSONRPCError,
   type JsonRpcMessage,
+  type JsonRpcNotification,
   type JsonRpcResponse,
   isNotification,
   isResponse,
 } from './json-rpc';
 
-type NotificationHandler = (msg: JsonRpcResponse) => unknown;
+type NotificationHandler = (msg: JsonRpcNotification) => unknown;
 
 export class JSONRPCClient {
   static readonly Error = JSONRPCError;
@@ -70,7 +71,9 @@ export class JSONRPCClient {
   async onmessage(data: JsonRpcResponse) {
     if (data == null) return; // invalid response
 
-    if (isNotification(data)) return this._onnotification(data); // JSON-RPC notifications are not supported for now
+    if (isNotification(data)) {
+      return this._onnotification(data as unknown as JsonRpcNotification); // JSON-RPC notifications are not supported for now
+    }
 
     // Only react to responses and notifications
     if (!isResponse(data)) return;

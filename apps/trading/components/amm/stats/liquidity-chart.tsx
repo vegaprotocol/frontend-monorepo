@@ -12,7 +12,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 export const LiquidityChart = ({ market }: { market: Market }) => {
   const chartConfig = {
     y: {
-      label: t('CHART_LIQUIDITY_Y_LABEL'),
+      label: t('AMM_CHART_LIQUIDITY_Y_LABEL'),
       color: 'rgb(var(--surface-1-fg))',
     },
   };
@@ -25,7 +25,7 @@ export const LiquidityChart = ({ market }: { market: Market }) => {
 
   // TODO: Uncomment
   //   if (!activeAmms || activeAmms.length === 0) {
-  //     return <Splash>{t('GRID_NO_DATA')}</Splash>;
+  //     return <Splash>{t('AMM_GRID_NO_DATA')}</Splash>;
   //   }
 
   const uMax = BigNumber.max.apply(
