@@ -94,14 +94,10 @@ export async function retrieveCandleData(
 
 export const queryKeys = {
   all: ['candle-data'],
-  single: (
-    marketId: string,
-    candleId: string,
-    fromTimestamp?: string,
-    toTimestamp?: string
-  ) => [
-    ...queryKeys.all,
-    'single',
-    { marketId, candleId, fromTimestamp, toTimestamp },
-  ],
+  single: (params: {
+    marketId: string;
+    candleId: string;
+    fromTimestamp?: string;
+    toTimestamp?: string;
+  }) => [...queryKeys.all, 'single', params],
 } as const;

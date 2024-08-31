@@ -34,12 +34,7 @@ export function candleDataQueryOptions(
   }
 ) {
   return queryOptions({
-    queryKey: candleDataQueryKeys.single(
-      params.marketId,
-      params.candleId,
-      params.fromTimestamp,
-      params.toTimestamp
-    ),
+    queryKey: candleDataQueryKeys.single(params),
     queryFn: () => retrieveCandleData(params, client),
     staleTime: Time.HOUR,
     enabled: Boolean(params.candleId),
