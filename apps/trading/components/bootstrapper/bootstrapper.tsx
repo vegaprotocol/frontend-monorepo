@@ -1,5 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ConnectKitProvider } from 'connectkit';
 import { useEffect, type ReactNode, useState, useMemo } from 'react';
 import { Trans } from 'react-i18next';
@@ -123,6 +124,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
             </DataLoader>
           </GraphQLProvider>
         </ConnectKitProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </WagmiProvider>
   );

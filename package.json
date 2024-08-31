@@ -50,6 +50,7 @@
     "@sentry/tracing": "^6.19.2",
     "@swc/helpers": "~0.5.2",
     "@tanstack/react-query": "^5.45.0",
+    "@tanstack/react-query-devtools": "^5.53.1",
     "@types/object-hash": "^3.0.6",
     "@vegaprotocol/crypto": "^0.12.0",
     "@vegaprotocol/enums": "^0.0.3",
