@@ -37,13 +37,7 @@ export type Markets = z.infer<typeof marketsSchema>;
 export const retrieveMarkets = async (queryClient: QueryClient) => {
   const endpoint = restApiUrl('/api/v2/markets');
   const assets = await getAssets(queryClient);
-
-  if (!assets) {
-    throw new Error('assets not cached');
-  }
-
   const res = await axios.get<v2ListMarketsResponse>(endpoint);
-
   const edges = res.data.markets?.edges;
   const rawMarkets = removePaginationWrapper(edges);
 

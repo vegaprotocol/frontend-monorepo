@@ -188,7 +188,7 @@ export const Pools = () => {
 
       <div className="h-full border rounded border-gs-300 dark:border-gs-700">
         <AgGrid
-          rowData={markets}
+          rowData={rowData}
           domLayout="autoHeight"
           rowClass={
             '!border-b !last:border-b-0 mb-1 border-gs-200 dark:border-gs-800'
