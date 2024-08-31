@@ -18,6 +18,7 @@ import {
   useWithdrawals,
 } from '@vegaprotocol/withdraws';
 import { toBigNum } from '@vegaprotocol/utils';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
 export interface RowBase {
   asset: AssetFieldsFragment | undefined;
@@ -84,7 +85,11 @@ export const useAssetActivity = () => {
     // Filter out any incomplete withdrawals so they can be added as
     // pinned rows to the top
     const rows = orderedRows.filter((r) => {
-      if (r.type === 'Withdrawal' && !r.detail.txHash) {
+      if (
+        r.type === 'Withdrawal' &&
+        r.detail.status !== WithdrawalStatus.STATUS_REJECTED &&
+        !r.detail.txHash
+      ) {
         pinnedTopRows.push(r);
         return false;
       }

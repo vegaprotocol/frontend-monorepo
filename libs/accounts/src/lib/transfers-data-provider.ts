@@ -12,7 +12,6 @@ export const useTransfers = ({
   const queryResult = useTransfersQuery({
     variables: { partyId: pubKey || '', pagination },
     skip: !pubKey,
-    pollInterval: 5000,
   });
 
   return {

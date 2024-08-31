@@ -1,3 +1,4 @@
+import groupBy from 'lodash/groupBy';
 import { useApolloClient } from '@apollo/client';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
@@ -63,15 +64,24 @@ export const useVegaTransactionUpdater = () => {
     variables,
     skip,
     fetchPolicy: 'no-cache',
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
+    onData: ({ data: result }) => {
+      // If a withdrawal is rejected the subscription will get two events the first
+      // will have STATUS_OPEN and the second will have STATUS_REJECTED, so we need
+      // to take the last update for each withdrawal
+      const withdrawals = Object.values(
+        groupBy(result.data?.busEvents, 'event.id')
+      );
+
+      withdrawals.forEach((w) => {
+        const event = w[w.length - 1];
         if (event.event.__typename === 'Withdrawal') {
           const withdrawal = event.event;
           waitForWithdrawalApproval(withdrawal.id, client).then((approval) => {
             updateWithdrawal(withdrawal, approval);
           });
         }
-      }),
+      });
+    },
   });
 
   useTransactionEventSubscription({
