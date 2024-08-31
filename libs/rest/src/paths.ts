@@ -1,5 +1,4 @@
 import trimEnd from 'lodash/trimEnd';
-import path from 'path';
 import tradingDataApi from '@vegaprotocol/rest-clients/paths/trading_data_v2.json';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -15,7 +14,6 @@ export function restApiUrl(
   replacements?: Record<string, string>
 ) {
   const baseUrl = getBaseUrl();
-
   const base = trimEnd(baseUrl, '/');
 
   if (apiPath) {
@@ -41,7 +39,9 @@ export function restApiUrl(
       }
     }
 
-    return path.join(base, p);
+    const url = new URL(p, base);
+
+    return url.href;
   }
 
   return base;
