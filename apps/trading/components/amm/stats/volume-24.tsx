@@ -26,7 +26,7 @@ export const Volume24 = ({ market }: { market: Market }) => {
 };
 
 export const CompactVolume24 = ({ market }: { market: Market }) => {
-  const { notional, status } = useVolume24(market.id);
+  const { notional, status } = useCandleData(market.id);
 
   if (status === 'pending') {
     return (
