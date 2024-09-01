@@ -1,14 +1,16 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { restApiUrl } from '../paths';
 import {
+  type v2GetMarketResponse,
   type v2ListMarketsResponse,
+  type vegaMarket,
   vegaMarketState,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
 import get from 'lodash/get';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { erc20AssetSchema, getAssets } from './assets';
+import { type Assets, erc20AssetSchema, getAssets } from './assets';
 import type { QueryClient } from '@tanstack/react-query';
 import { Time } from '../utils';
 
@@ -38,48 +40,65 @@ export const retrieveMarkets = async (queryClient: QueryClient) => {
   const endpoint = restApiUrl('/api/v2/markets');
   const assets = await getAssets(queryClient);
   const res = await axios.get<v2ListMarketsResponse>(endpoint);
-  const edges = res.data.markets?.edges;
-  const rawMarkets = removePaginationWrapper(edges);
-
-  const markets = rawMarkets.map((m) => {
-    let baseAsset = null;
-    let quoteAsset = null;
-
-    if (m.tradableInstrument?.instrument?.future) {
-      quoteAsset = assets.get(
-        get(m, 'tradableInstrument.instrument.future.settlementAsset', '')
-      );
-    } else if (m.tradableInstrument?.instrument?.perpetual) {
-      quoteAsset = assets.get(
-        get(m, 'tradableInstrument.instrument.perpetual.settlementAsset', '')
-      );
-    } else if (m.tradableInstrument?.instrument?.spot) {
-      baseAsset = assets.get(
-        get(m, 'tradableInstrument.instrument.spot.baseAsset', '')
-      );
-      quoteAsset = assets.get(
-        get(m, 'tradableInstrument.instrument.spot.quoteAsset', '')
-      );
-    }
-
-    return {
-      id: m.id,
-      code: m.tradableInstrument?.instrument?.code,
-      name: m.tradableInstrument?.instrument?.name,
-      decimalPlaces: Number(m.decimalPlaces),
-      positionDecimalPlaces: Number(m.positionDecimalPlaces),
-      baseAsset,
-      quoteAsset,
-      liquidityFee: Number(m.fees?.factors?.liquidityFee),
-      data: {
-        state: m.state,
-      },
-    };
-  });
-
+  const markets = removePaginationWrapper(res.data.markets?.edges).map((m) =>
+    mapMarket(m, assets)
+  );
   const map = new Map(Object.entries(keyBy(markets, 'id')));
   return marketsSchema.parse(map);
 };
+
+const pathParamsSchema = z.object({
+  marketId: z.string(),
+});
+
+export const retrieveMarket = async (
+  queryClient: QueryClient,
+  pathParams: { marketId?: string }
+) => {
+  const params = pathParamsSchema.parse(pathParams);
+  const endpoint = restApiUrl('/api/v2/market/{marketId}', params);
+  const assets = await getAssets(queryClient);
+  const res = await axios.get<v2GetMarketResponse>(endpoint);
+  if (!res.data.market) throw new Error('market not found');
+  const market = mapMarket(res.data.market, assets);
+  return marketSchema.parse(market);
+};
+
+function mapMarket(m: vegaMarket, assets: Assets) {
+  let baseAsset = null;
+  let quoteAsset = null;
+
+  if (m.tradableInstrument?.instrument?.future) {
+    quoteAsset = assets.get(
+      get(m, 'tradableInstrument.instrument.future.settlementAsset', '')
+    );
+  } else if (m.tradableInstrument?.instrument?.perpetual) {
+    quoteAsset = assets.get(
+      get(m, 'tradableInstrument.instrument.perpetual.settlementAsset', '')
+    );
+  } else if (m.tradableInstrument?.instrument?.spot) {
+    baseAsset = assets.get(
+      get(m, 'tradableInstrument.instrument.spot.baseAsset', '')
+    );
+    quoteAsset = assets.get(
+      get(m, 'tradableInstrument.instrument.spot.quoteAsset', '')
+    );
+  }
+
+  return {
+    id: m.id,
+    code: m.tradableInstrument?.instrument?.code,
+    name: m.tradableInstrument?.instrument?.name,
+    decimalPlaces: Number(m.decimalPlaces),
+    positionDecimalPlaces: Number(m.positionDecimalPlaces),
+    baseAsset,
+    quoteAsset,
+    liquidityFee: Number(m.fees?.factors?.liquidityFee),
+    data: {
+      state: m.state,
+    },
+  };
+}
 
 export const OPEN_MARKETS_STATES = [
   vegaMarketState.STATE_ACTIVE,
@@ -101,12 +120,10 @@ export const isActiveMarket = (market: Market) => {
   return OPEN_MARKETS_STATES.includes(market.data.state);
 };
 
-export const queryKeys = {
-  all: ['markets'],
-  list: () => [...queryKeys.all, 'list'],
-  single: (marketId?: string) => [...queryKeys.all, 'single', { marketId }],
-} as const;
-
+/**
+ * Fetch and cache markets use this if needing market data
+ * from another query
+ */
 export async function getMarkets(queryClient: QueryClient) {
   const markets = queryClient.fetchQuery({
     queryKey: queryKeys.all,
@@ -121,13 +138,27 @@ export async function getMarkets(queryClient: QueryClient) {
   return markets;
 }
 
+/** Fetch and cache single market */
 export async function getMarket(queryClient: QueryClient, marketId: string) {
-  const markets = await getMarkets(queryClient);
-  const market = markets.get(marketId);
+  const market = queryClient.fetchQuery({
+    queryKey: queryKeys.single(marketId),
+    queryFn: () => retrieveMarket(queryClient, { marketId }),
+    staleTime: Time.HOUR,
+  });
 
   if (!market) {
-    throw new Error('market not fuond');
+    throw new Error(`market ${marketId} not found`);
   }
 
   return market;
 }
+
+export function getMarketsFromCache(queryClient: QueryClient) {
+  return queryClient.getQueryData<Markets>(queryKeys.all);
+}
+
+export const queryKeys = {
+  all: ['markets'],
+  list: () => [...queryKeys.all, 'list'],
+  single: (marketId?: string) => [...queryKeys.all, 'single', { marketId }],
+} as const;

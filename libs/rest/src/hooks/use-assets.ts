@@ -4,7 +4,12 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { getAsset, queryKeys, retrieveAssets } from '../queries/assets';
+import {
+  getAssetsFromCache,
+  queryKeys,
+  retrieveAsset,
+  retrieveAssets,
+} from '../queries/assets';
 
 function assetOptions() {
   return queryOptions({
@@ -24,14 +29,15 @@ export function useSuspenseAssets() {
   return queryResult;
 }
 
-export function useAsset(assetId?: string | null) {
+export function useAsset(assetId?: string) {
   const queryClient = useQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(assetId),
-    queryFn: async () => {
-      if (!assetId) return null;
-      const asset = await getAsset(queryClient, assetId);
-      return asset;
+    queryFn: () => retrieveAsset({ assetId }),
+    initialData: () => {
+      if (!assetId) return;
+      const assets = getAssetsFromCache(queryClient);
+      return assets?.get(assetId);
     },
   });
 

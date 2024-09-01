@@ -1,15 +1,12 @@
-import orderBy from 'lodash/orderBy';
-import filter from 'lodash/filter';
 import {
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import {
-  getMarket,
-  getMarkets,
-  isActiveMarket,
+  getMarketsFromCache,
   queryKeys,
+  retrieveMarket,
   retrieveMarkets,
 } from '../queries/markets';
 
@@ -38,25 +35,13 @@ export function useMarket(marketId?: string) {
   const queryClient = useQueryClient();
   const queryResult = useQuery({
     queryKey: queryKeys.single(marketId),
-    queryFn: async () => {
-      if (!marketId) return null;
-      const market = await getMarket(queryClient, marketId);
-      return market;
+    queryFn: () => retrieveMarket(queryClient, { marketId }),
+    // Get data from the cache if list view has already been fetched
+    initialData: () => {
+      if (!marketId) return;
+      const markets = getMarketsFromCache(queryClient);
+      return markets?.get(marketId);
     },
-  });
-  return queryResult;
-}
-
-export function useMarketsList() {
-  const queryClient = useQueryClient();
-  const queryResult = useQuery({
-    queryKey: queryKeys.list(),
-    queryFn: async () => {
-      const marketsMap = await getMarkets(queryClient);
-      const markets = Array.from(marketsMap.values());
-      return orderBy(filter(markets, isActiveMarket), (m) => m.code, 'asc');
-    },
-    staleTime: Number.POSITIVE_INFINITY,
   });
   return queryResult;
 }
