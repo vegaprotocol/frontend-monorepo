@@ -1,5 +1,5 @@
 import type { Asset } from '@vegaprotocol/rest';
-import { t } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 import { cn, Intent, Pill, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 type AssetPillProps = {
@@ -8,6 +8,7 @@ type AssetPillProps = {
 };
 
 export const AssetPill = ({ asset, className }: AssetPillProps) => {
+  const t = useT();
   return (
     <Tooltip
       description={

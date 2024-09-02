@@ -40,7 +40,7 @@ import {
 } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-import { t, useT } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 import {
   type EnrichedRewardTransfer,
   useReward,
@@ -794,6 +794,7 @@ const TradeToPlayButton = ({
 }: {
   reward: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
 }) => {
+  const t = useT();
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [tradeOpen, setTradeOpen] = useState(false);
 
