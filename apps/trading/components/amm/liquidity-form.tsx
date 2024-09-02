@@ -64,16 +64,10 @@ export const LiquidityForm = ({
     let tx = undefined;
     switch (type) {
       case 'submit':
-        tx = createSubmitAmmTransaction(
-          values as SubmitAMMFormFields,
-          market.quoteAsset
-        );
+        tx = createSubmitAmmTransaction(values as SubmitAMMFormFields, market);
         break;
       case 'amend':
-        tx = createAmendAmmTransaction(
-          values as AmendAMMFormFields,
-          market.quoteAsset
-        );
+        tx = createAmendAmmTransaction(values as AmendAMMFormFields, market);
     }
 
     send(tx);
