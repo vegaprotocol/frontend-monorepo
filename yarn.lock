@@ -15951,13 +15951,6 @@ i18next-http-backend@^2.3.1:
   dependencies:
     cross-fetch "4.0.0"
 
-i18next-locize-backend@^6.4.1:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/i18next-locize-backend/-/i18next-locize-backend-6.4.3.tgz#c2df89346dcb74b766d6324da25c0b4d5308b17f"
-  integrity sha512-HY4GI/qFp84OtR8++BK2NhB1aPfIk8c9gw5Ul7lbUJLD2LvVgFCtKD9pINJUOLuTlNcP47ehNJH1CKiZIxQuxA==
-  dependencies:
-    cross-fetch "4.0.0"
-
 i18next@22.5.1:
   version "22.5.1"
   resolved "https://registry.yarnpkg.com/i18next/-/i18next-22.5.1.tgz#99df0b318741a506000c243429a7352e5f44d424"
