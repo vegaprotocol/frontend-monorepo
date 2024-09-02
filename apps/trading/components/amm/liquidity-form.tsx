@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { BarChart3Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -20,89 +18,15 @@ import {
   createSubmitAmmTransaction,
 } from '../../lib/utils/amm';
 import { TransactionDialog } from '../transaction-dialog/transaction-dialog';
-import { t, useT } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
-const createSubmitSchema = () => {
-  return z.object({
-    marketId: z.string(),
-    amount: z
-      .number({
-        coerce: true,
-        invalid_type_error: t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_TYPE'),
-      })
-      .gt(0, t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_MIN', { min: 0 })),
-    fee: z
-      .number({
-        coerce: true,
-        invalid_type_error: t('AMM_LIQUIDITY_FORM_FEE_ERROR_TYPE'),
-      })
-      .gt(0, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MIN', { min: 0 }))
-      .lt(1, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MAX', { max: 1 })), // TODO: net param "market.liquidity.maximumLiquidityFeeFactorLevel"
-    slippageTolerance: z
-      .number({
-        coerce: true,
-        invalid_type_error: t(
-          'AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE'
-        ),
-      })
-      .gt(0, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN', { min: 0 }))
-      .lt(1, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX', { max: 1 })),
-
-    // ConcentratedLiquidityParameters
-    upperBound: z.optional(
-      z.number({
-        coerce: true,
-        invalid_type_error: t('AMM_LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE'),
-      })
-    ),
-    lowerBound: z.optional(
-      z.number({
-        coerce: true,
-        invalid_type_error: t('AMM_LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE'),
-      })
-    ),
-    base: z.number({
-      coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_BASE_ERROR_TYPE'),
-    }),
-    leverageAtUpperBound: z.optional(
-      z.number({
-        coerce: true,
-        invalid_type_error: t(
-          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE'
-        ),
-      })
-    ),
-    leverageAtLowerBound: z.optional(
-      z.number({
-        coerce: true,
-        invalid_type_error: t(
-          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE'
-        ),
-      })
-    ),
-  });
-};
-
-const createAmendSchema = () => {
-  return createSubmitSchema().partial({
-    // marketId IS NOT OPTIONAL
-    amount: true,
-    fee: true,
-    // slippageTolerance IS NOT OPTIONAL
-    upperBound: true,
-    lowerBound: true,
-    base: true,
-    leverageAtUpperBound: true,
-    leverageAtLowerBound: true,
-  });
-};
-
-export type SubmitAMMFormFields = z.infer<
-  ReturnType<typeof createSubmitSchema>
->;
-export type AmendAMMFormFields = z.infer<ReturnType<typeof createAmendSchema>>;
+import {
+  type SubmitAMMFormFields,
+  type AmendAMMFormFields,
+  createSubmitSchema,
+  createAmendSchema,
+} from './liquidity-form-schema';
 
 type LiquidityFormProps = {
   market: Market;
@@ -171,244 +95,250 @@ export const LiquidityForm = ({
         reset={reset}
       />
       <form
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-6"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h2 className="text-xl">
-          {t('AMM_LIQUIDITY_FORM_SECTION_COMMITMENT')}
-        </h2>
-        <div className="flex flex-col gap-4 md:flex-row">
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>{t('AMM_LIQUIDITY_FORM_AMOUNT_LABEL')}</FormLabel>
-                  <FormControl>
-                    <div className="relative">
+        <fieldset className="flex flex-col gap-1">
+          <legend className="text-xl">
+            {t('AMM_LIQUIDITY_FORM_SECTION_COMMITMENT')}
+          </legend>
+          <div className="flex flex-col gap-4 md:flex-row">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => {
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>
+                      {t('AMM_LIQUIDITY_FORM_AMOUNT_LABEL')}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder={t(
+                            'AMM_LIQUIDITY_FORM_AMOUNT_PLACEHOLDER'
+                          )}
+                          type="number"
+                          {...field}
+                          value={field.value || ''}
+                        />
+                        <AssetPill
+                          asset={market.quoteAsset}
+                          className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name="fee"
+              render={({ field }) => {
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>{t('AMM_LIQUIDITY_FORM_FEE_LABEL')}</FormLabel>
+                    <FormControl>
                       <Input
-                        placeholder={t('AMM_LIQUIDITY_FORM_AMOUNT_PLACEHOLDER')}
+                        placeholder={t('AMM_LIQUIDITY_FORM_FEE_PLACEHOLDER')}
                         type="number"
+                        step="0.01"
                         {...field}
                         value={field.value || ''}
                       />
-                      <AssetPill
-                        asset={market.quoteAsset}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="fee"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>{t('AMM_LIQUIDITY_FORM_FEE_LABEL')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t('AMM_LIQUIDITY_FORM_FEE_PLACEHOLDER')}
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="slippageTolerance"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    {t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_LABEL')}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t(
-                        'AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_PLACEHOLDER'
-                      )}
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-        </div>
-        <h2 className="text-xl">{t('AMM_LIQUIDITY_FORM_SECTION_PRICING')}</h2>
-        <FormField
-          control={form.control}
-          name="base"
-          render={({ field }) => {
-            return (
-              <FormItem className="flex-1">
-                <FormLabel>{t('AMM_LIQUIDITY_FORM_BASE_LABEL')}</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      placeholder={t('AMM_LIQUIDITY_FORM_BASE_PLACEHOLDER')}
-                      type="number"
-                      {...field}
-                      value={field.value || ''}
-                    />
-                    <AssetPill
-                      asset={market.quoteAsset}
-                      className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
-        <div className="flex flex-col gap-4 md:flex-row">
-          <FormField
-            control={form.control}
-            name="upperBound"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    {t('AMM_LIQUIDITY_FORM_UPPER_BOUND_LABEL')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name="slippageTolerance"
+              render={({ field }) => {
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>
+                      {t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_LABEL')}
+                    </FormLabel>
+                    <FormControl>
                       <Input
                         placeholder={t(
-                          'AMM_LIQUIDITY_FORM_UPPER_BOUND_PLACEHOLDER'
+                          'AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_PLACEHOLDER'
                         )}
                         type="number"
+                        step="0.01"
                         {...field}
                         value={field.value || ''}
                       />
-                      <AssetPill
-                        asset={market.quoteAsset}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="leverageAtUpperBound"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_LABEL')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder={t(
-                          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_PLACEHOLDER'
-                        )}
-                        type="number"
-                        {...field}
-                        value={field.value || ''}
-                      />
-                      <AssetPill
-                        asset={market.quoteAsset}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-4 md:flex-row">
-          <FormField
-            control={form.control}
-            name="lowerBound"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    {t('AMM_LIQUIDITY_FORM_LOWER_BOUND_LABEL')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder={t(
-                          'AMM_LIQUIDITY_FORM_LOWER_BOUND_PLACEHOLDER'
-                        )}
-                        type="number"
-                        {...field}
-                        value={field.value || ''}
-                      />
-                      <AssetPill
-                        asset={market.quoteAsset}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="leverageAtLowerBound"
-            render={({ field }) => {
-              return (
-                <FormItem className="flex-1">
-                  <FormLabel>
-                    {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_LABEL')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder={t(
-                          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_PLACEHOLDER'
-                        )}
-                        type="number"
-                        {...field}
-                        value={field.value || ''}
-                      />
-                      <AssetPill
-                        asset={market.quoteAsset}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 transform"
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-        </div>
-        <div className="relative h-[20vw] w-full bg-surface-1">
-          <BarChart3Icon
-            size={48}
-            className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 transform"
-          />
-        </div>
-        <Button intent={Intent.Primary} className="w-full" type="submit">
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+          </div>
+        </fieldset>
+        <fieldset className="flex flex-col gap-1">
+          <legend className="text-xl">
+            {t('AMM_LIQUIDITY_FORM_SECTION_PRICING')}
+          </legend>
+          <div className="flex flex-col gap-4">
+            <FormField
+              control={form.control}
+              name="base"
+              render={({ field }) => {
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>{t('AMM_LIQUIDITY_FORM_BASE_LABEL')}</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder={t('AMM_LIQUIDITY_FORM_BASE_PLACEHOLDER')}
+                          type="number"
+                          {...field}
+                          value={field.value || ''}
+                        />
+                        <AssetPill
+                          asset={market.quoteAsset}
+                          className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            <div className="flex flex-col gap-4 md:flex-row">
+              <FormField
+                control={form.control}
+                name="upperBound"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        {t('AMM_LIQUIDITY_FORM_UPPER_BOUND_LABEL')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder={t(
+                              'AMM_LIQUIDITY_FORM_UPPER_BOUND_PLACEHOLDER'
+                            )}
+                            type="number"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                          <AssetPill
+                            asset={market.quoteAsset}
+                            className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name="leverageAtUpperBound"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_LABEL')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder={t(
+                              'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_PLACEHOLDER'
+                            )}
+                            type="number"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                          <AssetPill
+                            asset={market.quoteAsset}
+                            className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+            <div className="flex flex-col gap-4 md:flex-row">
+              <FormField
+                control={form.control}
+                name="lowerBound"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        {t('AMM_LIQUIDITY_FORM_LOWER_BOUND_LABEL')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder={t(
+                              'AMM_LIQUIDITY_FORM_LOWER_BOUND_PLACEHOLDER'
+                            )}
+                            type="number"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                          <AssetPill
+                            asset={market.quoteAsset}
+                            className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name="leverageAtLowerBound"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="flex-1">
+                      <FormLabel>
+                        {t('AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_LABEL')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder={t(
+                              'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_PLACEHOLDER'
+                            )}
+                            type="number"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                          <AssetPill
+                            asset={market.quoteAsset}
+                            className="-translate-y-1/2 absolute top-1/2 right-2 transform"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+          </div>
+        </fieldset>
+        <Button intent={Intent.Primary} className="self-start" type="submit">
           {t('AMM_LIQUIDITY_FORM_SUBMIT')}
         </Button>
         {errors.root?.message && (
