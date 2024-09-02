@@ -11,18 +11,20 @@ import { Decimal } from '../utils';
 import { getMarketFromCache } from './markets';
 import type { QueryClient } from '@tanstack/react-query';
 
+export { v1AMMStatus as AMMStatus };
+
 const ammStatusSchema = z.nativeEnum(v1AMMStatus);
+
 const ammStatusReasonSchema = z.nativeEnum(AMMStatusReason);
 
-const parametersSchema = z.object({
+const searchParamsSchema = z.object({
   id: z.optional(z.string().length(64)),
   partyId: z.optional(z.string().length(64)),
   marketId: z.optional(z.string().length(64)),
   ammPartyId: z.optional(z.string().length(64)),
   status: z.optional(ammStatusSchema),
 });
-
-export type AMMsQueryParams = z.infer<typeof parametersSchema>;
+export type SearchParams = z.infer<typeof searchParamsSchema>;
 
 const ammSchema = z.object({
   id: z.string().length(64),
@@ -50,12 +52,10 @@ export type AMMs = z.infer<typeof ammsSchema>;
 
 export const retrieveAMMs = async (
   queryClient: QueryClient,
-  params?: AMMsQueryParams
+  params?: SearchParams
 ) => {
   const endpoint = restApiUrl('/api/v2/amms');
-
-  const searchParams = parametersSchema.parse(params);
-
+  const searchParams = searchParamsSchema.parse(params);
   const res = await axios.get<v2ListAMMsResponse>(endpoint, {
     params: new URLSearchParams(searchParams),
   });
@@ -111,10 +111,26 @@ export const retrieveAMMs = async (
   return ammsSchema.parse(amms);
 };
 
+export const ACTIVE_AMM_STATUSES = [
+  v1AMMStatus.STATUS_ACTIVE,
+  v1AMMStatus.STATUS_REDUCE_ONLY,
+];
+
+export const INACTIVE_AMM_STATUSES = [
+  v1AMMStatus.STATUS_UNSPECIFIED,
+  v1AMMStatus.STATUS_REJECTED,
+  v1AMMStatus.STATUS_CANCELLED,
+  v1AMMStatus.STATUS_STOPPED,
+];
+
+export const isActiveAMM = (amm: AMM) => {
+  return ACTIVE_AMM_STATUSES.includes(amm.status);
+};
+
 export const queryKeys = {
   all: ['amm'],
   list: () => [...queryKeys.all, 'list'],
-  filtered: (params: AMMsQueryParams) => [
+  filtered: (params: SearchParams) => [
     ...queryKeys.all,
     'filtered',
     { params },
