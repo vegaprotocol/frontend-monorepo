@@ -1,24 +1,9 @@
 import {
-  type QueryClient,
-  queryOptions,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import {
-  queryKeys,
-  retrieveMarketData,
-  retrieveMarketsData,
-} from '../queries/markets-data';
-import { Time } from '../utils/datetime';
-
-function marketsDataOptions(queryClient: QueryClient) {
-  return queryOptions({
-    queryKey: queryKeys.list(),
-    queryFn: () => retrieveMarketsData(queryClient),
-    staleTime: Time.MIN,
-  });
-}
+import { marketDataOptions, marketsDataOptions } from '../queries/markets-data';
 
 export function useMarketsData() {
   const queryClient = useQueryClient();
@@ -34,11 +19,6 @@ export function useSuspenseMarketsData() {
 
 export function useMarketData(marketId?: string) {
   const queryClient = useQueryClient();
-  const queryResult = useQuery({
-    queryKey: queryKeys.single(marketId),
-    queryFn: () => retrieveMarketData(queryClient, { marketId }),
-    staleTime: Time.MIN,
-    refetchInterval: Time.MIN,
-  });
+  const queryResult = useQuery(marketDataOptions(queryClient, marketId));
   return queryResult;
 }

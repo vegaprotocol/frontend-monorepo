@@ -1,3 +1,4 @@
+import { queryOptions } from '@tanstack/react-query';
 import { restApiUrl } from '../paths';
 import { type v2ListCandleIntervalsResponse } from '@vegaprotocol/rest-clients/dist/trading-data';
 import axios from 'axios';
@@ -33,6 +34,14 @@ const candleIntervalSchema = z.object({
 const candleIntervalsSchema = z.array(candleIntervalSchema);
 
 export type CandleIntervals = z.infer<typeof candleIntervalsSchema>;
+
+export function candleIntervalQueryOptions(params: { marketId: string }) {
+  return queryOptions({
+    queryKey: queryKeys.single(params.marketId),
+    queryFn: () => retrieveCandleIntervals({ marketId: params.marketId }),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+}
 
 export async function retrieveCandleIntervals(params: QueryParams) {
   const endpoint = restApiUrl('/api/v2/candle/intervals');

@@ -36,8 +36,10 @@ export async function retrieveMarketDepth(
     marketId: params.marketId,
   });
 
-  const market = await getMarket(queryClient, params.marketId);
-  const res = await axios.get<vegaMarketDepth>(endpoint);
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, params.marketId),
+    axios.get<vegaMarketDepth>(endpoint),
+  ]);
 
   const data = res.data;
 

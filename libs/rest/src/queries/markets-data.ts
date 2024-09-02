@@ -10,9 +10,9 @@ import axios from 'axios';
 import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { Decimal } from '../utils';
+import { Decimal, Time } from '../utils';
 import { type Market, getMarket, getMarkets } from './markets';
-import type { QueryClient } from '@tanstack/react-query';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 export const marketDataSchema = z.object({
   marketId: z.string(),
@@ -33,11 +33,21 @@ export type MarketData = z.infer<typeof marketDataSchema>;
 const marketsDataSchema = z.map(z.string(), marketDataSchema);
 export type MarketsData = z.infer<typeof marketsDataSchema>;
 
+export function marketsDataOptions(queryClient: QueryClient) {
+  return queryOptions({
+    queryKey: queryKeys.list(),
+    queryFn: () => retrieveMarketsData(queryClient),
+    staleTime: Time.MIN,
+  });
+}
+
 export async function retrieveMarketsData(queryClient: QueryClient) {
   const endpoint = restApiUrl('/api/v2/markets/data');
 
-  const markets = await getMarkets(queryClient);
-  const res = await axios.get<v2ListLatestMarketDataResponse>(endpoint);
+  const [markets, res] = await Promise.all([
+    getMarkets(queryClient),
+    axios.get<v2ListLatestMarketDataResponse>(endpoint),
+  ]);
 
   const data = compact(
     res.data.marketsData?.map((d) => {
@@ -62,6 +72,15 @@ const pathParamsSchema = z.object({
 });
 export type MarketsDataPathParams = z.infer<typeof pathParamsSchema>;
 
+export function marketDataOptions(queryClient: QueryClient, marketId?: string) {
+  return queryOptions({
+    queryKey: queryKeys.single(marketId),
+    queryFn: () => retrieveMarketData(queryClient, { marketId }),
+    staleTime: Time.MIN,
+    refetchInterval: Time.MIN,
+  });
+}
+
 export async function retrieveMarketData(
   queryClient: QueryClient,
   pathParams: MarketsDataPathParams
@@ -74,8 +93,10 @@ export async function retrieveMarketData(
     marketId: pathParams.marketId,
   });
 
-  const market = await getMarket(queryClient, pathParams.marketId);
-  const res = await axios.get<v2GetLatestMarketDataResponse>(endpoint);
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, pathParams.marketId),
+    axios.get<v2GetLatestMarketDataResponse>(endpoint),
+  ]);
 
   const data = res.data.marketData;
 

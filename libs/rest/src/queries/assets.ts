@@ -11,8 +11,7 @@ import axios from 'axios';
 import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { type QueryClient } from '@tanstack/react-query';
-import { assetOptions, assetsOptions } from '../hooks/use-assets';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 export const erc20AssetSchema = z.object({
   id: z.string(),
@@ -34,6 +33,14 @@ const assetsSchema = z.map(z.string(), erc20AssetSchema);
 export type ERC20Asset = z.infer<typeof erc20AssetSchema>;
 export type Assets = z.infer<typeof assetsSchema>;
 
+export function assetsOptions() {
+  return queryOptions({
+    queryKey: queryKeys.all,
+    queryFn: () => retrieveAssets(),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+}
+
 export const retrieveAssets = async () => {
   const endpoint = restApiUrl('/api/v2/assets');
   const res = await axios.get<v2ListAssetsResponse>(endpoint);
@@ -45,6 +52,20 @@ export const retrieveAssets = async () => {
 const pathParamsSchema = z.object({
   assetId: z.string(),
 });
+
+export function assetOptions(queryClient: QueryClient, assetId?: string) {
+  return queryOptions({
+    queryKey: queryKeys.single(assetId),
+    queryFn: () => retrieveAsset({ assetId }),
+    // @ts-ignore queryOptions does not like this function even though its fine when used
+    // in a normal query
+    initialData: () => {
+      if (!assetId) return;
+      const assets = getAssetsFromCache(queryClient);
+      return assets?.get(assetId);
+    },
+  });
+}
 
 export const retrieveAsset = async (pathParams: { assetId?: string }) => {
   const params = pathParamsSchema.parse(pathParams);

@@ -7,8 +7,8 @@ import {
 import axios from 'axios';
 import { z } from 'zod';
 import { erc20AssetSchema, getAssets } from './assets';
-import { Decimal } from '../utils';
-import { type QueryClient } from '@tanstack/react-query';
+import { Decimal, Time } from '../utils';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 const accountTypeSchema = z.nativeEnum(vegaAccountType);
 export type AccountType = z.infer<typeof accountTypeSchema>;
@@ -31,16 +31,27 @@ export type Reward = z.infer<typeof accountSchema>;
 
 const accountsSchema = z.array(accountSchema);
 
+export function accountsOptions(client: QueryClient, params: QueryParams) {
+  return queryOptions({
+    queryKey: queryKeys.list(params),
+    queryFn: () => retrieveAccounts(client, params),
+    staleTime: Time.MIN,
+  });
+}
+
 export const retrieveAccounts = async (
   queryClient: QueryClient,
   params?: QueryParams
 ) => {
   const endpoint = restApiUrl('/api/v2/accounts');
   const queryParams = queryParamSchema.parse(params);
-  const res = await axios.get<v2ListAccountsResponse>(endpoint, {
-    params: new URLSearchParams(queryParams),
-  });
-  const assets = await getAssets(queryClient);
+
+  const [assets, res] = await Promise.all([
+    getAssets(queryClient),
+    axios.get<v2ListAccountsResponse>(endpoint, {
+      params: new URLSearchParams(queryParams),
+    }),
+  ]);
 
   const accounts = removePaginationWrapper(res.data.accounts?.edges).map(
     (account) => {

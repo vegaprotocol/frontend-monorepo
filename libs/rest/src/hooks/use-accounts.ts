@@ -1,24 +1,9 @@
 import {
-  type QueryClient,
-  queryOptions,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import {
-  queryKeys,
-  type QueryParams,
-  retrieveAccounts,
-} from '../queries/accounts';
-import { Time } from '../utils';
-
-function accountsOptions(client: QueryClient, params: QueryParams) {
-  return queryOptions({
-    queryKey: queryKeys.list(params),
-    queryFn: () => retrieveAccounts(client, params),
-    staleTime: Time.MIN,
-  });
-}
+import { accountsOptions, type QueryParams } from '../queries/accounts';
 
 export function useAccounts(params: QueryParams) {
   const client = useQueryClient();

@@ -11,9 +11,7 @@ import get from 'lodash/get';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { type Assets, erc20AssetSchema, getAssets } from './assets';
-import type { QueryClient } from '@tanstack/react-query';
-import { Time } from '../utils';
-import { marketOptions } from '../hooks/use-markets';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 const marketSchema = z.object({
   id: z.string(),
@@ -34,13 +32,23 @@ const marketsSchema = z.map(z.string(), marketSchema);
 export type Market = z.infer<typeof marketSchema>;
 export type Markets = z.infer<typeof marketsSchema>;
 
+export function marketsOptions(queryClient: QueryClient) {
+  return queryOptions({
+    queryKey: queryKeys.all,
+    queryFn: () => retrieveMarkets(queryClient),
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+}
+
 /**
  * Retrieves all markets from `/markets` endpoint.
  */
 export const retrieveMarkets = async (queryClient: QueryClient) => {
   const endpoint = restApiUrl('/api/v2/markets');
-  const assets = await getAssets(queryClient);
-  const res = await axios.get<v2ListMarketsResponse>(endpoint);
+  const [assets, res] = await Promise.all([
+    getAssets(queryClient),
+    axios.get<v2ListMarketsResponse>(endpoint),
+  ]);
   const markets = removePaginationWrapper(res.data.markets?.edges).map((m) =>
     mapMarket(m, assets)
   );
@@ -52,14 +60,32 @@ const pathParamsSchema = z.object({
   marketId: z.string(),
 });
 
+export function marketOptions(queryClient: QueryClient, marketId?: string) {
+  return queryOptions({
+    queryKey: queryKeys.single(marketId),
+    queryFn: () => retrieveMarket(queryClient, { marketId }),
+    staleTime: Number.POSITIVE_INFINITY,
+    // Get data from the cache if list view has already been fetched
+    // @ts-ignore queryOptions does not like this function even though its fine when used
+    // in a normal query
+    initialData: () => {
+      if (!marketId) return;
+      const markets = getMarketsFromCache(queryClient);
+      return markets?.get(marketId);
+    },
+  });
+}
+
 export const retrieveMarket = async (
   queryClient: QueryClient,
   pathParams: { marketId?: string }
 ) => {
   const params = pathParamsSchema.parse(pathParams);
   const endpoint = restApiUrl('/api/v2/market/{marketId}', params);
-  const assets = await getAssets(queryClient);
-  const res = await axios.get<v2GetMarketResponse>(endpoint);
+  const [assets, res] = await Promise.all([
+    getAssets(queryClient),
+    axios.get<v2GetMarketResponse>(endpoint),
+  ]);
   if (!res.data.market) throw new Error('market not found');
   const market = mapMarket(res.data.market, assets);
   return marketSchema.parse(market);
@@ -126,11 +152,7 @@ export const isActiveMarket = (market: Market) => {
  * from another query
  */
 export async function getMarkets(queryClient: QueryClient) {
-  const markets = queryClient.fetchQuery({
-    queryKey: queryKeys.all,
-    queryFn: () => retrieveMarkets(queryClient),
-    staleTime: Time.HOUR,
-  });
+  const markets = await queryClient.fetchQuery(marketsOptions(queryClient));
 
   if (!markets) {
     throw new Error('no markets');
@@ -141,7 +163,9 @@ export async function getMarkets(queryClient: QueryClient) {
 
 /** Fetch and cache single market */
 export async function getMarket(queryClient: QueryClient, marketId: string) {
-  const market = queryClient.fetchQuery(marketOptions(queryClient, marketId));
+  const market = await queryClient.fetchQuery(
+    marketOptions(queryClient, marketId)
+  );
 
   if (!market) {
     throw new Error(`market ${marketId} not found`);

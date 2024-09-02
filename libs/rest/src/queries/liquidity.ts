@@ -53,10 +53,12 @@ export async function retrieveLiquidityProvisions(
 
   const searchParams = parametersSchema.parse(params);
 
-  const market = await getMarket(client, searchParams.marketId);
-  const res = await axios.get<v2ListAllLiquidityProvisionsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(client, searchParams.marketId),
+    axios.get<v2ListAllLiquidityProvisionsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = removePaginationWrapper(res.data.liquidityProvisions?.edges);
   const allCurrentProvisions = compact(

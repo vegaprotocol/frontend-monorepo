@@ -7,9 +7,9 @@ import compact from 'lodash/compact';
 import omit from 'lodash/omit';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { fromNanoSeconds } from '../utils/datetime';
+import { fromNanoSeconds, Time } from '../utils/datetime';
 import { getMarket } from './markets';
-import { type QueryClient } from '@tanstack/react-query';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
   candleId: z.string(),
@@ -35,6 +35,23 @@ export type Candle = z.infer<typeof candleSchema>;
 
 const candlesSchema = z.array(candleSchema);
 
+export function candleDataQueryOptions(
+  client: QueryClient,
+  params: {
+    candleId: string;
+    marketId: string;
+    fromTimestamp?: string;
+    toTimestamp?: string;
+  }
+) {
+  return queryOptions({
+    queryKey: queryKeys.single(params),
+    queryFn: () => retrieveCandleData(params, client),
+    staleTime: Time.HOUR,
+    enabled: Boolean(params.candleId),
+  });
+}
+
 export async function retrieveCandleData(
   params: QueryParams,
   queryClient: QueryClient
@@ -50,11 +67,12 @@ export async function retrieveCandleData(
     searchParams = omit(searchParams, 'toTimestamp');
   }
 
-  const market = await getMarket(queryClient, searchParams.marketId);
-
-  const res = await axios.get<v2ListCandleDataResponse>(endpoint, {
-    params: new URLSearchParams(omit(searchParams, 'marketId')),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, searchParams.marketId),
+    axios.get<v2ListCandleDataResponse>(endpoint, {
+      params: new URLSearchParams(omit(searchParams, 'marketId')),
+    }),
+  ]);
 
   const data = compact(
     removePaginationWrapper(res.data.candles?.edges).map((cd) => {

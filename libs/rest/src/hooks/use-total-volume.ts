@@ -1,10 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getCandleId, Interval } from '../queries/candle-intervals';
-import { toNanoSeconds, yesterday } from '../utils';
 import {
-  candleDataQueryOptions,
+  getCandleId,
+  Interval,
   candleIntervalQueryOptions,
-} from './use-candles';
+} from '../queries/candle-intervals';
+import { candleDataQueryOptions } from '../queries/candle-data';
+import { toNanoSeconds, yesterday } from '../utils';
 import BigNumber from 'bignumber.js';
 import { useMarkets } from './use-markets';
 

@@ -44,10 +44,12 @@ export const retrieveTransfers = async (
 ) => {
   const queryParams = queyrParamsSchema.parse(params);
   const endpoint = restApiUrl('/api/v2/transfers');
-  const assets = await getAssets(queryClient);
-  const res = await axios.get<v2ListTransfersResponse>(endpoint, {
-    params: new URLSearchParams(queryParams),
-  });
+  const [assets, res] = await Promise.all([
+    getAssets(queryClient),
+    axios.get<v2ListTransfersResponse>(endpoint, {
+      params: new URLSearchParams(queryParams),
+    }),
+  ]);
   const tranfers = removePaginationWrapper(res.data.transfers?.edges).map(
     (t) => {
       const transfer = t.transfer;

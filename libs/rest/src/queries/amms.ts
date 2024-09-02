@@ -55,14 +55,17 @@ export const retrieveAMMs = async (
   params?: SearchParams
 ) => {
   const endpoint = restApiUrl('/api/v2/amms');
+
   const searchParams = searchParamsSchema.parse(params);
-  const res = await axios.get<v2ListAMMsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [markets, res] = await Promise.all([
+    getMarkets(queryClient),
+    axios.get<v2ListAMMsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const edges = res.data.amms?.edges;
   const rawAMMs = removePaginationWrapper(edges);
-  const markets = await getMarkets(queryClient);
 
   const amms = rawAMMs.map((a) => {
     if (!a.marketId) {

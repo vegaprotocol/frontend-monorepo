@@ -58,10 +58,12 @@ export async function retrieveLiquidityFees(
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = await getMarket(queryClient, searchParams.marketId);
-  const res = await axios.get<v2ListPaidLiquidityFeesResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, searchParams.marketId),
+    axios.get<v2ListPaidLiquidityFeesResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = removePaginationWrapper(res.data.paidLiquidityFees?.edges);
 
@@ -142,10 +144,12 @@ export async function retrieveMakerFees(
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = await getMarket(queryClient, searchParams.marketId);
-  const res = await axios.get<v2GetFeesStatsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, searchParams.marketId),
+    axios.get<v2GetFeesStatsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = res.data.feesStats;
 
