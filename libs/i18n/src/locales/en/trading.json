@@ -51,6 +51,7 @@
   "AMM_LIQUIDITY_FORM_BASE_ERROR_TYPE": "The base value needs to be a number",
   "AMM_LIQUIDITY_FORM_BASE_LABEL": "Base price",
   "AMM_LIQUIDITY_FORM_BASE_PLACEHOLDER": "Base price",
+  "AMM_LIQUIDITY_FORM_BOUNDS_REQUIRED": "Upper and lower bounds cannot both be empty",
   "AMM_LIQUIDITY_FORM_FEE_ERROR_MAX": "The proposed cannot be larger than {{max}}",
   "AMM_LIQUIDITY_FORM_FEE_ERROR_MIN": "The proposed fee has to be larger than {{min}}",
   "AMM_LIQUIDITY_FORM_FEE_ERROR_TYPE": "The proposed fee needs to be a number",

@@ -1,7 +1,7 @@
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { type Status, type Result } from '@vegaprotocol/wallet-react';
 import { TransactionSteps } from './transaction-steps';
-import { t } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 
 type TransactionDialogProps = {
   title: string;
@@ -22,6 +22,7 @@ export const TransactionDialog = ({
   error,
   reset,
 }: TransactionDialogProps) => {
+  const t = useT();
   return (
     <Dialog title={title} open={open} onChange={(open) => onOpenChange(open)}>
       <TransactionSteps

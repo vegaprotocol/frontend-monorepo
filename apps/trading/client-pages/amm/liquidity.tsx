@@ -5,7 +5,7 @@ import { CancelAMMMethod } from '@vegaprotocol/wallet';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { t } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 import { useSimpleTransaction, useWallet } from '@vegaprotocol/wallet-react';
 import { TransactionDialog } from '../../components/transaction-dialog/transaction-dialog';
@@ -14,6 +14,7 @@ import { HeaderPage } from '../../components/header-page';
 import { Button, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 
 export const Liquidity = () => {
+  const t = useT();
   const [pubKey, status] = useWallet((store) => [store.pubKey, store.status]);
   const isConnected = pubKey && status === 'connected';
 
@@ -31,6 +32,7 @@ export const Liquidity = () => {
 };
 
 const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
+  const t = useT();
   const { data: amms } = useAMMs({ partyId: pubKey });
 
   return (
@@ -74,6 +76,7 @@ const MyLiquidityList = ({ pubKey }: { pubKey: string }) => {
 };
 
 const CancelLiquidityButton = ({ marketId }: { marketId: string }) => {
+  const t = useT();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [open, setOpen] = useState(false);
   const { error, send, result, status, reset } = useSimpleTransaction();

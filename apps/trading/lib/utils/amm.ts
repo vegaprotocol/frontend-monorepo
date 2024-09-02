@@ -1,14 +1,14 @@
 import type {
-  AmendAMMData,
-  SubmitAMMData,
-} from '../../components/amm/liquidity-form';
+  AmendAMMFormFields,
+  SubmitAMMFormFields,
+} from '../../components/amm/liquidity-form-schema';
 import {
   type AmendAMMBody,
   type CancelAMMBody,
   CancelAMMMethod,
   type SubmitAMMBody,
 } from '@vegaprotocol/wallet';
-import { Decimal, type Asset } from '@vegaprotocol/rest';
+import { Decimal, type Market } from '@vegaprotocol/rest';
 
 export const createSubmitAmmTransaction = (
   {
@@ -21,26 +21,20 @@ export const createSubmitAmmTransaction = (
     base,
     leverageAtUpperBound,
     leverageAtLowerBound,
-  }: SubmitAMMData,
-  quoteAsset: Asset
+  }: SubmitAMMFormFields,
+  market: Market
 ) => {
   // required fields
-  const _amount = Decimal.toString(amount, quoteAsset.decimals);
+  const _amount = Decimal.toString(amount, market.quoteAsset.decimals);
   const _fee = String(fee);
   const _slippageTolerance = String(slippageTolerance);
-  const _base = Decimal.toString(base, quoteAsset.decimals);
+  const _base = Decimal.toString(base, market.decimalPlaces);
 
   // optional fields
-  const _upperBound = Decimal.toString(upperBound, quoteAsset.decimals);
-  const _leverageAtUpperBound = Decimal.toString(
-    leverageAtUpperBound,
-    quoteAsset.decimals
-  );
-  const _lowerBound = Decimal.toString(lowerBound, quoteAsset.decimals);
-  const _leverageAtLowerBound = Decimal.toString(
-    leverageAtLowerBound,
-    quoteAsset.decimals
-  );
+  const _upperBound = Decimal.toString(upperBound, market.decimalPlaces);
+  const _leverageAtUpperBound = String(leverageAtUpperBound);
+  const _lowerBound = Decimal.toString(lowerBound, market.decimalPlaces);
+  const _leverageAtLowerBound = String(leverageAtLowerBound);
 
   if (!_amount) {
     throw new Error('missing _amount');
@@ -80,26 +74,20 @@ export const createAmendAmmTransaction = (
     base,
     leverageAtUpperBound,
     leverageAtLowerBound,
-  }: AmendAMMData,
-  quoteAsset: Asset
+  }: AmendAMMFormFields,
+  market: Market
 ) => {
   // required fields
   const _slippageTolerance = String(slippageTolerance);
 
   // optional fields
-  const _amount = Decimal.toString(amount, quoteAsset.decimals);
+  const _amount = Decimal.toString(amount, market.quoteAsset.decimals);
   const _fee = fee ? String(fee) : undefined;
-  const _base = Decimal.toString(base, quoteAsset.decimals);
-  const _upperBound = Decimal.toString(upperBound, quoteAsset.decimals);
-  const _leverageAtUpperBound = Decimal.toString(
-    leverageAtUpperBound,
-    quoteAsset.decimals
-  );
-  const _lowerBound = Decimal.toString(lowerBound, quoteAsset.decimals);
-  const _leverageAtLowerBound = Decimal.toString(
-    leverageAtLowerBound,
-    quoteAsset.decimals
-  );
+  const _base = Decimal.toString(base, market.decimalPlaces);
+  const _upperBound = Decimal.toString(upperBound, market.decimalPlaces);
+  const _leverageAtUpperBound = String(leverageAtUpperBound);
+  const _lowerBound = Decimal.toString(lowerBound, market.decimalPlaces);
+  const _leverageAtLowerBound = String(leverageAtLowerBound);
 
   const withParams = !!_base;
 
