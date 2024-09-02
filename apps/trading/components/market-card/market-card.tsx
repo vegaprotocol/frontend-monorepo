@@ -1,4 +1,4 @@
-import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { useMarket, useMarketData, useCandleData } from '@vegaprotocol/rest';
 import {
   cn,
@@ -19,14 +19,18 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
   return (
     <div
       key={market.id}
-      className="bg-black/5 dark:bg-black/40 flex flex-col items-start gap-4 p-8 rounded-lg"
+      className="bg-black/5 dark:bg-black/40 border flex flex-col items-start gap-4 p-6 rounded-lg"
     >
       <header className="flex justify-between gap-2 w-full">
         <div className="flex gap-2 items-start min-w-0">
-          <EmblemByMarket market={market.id} vegaChain={chainId} />
+          <EmblemByAsset
+            vegaChain={chainId}
+            asset={market.quoteAsset.id}
+            size={34}
+          />
           <div className="min-w-0">
-            <h4 className="text-2xl truncate">{market.code}</h4>
-            <p className="text-sm text-surface-0-fg-muted truncate">
+            <h4 className="text-2xl leading-none truncate">{market.code}</h4>
+            <p className="text-sm leading-none text-surface-0-fg-muted truncate">
               {market.name}
             </p>
           </div>
@@ -50,11 +54,9 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
           </p>
         </div>
       </header>
-      {sparkline && (
-        <div className="w-full">
-          <Sparkline data={sparkline} className="w-full h-20" />
-        </div>
-      )}
+      <div className="w-full h-10">
+        {sparkline && <Sparkline data={sparkline} className="w-full h-10" />}
+      </div>
       <dl className="flex justify-between gap-2 w-full">
         <div className="text-left">
           <dt className="text-surface-0-fg-muted text-sm">24h Volume</dt>
