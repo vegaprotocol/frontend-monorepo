@@ -1,15 +1,21 @@
 import { useDataProvider, type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
-import { updateLevels } from './orderbook-data';
+import { updateLevels, combineVolume } from './orderbook-data';
 import { captureException } from '@sentry/react';
 
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,
+  type PriceLevelFieldsFragment,
   type MarketDepthQuery,
   type MarketDepthQueryVariables,
   type MarketDepthUpdateSubscription,
 } from './__generated__/MarketDepth';
+
+export type PriceLevel = Omit<
+  PriceLevelFieldsFragment,
+  'ammVolume' | 'ammVolumeEstimated'
+>;
 
 export const update: Update<
   ReturnType<typeof getData>,
@@ -61,8 +67,21 @@ export const update: Update<
   return data;
 };
 
-const getData = (responseData: MarketDepthQuery | null) =>
-  responseData?.market || null;
+const getData = (responseData: MarketDepthQuery | null) => {
+  if (!responseData?.market) return null;
+  return {
+    ...responseData?.market,
+    depth: {
+      ...responseData?.market?.depth,
+      buy: responseData?.market?.depth?.buy?.map((b) => {
+        return combineVolume(b);
+      }),
+      sell: responseData?.market?.depth?.sell?.map((s) => {
+        return combineVolume(s);
+      }),
+    },
+  };
+};
 
 const getDelta = (subscriptionData: MarketDepthUpdateSubscription) =>
   subscriptionData.marketsDepthUpdate;
