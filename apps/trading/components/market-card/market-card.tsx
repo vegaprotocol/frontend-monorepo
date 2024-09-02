@@ -36,22 +36,27 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
           </div>
         </div>
         <div>
-          <p className="text-2xl">{marketData?.markPrice.toFormat()}</p>
-          <p
-            className={cn('flex items-center justify-end gap-1', {
-              'text-dir-up-fg': priceChange?.isPositive(),
-              'text-dir-down-fg': priceChange?.isNegative(),
-            })}
-          >
-            <VegaIcon
-              name={
-                priceChange?.isPositive()
-                  ? VegaIconNames.CHEVRON_UP
-                  : VegaIconNames.CHEVRON_DOWN
-              }
-            />{' '}
-            {pctChange?.toFixed(2)}%
+          <p className="text-2xl leading-none">
+            {marketData?.markPrice.toFormat()}
           </p>
+          {priceChange && (
+            <p
+              className={cn('text-sm flex items-center justify-end gap-1', {
+                'text-dir-up-fg': priceChange?.isPositive(),
+                'text-dir-down-fg': priceChange?.isNegative(),
+              })}
+            >
+              <VegaIcon
+                size={10}
+                name={
+                  priceChange?.isPositive()
+                    ? VegaIconNames.CHEVRON_UP
+                    : VegaIconNames.CHEVRON_DOWN
+                }
+              />{' '}
+              {pctChange?.toFixed(2)}%
+            </p>
+          )}
         </div>
       </header>
       <div className="w-full h-10">

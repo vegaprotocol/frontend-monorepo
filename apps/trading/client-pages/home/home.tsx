@@ -31,7 +31,7 @@ export const Home = () => {
 
   return (
     <>
-      <header className="flex flex-col items-center gap-6 py-10 text-center">
+      <header className="flex flex-col items-start gap-6 py-10">
         <HeaderPage>
           Explore the <span className="text-accent calt">Console</span>
         </HeaderPage>
@@ -40,20 +40,6 @@ export const Home = () => {
           Get started <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
         </Button>
       </header>
-
-      <section className="py-10">
-        <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-          <li>
-            <ActiveUsersStat />
-          </li>
-          <li>
-            <TotalValueLockedStat />
-          </li>
-          <li>
-            <Volume24hrStat />
-          </li>
-        </ul>
-      </section>
 
       {transfers.length > 0 && (
         <section className="py-10">
@@ -89,6 +75,20 @@ export const Home = () => {
           </ul>
         </section>
       )}
+
+      <section className="py-10">
+        <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+          <li>
+            <ActiveUsersStat />
+          </li>
+          <li>
+            <TotalValueLockedStat />
+          </li>
+          <li>
+            <Volume24hrStat />
+          </li>
+        </ul>
+      </section>
 
       <section className="flex flex-col items-center gap-6 py-10">
         <h3 className="text-4xl">Explore the Console</h3>
