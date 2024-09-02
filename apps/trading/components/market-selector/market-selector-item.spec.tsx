@@ -25,10 +25,6 @@ jest.mock('@vegaprotocol/wallet-react', () => ({
   useChainId: jest.fn(() => '1'),
 }));
 
-jest.mock('@vegaprotocol/emblem', () => ({
-  EmblemByMarket: () => <div data-testid="emblem-by-market" />,
-}));
-
 describe('MarketSelectorItem', () => {
   const yesterday = new Date();
   yesterday.setHours(yesterday.getHours() - 20);

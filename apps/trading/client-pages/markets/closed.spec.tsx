@@ -29,10 +29,6 @@ jest.mock('@vegaprotocol/wallet-react', () => ({
   useChainId: jest.fn(() => '1'),
 }));
 
-jest.mock('@vegaprotocol/emblem', () => ({
-  EmblemByMarket: () => <div data-testid="emblem-by-market" />,
-}));
-
 describe('Closed', () => {
   let originalNow: typeof Date.now;
   const mockNowTimestamp = 1672531200000;
