@@ -1,7 +1,7 @@
 import type {
-  AmendAMMData,
-  SubmitAMMData,
-} from '../../components/amm/liquidity-form';
+  AmendAMMFormFields,
+  SubmitAMMFormFields,
+} from '../../components/amm/liquidity-form-schema';
 import {
   type AmendAMMBody,
   type CancelAMMBody,
@@ -21,7 +21,7 @@ export const createSubmitAmmTransaction = (
     base,
     leverageAtUpperBound,
     leverageAtLowerBound,
-  }: SubmitAMMData,
+  }: SubmitAMMFormFields,
   quoteAsset: Asset
 ) => {
   // required fields
@@ -80,7 +80,7 @@ export const createAmendAmmTransaction = (
     base,
     leverageAtUpperBound,
     leverageAtLowerBound,
-  }: AmendAMMData,
+  }: AmendAMMFormFields,
   quoteAsset: Asset
 ) => {
   // required fields
