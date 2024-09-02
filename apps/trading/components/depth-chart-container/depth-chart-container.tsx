@@ -8,7 +8,7 @@ import {
   marketDepthProvider,
   parseLevel,
   updateLevels,
-  type MarketDepthQuery,
+  type PriceLevel,
   type MarketDepthUpdateSubscription,
   type PriceLevelFieldsFragment,
 } from '@vegaprotocol/market-depth';
@@ -16,6 +16,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
 import { type MarketData } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
+
+export type Depth = {
+  id: string;
+  depth: {
+    sell: PriceLevel[] | undefined;
+    buy: PriceLevel[] | undefined;
+    sequenceNumber: string;
+  };
+} | null;
 
 interface DepthChartManagerProps {
   marketId: string;
@@ -25,8 +34,8 @@ const formatMidPrice = (midPrice: string, decimalPlaces: number) =>
   Number(addDecimal(midPrice, decimalPlaces));
 
 const getMidPrice = (
-  sell: PriceLevelFieldsFragment[] | null | undefined,
-  buy: PriceLevelFieldsFragment[] | null | undefined,
+  sell: PriceLevel[] | null | undefined,
+  buy: PriceLevel[] | null | undefined,
   decimalPlaces: number
 ) =>
   buy?.length && sell?.length
@@ -45,7 +54,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const [depthData, setDepthData] = useState<DepthData | null>(null);
   const dataRef = useRef<DepthData | null>(null);
   const marketDataRef = useRef<MarketData | null>(null);
-  const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
+  const rawDataRef = useRef<Depth>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
     buy: PriceLevelFieldsFragment[];
@@ -117,7 +126,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       data: rawData,
     }: {
       delta?: MarketDepthUpdateSubscription['marketsDepthUpdate'] | null;
-      data: NonNullable<MarketDepthQuery['market']> | null;
+      data: Depth;
     }) => {
       if (!dataRef.current) {
         return false;
@@ -141,7 +150,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   );
 
   const { data, error, loading } = useDataProvider<
-    NonNullable<MarketDepthQuery['market']> | null,
+    Depth,
     MarketDepthUpdateSubscription['marketsDepthUpdate'],
     { marketId: string }
   >({
