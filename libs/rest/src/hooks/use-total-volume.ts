@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMarketsList } from './use-markets';
 import { getCandleId, Interval } from '../queries/candle-intervals';
 import { toNanoSeconds, yesterday } from '../utils';
 import {
@@ -7,10 +6,12 @@ import {
   candleIntervalQueryOptions,
 } from './use-candles';
 import BigNumber from 'bignumber.js';
+import { useMarkets } from './use-markets';
 
 export function useTotalVolume() {
   const client = useQueryClient();
-  const { data: markets } = useMarketsList();
+  const { data } = useMarkets();
+  const markets = Array.from(data?.values() || []);
 
   const queryResult = useQuery({
     queryKey: ['totalVolume'],

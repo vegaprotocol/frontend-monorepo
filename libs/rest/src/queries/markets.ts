@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { type Assets, erc20AssetSchema, getAssets } from './assets';
 import type { QueryClient } from '@tanstack/react-query';
 import { Time } from '../utils';
+import { marketOptions } from '../hooks/use-markets';
 
 const marketSchema = z.object({
   id: z.string(),
@@ -140,11 +141,7 @@ export async function getMarkets(queryClient: QueryClient) {
 
 /** Fetch and cache single market */
 export async function getMarket(queryClient: QueryClient, marketId: string) {
-  const market = queryClient.fetchQuery({
-    queryKey: queryKeys.single(marketId),
-    queryFn: () => retrieveMarket(queryClient, { marketId }),
-    staleTime: Time.HOUR,
-  });
+  const market = queryClient.fetchQuery(marketOptions(queryClient, marketId));
 
   if (!market) {
     throw new Error(`market ${marketId} not found`);

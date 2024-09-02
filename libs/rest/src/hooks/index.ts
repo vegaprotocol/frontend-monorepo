@@ -9,12 +9,7 @@ export {
 } from './use-liquidity-provisions';
 export { useMarketDepth } from './use-market-depth';
 export { useMarketData, useMarketsData } from './use-markets-data';
-export {
-  useMarket,
-  useMarkets,
-  useSuspenseMarkets,
-  useMarketsList,
-} from './use-markets';
+export { useMarket, useMarkets, useSuspenseMarkets } from './use-markets';
 export {
   useTransfers,
   useSuspenseTransfers,

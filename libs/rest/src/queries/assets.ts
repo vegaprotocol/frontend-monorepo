@@ -12,6 +12,7 @@ import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { type QueryClient } from '@tanstack/react-query';
+import { assetOptions, assetsOptions } from '../hooks/use-assets';
 
 export const erc20AssetSchema = z.object({
   id: z.string(),
@@ -82,11 +83,7 @@ function mapAsset(asset: vegaAsset) {
  * for other queries.
  */
 export async function getAssets(queryClient: QueryClient) {
-  const assets = await queryClient.fetchQuery({
-    queryKey: queryKeys.all,
-    queryFn: retrieveAssets,
-    staleTime: Number.POSITIVE_INFINITY,
-  });
+  const assets = await queryClient.fetchQuery(assetsOptions());
 
   if (!assets) {
     throw new Error('no assets');
@@ -97,11 +94,9 @@ export async function getAssets(queryClient: QueryClient) {
 
 /** Fetch and cache single asset */
 export async function getAsset(queryClient: QueryClient, assetId: string) {
-  const asset = await queryClient.fetchQuery({
-    queryKey: queryKeys.single(assetId),
-    queryFn: () => retrieveAsset({ assetId }),
-    staleTime: Number.POSITIVE_INFINITY,
-  });
+  const asset = await queryClient.fetchQuery(
+    assetOptions(queryClient, assetId)
+  );
 
   if (!asset) {
     throw new Error(`asset ${assetId} not fuond`);

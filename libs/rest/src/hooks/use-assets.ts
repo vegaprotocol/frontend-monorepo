@@ -1,4 +1,5 @@
 import {
+  type QueryClient,
   queryOptions,
   useQuery,
   useQueryClient,
@@ -11,7 +12,7 @@ import {
   retrieveAssets,
 } from '../queries/assets';
 
-function assetOptions() {
+export function assetsOptions() {
   return queryOptions({
     queryKey: queryKeys.all,
     queryFn: () => retrieveAssets(),
@@ -20,26 +21,32 @@ function assetOptions() {
 }
 
 export function useAssets() {
-  const queryResult = useQuery(assetOptions());
+  const queryResult = useQuery(assetsOptions());
   return queryResult;
 }
 
 export function useSuspenseAssets() {
-  const queryResult = useSuspenseQuery(assetOptions());
+  const queryResult = useSuspenseQuery(assetsOptions());
   return queryResult;
 }
 
-export function useAsset(assetId?: string) {
-  const queryClient = useQueryClient();
-  const queryResult = useQuery({
+export function assetOptions(queryClient: QueryClient, assetId?: string) {
+  return queryOptions({
     queryKey: queryKeys.single(assetId),
     queryFn: () => retrieveAsset({ assetId }),
+    // @ts-ignore queryOptions does not like this function even though its fine when used
+    // in a normal query
     initialData: () => {
       if (!assetId) return;
       const assets = getAssetsFromCache(queryClient);
       return assets?.get(assetId);
     },
   });
+}
+
+export function useAsset(assetId?: string) {
+  const queryClient = useQueryClient();
+  const queryResult = useQuery(assetOptions(queryClient, assetId));
 
   return queryResult;
 }
