@@ -45,6 +45,12 @@ type ProposalData = {
   requiredParticipation: string;
   requiredLiquidityProviderMajority: string;
   requiredLiquidityProviderParticipation: string;
+  batchTerms?: {
+    proposalParams?: {
+      requiredMajority: string;
+      requiredParticipation: string;
+    };
+  };
 };
 
 type Terms = {

@@ -1,6 +1,5 @@
 import compact from 'lodash/compact';
-import countBy from 'lodash/countBy';
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { Trans, useTranslation } from 'react-i18next';
@@ -13,13 +12,7 @@ import {
 } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { type Proposal, type BatchProposal } from '../../types';
-import {
-  type ProposalTermsFieldsFragment,
-  type VoteFieldsFragment,
-} from '../../__generated__/Proposals';
 import { useBatchVoteInformation } from '../../hooks/use-vote-information';
-import { MarketName } from '../proposal/market-name';
-import { Indicator } from '../proposal/indicator';
 import { type ProposalNode } from '../proposal/proposal-utils';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
@@ -137,128 +130,32 @@ const VoteBreakdownBatch = ({
   proposal: BatchProposal;
   restData?: ProposalNode | null;
 }) => {
-  const [fullBreakdown, setFullBreakdown] = useState(false);
   const { t } = useTranslation();
 
-  const yesELS =
-    restData?.yes?.reduce((all, y) => {
-      if (y.elsPerMarket) {
-        y.elsPerMarket.forEach((item) => {
-          const share = Number(item.els);
-          if (all[item.marketId]) {
-            all[item.marketId].push(share);
-          } else {
-            all[item.marketId] = [share];
-          }
-          return all;
-        });
-      }
-      return all;
-    }, {} as Record<string, number[]>) || {};
-
-  const noELS =
-    restData?.no?.reduce((all, y) => {
-      if (y.elsPerMarket) {
-        y.elsPerMarket.forEach((item) => {
-          const share = Number(item.els);
-          if (all[item.marketId]) {
-            all[item.marketId].push(share);
-          } else {
-            all[item.marketId] = [share];
-          }
-          return all;
-        });
-      }
-      return all;
-    }, {} as Record<string, number[]>) || {};
-
   const voteInfo = useBatchVoteInformation({
-    terms: compact(
-      proposal.subProposals ? proposal.subProposals.map((p) => p?.terms) : []
-    ),
     votes: proposal.votes,
     restData,
   });
 
   if (!voteInfo) return null;
 
-  const batchWillPass = voteInfo.every((i) => i.willPass);
-
-  const passingCount = countBy(voteInfo, (v) => v.willPass);
-
   if (proposal.state === ProposalState.STATE_OPEN) {
     return (
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          {batchWillPass ? (
-            <p className="flex gap-2 m-0 items-center">
-              <VegaIcon
-                name={VegaIconNames.TICK}
-                className="text-vega-green"
-                size={20}
-              />
-              {t(
-                'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
-                {
-                  count: passingCount['true'] || 0,
-                  total: voteInfo.length,
-                }
-              )}
-            </p>
-          ) : (
-            <p className="flex gap-2 m-0 items-center">
-              <VegaIcon
-                name={VegaIconNames.CROSS}
-                className="text-vega-red"
-                size={20}
-              />
-              {t(
-                'Currently expected to fail: {{count}} of {{total}} proposals are passing',
-                {
-                  count: passingCount['true'] || 0,
-                  total: voteInfo.length,
-                }
-              )}
-            </p>
-          )}
-          <button
-            className="underline"
-            onClick={() => setFullBreakdown((x) => !x)}
-          >
-            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
-          </button>
+        <div className="rounded-sm bg-vega-dark-100 p-3">
+          <VoteBreakDownUI
+            voteInfo={voteInfo}
+            isProposalOpen={true}
+            isUpdateMarket={false}
+          />
         </div>
-        {fullBreakdown && (
-          <div>
-            {proposal.subProposals?.map((p, i) => {
-              if (!p?.terms) return null;
-              return (
-                <VoteBreakdownBatchSubProposal
-                  indicator={i + 1}
-                  key={i}
-                  proposal={proposal}
-                  votes={proposal.votes}
-                  terms={p.terms}
-                  yesELS={yesELS}
-                  noELS={noELS}
-                />
-              );
-            })}
-          </div>
-        )}
       </div>
     );
   } else if (
     proposal.state === ProposalState.STATE_DECLINED ||
     proposal.state === ProposalState.STATE_PASSED
   ) {
-    let description = t(
-      'Proposal passed: conditions met for {{count}} of {{total}} proposals',
-      {
-        count: passingCount['true'] || 0,
-        total: voteInfo.length,
-      }
-    );
+    let description = t('Proposal passed');
     let descriptionIconColor = 'text-vega-green';
     if (proposal.__typename === 'BatchProposal') {
       const subStates = compact(
@@ -270,11 +167,7 @@ const VoteBreakdownBatch = ({
       );
       if (subPassed.length !== subStates.length) {
         description = t(
-          'Proposal passed: conditions met for {{count}} of {{total}} proposals, but some proposals failed in execution',
-          {
-            count: passingCount['true'] || 0,
-            total: voteInfo.length,
-          }
+          'Proposal passed: conditions met for some proposals, but some proposals failed in execution'
         );
         descriptionIconColor = 'text-vega-yellow';
       }
@@ -283,7 +176,7 @@ const VoteBreakdownBatch = ({
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
-          {batchWillPass ? (
+          {voteInfo.willPass ? (
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.TICK}
@@ -299,138 +192,24 @@ const VoteBreakdownBatch = ({
                 className="text-vega-red"
                 size={20}
               />
-              {t('Proposal failed: {{count}} of {{total}} proposals passed', {
-                count: passingCount['true'] || 0,
-                total: voteInfo.length,
-              })}
+              {t('Proposal failed')}
             </p>
           )}
-          <button
-            className="underline"
-            onClick={() => setFullBreakdown((x) => !x)}
-          >
-            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
-          </button>
         </div>
-        {fullBreakdown && (
-          <div>
-            {proposal.subProposals?.map((p, i) => {
-              if (!p?.terms) return null;
-              return (
-                <VoteBreakdownBatchSubProposal
-                  indicator={i + 1}
-                  key={i}
-                  proposal={proposal}
-                  votes={proposal.votes}
-                  terms={p.terms}
-                  yesELS={yesELS}
-                  noELS={noELS}
-                />
-              );
-            })}
+        <div className="flex flex-col gap-2">
+          <div className="rounded-sm bg-vega-dark-100 p-3">
+            <VoteBreakDownUI
+              voteInfo={voteInfo}
+              isProposalOpen={false}
+              isUpdateMarket={false}
+            />
           </div>
-        )}
+        </div>
       </div>
     );
   }
 
   return null;
-};
-
-const VoteBreakdownBatchSubProposal = ({
-  proposal,
-  votes,
-  terms,
-  indicator,
-  yesELS,
-  noELS,
-  restData,
-}: {
-  proposal: BatchProposal;
-  votes: VoteFieldsFragment;
-  terms: ProposalTermsFieldsFragment;
-  indicator?: number;
-  yesELS: Record<string, number[]>;
-  noELS: Record<string, number[]>;
-  restData?: ProposalNode | null;
-}) => {
-  const { t } = useTranslation();
-
-  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
-  const isUpdateMarket =
-    terms?.change?.__typename === 'UpdateMarket' ||
-    terms?.change.__typename === 'UpdateSpotMarket';
-
-  let marketId = undefined;
-  if (
-    terms?.change?.__typename === 'UpdateMarket' ||
-    terms?.change?.__typename === 'UpdateSpotMarket'
-  ) {
-    marketId = terms.change.marketId;
-  }
-  if (terms?.change?.__typename === 'UpdateMarketState') {
-    marketId = terms.change.market.id;
-  }
-  if (
-    (terms?.change?.__typename === 'NewMarket' ||
-      terms?.change?.__typename === 'NewSpotMarket') &&
-    indicator &&
-    proposal?.subProposals &&
-    proposal?.subProposals.length > 0
-  ) {
-    marketId = proposal.subProposals?.[indicator - 1]?.id;
-  }
-
-  const voteInfo = useVoteInformation({
-    votes,
-    terms,
-    // yes votes ELS for this specific proposal (market)
-    yesELS: marketId ? yesELS[marketId] : undefined,
-    // no votes ELS for this specific proposal (market)
-    noELS: marketId ? noELS[marketId] : undefined,
-    restData,
-  });
-
-  const marketName = marketId ? (
-    <>
-      : <MarketName marketId={marketId} />
-    </>
-  ) : null;
-
-  const indicatorElement = indicator && <Indicator indicator={indicator} />;
-
-  const errorDetails = indicator
-    ? proposal?.subProposals?.[indicator - 1]?.errorDetails || undefined
-    : undefined;
-  const rejectionReason = indicator
-    ? proposal?.subProposals?.[indicator - 1]?.rejectionReason || undefined
-    : undefined;
-
-  return (
-    <div className="mb-6">
-      <div className="flex items-center gap-3 mb-3">
-        {indicatorElement}
-        <h4>
-          {t(terms.change.__typename)} {marketName}
-        </h4>
-      </div>
-      <div className="rounded-sm bg-vega-dark-100 p-3">
-        <VoteBreakDownUI
-          voteInfo={voteInfo}
-          isProposalOpen={isProposalOpen}
-          isUpdateMarket={isUpdateMarket}
-        />
-      </div>
-      {errorDetails ? (
-        <div className="rounded-sm bg-vega-red-600 text-white text-xs p-1 mt-1">
-          {rejectionReason
-            ? `${ProposalRejectionReasonMapping[rejectionReason]}: `
-            : null}{' '}
-          {errorDetails}
-        </div>
-      ) : null}
-    </div>
-  );
 };
 
 const VoteBreakdownNormal = ({
