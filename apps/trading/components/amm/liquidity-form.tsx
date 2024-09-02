@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BarChart3Icon } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -23,89 +23,92 @@ import { TransactionDialog } from '../transaction-dialog/transaction-dialog';
 import { t, useT } from '../../lib/use-t';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
-const submitAMMFormSchema = z.object({
-  marketId: z.string(),
-  amount: z
-    .number({
-      coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_TYPE'),
-    })
-    .gt(0, t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_MIN', { min: 0 })),
-  fee: z
-    .number({
-      coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_FEE_ERROR_TYPE'),
-    })
-    .gt(0, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MIN', { min: 0 }))
-    .lt(1, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MAX', { max: 1 })), // TODO: net param "market.liquidity.maximumLiquidityFeeFactorLevel"
-  slippageTolerance: z
-    .number({
-      coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE'),
-    })
-    .gt(0, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN', { min: 0 }))
-    .lt(1, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX', { max: 1 })),
+const createSubmitSchema = () => {
+  return z.object({
+    marketId: z.string(),
+    amount: z
+      .number({
+        coerce: true,
+        invalid_type_error: t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_TYPE'),
+      })
+      .gt(0, t('AMM_LIQUIDITY_FORM_AMOUNT_ERROR_MIN', { min: 0 })),
+    fee: z
+      .number({
+        coerce: true,
+        invalid_type_error: t('AMM_LIQUIDITY_FORM_FEE_ERROR_TYPE'),
+      })
+      .gt(0, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MIN', { min: 0 }))
+      .lt(1, t('AMM_LIQUIDITY_FORM_FEE_ERROR_MAX', { max: 1 })), // TODO: net param "market.liquidity.maximumLiquidityFeeFactorLevel"
+    slippageTolerance: z
+      .number({
+        coerce: true,
+        invalid_type_error: t(
+          'AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_TYPE'
+        ),
+      })
+      .gt(0, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MIN', { min: 0 }))
+      .lt(1, t('AMM_LIQUIDITY_FORM_SLIPPAGE_TOLERANCE_ERROR_MAX', { max: 1 })),
 
-  // ConcentratedLiquidityParameters
-  upperBound: z.optional(
-    z.number({
+    // ConcentratedLiquidityParameters
+    upperBound: z.optional(
+      z.number({
+        coerce: true,
+        invalid_type_error: t('AMM_LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE'),
+      })
+    ),
+    lowerBound: z.optional(
+      z.number({
+        coerce: true,
+        invalid_type_error: t('AMM_LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE'),
+      })
+    ),
+    base: z.number({
       coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_UPPER_BOUND_ERROR_TYPE'),
-    })
-  ),
-  lowerBound: z.optional(
-    z.number({
-      coerce: true,
-      invalid_type_error: t('AMM_LIQUIDITY_FORM_LOWER_BOUND_ERROR_TYPE'),
-    })
-  ),
-  base: z.number({
-    coerce: true,
-    invalid_type_error: t('AMM_LIQUIDITY_FORM_BASE_ERROR_TYPE'),
-  }),
-  leverageAtUpperBound: z.optional(
-    z.number({
-      coerce: true,
-      invalid_type_error: t(
-        'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE'
-      ),
-    })
-  ),
-  leverageAtLowerBound: z.optional(
-    z.number({
-      coerce: true,
-      invalid_type_error: t(
-        'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE'
-      ),
-    })
-  ),
-});
+      invalid_type_error: t('AMM_LIQUIDITY_FORM_BASE_ERROR_TYPE'),
+    }),
+    leverageAtUpperBound: z.optional(
+      z.number({
+        coerce: true,
+        invalid_type_error: t(
+          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_UPPER_BOUND_ERROR_TYPE'
+        ),
+      })
+    ),
+    leverageAtLowerBound: z.optional(
+      z.number({
+        coerce: true,
+        invalid_type_error: t(
+          'AMM_LIQUIDITY_FORM_LEVERAGE_AT_LOWER_BOUND_ERROR_TYPE'
+        ),
+      })
+    ),
+  });
+};
 
-const amendAMMFormSchema = submitAMMFormSchema.partial({
-  // marketId IS NOT OPTIONAL
-  amount: true,
-  fee: true,
-  // slippageTolerance IS NOT OPTIONAL
-  upperBound: true,
-  lowerBound: true,
-  base: true,
-  leverageAtUpperBound: true,
-  leverageAtLowerBound: true,
-});
+const createAmendSchema = () => {
+  return createSubmitSchema().partial({
+    // marketId IS NOT OPTIONAL
+    amount: true,
+    fee: true,
+    // slippageTolerance IS NOT OPTIONAL
+    upperBound: true,
+    lowerBound: true,
+    base: true,
+    leverageAtUpperBound: true,
+    leverageAtLowerBound: true,
+  });
+};
 
-type SubmitAMMFormSchema = typeof submitAMMFormSchema;
-type AmendAMMFormSchema = typeof amendAMMFormSchema;
-type SubmitAMMFormFields = z.infer<SubmitAMMFormSchema>;
-type AmendAMMFormFields = z.infer<AmendAMMFormSchema>;
-
-export type SubmitAMMData = z.infer<SubmitAMMFormSchema>;
-export type AmendAMMData = z.infer<AmendAMMFormSchema>;
+export type SubmitAMMFormFields = z.infer<
+  ReturnType<typeof createSubmitSchema>
+>;
+export type AmendAMMFormFields = z.infer<ReturnType<typeof createAmendSchema>>;
 
 type LiquidityFormProps = {
   market: Market;
   pubKey: string;
   type?: 'submit' | 'amend';
-  defaultValues?: Partial<SubmitAMMData>;
+  defaultValues?: Partial<SubmitAMMFormFields>;
 };
 
 export const LiquidityForm = ({
@@ -117,15 +120,18 @@ export const LiquidityForm = ({
   const t = useT();
   const { error, send, result, status, reset } = useSimpleTransaction();
   const [open, setOpen] = useState(false);
+
+  const schema = useMemo(() => {
+    return type === 'submit' ? createSubmitSchema() : createAmendSchema();
+  }, [type]);
+
   const form = useForm<SubmitAMMFormFields | AmendAMMFormFields>({
-    resolver: zodResolver(
-      type === 'amend' ? amendAMMFormSchema : submitAMMFormSchema
-    ),
+    resolver: zodResolver(schema),
     defaultValues,
   });
   const { errors } = useFormState(form);
 
-  const onSubmit = (values: SubmitAMMData | AmendAMMData) => {
+  const onSubmit = (values: SubmitAMMFormFields | AmendAMMFormFields) => {
     if (!pubKey || !market) {
       form.setError('root', { message: t('AMM_LIQUIDITY_FORM_ROOT_ERROR') });
       return;
@@ -135,13 +141,13 @@ export const LiquidityForm = ({
     switch (type) {
       case 'submit':
         tx = createSubmitAmmTransaction(
-          values as SubmitAMMData,
+          values as SubmitAMMFormFields,
           market.quoteAsset
         );
         break;
       case 'amend':
         tx = createAmendAmmTransaction(
-          values as AmendAMMData,
+          values as AmendAMMFormFields,
           market.quoteAsset
         );
     }

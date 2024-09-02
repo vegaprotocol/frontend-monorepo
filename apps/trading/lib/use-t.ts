@@ -10,5 +10,5 @@ export const useI18n = () => useTranslation('trading').i18n;
 export type TKey = keyof typeof DEFAULT_LANG_PACK;
 type TOptions = Parameters<typeof i18n.t>[2];
 export function t(key: TKey, options?: TOptions) {
-  return i18n.t(key);
+  return i18n.t(key, { ns, ...options });
 }
