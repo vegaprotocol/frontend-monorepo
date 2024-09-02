@@ -95,6 +95,8 @@ const amendAMMFormSchema = submitAMMFormSchema.partial({
 
 type SubmitAMMFormSchema = typeof submitAMMFormSchema;
 type AmendAMMFormSchema = typeof amendAMMFormSchema;
+type SubmitAMMFormFields = z.infer<SubmitAMMFormSchema>;
+type AmendAMMFormFields = z.infer<AmendAMMFormSchema>;
 
 export type SubmitAMMData = z.infer<SubmitAMMFormSchema>;
 export type AmendAMMData = z.infer<AmendAMMFormSchema>;
@@ -115,15 +117,10 @@ export const LiquidityForm = ({
   const t = useT();
   const { error, send, result, status, reset } = useSimpleTransaction();
   const [open, setOpen] = useState(false);
-
-  let schema: SubmitAMMFormSchema | AmendAMMFormSchema = submitAMMFormSchema;
-
-  if (type === 'amend') {
-    schema = amendAMMFormSchema;
-  }
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  const form = useForm<SubmitAMMFormFields | AmendAMMFormFields>({
+    resolver: zodResolver(
+      type === 'amend' ? amendAMMFormSchema : submitAMMFormSchema
+    ),
     defaultValues,
   });
   const { errors } = useFormState(form);
@@ -188,6 +185,7 @@ export const LiquidityForm = ({
                         placeholder={t('AMM_LIQUIDITY_FORM_AMOUNT_PLACEHOLDER')}
                         type="number"
                         {...field}
+                        value={field.value || ''}
                       />
                       <AssetPill
                         asset={market.quoteAsset}
@@ -213,6 +211,7 @@ export const LiquidityForm = ({
                       type="number"
                       step="0.01"
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -237,6 +236,7 @@ export const LiquidityForm = ({
                       type="number"
                       step="0.01"
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -259,6 +259,7 @@ export const LiquidityForm = ({
                       placeholder={t('AMM_LIQUIDITY_FORM_BASE_PLACEHOLDER')}
                       type="number"
                       {...field}
+                      value={field.value || ''}
                     />
                     <AssetPill
                       asset={market.quoteAsset}
@@ -289,6 +290,7 @@ export const LiquidityForm = ({
                         )}
                         type="number"
                         {...field}
+                        value={field.value || ''}
                       />
                       <AssetPill
                         asset={market.quoteAsset}
@@ -318,6 +320,7 @@ export const LiquidityForm = ({
                         )}
                         type="number"
                         {...field}
+                        value={field.value || ''}
                       />
                       <AssetPill
                         asset={market.quoteAsset}
@@ -349,6 +352,7 @@ export const LiquidityForm = ({
                         )}
                         type="number"
                         {...field}
+                        value={field.value || ''}
                       />
                       <AssetPill
                         asset={market.quoteAsset}
@@ -378,6 +382,7 @@ export const LiquidityForm = ({
                         )}
                         type="number"
                         {...field}
+                        value={field.value || ''}
                       />
                       <AssetPill
                         asset={market.quoteAsset}
