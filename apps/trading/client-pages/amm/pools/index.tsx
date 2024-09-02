@@ -12,7 +12,7 @@ import type {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import filter from 'lodash/filter';
-import { t } from '../../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 import { Links } from '../../../lib/links';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
@@ -23,11 +23,12 @@ import { PriceChange } from '../../../components/amm/stats/price-change';
 import { CompactVolume24 } from '../../../components/amm/stats/volume-24';
 import { MyLiquidity } from 'apps/trading/components/amm/stats/my-liquidity';
 import { Button, Input, Intent, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import trim from 'lodash/trim';
 import { FilterSummary } from '../../../components/market-selector/filter-summary';
 
 export const Pools = () => {
+  const t = useT();
   const [filterTerm, setFilterTerm] = useState('');
 
   const { data } = useMarkets();
@@ -51,6 +52,107 @@ export const Pools = () => {
     if (!node.data) return true;
     return filterMarket(node.data, filterTerm);
   };
+
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_NAME'),
+        field: 'code',
+        colId: 'name',
+        flex: 1,
+        cellRenderer: ({
+          value,
+          data,
+        }: ICellRendererParams<Market, string>) => {
+          return (
+            value &&
+            data && (
+              <Link to={Links.AMM_POOL(data.id)}>
+                <div className="flex gap-2 items-center">
+                  {data?.id && <EmblemByMarket market={data?.id} />}
+                  <span>{value}</span>
+                </div>
+              </Link>
+            )
+          );
+        },
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_FEE'),
+        field: 'liquidityFee',
+        colId: 'fee',
+        flex: 1,
+        cellDataType: 'number',
+        valueFormatter: ({ value }: ValueFormatterParams<Market, number>) =>
+          formatNumberPercentage(BigNumber(value || 0).times(100)),
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_PRICE'),
+        field: 'markPrice',
+        colId: 'price',
+        flex: 1,
+        cellDataType: 'number',
+        valueFormatter: ({
+          value,
+          data,
+        }: ValueFormatterParams<typeof rowData[0], BigNumber | undefined>) => {
+          if (!value || !data) return '-';
+          return value.toFormat(data.positionDecimalPlaces);
+        },
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_PRICE_CHANGE'),
+        field: 'id',
+        colId: 'price-change',
+        flex: 1,
+        cellDataType: 'number',
+        cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
+          if (!data) return '-';
+          return <PriceChange market={data} />;
+        },
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_VOLUME'),
+        field: 'id',
+        colId: 'volume',
+        flex: 1,
+        cellDataType: 'number',
+        cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
+          if (!data) return '-';
+          return <CompactVolume24 market={data} />;
+        },
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_MY_LIQUIDITY'),
+        field: 'id',
+        colId: 'liquidity',
+        flex: 1,
+        cellDataType: 'number',
+        cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
+          if (!data) return '-';
+          return <MyLiquidity market={data} />;
+        },
+      },
+      {
+        headerName: t('AMM_POOLS_TABLE_TH_ACTIONS'),
+        field: 'id',
+        colId: 'actions',
+        flex: 1,
+        sortable: false,
+        cellRenderer: ({ value }: ICellRendererParams<Market, string>) => {
+          if (!value) return;
+          return (
+            <Link to={Links.AMM_POOL(value)}>
+              <Button intent={Intent.Primary} size="xs">
+                {t('AMM_POOLS_TABLE_ACTION_VIEW_DETAILS')}
+              </Button>
+            </Link>
+          );
+        },
+      },
+    ],
+    [t]
+  );
 
   let filterSummary: ReactNode = undefined;
   const filteredMarkets = rowData.filter((m) => filterMarket(m, filterTerm));
@@ -105,110 +207,7 @@ export const Pools = () => {
             return 'filterSummary' in data;
           }}
           fullWidthCellRenderer={FullWidthCellRenderer}
-          columnDefs={[
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_NAME'),
-              field: 'code',
-              colId: 'name',
-              flex: 1,
-              cellRenderer: ({
-                value,
-                data,
-              }: ICellRendererParams<Market, string>) => {
-                return (
-                  value &&
-                  data && (
-                    <Link to={Links.AMM_POOL(data.id)}>
-                      <div className="flex gap-2 items-center">
-                        {data?.id && <EmblemByMarket market={data?.id} />}
-                        <span>{value}</span>
-                      </div>
-                    </Link>
-                  )
-                );
-              },
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_FEE'),
-              field: 'liquidityFee',
-              colId: 'fee',
-              flex: 1,
-              cellDataType: 'number',
-              valueFormatter: ({
-                value,
-              }: ValueFormatterParams<Market, number>) =>
-                formatNumberPercentage(BigNumber(value || 0).times(100)),
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_PRICE'),
-              field: 'markPrice',
-              colId: 'price',
-              flex: 1,
-              cellDataType: 'number',
-              valueFormatter: ({
-                value,
-                data,
-              }: ValueFormatterParams<
-                typeof rowData[0],
-                BigNumber | undefined
-              >) => {
-                if (!value || !data) return '-';
-                return value.toFormat(data.positionDecimalPlaces);
-              },
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_PRICE_CHANGE'),
-              field: 'id',
-              colId: 'price-change',
-              flex: 1,
-              cellDataType: 'number',
-              cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
-                if (!data) return '-';
-                return <PriceChange market={data} />;
-              },
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_VOLUME'),
-              field: 'id',
-              colId: 'volume',
-              flex: 1,
-              cellDataType: 'number',
-              cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
-                if (!data) return '-';
-                return <CompactVolume24 market={data} />;
-              },
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_MY_LIQUIDITY'),
-              field: 'id',
-              colId: 'liquidity',
-              flex: 1,
-              cellDataType: 'number',
-              cellRenderer: ({ data }: ICellRendererParams<Market, string>) => {
-                if (!data) return '-';
-                return <MyLiquidity market={data} />;
-              },
-            },
-            {
-              headerName: t('AMM_POOLS_TABLE_TH_ACTIONS'),
-              field: 'id',
-              colId: 'actions',
-              flex: 1,
-              sortable: false,
-              cellRenderer: ({
-                value,
-              }: ICellRendererParams<Market, string>) => {
-                if (!value) return;
-                return (
-                  <Link to={Links.AMM_POOL(value)}>
-                    <Button intent={Intent.Primary} size="xs">
-                      {t('AMM_POOLS_TABLE_ACTION_VIEW_DETAILS')}
-                    </Button>
-                  </Link>
-                );
-              },
-            },
-          ]}
+          columnDefs={columnDefs}
         />
       </div>
     </>

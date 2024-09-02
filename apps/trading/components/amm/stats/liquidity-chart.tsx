@@ -4,12 +4,13 @@ import {
   ChartTooltipContent,
 } from '../../ui/chart';
 import { useAMMs, type Market } from '@vegaprotocol/rest';
-import { t } from '../../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 import { v1AMMStatus } from '@vegaprotocol/rest-clients/dist/trading-data';
 import BigNumber from 'bignumber.js';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 export const LiquidityChart = ({ market }: { market: Market }) => {
+  const t = useT();
   const chartConfig = {
     y: {
       label: t('AMM_CHART_LIQUIDITY_Y_LABEL'),

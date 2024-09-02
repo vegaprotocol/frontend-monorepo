@@ -11,9 +11,11 @@ import {
 } from '@vegaprotocol/rest-clients/dist/trading-data';
 import BigNumber from 'bignumber.js';
 import compact from 'lodash/compact';
-import { t } from '../../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { AgGrid } from '@vegaprotocol/datagrid';
+import { useMemo } from 'react';
+import { type ColDef } from 'ag-grid-community';
 
 type Commitment = {
   amount: BigNumber;
@@ -21,6 +23,7 @@ type Commitment = {
 };
 
 export const LiquidityTable = ({ market }: { market: Market }) => {
+  const t = useT();
   const { data: ammsData } = useAMMs({ marketId: market.id });
   const { data: provisionsData, status: provisionsStatus } =
     useLiquidityProvisions(market.id);
@@ -88,6 +91,32 @@ export const LiquidityTable = ({ market }: { market: Market }) => {
     };
   });
 
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      {
+        headerName: t('AMM_LIQUIDITY_TABLE_PARTY'),
+        field: 'partyId',
+        valueFormatter: (value) => truncateMiddle(value.data?.partyId || ''),
+        flex: 1,
+      },
+      {
+        headerName: t('AMM_LIQUIDITY_TABLE_COMMITMENT'),
+        field: 'amount',
+        valueFormatter: (value) =>
+          value.data?.amount.toFormat(market.decimalPlaces) || '-',
+        flex: 1,
+      },
+      {
+        headerName: t('AMM_LIQUIDITY_TABLE_FEES'),
+        field: 'fees',
+        valueFormatter: (value) =>
+          value.data?.fees.toFormat(market.decimalPlaces) || '-',
+        flex: 1,
+      },
+    ],
+    [market.decimalPlaces, t]
+  );
+
   return (
     <div className="h-full border rounded border-gs-300 dark:border-gs-700">
       <AgGrid
@@ -99,29 +128,7 @@ export const LiquidityTable = ({ market }: { market: Market }) => {
         suppressDragLeaveHidesColumns
         overlayLoadingTemplate={t('AMM_TABLE_LOADING')}
         overlayNoRowsTemplate={t('AMM_TABLE_NO_DATA')}
-        columnDefs={[
-          {
-            headerName: t('AMM_LIQUIDITY_TABLE_PARTY'),
-            field: 'partyId',
-            valueFormatter: (value) =>
-              truncateMiddle(value.data?.partyId || ''),
-            flex: 1,
-          },
-          {
-            headerName: t('AMM_LIQUIDITY_TABLE_COMMITMENT'),
-            field: 'amount',
-            valueFormatter: (value) =>
-              value.data?.amount.toFormat(market.decimalPlaces) || '-',
-            flex: 1,
-          },
-          {
-            headerName: t('AMM_LIQUIDITY_TABLE_FEES'),
-            field: 'fees',
-            valueFormatter: (value) =>
-              value.data?.fees.toFormat(market.decimalPlaces) || '-',
-            flex: 1,
-          },
-        ]}
+        columnDefs={columnDefs}
       />
     </div>
   );

@@ -26,7 +26,7 @@ import { DownloadIcon, Edit2Icon, ShareIcon } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useWallet } from '@vegaprotocol/wallet-react';
 import { Links } from 'apps/trading/lib/links';
-import { t } from 'apps/trading/lib/use-t';
+import { useT } from 'apps/trading/lib/use-t';
 import {
   Button,
   CopyWithTooltip,
@@ -38,6 +38,7 @@ import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { HeaderPage } from '../../../../components/header-page';
 
 export const MarketPage = () => {
+  const t = useT();
   const { marketId } = useParams();
   const { data: market } = useMarket(marketId);
 
@@ -184,6 +185,7 @@ export const MarketPage = () => {
 };
 
 const MarketStats = ({ market }: { market: Market }) => {
+  const t = useT();
   return (
     <dl className="flex flex-col gap-2">
       <div>

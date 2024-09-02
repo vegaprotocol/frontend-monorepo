@@ -11,7 +11,7 @@ import {
 
 import { useAMMs } from '@vegaprotocol/rest';
 import { useMarket } from '@vegaprotocol/rest';
-import { t } from '../../../../lib/use-t';
+import { useT } from '../../../../lib/use-t';
 import { Links } from '../../../../lib/links';
 import { Link, useParams } from 'react-router-dom';
 import { useWallet } from '@vegaprotocol/wallet-react';
@@ -19,6 +19,7 @@ import { HeaderPage } from '../../../../components/header-page';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 
 export const ManageLiquidity = () => {
+  const t = useT();
   const { marketId } = useParams();
 
   const { data: market } = useMarket(marketId);

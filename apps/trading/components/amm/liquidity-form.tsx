@@ -20,7 +20,7 @@ import {
   createSubmitAmmTransaction,
 } from '../../lib/utils/amm';
 import { TransactionDialog } from '../transaction-dialog/transaction-dialog';
-import { t } from '../../lib/use-t';
+import { t, useT } from '../../lib/use-t';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 
 const submitAMMFormSchema = z.object({
@@ -112,6 +112,7 @@ export const LiquidityForm = ({
   type = 'submit',
   defaultValues,
 }: LiquidityFormProps) => {
+  const t = useT();
   const { error, send, result, status, reset } = useSimpleTransaction();
   const [open, setOpen] = useState(false);
 
