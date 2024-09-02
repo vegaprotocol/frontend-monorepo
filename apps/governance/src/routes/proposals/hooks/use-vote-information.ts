@@ -6,7 +6,6 @@ import {
   type ProposalFieldsFragment,
   type VoteFieldsFragment,
 } from '../__generated__/Proposals';
-import { type ProposalChangeType } from '../types';
 import sum from 'lodash/sum';
 import { type ProposalNode } from '../../../routes/proposals/components/proposal/proposal-utils';
 
@@ -34,6 +33,8 @@ export const useVoteInformation = ({
     totalSupply,
     restData,
     decimals,
+    restData.proposal.requiredMajority,
+    restData.proposal.requiredParticipation,
     yesELS,
     noELS
   );
@@ -41,11 +42,9 @@ export const useVoteInformation = ({
 
 export const useBatchVoteInformation = ({
   votes,
-  terms,
   restData,
 }: {
   votes: VoteFieldsFragment;
-  terms: ProposalTermsFieldsFragment[];
   restData?: ProposalNode | null;
 }) => {
   const {
@@ -54,34 +53,34 @@ export const useBatchVoteInformation = ({
 
   if (!restData) return;
 
-  return terms.map((t) => {
-    return getVoteData(
-      t.change.__typename,
-      votes,
-      totalSupply,
-      restData,
-      decimals
-    );
-  });
+  return getVoteData(
+    'BatchProposal',
+    votes,
+    totalSupply,
+    restData,
+    decimals,
+    restData.proposal.batchTerms?.proposalParams?.requiredMajority ?? 0,
+    restData.proposal.batchTerms?.proposalParams?.requiredParticipation ?? 0
+  );
 };
 
 const getVoteData = (
-  changeType: ProposalChangeType,
+  changeType: string,
   votes: ProposalFieldsFragment['votes'],
   totalSupply: BigNumber,
   restData: ProposalNode,
   decimals: number,
+  requiredMajority: string | number,
+  requiredParticipation: string | number,
   /** A list of ELS yes votes */
   yesELS?: number[],
   /** A list if ELS no votes */
   noELS?: number[]
 ) => {
-  const requiredMajority = restData.proposal.requiredMajority;
   const requiredMajorityPercentage = requiredMajority
     ? new BigNumber(requiredMajority).times(100)
     : new BigNumber(100);
 
-  const requiredParticipation = restData.proposal.requiredParticipation;
   const requiredMajorityLPPercentage = requiredParticipation
     ? new BigNumber(requiredParticipation).times(100)
     : new BigNumber(100);

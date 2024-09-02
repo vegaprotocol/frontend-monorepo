@@ -60,12 +60,12 @@ export const BLOCK_EXPLORER_URL: Record<ChainId, string> = {
  */
 export const TRANSPORTS: Record<ChainId, string | undefined> = {
   [ETHEREUM_CHAIN_ID]:
-    'https://eth-mainnet.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a',
+    'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
   [ETHEREUM_SEPOLIA_CHAIN_ID]:
     'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
 
   [ARBITRUM_CHAIN_ID]:
-    'https://arbitrum-one.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a',
+    'https://arbitrum-mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
   [ARBITRUM_SEPOLIA_CHAIN_ID]:
     'https://arbitrum-sepolia-archival.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a',
 };
