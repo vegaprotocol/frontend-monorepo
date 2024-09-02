@@ -6,11 +6,11 @@ import { Decimal } from '../utils';
 import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
-const parametersSchema = z.object({
+const pathParamsSchema = z.object({
   marketId: z.string(),
 });
 
-export type QueryParams = z.infer<typeof parametersSchema>;
+export type PathParams = z.infer<typeof pathParamsSchema>;
 
 const priceLevelSchema = z.object({
   //   ammVolume: z.instanceof(Decimal),
@@ -28,15 +28,15 @@ const marketDepthSchema = z.object({
 });
 
 export async function retrieveMarketDepth(
-  params: QueryParams,
+  pathParams: PathParams,
   queryClient: QueryClient
 ) {
-  const searchParams = parametersSchema.parse(params);
+  const params = pathParamsSchema.parse(pathParams);
   const endpoint = restApiUrl('/api/v2/market/depth/{marketId}/latest', {
-    marketId: searchParams.marketId,
+    marketId: params.marketId,
   });
 
-  const market = await getMarket(queryClient, searchParams.marketId);
+  const market = await getMarket(queryClient, params.marketId);
   const res = await axios.get<vegaMarketDepth>(endpoint);
 
   const data = res.data;

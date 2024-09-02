@@ -78,6 +78,7 @@ export async function retrieveMarketData(
   const res = await axios.get<v2GetLatestMarketDataResponse>(endpoint);
 
   const data = res.data.marketData;
+
   if (!data) return;
 
   return marketDataSchema.parse(mapMarketData(data, market));
