@@ -162,7 +162,7 @@ const SingleReadyToWithdrawToastContent = ({
     writeContract({
       abi: BRIDGE_ABI,
       address: cfg.collateral_bridge_contract.address as `0x${string}`,
-      functionName: 'withdraw_asset',
+      functionName: 'withdrawAsset',
       args: [
         data.erc20WithdrawalApproval.assetSource,
         data.erc20WithdrawalApproval.amount,

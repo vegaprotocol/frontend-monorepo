@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { StakingMethod } from '../../../../../components/staking-method-radio';
+import { type StakingMethod } from '../../../../../components/staking-method-radio';
 import { TransactionCallout } from '../../../../../components/transaction-callout';
 import type {
   TransactionAction,
@@ -29,15 +29,12 @@ export const DisassociateTransaction = ({
   return (
     <TransactionCallout
       completeHeading={t('Done')}
-      completeBody={
-        stakingMethod === StakingMethod.Contract
-          ? t('{{amount}} VEGA tokens have been returned to Vesting contract', {
-              amount,
-            })
-          : t('{{amount}} VEGA tokens have been returned to Ethereum wallet', {
-              amount,
-            })
-      }
+      completeBody={t(
+        '{{amount}} VEGA tokens have been returned to Ethereum wallet',
+        {
+          amount,
+        }
+      )}
       completeFooter={
         <Link to={Routes.VALIDATORS}>
           <Button>{t('backToStaking')}</Button>

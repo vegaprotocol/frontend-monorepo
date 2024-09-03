@@ -1,9 +1,4 @@
-import {
-  Token,
-  TokenVesting,
-  Claim,
-  StakingBridge,
-} from '@vegaprotocol/smart-contracts';
+import { Token, StakingBridge } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -14,7 +9,6 @@ import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { ENV } from '../../config';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -53,19 +47,12 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           signer = provider.getSigner(account);
         }
 
-        const tokenVestingAddress =
-          config.token_vesting_contract?.address ||
-          ENV.addresses.tokenVestingAddress;
-        if (!tokenVestingAddress) {
-          throw new Error('No token vesting address found');
-        }
-
         if (provider && config) {
           const staking = new StakingBridge(
             config.staking_bridge_contract.address,
             signer || provider
           );
-          const vegaAddress = await staking.staking_token();
+          const vegaAddress = await staking.stakingToken();
           if (!cancelled) {
             setContracts({
               token: new Token(vegaAddress, signer || provider),
@@ -73,11 +60,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
                 config.staking_bridge_contract.address,
                 signer || provider
               ),
-              vesting: new TokenVesting(
-                tokenVestingAddress,
-                signer || provider
-              ),
-              claim: new Claim(ENV.addresses.claimAddress, signer || provider),
             });
           }
         }

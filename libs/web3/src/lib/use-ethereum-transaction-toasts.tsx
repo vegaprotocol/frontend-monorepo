@@ -32,10 +32,10 @@ const intentMap: { [s in EthTxStatus]: Intent } = {
 };
 
 const isWithdrawTransaction = (tx: EthStoredTxState) =>
-  tx.methodName === 'withdraw_asset';
+  tx.methodName === 'withdrawAsset';
 
 const isDepositTransaction = (tx: EthStoredTxState) =>
-  tx.methodName === 'deposit_asset';
+  tx.methodName === 'depositAsset';
 
 const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
   const t = useT();

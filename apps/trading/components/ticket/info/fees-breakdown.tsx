@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { sumFeesFactors } from '@vegaprotocol/markets';
-import type { FeeFactors } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -53,7 +52,11 @@ export const FeesBreakdown = ({
   decimals,
 }: {
   feeEstimate: ReturnType<typeof useEstimateFees>;
-  feeFactors?: FeeFactors;
+  feeFactors?: {
+    makerFee: string;
+    infrastructureFee: string;
+    liquidityFee: string;
+  };
   symbol?: string;
   decimals: number;
 }) => {

@@ -66,7 +66,7 @@ export const useAssetReadContracts = ({
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
-        functionName: 'get_asset_deposit_lifetime_limit',
+        functionName: 'getAssetDepositLifetimeLimit',
         args: [assetAddress],
         chainId: Number(assetChainId),
       },

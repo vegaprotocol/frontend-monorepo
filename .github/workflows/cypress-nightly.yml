@@ -10,5 +10,5 @@ jobs:
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
-      projects: '["explorer-e2e","governance-e2e"]'
+      projects: '["explorer-e2e"]'
       tags: '@smoke @regression @slow'

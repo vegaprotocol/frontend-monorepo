@@ -65,6 +65,7 @@ import { Card } from '../../components/card';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
 import { RankPayoutTable } from '../../components/rewards-container/rank-table';
+import min from 'lodash/min';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
 import { CompetitionsActions } from '../../components/competitions/competitions-cta';
@@ -138,9 +139,8 @@ export const CompetitionsGame = () => {
 
   const dispatchMetric = dispatchStrategy.dispatchMetric;
   const amount = reward.transfer.amount;
-  const rankTable = dispatchStrategy.rankTable as unknown as RankTable[];
-
-  if (!rankTable) return null;
+  const rankTable = (dispatchStrategy.rankTable ||
+    []) as unknown as RankTable[];
 
   const { lastPayout, nextPayout } = getPayouts(
     epoch.id,
@@ -433,8 +433,18 @@ const LiveScoresTable = ({
   const t = useT();
 
   const scoreUnit = useScoreUnit(metric, asset);
-  const sumOfScores = currentScores.reduce(
-    (sum, s) => sum.plus(s.score),
+
+  const scoreOffset = BigNumber(
+    min(currentScores.map((ts) => Number(ts.score))) || 0
+  ).abs();
+
+  const scores = currentScores.map((cs) => ({
+    ...cs,
+    absoluteScore: BigNumber(cs.score).plus(scoreOffset),
+  }));
+
+  const sumOfScores = scores.reduce(
+    (sum, s) => sum.plus(s.absoluteScore),
     BigNumber(0)
   );
 
@@ -451,24 +461,20 @@ const LiveScoresTable = ({
     return payoutRank;
   };
 
-  const orderedScores = orderBy(
-    currentScores,
-    [(d) => Number(d.score)],
-    ['desc']
-  );
+  const orderedScores = orderBy(scores, [(d) => Number(d.score)], ['desc']);
 
   // Get total of all ratios for each team
   const total = orderedScores
     .map((_, i) => {
       const teamRank = i + 1;
       const payoutRank = getPayoutRank(teamRank, rankTable);
-      return payoutRank.shareRatio;
+      return payoutRank?.shareRatio || 0;
     })
     .reduce((sum, ratio) => sum + ratio, 0);
 
-  const lastEpochScores = orderedScores.map((t, i) => {
+  const lastEpochScores = orderedScores.map((teamScore, i) => {
     const teamRank = i + 1;
-    const team = teams[t.teamId];
+    const team = teams[teamScore.teamId];
 
     let reward: BigNumber;
 
@@ -482,8 +488,10 @@ const LiveScoresTable = ({
         .div(total);
     } else {
       reward = toBigNum(rewardAmount, asset.decimals).times(
-        BigNumber(t.score).div(sumOfScores)
+        teamScore.absoluteScore.div(sumOfScores)
       );
+      // this is to ensure we won't end up with -0.00 due to the precision issue
+      if (reward.isNegative()) reward = reward.abs();
     }
 
     return {
@@ -503,8 +511,12 @@ const LiveScoresTable = ({
           <span>{team.name}</span>
         </Link>
       ),
-      score: formatNumber(t.score, 2),
-      estimatedRewards: formatNumber(reward, 2),
+      score: formatNumber(teamScore.score, 2),
+      estimatedRewards:
+        distributionStrategy ===
+        DistributionStrategy.DISTRIBUTION_STRATEGY_RANK_LOTTERY
+          ? t('Lottery')
+          : formatNumber(reward, 2),
     };
   });
 

@@ -49,7 +49,7 @@ export const useEvmDeposit = ({ queryKey }: { queryKey: QueryKey }) => {
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress as `0x${string}`,
-        functionName: 'deposit_asset',
+        functionName: 'depositAsset',
         args: [
           assetAddress,
           removeDecimal(amount, asset.decimals),
@@ -58,7 +58,7 @@ export const useEvmDeposit = ({ queryKey }: { queryKey: QueryKey }) => {
         chainId: Number(asset.source.chainId),
       },
       {
-        functionName: 'deposit_asset',
+        functionName: 'depositAsset',
         asset: asset as AssetERC20,
         amount,
         requiredConfirmations,

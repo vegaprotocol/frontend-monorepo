@@ -42,8 +42,8 @@ export const RemoveSignerForm = () => {
   >(REMOVE_SIGNER_QUERY);
   const { perform, Dialog } = useEthereumTransaction<
     MultisigControl,
-    'remove_signer'
-  >(multisig, 'remove_signer');
+    'removeSigner'
+  >(multisig, 'removeSigner');
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setBundleNotFound(false);

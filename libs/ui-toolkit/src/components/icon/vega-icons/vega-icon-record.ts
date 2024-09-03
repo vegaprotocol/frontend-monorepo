@@ -14,6 +14,7 @@ import { IconCog } from './svg-icons/icon-cog';
 import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
 import { IconDeposit } from './svg-icons/icon-deposit';
+import { IconDice } from './svg-icons/icon-dice';
 import { IconEdit } from './svg-icons/icon-edit';
 import { IconExclamationMark } from './svg-icons/icon-exclamation-mark';
 import { IconExclamationSign } from './svg-icons/icon-exclamation-sign';
@@ -74,6 +75,7 @@ export enum VegaIconNames {
   COPY = 'copy',
   CROSS = 'cross',
   DEPOSIT = 'deposit',
+  DICE = 'dice',
   EDIT = 'edit',
   EXCLAMATION_MARK = 'exclamation-mark',
   EXCLAMATION_SIGN = 'exclamation-sign',
@@ -145,6 +147,7 @@ export const VegaIconNameMap: Record<
   copy: IconCopy,
   cross: IconCross,
   deposit: IconDeposit,
+  dice: IconDice,
   edit: IconEdit,
   eye: IconEye,
   forum: IconForum,

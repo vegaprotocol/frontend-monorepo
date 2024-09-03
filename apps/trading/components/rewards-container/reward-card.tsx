@@ -834,6 +834,8 @@ const DispatchMetricColourMap: Record<
   DispatchMetric | StakingRewardMetric,
   CardColour
 > = {
+  [DispatchMetric.DISPATCH_METRIC_AVERAGE_NOTIONAL]: CardColour.BLUE,
+  [DispatchMetric.DISPATCH_METRIC_ELIGIBLE_ENTITIES]: CardColour.PURPLE,
   // Liquidity provision fees received
   [DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED]: CardColour.BLUE,
   // Price maker fees paid
@@ -881,6 +883,7 @@ const EntityScopeIconMap: Record<EntityScope, VegaIconNames> = {
 const DistStrategyIconMap: Record<DistributionStrategy, VegaIconNames> = {
   [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: VegaIconNames.MEDAL,
   [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: VegaIconNames.CLOCK,
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK_LOTTERY]: VegaIconNames.DICE,
 };
 
 const EntityIcon = ({

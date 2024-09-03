@@ -10,7 +10,6 @@ import type { ReactElement } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 import { useTranches } from '../../lib/tranches/tranches-store';
-import { useUserTrancheBalances } from '../../routes/redemption/hooks';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 
 interface BalanceManagerProps {
@@ -25,12 +24,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     appState: { decimals },
   } = useAppState();
   const updateStoreBalances = useBalances((state) => state.updateBalances);
-  const setTranchesBalances = useBalances((state) => state.setTranchesBalances);
   const getUserBalances = useGetUserBalances(account);
-  const userTrancheBalances = useUserTrancheBalances(account);
-  useEffect(() => {
-    setTranchesBalances(userTrancheBalances);
-  }, [setTranchesBalances, userTrancheBalances]);
   const { config } = useEthereumConfig();
 
   const numberOfConfirmations = config?.confirmations || 0;
@@ -41,20 +35,13 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     numberOfConfirmations
   );
 
-  useListenForAssociationEvents(
-    contracts?.vesting.contract,
-    pubKey,
-    numberOfConfirmations
-  );
-
   const getTranches = useTranches((state) => state.getTranches);
   useEffect(() => {
     getTranches(decimals);
   }, [decimals, getTranches]);
   const getAssociationBreakdown = useGetAssociationBreakdown(
     account || '',
-    contracts?.staking,
-    contracts?.vesting
+    contracts?.staking
   );
 
   // update balances on connect to Ethereum

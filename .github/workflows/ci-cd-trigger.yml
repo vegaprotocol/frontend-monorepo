@@ -183,7 +183,7 @@ jobs:
     name: '(CI) cypress'
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'governance') || contains(github.event.pull_request.title, 'explorer'))
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'explorer'))
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'

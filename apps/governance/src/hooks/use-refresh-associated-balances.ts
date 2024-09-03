@@ -10,27 +10,21 @@ export function useRefreshAssociatedBalances() {
     appState: { decimals },
   } = useAppState();
   const { updateBalances } = useBalances();
-  const { staking, vesting } = useContracts();
+  const { staking } = useContracts();
 
   return React.useCallback(
     async (ethAddress: string, vegaKey: string) => {
-      const [walletAssociatedBalance, vestingAssociatedBalance] =
-        await Promise.all([
-          staking.stake_balance(ethAddress, vegaKey),
-          vesting.stake_balance(ethAddress, vegaKey),
-        ]);
+      const [walletAssociatedBalance] = await Promise.all([
+        staking.stakeBalance(ethAddress, vegaKey),
+      ]);
 
       updateBalances({
         walletAssociatedBalance: toBigNum(
           walletAssociatedBalance.toString(),
           decimals
         ),
-        vestingAssociatedBalance: toBigNum(
-          vestingAssociatedBalance.toString(),
-          decimals
-        ),
       });
     },
-    [staking, vesting, updateBalances, decimals]
+    [staking, updateBalances, decimals]
   );
 }

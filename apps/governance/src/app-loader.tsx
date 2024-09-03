@@ -23,22 +23,16 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { API_NODE } = useEnvironment();
   const { pubKey } = useVegaWallet();
   const { appDispatch } = useAppState();
-  const { token, staking, vesting } = useContracts();
+  const { token, staking } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
   useEagerConnect();
 
   React.useEffect(() => {
     const run = async () => {
       try {
-        const [
-          supply,
-          totalAssociatedWallet,
-          totalAssociatedVesting,
-          decimals,
-        ] = await Promise.all([
+        const [supply, totalAssociatedWallet, decimals] = await Promise.all([
           token.totalSupply(),
-          staking.total_staked(),
-          vesting.total_staked(),
+          staking.totalStaked(),
           token.decimals(),
         ]);
 
@@ -47,16 +41,12 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           totalAssociatedWallet.toString(),
           decimals
         );
-        const totalVesting = toBigNum(
-          totalAssociatedVesting.toString(),
-          decimals
-        );
 
         appDispatch({
           type: AppStateActionType.SET_TOKEN,
           decimals,
           totalSupply,
-          totalAssociated: totalWallet.plus(totalVesting),
+          totalAssociated: totalWallet,
         });
       } catch (err) {
         Sentry.captureException(err);
@@ -66,13 +56,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     if (!featureFlags.GOVERNANCE_NETWORK_DOWN) {
       run();
     }
-  }, [
-    token,
-    appDispatch,
-    staking,
-    vesting,
-    featureFlags.GOVERNANCE_NETWORK_DOWN,
-  ]);
+  }, [token, appDispatch, staking, featureFlags.GOVERNANCE_NETWORK_DOWN]);
 
   React.useEffect(() => {
     if (account && pubKey) {
