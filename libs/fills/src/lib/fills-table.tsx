@@ -4,7 +4,7 @@ import {
   type AgGridReactProps,
   type AgReactUiProps,
 } from 'ag-grid-react';
-import { type ColDef } from 'ag-grid-community';
+import { type ITooltipParams, type ColDef } from 'ag-grid-community';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -12,6 +12,7 @@ import {
   getDateTimeFormat,
   isNumeric,
 } from '@vegaprotocol/utils';
+import * as Schema from '@vegaprotocol/types';
 import {
   AgGrid,
   positiveClassNames,
@@ -30,7 +31,7 @@ import { type Trade } from './fills-data-provider';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
 import { useT } from './use-t';
-import { getFeesBreakdown, getRoleAndFees } from './fills-utils';
+import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills-utils';
 
 type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
@@ -87,21 +88,30 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           colId: 'fee',
           field: 'market',
           valueFormatter: formatFee(partyId),
+          tooltipComponent: FeesBreakdownTooltip,
           type: 'rightAligned',
+          tooltipField: 'market',
+          tooltipComponentParams: { partyId },
         },
         {
           headerName: t('Fee Discount'),
           colId: 'fee-discount',
           field: 'market',
           valueFormatter: formatFeeDiscount(partyId),
+          tooltipValueGetter: ({ valueFormatted, value }) => {
+            return valueFormatted && /[1-9]/.test(valueFormatted)
+              ? valueFormatted
+              : null;
+          },
           type: 'rightAligned',
           // return null to disable tooltip if fee discount is 0 or empty
           cellRenderer: ({
             value,
             valueFormatted,
-          }: VegaICellRendererParams<Trade, 'market'>) => {
-            return `${valueFormatted} ${(value && getAsset(value))?.symbol}`;
-          },
+          }: VegaICellRendererParams<Trade, 'market'>) =>
+            `${valueFormatted} ${(value && getAsset(value))?.symbol}`,
+          tooltipComponent: FeesDiscountBreakdownTooltip,
+          tooltipComponentParams: { partyId },
         },
         {
           headerName: t('Date'),
@@ -251,4 +261,178 @@ const formatFeeDiscount = (partyId: string) => {
     const { totalFeeDiscount } = getFeesBreakdown(role, roleFees);
     return addDecimalsFormatNumber(totalFeeDiscount, asset.decimals);
   };
+};
+
+const FeesBreakdownTooltip = ({
+  data,
+  value: market,
+  partyId,
+}: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
+  if (!market || !data) {
+    return null;
+  }
+
+  const asset = getAsset(market);
+
+  const { role, fees, marketState } = getRoleAndFees({ data, partyId }) ?? {};
+  if (!fees) return null;
+  const { infrastructureFee, liquidityFee, makerFee, totalFee } =
+    getFeesBreakdown(role, fees, marketState);
+
+  return (
+    <div
+      data-testid="fee-breakdown-tooltip"
+      className="bg-gs-100 border-gs-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-xs text-gs-0"
+    >
+      {marketState && (
+        <p className="mb-1 italic">
+          {t('If the market was {{state}}', {
+            state: Schema.MarketStateMapping[marketState].toLowerCase(),
+          })}
+        </p>
+      )}
+      {role === MAKER && (
+        <>
+          <p className="mb-1">
+            {t(
+              `Fee revenue to be received by the maker, takers' fee discounts already applied.`
+            )}
+          </p>
+          <p className="mb-1">
+            {t(
+              'During continuous trading the maker pays no infrastructure and liquidity fees.'
+            )}
+          </p>
+        </>
+      )}
+      {role === TAKER && (
+        <p className="mb-1">
+          {t('Fees to be paid by the taker; discounts are already applied.')}
+        </p>
+      )}
+      {(role === '-' || marketState === Schema.MarketState.STATE_SUSPENDED) && (
+        <p className="mb-1">
+          {t(
+            'During auction, half the infrastructure and liquidity fees will be paid.'
+          )}
+        </p>
+      )}
+      <dl className="grid grid-cols-2 gap-x-1">
+        <dt className="col-span-1">{t('Infrastructure fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(infrastructureFee, asset.decimals)}{' '}
+          {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Liquidity fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(liquidityFee, asset.decimals)} {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Maker fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(makerFee, asset.decimals)} {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Total fees')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(totalFee, asset.decimals)} {asset.symbol}
+        </dd>
+      </dl>
+    </div>
+  );
+};
+
+const FeesDiscountBreakdownTooltipItem = ({
+  value,
+  label,
+  asset,
+}: {
+  value?: string | null;
+  label: string;
+  asset: ReturnType<typeof getAsset>;
+}) =>
+  value && value !== '0' ? (
+    <>
+      <dt className="col-span-2">{label}</dt>
+      <dd className="col-span-2 text-right">
+        {addDecimalsFormatNumber(value, asset.decimals)} {asset.symbol}
+      </dd>
+    </>
+  ) : null;
+
+export const FeesDiscountBreakdownTooltip = ({
+  data,
+  partyId,
+}: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
+  if (!data || !data.market) {
+    return null;
+  }
+  const asset = getAsset(data.market);
+
+  const {
+    fees: roleFees,
+    marketState,
+    role,
+  } = getRoleAndFees({ data, partyId }) ?? {};
+  if (!roleFees) return null;
+  const fees = getFeesBreakdown(role, roleFees, marketState);
+  return (
+    <div
+      data-testid="fee-discount-breakdown-tooltip"
+      className="bg-gs-100 border-gs-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-sm text-gs-0"
+    >
+      <dl className="grid grid-cols-6 gap-x-1 text-xs">
+        {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||
+        (fees.infrastructureFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Infrastructure Fee')}</dt>
+        ) : null}
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeReferralDiscount}
+          label={t('Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeVolumeDiscount}
+          label={t('Volume Discount')}
+          asset={asset}
+        />
+        {(fees.liquidityFeeReferralDiscount || '0') !== '0' ||
+        (fees.liquidityFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Liquidity Fee')}</dt>
+        ) : null}
+
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeReferralDiscount}
+          label={t('Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeVolumeDiscount}
+          label={t('Volume Discount')}
+          asset={asset}
+        />
+        {(fees.makerFeeReferralDiscount || '0') !== '0' ||
+        (fees.makerFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Maker Fee')}</dt>
+        ) : null}
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeReferralDiscount}
+          label={t('Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeVolumeDiscount}
+          label={t('Volume Discount')}
+          asset={asset}
+        />
+
+        <dt className="col-span-2">{t('Total Fee Discount')}</dt>
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.totalFeeDiscount}
+          label={''}
+          asset={asset}
+        />
+      </dl>
+    </div>
+  );
 };
