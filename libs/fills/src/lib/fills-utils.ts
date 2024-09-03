@@ -74,6 +74,11 @@ export const getFeesBreakdown = (
 
   // If role is taker, then these are the fees to be paid
   let { makerFee, infrastructureFee, liquidityFee } = fees;
+
+  const buyBackFee = fees.buyBackFee || '0';
+  const treasuryFee = fees.treasuryFee || '0';
+  const highVolumeMakerFee = fees.highVolumeMakerFee || '0';
+
   // If role is taker, then these are the fees discounts to be applied
   let {
     makerFeeVolumeDiscount,
@@ -129,6 +134,9 @@ export const getFeesBreakdown = (
   const totalFee = new BigNumber(infrastructureFee)
     .plus(makerFee)
     .plus(liquidityFee)
+    .plus(treasuryFee)
+    .plus(buyBackFee)
+    .plus(highVolumeMakerFee)
     .toString();
 
   const totalFeeDiscount = new BigNumber(makerFeeVolumeDiscount || '0')
@@ -149,6 +157,9 @@ export const getFeesBreakdown = (
     makerFee,
     makerFeeReferralDiscount,
     makerFeeVolumeDiscount,
+    buyBackFee,
+    treasuryFee,
+    highVolumeMakerFee,
     totalFee,
     totalFeeDiscount,
   };
