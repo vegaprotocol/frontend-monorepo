@@ -22,6 +22,9 @@ query EstimateFees(
       makerFee
       infrastructureFee
       liquidityFee
+      buyBackFee
+      treasuryFee
+      highVolumeMakerFee
       makerFeeReferralDiscount
       makerFeeVolumeDiscount
       infrastructureFeeReferralDiscount
