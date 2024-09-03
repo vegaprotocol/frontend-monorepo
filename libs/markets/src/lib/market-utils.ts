@@ -108,6 +108,8 @@ export const sumFeesFactors = (fees: Market['fees']['factors']) => {
   return new BigNumber(fees.makerFee)
     .plus(fees.liquidityFee)
     .plus(fees.infrastructureFee)
+    .plus(fees.treasuryFee)
+    .plus(fees.buyBackFee)
     .toNumber();
 };
 
