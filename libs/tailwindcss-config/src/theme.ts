@@ -39,6 +39,7 @@ export const theme = {
       900: 'rgb(var(--gs-900) / <alpha-value>)',
       950: 'rgb(var(--gs-950) / <alpha-value>)',
     },
+    accent: 'rgb(var(--content-accent-color) / <alpha-value>)',
     surface: {
       0: {
         DEFAULT: 'rgb(var(--surface-0) / <alpha-value>)',

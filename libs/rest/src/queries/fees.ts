@@ -12,7 +12,7 @@ import flatten from 'lodash/flatten';
 import omit from 'lodash/omit';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
@@ -58,14 +58,12 @@ export async function retrieveLiquidityFees(
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = getMarketFromCache(queryClient, searchParams.marketId);
-  if (!market) {
-    throw new Error('market not found');
-  }
-
-  const res = await axios.get<v2ListPaidLiquidityFeesResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, searchParams.marketId),
+    axios.get<v2ListPaidLiquidityFeesResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = removePaginationWrapper(res.data.paidLiquidityFees?.edges);
 
@@ -146,14 +144,12 @@ export async function retrieveMakerFees(
     searchParams = omit(searchParams, 'epochSeq');
   }
 
-  const market = getMarketFromCache(queryClient, searchParams.marketId);
-  if (!market) {
-    throw new Error('market not found');
-  }
-
-  const res = await axios.get<v2GetFeesStatsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, searchParams.marketId),
+    axios.get<v2GetFeesStatsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = res.data.feesStats;
 

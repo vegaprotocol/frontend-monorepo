@@ -19,9 +19,9 @@ def vega(request):
 @pytest.fixture(scope="module")
 def page(vega, browser, request):
     with init_page(vega, browser, request) as page:
-        setup_continuous_market(vega)
+        market_id = setup_continuous_market(vega)
         risk_accepted_setup(page)
-        page.goto("/")
+        page.goto(f"/#/markets/{market_id}")
         page.get_by_test_id("Info").click()
         yield page
 

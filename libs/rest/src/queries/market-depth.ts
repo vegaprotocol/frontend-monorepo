@@ -3,14 +3,14 @@ import { type vegaMarketDepth } from '@vegaprotocol/rest-clients/dist/trading-da
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
-const parametersSchema = z.object({
+const pathParamsSchema = z.object({
   marketId: z.string(),
 });
 
-export type QueryParams = z.infer<typeof parametersSchema>;
+export type PathParams = z.infer<typeof pathParamsSchema>;
 
 const priceLevelSchema = z.object({
   //   ammVolume: z.instanceof(Decimal),
@@ -28,21 +28,18 @@ const marketDepthSchema = z.object({
 });
 
 export async function retrieveMarketDepth(
-  params: QueryParams,
+  pathParams: PathParams,
   queryClient: QueryClient
 ) {
-  const searchParams = parametersSchema.parse(params);
-
-  const market = getMarketFromCache(queryClient, searchParams.marketId);
-  if (!market) {
-    throw new Error('market not found');
-  }
-
+  const params = pathParamsSchema.parse(pathParams);
   const endpoint = restApiUrl('/api/v2/market/depth/{marketId}/latest', {
-    marketId: searchParams.marketId,
+    marketId: params.marketId,
   });
 
-  const res = await axios.get<vegaMarketDepth>(endpoint);
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, params.marketId),
+    axios.get<vegaMarketDepth>(endpoint),
+  ]);
 
   const data = res.data;
 

@@ -137,6 +137,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
   VOLUME_DISCOUNTS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
+  ENABLE_HOMEPAGE: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {

@@ -1,5 +1,10 @@
-import { type ReactNode } from 'react';
+import { cn } from '@vegaprotocol/ui-toolkit';
+import { type HTMLAttributes } from 'react';
 
-export const HeaderPage = (props: { children: ReactNode }) => {
-  return <h1 className="text-3xl lg:text-5xl calt">{props.children}</h1>;
+export const HeaderPage = (props: HTMLAttributes<HTMLHeadingElement>) => {
+  return (
+    <h1 className={cn('text-4xl lg:text-5xl', props.className)}>
+      {props.children}
+    </h1>
+  );
 };

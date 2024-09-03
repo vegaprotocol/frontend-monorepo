@@ -12,7 +12,7 @@ import groupBy from 'lodash/groupBy';
 import maxBy from 'lodash/maxBy';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarket } from './markets';
 import { type QueryClient } from '@tanstack/react-query';
 
 const parametersSchema = z.object({
@@ -53,15 +53,12 @@ export async function retrieveLiquidityProvisions(
 
   const searchParams = parametersSchema.parse(params);
 
-  const market = getMarketFromCache(client, searchParams.marketId);
-
-  if (!market) {
-    throw new Error('market not found');
-  }
-
-  const res = await axios.get<v2ListAllLiquidityProvisionsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [market, res] = await Promise.all([
+    getMarket(client, searchParams.marketId),
+    axios.get<v2ListAllLiquidityProvisionsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const data = removePaginationWrapper(res.data.liquidityProvisions?.edges);
   const allCurrentProvisions = compact(

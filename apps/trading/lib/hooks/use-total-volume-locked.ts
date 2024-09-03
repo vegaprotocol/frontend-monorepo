@@ -1,33 +1,30 @@
 import { useReadContracts } from 'wagmi';
 import compact from 'lodash/compact';
 import { erc20Abi } from 'viem';
-import { useEnabledAssets } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ASSET_POOL_ADDRESSES } from '@vegaprotocol/web3';
+import { useAssets } from '@vegaprotocol/rest';
 
 export const useTotalValueLocked = () => {
   const { VEGA_ENV } = useEnvironment();
-  const { data } = useEnabledAssets();
+  const { data } = useAssets();
 
-  const assets = (data || [])
-    .filter(isAssetTypeERC20)
+  const assets = Array.from(data?.values() || [])
+    .filter((a) => a.status === 'STATUS_ENABLED')
     .filter((a) => a.symbol !== 'VEGA');
 
   const addresses = ASSET_POOL_ADDRESSES[VEGA_ENV];
 
   const contracts = assets.map((asset) => {
-    if (asset.source.__typename !== 'ERC20') return;
-
-    const chainId = Number(asset.source.chainId);
+    const chainId = Number(asset.chainId);
     const assetPoolAddress = addresses[chainId];
 
     if (!assetPoolAddress) return;
 
     const config = {
       abi: erc20Abi,
-      address: asset.source.contractAddress as `0x${string}`,
+      address: asset.contractAddress as `0x${string}`,
       functionName: 'balanceOf',
       args: [assetPoolAddress],
       chainId,
@@ -49,6 +46,13 @@ export const useTotalValueLocked = () => {
     const val = BigNumber(rawValue).div(asset.quantum);
     return val;
   });
+
+  if (!result.length) {
+    return {
+      ...queryResult,
+      data: undefined,
+    };
+  }
 
   const tvl = BigNumber.sum.apply(null, result);
 
