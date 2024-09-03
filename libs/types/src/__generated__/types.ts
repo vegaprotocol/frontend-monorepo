@@ -549,6 +549,8 @@ export type BenefitTier = {
   referralRewardFactor: Scalars['String'];
   /** The proportion of the referee's taker fees to be rewarded to the referrer */
   referralRewardFactors: RewardFactors;
+  /** The tier number */
+  tierNumber?: Maybe<Scalars['Int']>;
 };
 
 /** A Vega builtin asset, mostly for testing purpose */
@@ -2932,6 +2934,20 @@ export type MarketEvent = {
   payload: Scalars['String'];
 };
 
+export type MarketFees = {
+  __typename?: 'MarketFees';
+  /** The maker fees for the market */
+  baseMakerFee: Scalars['String'];
+  /** The taker fees as applied for the party (with the discounts applied) */
+  discountedTakerFee: Scalars['String'];
+  /** The market ID */
+  marketId: Scalars['ID'];
+  /** The taker fees for the market without the discounts applied */
+  undiscountedTakerFee: Scalars['String'];
+  /** The maker rebate for the party */
+  userMakerRebate: Scalars['String'];
+};
+
 /** The current state of a market */
 export enum MarketState {
   /** Enactment date reached and usual auction exit checks pass */
@@ -4232,6 +4248,18 @@ export type PartyConnection = {
   pageInfo: PageInfo;
 };
 
+export type PartyDiscountStats = {
+  __typename?: 'PartyDiscountStats';
+  /** The fee percentages the party will pay on a given market, with any rebates and discounts accounted for */
+  partyMarketFees?: Maybe<Array<MarketFees>>;
+  /** The referral discount tier the party is in */
+  referralDiscountTier: Scalars['Int'];
+  /** The volume discount tier the party is in */
+  volumeDiscountTier: Scalars['Int'];
+  /** The volume rebate tier the party is in */
+  volumeRebateTier: Scalars['Int'];
+};
+
 /** Edge type containing the party and cursor information returned by a PartyConnection */
 export type PartyEdge = {
   __typename?: 'PartyEdge';
@@ -5260,6 +5288,8 @@ export type Query = {
   partiesProfilesConnection?: Maybe<PartiesProfilesConnection>;
   /** An entity that is trading on the Vega network */
   party?: Maybe<Party>;
+  /** Get the reward and discount fees for a given party and the fees and rebates applied per market. */
+  partyDiscountStats?: Maybe<PartyDiscountStats>;
   /**
    * List margin modes per party per market
    *
@@ -5735,6 +5765,13 @@ export type QuerypartiesProfilesConnectionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerypartyArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerypartyDiscountStatsArgs = {
+  marketIds?: InputMaybe<Array<Scalars['ID']>>;
+  partyId: Scalars['ID'];
 };
 
 
@@ -7719,6 +7756,8 @@ export type VolumeBenefitTier = {
   __typename?: 'VolumeBenefitTier';
   /** The minimum running notional for the given benefit tier */
   minimumRunningNotionalTakerVolume: Scalars['String'];
+  /** The tier number */
+  tierNumber?: Maybe<Scalars['Int']>;
   /**
    * Discount given to those in this benefit tier
    * @deprecated Use volumeDiscountFactors
@@ -7786,6 +7825,8 @@ export type VolumeRebateBenefitTier = {
   additionalMakerRebate: Scalars['String'];
   /** The required volume fraction for a party to access this tier */
   minimumPartyMakerVolumeFraction: Scalars['String'];
+  /** The tier number */
+  tierNumber?: Maybe<Scalars['Int']>;
 };
 
 /** Volume rebate program information */
