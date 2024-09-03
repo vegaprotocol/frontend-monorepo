@@ -277,8 +277,15 @@ const FeesBreakdownTooltip = ({
 
   const { role, fees, marketState } = getRoleAndFees({ data, partyId }) ?? {};
   if (!fees) return null;
-  const { infrastructureFee, liquidityFee, makerFee, totalFee } =
-    getFeesBreakdown(role, fees, marketState);
+  const {
+    infrastructureFee,
+    liquidityFee,
+    makerFee,
+    buyBackFee,
+    treasuryFee,
+    highVolumeMakerFee,
+    totalFee,
+  } = getFeesBreakdown(role, fees, marketState);
 
   return (
     <div
@@ -331,6 +338,19 @@ const FeesBreakdownTooltip = ({
         <dt className="col-span-1">{t('Maker fee')}</dt>
         <dd className="col-span-1 text-right">
           {addDecimalsFormatNumber(makerFee, asset.decimals)} {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Buy back fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(buyBackFee, asset.decimals)} {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Treasury fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(treasuryFee, asset.decimals)} {asset.symbol}
+        </dd>
+        <dt className="col-span-1">{t('Maker rebate fee')}</dt>
+        <dd className="col-span-1 text-right">
+          {addDecimalsFormatNumber(highVolumeMakerFee, asset.decimals)}{' '}
+          {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Total fees')}</dt>
         <dd className="col-span-1 text-right">
