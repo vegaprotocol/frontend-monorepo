@@ -10,7 +10,6 @@ import {
   useAppState,
 } from '../../contexts/app-state/app-state-context';
 import { usePendingTransactions } from '../../hooks/use-pending-transactions';
-import vegaVesting from '../../images/vega_vesting.png';
 import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
@@ -103,22 +102,7 @@ const ConnectedKey = () => {
   const {
     appState: { decimals },
   } = useAppState();
-  const {
-    walletBalance,
-    totalLockedBalance,
-    totalVestedBalance,
-    associationBreakdown,
-  } = useBalances();
-
-  const totalInVestingContract = React.useMemo(() => {
-    return totalLockedBalance.plus(totalVestedBalance);
-  }, [totalLockedBalance, totalVestedBalance]);
-
-  const notAssociatedInContract = React.useMemo(() => {
-    const totals = Object.values(associationBreakdown.vestingAssociations);
-    const associated = BigNumber.sum.apply(null, [new BigNumber(0), ...totals]);
-    return totalInVestingContract.minus(associated);
-  }, [associationBreakdown.vestingAssociations, totalInVestingContract]);
+  const { walletBalance, associationBreakdown } = useBalances();
 
   const walletWithAssociations = React.useMemo(() => {
     const totals = Object.values(associationBreakdown.stakingAssociations);
@@ -128,33 +112,6 @@ const ConnectedKey = () => {
 
   return (
     <>
-      <section data-testid="vega-in-vesting-contract">
-        {totalVestedBalance.plus(totalLockedBalance).isEqualTo(0) ? null : (
-          <section>
-            <WalletCardAsset
-              image={vegaVesting}
-              decimals={decimals}
-              name="VEGA"
-              symbol="In vesting contract"
-              balance={totalInVestingContract}
-            />
-            <LockedProgress
-              locked={totalLockedBalance}
-              unlocked={totalVestedBalance}
-              total={totalVestedBalance.plus(totalLockedBalance)}
-              leftLabel={t('Locked')}
-              rightLabel={t('Unlocked')}
-            />
-          </section>
-        )}
-        {!Object.keys(associationBreakdown.vestingAssociations)
-          .length ? null : (
-          <AssociatedAmounts
-            associations={associationBreakdown.vestingAssociations}
-            notAssociated={notAssociatedInContract}
-          />
-        )}
-      </section>
       <section data-testid="vega-in-wallet">
         <WalletCardAsset
           image={vegaWhite}

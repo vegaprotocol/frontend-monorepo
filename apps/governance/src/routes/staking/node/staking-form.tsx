@@ -26,7 +26,6 @@ import {
   useNetworkParam,
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { useBalances } from '../../../lib/balances/balances-store';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { SubHeading } from '../../../components/heading';
 import {
@@ -68,7 +67,6 @@ export const StakingForm = ({
   availableStakeToAdd,
   availableStakeToRemove,
 }: StakingFormProps) => {
-  const lien = useBalances((state) => state.lien);
   const params = useSearchParams();
   const navigate = useNavigate();
   const client = useApolloClient();
@@ -199,12 +197,7 @@ export const StakingForm = ({
         availableStakeToAdd.isEqualTo(0) &&
         availableStakeToRemove.isEqualTo(0) && (
           <div className="mb-4">
-            {lien.isGreaterThan(0) ? (
-              <Notification
-                intent={Intent.Warning}
-                message={t('stakeNodeWrongVegaKey')}
-              />
-            ) : (
+            {
               <Notification
                 message={t('stakeNodeNone')}
                 intent={Intent.Warning}
@@ -215,7 +208,7 @@ export const StakingForm = ({
                   size: 'sm',
                 }}
               />
-            )}
+            }
           </div>
         )}
 
