@@ -19,6 +19,8 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           infrastructureFee: '0.1',
           liquidityFee: '0.1',
           makerFee: '0.1',
+          buyBackFee: '0',
+          treasuryFee: '0',
         },
       },
       markPriceConfiguration: {
