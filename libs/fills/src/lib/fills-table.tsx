@@ -98,11 +98,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           colId: 'fee-discount',
           field: 'market',
           valueFormatter: formatFeeDiscount(partyId),
-          tooltipValueGetter: ({ valueFormatted, value }) => {
-            return valueFormatted && /[1-9]/.test(valueFormatted)
-              ? valueFormatted
-              : null;
-          },
           type: 'rightAligned',
           // return null to disable tooltip if fee discount is 0 or empty
           cellRenderer: ({
@@ -110,8 +105,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
             valueFormatted,
           }: VegaICellRendererParams<Trade, 'market'>) =>
             `${valueFormatted} ${(value && getAsset(value))?.symbol}`,
-          tooltipComponent: FeesDiscountBreakdownTooltip,
-          tooltipComponentParams: { partyId },
         },
         {
           headerName: t('Date'),
