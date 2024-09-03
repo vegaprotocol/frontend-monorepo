@@ -38,9 +38,9 @@ const ammSchema = z.object({
   // concentrated liquidity parameters:
   base: z.instanceof(Decimal),
   upperBound: z.instanceof(Decimal),
-  leverageAtUpperBound: z.instanceof(Decimal),
+  leverageAtUpperBound: z.number(),
   lowerBound: z.instanceof(Decimal),
-  leverageAtLowerBound: z.instanceof(Decimal),
+  leverageAtLowerBound: z.number(),
   market: z.object({
     code: z.string(),
   }),
@@ -88,17 +88,11 @@ export const retrieveAMMs = async (
       statusReason: a.statusReason,
 
       // concentrated liquidity parameters:
-      base: new Decimal(a.parameters?.base, asset.decimals),
-      upperBound: new Decimal(a.parameters?.upperBound, asset.decimals),
-      leverageAtUpperBound: new Decimal(
-        a.parameters?.leverageAtUpperBound,
-        asset.decimals
-      ),
-      lowerBound: new Decimal(a.parameters?.lowerBound, asset.decimals),
-      leverageAtLowerBound: new Decimal(
-        a.parameters?.leverageAtLowerBound,
-        asset.decimals
-      ),
+      base: new Decimal(a.parameters?.base, market.decimalPlaces),
+      upperBound: new Decimal(a.parameters?.upperBound, market.decimalPlaces),
+      leverageAtUpperBound: Number(a.parameters?.leverageAtUpperBound),
+      lowerBound: new Decimal(a.parameters?.lowerBound, market.decimalPlaces),
+      leverageAtLowerBound: Number(a.parameters?.leverageAtLowerBound),
 
       market: {
         code: market.code,

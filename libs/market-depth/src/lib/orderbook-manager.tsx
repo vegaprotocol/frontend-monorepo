@@ -1,18 +1,13 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketDepthProvider } from './market-depth-provider';
+import { useOrderbook } from './market-depth-provider';
 import {
   getQuoteName,
   isMarketInAuction,
   marketDataProvider,
   marketProvider,
 } from '@vegaprotocol/markets';
-import {
-  type MarketDepthQuery,
-  type MarketDepthQueryVariables,
-  type MarketDepthUpdateSubscription,
-} from './__generated__/MarketDepth';
 
 interface OrderbookManagerProps {
   marketId: string;
@@ -23,16 +18,7 @@ export const OrderbookManager = ({
   marketId,
   onClick,
 }: OrderbookManagerProps) => {
-  const variables = { marketId };
-
-  const { data, error, loading, reload } = useDataProvider<
-    MarketDepthQuery['market'] | undefined,
-    MarketDepthUpdateSubscription['marketsDepthUpdate'] | null,
-    MarketDepthQueryVariables
-  >({
-    dataProvider: marketDepthProvider,
-    variables,
-  });
+  const { data, error, loading, reload } = useOrderbook(marketId);
 
   const {
     data: market,
@@ -41,7 +27,7 @@ export const OrderbookManager = ({
   } = useDataProvider({
     dataProvider: marketProvider,
     skipUpdates: true,
-    variables,
+    variables: { marketId },
   });
 
   const {
@@ -50,7 +36,7 @@ export const OrderbookManager = ({
     loading: marketDataLoading,
   } = useDataProvider({
     dataProvider: marketDataProvider,
-    variables,
+    variables: { marketId },
   });
   return (
     <AsyncRenderer

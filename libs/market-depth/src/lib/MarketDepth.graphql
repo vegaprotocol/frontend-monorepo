@@ -1,6 +1,8 @@
 fragment PriceLevelFields on PriceLevel {
   price
   volume
+  ammVolume
+  ammVolumeEstimated
   numberOfOrders
 }
 

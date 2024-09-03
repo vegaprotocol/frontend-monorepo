@@ -65,9 +65,9 @@ export const ManageLiquidity = () => {
         slippageTolerance: undefined,
         base: amm.base.value.toNumber(),
         upperBound: amm.upperBound.value.toNumber(),
-        leverageAtUpperBound: amm.leverageAtUpperBound.value.toNumber(),
+        leverageAtUpperBound: amm.leverageAtUpperBound,
         lowerBound: amm.lowerBound.value.toNumber(),
-        leverageAtLowerBound: amm.leverageAtLowerBound.value.toNumber(),
+        leverageAtLowerBound: amm.leverageAtLowerBound,
       }
     : {
         marketId: market.id,

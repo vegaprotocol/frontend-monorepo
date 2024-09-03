@@ -1,25 +1,27 @@
-import { compactRows, updateLevels, VolumeType } from './orderbook-data';
+import {
+  combineVolume,
+  compactRows,
+  updateLevels,
+  VolumeType,
+} from './orderbook-data';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
+import type { PriceLevel } from './market-depth-provider';
 
 describe('compactRows', () => {
   const numberOfRows = 100;
   const middle = 1000;
-  const sell: PriceLevelFieldsFragment[] = new Array(numberOfRows)
-    .fill(null)
-    .map((n, i) => ({
-      __typename: 'PriceLevel',
-      volume: i.toString(),
-      price: (middle + numberOfRows - i).toString(),
-      numberOfOrders: i.toString(),
-    }));
-  const buy: PriceLevelFieldsFragment[] = new Array(numberOfRows)
-    .fill(null)
-    .map((n, i) => ({
-      __typename: 'PriceLevel',
-      volume: (numberOfRows - 1 - i).toString(),
-      price: (middle - i).toString(),
-      numberOfOrders: (numberOfRows - i).toString(),
-    }));
+  const sell: PriceLevel[] = new Array(numberOfRows).fill(null).map((n, i) => ({
+    __typename: 'PriceLevel',
+    volume: i.toString(),
+    price: (middle + numberOfRows - i).toString(),
+    numberOfOrders: i.toString(),
+  }));
+  const buy: PriceLevel[] = new Array(numberOfRows).fill(null).map((n, i) => ({
+    __typename: 'PriceLevel',
+    volume: (numberOfRows - 1 - i).toString(),
+    price: (middle - i).toString(),
+    numberOfOrders: (numberOfRows - i).toString(),
+  }));
   it('groups data by price and resolution', () => {
     expect(compactRows(sell, VolumeType.ask, 1).length).toEqual(100);
     expect(compactRows(buy, VolumeType.bid, 1).length).toEqual(100);
@@ -41,19 +43,19 @@ describe('compactRows', () => {
 });
 
 describe('updateLevels', () => {
-  let levels: PriceLevelFieldsFragment[] = new Array(10)
-    .fill(null)
-    .map((n, i) => ({
-      __typename: 'PriceLevel',
-      volume: ((i + 1) * 10).toString(),
-      price: ((i + 1) * 10).toString(),
-      numberOfOrders: ((i + 1) * 10).toString(),
-    }));
+  let levels: PriceLevel[] = new Array(10).fill(null).map((n, i) => ({
+    __typename: 'PriceLevel',
+    volume: ((i + 1) * 10).toString(),
+    price: ((i + 1) * 10).toString(),
+    numberOfOrders: ((i + 1) * 10).toString(),
+  }));
   it('updates, removes and adds new items', () => {
     const removeFirstRow: PriceLevelFieldsFragment = {
       __typename: 'PriceLevel',
       price: '10',
       volume: '0',
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '0',
     };
     levels = updateLevels(levels, [removeFirstRow]);
@@ -65,6 +67,8 @@ describe('updateLevels', () => {
       __typename: 'PriceLevel',
       price: '10',
       volume: '10',
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '10',
     };
     levels = updateLevels(levels, [addFirstRow]);
@@ -73,6 +77,8 @@ describe('updateLevels', () => {
       __typename: 'PriceLevel',
       price: '95',
       volume: '95',
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '95',
     };
     levels = updateLevels(levels, [addBeforeLastRow]);
@@ -81,6 +87,8 @@ describe('updateLevels', () => {
       __typename: 'PriceLevel',
       price: '115',
       volume: '115',
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '115',
     };
     levels = updateLevels(levels, [addAtTheEnd]);
@@ -89,10 +97,14 @@ describe('updateLevels', () => {
       __typename: 'PriceLevel',
       price: '115',
       volume: '116',
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '115',
     };
     levels = updateLevels(levels, [updateLastRow]);
-    expect(levels[levels.length - 1]).toEqual(updateLastRow);
-    expect(updateLevels([], [updateLastRow])).toEqual([updateLastRow]);
+    expect(levels[levels.length - 1]).toEqual(combineVolume(updateLastRow));
+    expect(updateLevels([], [updateLastRow])).toEqual([
+      combineVolume(updateLastRow),
+    ]);
   });
 });

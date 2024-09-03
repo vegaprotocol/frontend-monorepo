@@ -12,9 +12,9 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
-import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
 import { useT } from './use-t';
+import { type PriceLevel } from './market-depth-provider';
 
 // Sets row height, will be used to calculate number of rows that can be
 // displayed each side of the book without overflow
@@ -190,8 +190,8 @@ interface OrderbookProps {
   positionDecimalPlaces: number;
   onClick: (args: { price?: string; size?: string }) => void;
   lastTradedPrice: string;
-  bids: PriceLevelFieldsFragment[];
-  asks: PriceLevelFieldsFragment[];
+  bids: PriceLevel[];
+  asks: PriceLevel[];
   assetSymbol: string;
   indicativePrice: string;
   isMarketInAuction: boolean;

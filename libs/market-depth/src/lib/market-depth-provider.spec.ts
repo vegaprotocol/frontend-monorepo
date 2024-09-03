@@ -24,6 +24,8 @@ describe('market depth provider update', () => {
       id: '1',
       depth: {
         sequenceNumber: '1',
+        buy: [],
+        sell: [],
       },
     };
     const delta = {
@@ -40,6 +42,8 @@ describe('market depth provider update', () => {
       id: '1',
       depth: {
         sequenceNumber: '10',
+        buy: [],
+        sell: [],
       },
     };
     const delta = [
@@ -67,6 +71,8 @@ describe('market depth provider update', () => {
       id: '1',
       depth: {
         sequenceNumber: '10',
+        buy: [],
+        sell: [],
       },
     };
     const delta = [
