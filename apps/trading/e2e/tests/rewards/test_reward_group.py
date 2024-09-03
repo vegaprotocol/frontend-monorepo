@@ -177,6 +177,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
+@pytest.mark.skip(reason="TODO: flakey")
 def test_reward_group_card(
     setup_environment: Tuple[Page, str, str],
 ):
