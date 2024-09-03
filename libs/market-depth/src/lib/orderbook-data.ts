@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
+import type { PriceLevel } from './market-depth-provider';
 
 export enum VolumeType {
   bid,
@@ -43,7 +44,7 @@ const updateCumulativeVolumeByType = (
 };
 
 export const compactRows = (
-  data: PriceLevelFieldsFragment[],
+  data: PriceLevel[],
   dataType: VolumeType,
   resolution: number
 ) => {
@@ -89,33 +90,53 @@ export const compactRows = (
  * @returns
  */
 export const updateLevels = (
-  draft: PriceLevelFieldsFragment[],
-  updates: (PriceLevelFieldsFragment | PriceLevelFieldsFragment)[],
+  draft: PriceLevel[],
+  updates: PriceLevelFieldsFragment[],
   ascending = true
 ) => {
   const levels = [...draft];
   updates.forEach((update) => {
     let index = levels.findIndex((level) => level.price === update.price);
     if (index !== -1) {
-      if (update.volume === '0') {
+      if (
+        update.volume === '0' &&
+        update.ammVolume === '0' &&
+        update.ammVolumeEstimated === '0'
+      ) {
         levels.splice(index, 1);
       } else {
-        levels[index] = update;
+        levels[index] = combineVolume(update);
       }
-    } else if (update.volume !== '0') {
+    } else if (
+      update.volume !== '0' ||
+      update.ammVolume !== '0' ||
+      update.ammVolumeEstimated !== '0'
+    ) {
       index = levels.findIndex((level) =>
         ascending
           ? BigInt(level.price) > BigInt(update.price)
           : BigInt(level.price) < BigInt(update.price)
       );
       if (index !== -1) {
-        levels.splice(index, 0, update);
+        levels.splice(index, 0, combineVolume(update));
       } else {
-        levels.push(update);
+        levels.push(combineVolume(update));
       }
     }
   });
   return levels;
+};
+
+export const combineVolume = (level: PriceLevelFieldsFragment) => {
+  return {
+    price: level.price,
+    volume: String(
+      BigInt(level.volume) +
+        BigInt(level.ammVolume) +
+        BigInt(level.ammVolumeEstimated)
+    ),
+    numberOfOrders: level.numberOfOrders,
+  };
 };
 
 export interface MockDataGeneratorParams {
@@ -142,6 +163,8 @@ export const generateMockData = ({
     .map((row, i) => ({
       price: (price -= 1).toString(),
       volume: (numberOfSellRows - i + 1).toString(),
+      ammVolume: '0',
+      ammVolumeEstimated: '0',
       numberOfOrders: '',
     }))
     .reverse();
@@ -150,6 +173,8 @@ export const generateMockData = ({
   const buy: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
     price: (price -= 1).toString(),
     volume: (i + 2).toString(),
+    ammVolume: '0',
+    ammVolumeEstimated: '0',
     numberOfOrders: '',
   }));
   return {

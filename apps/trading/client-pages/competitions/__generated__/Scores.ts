@@ -56,7 +56,7 @@ export const ScoresDocument = gql`
     }
   }
   gamePartyScores(
-    filter: {gameIds: [$gameId], partyIds: [$partyId]}
+    filter: {gameIds: [$gameId], partyIds: [$partyId], epochFrom: $epochFrom, epochTo: $epochTo}
     pagination: $pagination
   ) {
     edges {

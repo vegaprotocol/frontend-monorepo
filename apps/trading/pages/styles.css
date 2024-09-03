@@ -307,12 +307,6 @@ html [data-theme='light'] {
 
   --pennant-color-volume-buy: rgb(var(--dir-up));
   --pennant-color-volume-sell: rgb(var(--dir-down));
-
-  /* depth chart */
-  --pennant-color-depth-buy-fill: rgb(var(--dir-up-bg));
-  --pennant-color-depth-buy-stroke: rgb(var(--dir-up-outline));
-  --pennant-color-depth-sell-fill: rgb(var(--dir-down-bg));
-  --pennant-color-depth-sell-stroke: rgb(var(--dir-down-outline));
 }
 
 html [data-theme='light'] {
@@ -322,6 +316,11 @@ html [data-theme='light'] {
   --separator-border: var(--gs-400-hex);
   --pennant-background-label-color: var(--gs-50-hex);
   --pennant-hover-overlay: rgb(var(--gs-50) / 0.5);
+
+  --pennant-color-depth-buy-fill: #00f780;
+  --pennant-color-depth-buy-stroke: #008545;
+  --pennant-color-depth-sell-fill: #ec003c;
+  --pennant-color-depth-sell-stroke: #550016;
 }
 
 html [data-theme='dark'] {
@@ -331,6 +330,11 @@ html [data-theme='dark'] {
   --separator-border: var(--gs-600-hex);
   --pennant-background-label-color: var(--gs-950-hex);
   --pennant-hover-overlay: rgb(var(--gs-950) / 0.5);
+
+  --pennant-color-depth-buy-fill: #008545;
+  --pennant-color-depth-buy-stroke: #00f780;
+  --pennant-color-depth-sell-fill: #550016;
+  --pennant-color-depth-sell-stroke: #ec003c;
 }
 
 /**

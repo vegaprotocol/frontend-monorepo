@@ -4542,6 +4542,10 @@ export type PositionsFilter = {
 /** Represents a price on either the buy or sell side and all the orders at that price */
 export type PriceLevel = {
   __typename?: 'PriceLevel';
+  /** The total volume of all AMM's at this level (uint64) */
+  ammVolume: Scalars['String'];
+  /** The total estimated volume of all AMM's at this level (uint64) */
+  ammVolumeEstimated: Scalars['String'];
   /** The number of orders at this price level (uint64) */
   numberOfOrders: Scalars['String'];
   /** The price of all the orders at this level (uint64) */
