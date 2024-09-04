@@ -48,11 +48,11 @@ jobs:
           echo "projects: ${{ fromJSON(inputs.projects) }}"
       - name: Filter out governance
         run: |
-          echo ${{ fromJSON(inputs.projects) }} | jq '[.[] | select(contains("governance") | not)]'
+          echo ${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]'
       - name: Set output
         id: set-projects
         run: |
-          echo projects=$(${{ fromJSON(inputs.projects) }} | jq '[.[] | select(contains("governance") | not)]')  >> $GITHUB_OUTPUT
+          echo projects=$(${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]')  >> $GITHUB_OUTPUT
       - name: Set output
         id: set-projects
         run: |
