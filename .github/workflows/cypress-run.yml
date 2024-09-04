@@ -43,7 +43,7 @@ jobs:
     needs: runner-choice
     runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
-    if: false
+    if: matrix.project == 'governance'
     steps:
       - name: Install vega & vegacapsule
         run: |
