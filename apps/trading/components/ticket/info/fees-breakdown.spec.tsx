@@ -1,17 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { FeesBreakdown } from './fees-breakdown';
+import BigNumber from 'bignumber.js';
 
 describe('FeesBreakdown', () => {
   it('formats fee factors correctly', () => {
     const props = {
       decimals: 2,
       estimate: {
-        fee: '1234',
-        feeDiscounted: '1230',
-        discount: '4',
-        discountPct: '2',
-        makerRebate: '100',
-        makerRebatePct: '8',
+        fee: BigNumber(1234),
+        feeDiscounted: BigNumber(1230),
+        discount: BigNumber(4),
+        discountPct: BigNumber(2),
+        makerRebate: BigNumber(100),
+        makerRebatePct: BigNumber(8),
       },
     };
     render(<FeesBreakdown {...props} />);

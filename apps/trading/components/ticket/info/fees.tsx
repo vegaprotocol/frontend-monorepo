@@ -55,7 +55,7 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
                 symbol: asset.symbol,
               })}
             </span>
-            {estimate.discount !== '0' && (
+            {!estimate.discount.isZero() && (
               <Pill
                 size="xxs"
                 intent={Intent.Info}
@@ -71,10 +71,13 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
       value={
         estimate.fee ? (
           <Tooltip
-            description={`~${formatValue(estimate.fee, asset.decimals)}`}
+            description={`~${formatValue(
+              estimate.fee.toString(),
+              asset.decimals
+            )}`}
           >
             <span>{`~${formatValue(
-              estimate.fee,
+              estimate.fee.toString(),
               asset.decimals,
               asset.quantum
             )}`}</span>

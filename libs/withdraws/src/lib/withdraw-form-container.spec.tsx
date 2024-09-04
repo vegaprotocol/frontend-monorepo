@@ -124,6 +124,8 @@ describe('WithdrawFormContainer', () => {
               makerFee: '0.0002',
               infrastructureFee: '0.0005',
               liquidityFee: '0.001',
+              buyBackFee: '0',
+              treasuryFee: '0',
             },
           },
           markPriceConfiguration: {
