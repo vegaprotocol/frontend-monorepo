@@ -9,11 +9,25 @@ import { DatagridRow } from '../elements/datagrid';
 
 import { FeesBreakdown } from './fees-breakdown';
 import { useEstimateFees } from './use-estimate-fees';
+import { useForm } from '../use-form';
+import { useMarketTradingMode, useMarkPrice } from '@vegaprotocol/markets';
 
 export const Fees = ({ oco = false }: { oco?: boolean }) => {
   const t = useT();
-  const estimate = useEstimateFees(oco);
+
+  const form = useForm();
   const ticket = useTicketContext();
+
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
+  const postOnly = form.watch('postOnly');
+
+  const estimate = useEstimateFees({
+    markPrice,
+    marketTradingMode,
+    postOnly,
+    oco,
+  });
   const asset = ticket.quoteAsset;
 
   return (
