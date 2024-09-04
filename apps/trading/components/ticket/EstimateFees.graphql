@@ -34,25 +34,4 @@ query EstimateFees(
     }
     totalFeeAmount
   }
-  epoch {
-    id
-  }
-  volumeDiscountStats(partyId: $partyId, pagination: { last: 1 }) {
-    edges {
-      node {
-        atEpoch
-        discountFactor
-        runningVolume
-      }
-    }
-  }
-  referralSetStats(partyId: $partyId, pagination: { last: 1 }) {
-    edges {
-      node {
-        atEpoch
-        discountFactor
-        referralSetRunningNotionalTakerVolume
-      }
-    }
-  }
 }
