@@ -34,13 +34,37 @@ jobs:
       - name: Print runner
         run: echo ${{ steps.step.outputs.runner }}
 
+  # This only exists becuase we cannot do an if based on the matrix values at the job level
+  # so this step removes governance from the array and sets the output to be the remaining projects
+  e2e-filter:
+    needs: runner-choice
+    runs-on: ${{ needs.runner-choice.outputs.runner }}
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
+    steps:
+      - name: Verify inputs
+        run: |
+          echo "Check inputs to action"
+          echo "projects: ${{ fromJSON(inputs.projects) }}"
+      - name: Filter out governance
+        run: |
+          echo ${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]'
+      - name: Set output
+        id: set-projects
+        run: |
+          echo projects=$(${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]')  >> $GITHUB_OUTPUT
+      - name: Set output
+        id: set-projects
+        run: |
+          echo ${{ steps.set-projects.outputs.projects }}
+
   e2e:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJSON(inputs.projects) }}
+        project: ${{ fromJSON(e2e-filter.outputs.projects) }}
     name: ${{ matrix.project }}
-    needs: runner-choice
+    needs: [runner-choice, e2e-filter]
     runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
     steps:
