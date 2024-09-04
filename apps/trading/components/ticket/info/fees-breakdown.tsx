@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -6,14 +5,6 @@ import {
 
 import { useT } from '../../../lib/use-t';
 import { type useEstimateFees } from './use-estimate-fees';
-
-const formatValue = (
-  value: string | number | null | undefined,
-  decimals: number
-): string =>
-  value && !isNaN(Number(value))
-    ? addDecimalsFormatNumber(value, decimals)
-    : '-';
 
 const FeesBreakdownItem = ({
   label,
@@ -45,28 +36,31 @@ export const FeesBreakdown = ({
     <dl className="grid grid-cols-2">
       <FeesBreakdownItem
         label={t('Fee')}
-        value={formatValue(estimate.fee, decimals)}
+        value={addDecimalsFormatNumber(estimate.fee.toString(), decimals)}
         testId="fee"
       />
       <FeesBreakdownItem
         label={t('Discount')}
-        value={`${formatValue(
-          estimate.discount,
+        value={`${addDecimalsFormatNumber(
+          estimate.discount.toString(),
           decimals
-        )} (${formatNumberPercentage(BigNumber(estimate.discountPct))})`}
+        )} (${formatNumberPercentage(estimate.discountPct)})`}
         testId="fee-discount"
       />
       <FeesBreakdownItem
         label={t('Discounted fee')}
-        value={formatValue(estimate.feeDiscounted, decimals)}
+        value={addDecimalsFormatNumber(
+          estimate.feeDiscounted.toString(),
+          decimals
+        )}
         testId="discounted-fee"
       />
       <FeesBreakdownItem
         label={t('Maker rebate')}
-        value={`${formatValue(
-          estimate.makerRebate,
+        value={`${addDecimalsFormatNumber(
+          estimate.makerRebate.toString(),
           decimals
-        )} (${formatNumberPercentage(BigNumber(estimate.makerRebatePct))})`}
+        )} (${formatNumberPercentage(estimate.makerRebatePct)})`}
         testId="maker-rebate"
       />
     </dl>
