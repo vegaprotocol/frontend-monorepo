@@ -53,14 +53,18 @@ jobs:
         id: set-projects
         run: |
           echo projects=$(${{ fromJSON(inputs.projects) }} | jq '[.[] | select(contains("governance") | not)]')  >> $GITHUB_OUTPUT
+      - name: Set output
+        id: set-projects
+        run: |
+          echo ${{ steps.set-projects.outputs.projects }}
 
   e2e:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJSON(inputs.projects) }}
+        project: ${{ fromJSON(e2e-filter.outputs.projects) }}
     name: ${{ matrix.project }}
-    needs: runner-choice
+    needs: [runner-choice, e2e-filter]
     runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
     steps:
