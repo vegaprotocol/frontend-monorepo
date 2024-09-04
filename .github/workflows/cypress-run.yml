@@ -40,7 +40,6 @@ jobs:
       matrix:
         project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
-    if: ${{ matrix.project }} != 'governance'
     needs: runner-choice
     runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
