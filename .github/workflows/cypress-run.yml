@@ -37,6 +37,8 @@ jobs:
   # This only exists becuase we cannot do an if based on the matrix values at the job level
   # so this step removes governance from the array and sets the output to be the remaining projects
   e2e-filter:
+    needs: runner-choice
+    runs-on: ${{ needs.runner-choice.outputs.runner }}
     outputs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
