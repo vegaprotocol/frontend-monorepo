@@ -19,6 +19,7 @@ export type UseEstimateFeesArgs = {
   };
 };
 
+/** Runs query to get estimates based on a projected order and market */
 export const useEstimateFees = (args: UseEstimateFeesArgs) => {
   const variables = useEstimateFeesVariables(args);
   const { data } = useEstimateFeesQuery({
@@ -80,27 +81,27 @@ export const useEstimateFees = (args: UseEstimateFeesArgs) => {
     Object.values(discounts).map((v) => BigNumber(v))
   );
   let makerFee = BigNumber(fees.makerFee);
-  let makerRebate = BigNumber(fees.highVolumeMakerFee);
+  let highVolumeMakerFee = BigNumber(fees.highVolumeMakerFee);
 
   // In auction the fee is shared 50/50 between the maker and the taker
   // so divide it by 2 for a more accurate estimate
   if (isAuction) {
     feeDiscounted = feeDiscounted.div(2);
     discount = discount.div(2);
-    makerRebate = makerRebate.div(2);
+    highVolumeMakerFee = highVolumeMakerFee.div(2);
     makerFee = makerFee.div(2);
   }
 
   const fee = feeDiscounted.plus(discount);
   const discountPct = discount.div(fee).times(100);
-  const makerRebatePct = makerRebate.div(makerFee).times(100);
+  const makerRebatePct = highVolumeMakerFee.div(makerFee).times(100);
 
   return {
     fee,
     feeDiscounted,
     discount,
     discountPct,
-    makerRebate,
+    makerRebate: highVolumeMakerFee,
     makerRebatePct,
   };
 };

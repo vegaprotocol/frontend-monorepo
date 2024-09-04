@@ -4,7 +4,7 @@ import { removeDecimal } from '@vegaprotocol/utils';
 import { type EstimateFeesQueryVariables } from '../__generated__/EstimateFees';
 import { type FormFields } from '../schemas';
 
-type UseEstimateFeesVariablesArgs = {
+export type UseEstimateFeesVariablesArgs = {
   partyId: string | undefined;
   useOcoFields: boolean;
   markPrice: string | null;
@@ -16,6 +16,10 @@ type UseEstimateFeesVariablesArgs = {
   };
 };
 
+/**
+ * Take current market and fields from the deal ticket and create
+ * variables suitable for an estimated fee query
+ */
 export const useEstimateFeesVariables = (
   args: UseEstimateFeesVariablesArgs
 ): EstimateFeesQueryVariables => {
@@ -94,6 +98,7 @@ export const useEstimateFeesVariables = (
 
     return {
       ...commonVariables,
+      type: OrderType.TYPE_LIMIT,
       size: removeDecimal(values.size?.toString() || '0', positionDp),
       price: removeDecimal(values.price?.toString(), marketDp),
     };
