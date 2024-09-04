@@ -5,32 +5,39 @@ import { getDiscountedFee } from '../utils';
 import BigNumber from 'bignumber.js';
 import { useEstimateFeesVariables } from './use-estimate-fees-variables';
 import { type MarketTradingMode } from '@vegaprotocol/types';
+import { type FormFields } from '../schemas';
 
-export const useEstimateFees = ({
-  marketTradingMode,
-  markPrice,
-  postOnly,
-  oco,
-}: {
+type UseEstimateFeesArgs = {
+  useOcoFields: boolean;
+  partyId: string | undefined;
   marketTradingMode: MarketTradingMode | null | undefined;
   markPrice: string | null;
-  postOnly: boolean;
-  oco: boolean;
-}) => {
-  const variables = useEstimateFeesVariables(oco, markPrice);
+  values: FormFields;
+  market: {
+    id: string;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+  };
+};
 
+export const useEstimateFees = (args: UseEstimateFeesArgs) => {
+  const variables = useEstimateFeesVariables(args);
   const { data } = useEstimateFeesQuery({
     variables,
-    skip: postOnly || !variables.partyId || !variables.size || !variables.price,
+    skip:
+      args.values.postOnly ||
+      !variables.partyId ||
+      !variables.size ||
+      !variables.price,
     fetchPolicy: 'cache-and-network',
   });
 
-  const isAuction = marketTradingMode
-    ? isMarketInAuction(marketTradingMode)
+  const isAuction = args.marketTradingMode
+    ? isMarketInAuction(args.marketTradingMode)
     : false;
 
   // Post only orders won't have fees as its the taker who pays
-  if (postOnly) {
+  if (args.values.postOnly) {
     return {
       fee: '0',
       feeDiscounted: '0',

@@ -1,26 +1,31 @@
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { OrderType } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
 
-import { useForm } from '../use-form';
-import { useTicketContext } from '../ticket-context';
-
 import { type EstimateFeesQueryVariables } from '../__generated__/EstimateFees';
+import { type FormFields } from '../schemas';
+
+type UseEstimateFeesVariablesArgs = {
+  partyId: string | undefined;
+  useOcoFields: boolean;
+  markPrice: string | null;
+  values: FormFields;
+  market: {
+    id: string;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+  };
+};
 
 export const useEstimateFeesVariables = (
-  oco: boolean,
-  markPrice: string | null
+  args: UseEstimateFeesVariablesArgs
 ): EstimateFeesQueryVariables => {
-  const { pubKey } = useVegaWallet();
-  const ticket = useTicketContext();
-  const form = useForm();
-  const values = form.watch();
-  const positionDp = ticket.market.positionDecimalPlaces;
-  const marketDp = ticket.market.decimalPlaces;
+  const values = args.values;
+  const positionDp = args.market.positionDecimalPlaces;
+  const marketDp = args.market.decimalPlaces;
 
   const commonVariables = {
-    marketId: ticket.market.id,
-    partyId: pubKey || '',
+    marketId: args.market.id,
+    partyId: args.partyId || '',
     type: values.type,
     side: values.side,
     timeInForce: values.timeInForce,
@@ -30,7 +35,7 @@ export const useEstimateFeesVariables = (
     return {
       ...commonVariables,
       size: removeDecimal(values.size?.toString(), positionDp),
-      price: markPrice,
+      price: args.markPrice,
     };
   }
 
@@ -49,9 +54,9 @@ export const useEstimateFeesVariables = (
     const price =
       values.ocoTriggerType === 'price'
         ? removeDecimal(values.triggerPrice?.toString(), marketDp)
-        : markPrice;
+        : args.markPrice;
 
-    if (oco) {
+    if (args.useOcoFields) {
       if (!values.ocoTimeInForce) {
         throw new Error('ocoTimeInForce required for fees estimate');
       }
@@ -73,7 +78,7 @@ export const useEstimateFeesVariables = (
   }
 
   if (values.ticketType === 'stopLimit') {
-    if (oco) {
+    if (args.useOcoFields) {
       if (!values.ocoTimeInForce) {
         throw new Error('ocoTimeInForce required for fees estimate');
       }

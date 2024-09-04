@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 import { formatNumberPercentage, formatValue } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Intent, Pill, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
@@ -18,15 +19,17 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
   const form = useForm();
   const ticket = useTicketContext();
 
+  const { pubKey } = useVegaWallet();
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
-  const postOnly = form.watch('postOnly');
 
   const estimate = useEstimateFees({
+    partyId: pubKey,
+    useOcoFields: oco,
     markPrice,
     marketTradingMode,
-    postOnly,
-    oco,
+    values: form.watch(),
+    market: ticket.market,
   });
   const asset = ticket.quoteAsset;
 
