@@ -5,7 +5,6 @@ import {
   type PropsWithChildren,
 } from 'react';
 import { type Wallet } from '@vegaprotocol/wallet';
-// @ts-ignore -- it says it doesn't export this but it does
 import { createWalletBackend } from '@vegaprotocol/browser-wallet-backend';
 
 export const WalletContext = createContext<Wallet | undefined>(undefined);
