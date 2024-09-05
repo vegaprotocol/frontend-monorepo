@@ -31,7 +31,7 @@ export const CreateWallet = () => {
       >
         Create a wallet from Ethereum wallet
       </Button>
-      <Button
+      {/* <Button
         autoFocus
         data-testid={locators.createNewWalletButton}
         onClick={() => {
@@ -40,7 +40,7 @@ export const CreateWallet = () => {
         className="mt-6 mb-4"
       >
         Create a wallet
-      </Button>
+      </Button> */}
       <Button
         data-testid={locators.importWalletButton}
         onClick={() => {
