@@ -123,7 +123,7 @@ export const envSchema = z
     }
   );
 
-const COSMIC_ELEVATOR_FLAGS = {
+const TRADING_FLAGS = {
   TWAP_REWARDS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
   ENABLE_HOMEPAGE: z.optional(z.boolean()),
@@ -153,7 +153,7 @@ const EXPERIMENTAL_FLAGS = {
 };
 
 export const featureFlagsSchema = z.object({
-  ...COSMIC_ELEVATOR_FLAGS,
+  ...TRADING_FLAGS,
   ...EXPLORER_FLAGS,
   ...GOVERNANCE_FLAGS,
   ...EXPERIMENTAL_FLAGS,

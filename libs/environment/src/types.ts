@@ -17,7 +17,7 @@ export enum Networks {
 
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
-export type CosmicElevatorFlags = Pick<
+export type TradingFlags = Pick<
   FeatureFlags,
   'TWAP_REWARDS' | 'DISABLE_CLOSE_POSITION' | 'ENABLE_HOMEPAGE'
 >;

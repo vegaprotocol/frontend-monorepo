@@ -10,7 +10,7 @@ import {
   type NodeCheckQuery,
 } from '../utils/__generated__/NodeCheck';
 import {
-  type CosmicElevatorFlags,
+  type TradingFlags,
   type Environment,
   type FeatureFlags,
 } from '../types';
@@ -456,7 +456,7 @@ export const getUserEnabledFeatureFlags = (
 
 const TRUTHY = ['1', 'true'];
 export const compileFeatureFlags = (refresh = false): FeatureFlags => {
-  const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
+  const TRADING_FLAGS: TradingFlags = {
     TWAP_REWARDS: TRUTHY.includes(
       windowOrDefault(
         'NX_TWAP_REWARDS',
@@ -577,7 +577,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   };
 
   const flags = {
-    ...COSMIC_ELEVATOR_FLAGS,
+    ...TRADING_FLAGS,
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
     ...EXPERIMENTAL_FLAGS,
