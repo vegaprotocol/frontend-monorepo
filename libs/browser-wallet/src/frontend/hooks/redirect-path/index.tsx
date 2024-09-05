@@ -31,7 +31,7 @@ export const useGetRedirectPath = () => {
       // If the user has no passphrase set redirect to the get started page
       setResult({
         loading: false,
-        path: FULL_ROUTES.getStarted,
+        path: FULL_ROUTES.createPassword,
       });
       // If the user has a passphrase but the wallet is locked then redirect to the login page
     } else if (globals.locked) {
@@ -47,14 +47,7 @@ export const useGetRedirectPath = () => {
         loading: false,
         path: path ?? FULL_ROUTES.wallets,
       });
-    }
-    // else if (globals.settings.telemetry === null || globals.settings.telemetry === undefined) {
-    //   setResult({
-    //     loading: false,
-    //     path: FULL_ROUTES.telemetry
-    //   })
-    // }
-    else {
+    } else {
       setResult({
         loading: false,
         path: FULL_ROUTES.createWallet,

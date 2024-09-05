@@ -14,7 +14,6 @@ import { Home } from './home';
 import { Login } from './login';
 import { CreatePassword } from './onboarding/create-password';
 import { CreateWallet } from './onboarding/create-wallet';
-import { GetStarted } from './onboarding/get-started';
 import { ImportWallet } from './onboarding/import-wallet';
 import { SaveMnemonic } from './onboarding/save-mnemonic';
 import { FULL_ROUTES, ROUTES } from './route-names';
@@ -40,8 +39,7 @@ export const Routing = () => {
           </Route>
         </Route>
         <Route path={ROUTES.onboarding} element={<Outlet />}>
-          <Route index element={<Navigate to={FULL_ROUTES.getStarted} />} />
-          <Route path={ROUTES.getStarted} element={<GetStarted />} />
+          <Route index element={<Navigate to={FULL_ROUTES.createPassword} />} />
           <Route path={ROUTES.createPassword} element={<CreatePassword />} />
           <Route path={ROUTES.createWallet} element={<CreateWallet />} />
           <Route path={ROUTES.saveMnemonic} element={<SaveMnemonic />} />

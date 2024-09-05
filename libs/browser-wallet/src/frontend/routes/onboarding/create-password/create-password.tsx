@@ -53,10 +53,7 @@ export const CreatePassword = () => {
   };
 
   return (
-    <OnboardingPage
-      name="Create Password"
-      backLocation={FULL_ROUTES.getStarted}
-    >
+    <OnboardingPage name="Create Password">
       <>
         <p className="mb-6">
           Set a password to protect and unlock your Vega Wallet. Your password

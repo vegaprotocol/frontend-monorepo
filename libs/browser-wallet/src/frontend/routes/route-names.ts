@@ -8,7 +8,6 @@ export const ROUTE_NAMES = {
   createPassword: 'create-password',
   saveMnemonic: 'save-mnemonic',
   createWallet: 'create-wallet',
-  getStarted: 'get-started',
   importWallet: 'import-wallet',
   networks: 'networks',
   createDerivedMnemonic: 'create-derived-mnemonic',
@@ -21,7 +20,6 @@ export const ROUTES = {
   login: `/${ROUTE_NAMES.login}`,
 
   onboarding: `/${ROUTE_NAMES.onboarding}`,
-  getStarted: ROUTE_NAMES.getStarted,
   createPassword: ROUTE_NAMES.createPassword,
   saveMnemonic: ROUTE_NAMES.saveMnemonic,
   createWallet: ROUTE_NAMES.createWallet,
@@ -37,7 +35,6 @@ export const FULL_ROUTES = {
   home: '/',
 
   onboarding: `/${ROUTE_NAMES.onboarding}`,
-  getStarted: `/${ROUTE_NAMES.onboarding}/${ROUTE_NAMES.getStarted}`,
   createPassword: `/${ROUTE_NAMES.onboarding}/${ROUTE_NAMES.createPassword}`,
   saveMnemonic: `/${ROUTE_NAMES.onboarding}/${ROUTE_NAMES.saveMnemonic}`,
   createWallet: `/${ROUTE_NAMES.onboarding}/${ROUTE_NAMES.createWallet}`,
