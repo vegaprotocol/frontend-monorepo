@@ -493,12 +493,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_PRODUCT_PERPETUALS']
       ) as string
     ),
-    METAMASK_SNAPS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_METAMASK_SNAPS',
-        process.env['NX_METAMASK_SNAPS']
-      ) as string
-    ),
     DISABLE_CLOSE_POSITION: TRUTHY.includes(
       windowOrDefault(
         'NX_DISABLE_CLOSE_POSITION',

@@ -26,7 +26,6 @@ export type CosmicElevatorFlags = Pick<
   | 'TWAP_REWARDS'
   | 'STOP_ORDERS'
   | 'PRODUCT_PERPETUALS'
-  | 'METAMASK_SNAPS'
   | 'DISABLE_CLOSE_POSITION'
   | 'ENABLE_HOMEPAGE'
 >;
