@@ -35,9 +35,9 @@ const USER_REJECTED_CODE = -4;
 
 export class InBrowserConnector implements Connector {
   readonly id = 'in-browser-wallet';
-  readonly name = 'In browser wallet';
+  readonly name = 'Embedded wallet';
   readonly description =
-    'Connect with In Browser Vega Wallet to get started quickly';
+    'Connect with Embedded Vega Wallet to get started quickly';
   store: StoreApi<Store> | undefined;
 
   static client = new JSONRPCClient({

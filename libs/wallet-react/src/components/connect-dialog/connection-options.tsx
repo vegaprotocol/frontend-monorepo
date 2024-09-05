@@ -10,7 +10,12 @@ import {
   type ConnectorType,
   isMetaMaskInstalled,
 } from '@vegaprotocol/wallet';
-import { DialogTitle, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Accordion,
+  AccordionItem,
+  DialogTitle,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../hooks/use-t';
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
@@ -56,35 +61,65 @@ export const ConnectionOptions = ({
         </p>
       ) : (
         <>
-          <ul
-            className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2"
-            data-testid="connectors-list"
-          >
-            {connectors.map((c) => {
-              const ConnectionOption = ConnectionOptionRecord[c.id];
-              const props = {
-                id: c.id,
-                name: c.name,
-                description: c.description,
-                showDescription: false,
-                onClick: () => onConnect(c.id),
-                onInstall: () => setIsInstalling(true),
-              };
+          <ul className="w-full" data-testid="connectors-list">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2">
+              {connectors.map((c) => {
+                const ConnectionOption = ConnectionOptionRecord[c.id];
+                const props = {
+                  id: c.id,
+                  name: c.name,
+                  description: c.description,
+                  showDescription: false,
+                  onClick: () => onConnect(c.id),
+                  onInstall: () => setIsInstalling(true),
+                };
 
-              if (ConnectionOption) {
+                if (ConnectionOption) {
+                  return (
+                    <li key={c.id}>
+                      <ConnectionOption {...props} />
+                    </li>
+                  );
+                }
+
                 return (
                   <li key={c.id}>
-                    <ConnectionOption {...props} />
+                    <ConnectionOptionDefault {...props} />
                   </li>
                 );
-              }
+              })}
+            </div>
+            <Accordion>
+              <AccordionItem
+                itemId="current-fees"
+                title={t('Advanced options')}
+                content={connectors.map((c) => {
+                  const ConnectionOption = ConnectionOptionRecord[c.id];
+                  const props = {
+                    id: c.id,
+                    name: c.name,
+                    description: c.description,
+                    showDescription: false,
+                    onClick: () => onConnect(c.id),
+                    onInstall: () => setIsInstalling(true),
+                  };
 
-              return (
-                <li key={c.id}>
-                  <ConnectionOptionDefault {...props} />
-                </li>
-              );
-            })}
+                  if (ConnectionOption) {
+                    return (
+                      <li key={c.id}>
+                        <ConnectionOption {...props} />
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={c.id}>
+                      <ConnectionOptionDefault {...props} />
+                    </li>
+                  );
+                })}
+              />
+            </Accordion>
           </ul>
           {error && error.code !== ConnectorErrors.userRejected.code && (
             <p
