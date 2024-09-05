@@ -27,7 +27,7 @@ const SidebarAccordionItem = forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={cn(
-      'rounded-sm min-h-[40px]',
+      'rounded-panel overflow-hidden min-h-[40px]',
       'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] transition-[flex] flex flex-col',
       className
     )}
@@ -46,8 +46,8 @@ const SidebarAccordionHeader = forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'flex items-center w-full pr-2 bg-surface-2',
-      'hover:bg-surface-3',
+      'flex items-center w-full pr-2 bg-surface-2/70',
+      'hover:bg-surface-3/50',
       className
     )}
   >
@@ -79,7 +79,7 @@ const SidebarAccordionContent = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="flex-1 text-sm min-h-0 -mb-2 bg-surface-1 text-surface-1-fg"
+    className="flex-1 text-sm min-h-0 bg-surface-1/70 text-surface-1-fg"
     {...props}
   >
     <TinyScroll>{children}</TinyScroll>

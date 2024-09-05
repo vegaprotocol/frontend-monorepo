@@ -50,10 +50,7 @@ export const Tabs = ({
       }}
       className="h-full grid grid-rows-[min-content_1fr] relative"
     >
-      <div
-        ref={wrapperRef}
-        className="flex flex-wrap justify-between min-w-0 bg-surface-1"
-      >
+      <div ref={wrapperRef} className="flex flex-wrap justify-between min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -124,7 +121,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className={cn('h-full bg-surface-1', {
+              className={cn('h-full', {
                 'overflow-hidden': child.props.overflowHidden,
               })}
               data-testid={`tab-${child.props.id}`}

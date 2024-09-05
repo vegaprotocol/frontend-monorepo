@@ -40,7 +40,7 @@ const MainGrid = memo(
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
             <ResizableGridPanel minSize={49} maxSize={49}>
-              <ResizableGridPanelChild>
+              <ResizableGridPanelChild className="bg-surface-1/70">
                 <MarketHeader />
               </ResizableGridPanelChild>
             </ResizableGridPanel>
@@ -57,7 +57,7 @@ const MainGrid = memo(
                   minSize={200}
                   preferredSize={innerRowSizes[0] || '75%'}
                 >
-                  <ResizableGridPanelChild>
+                  <ResizableGridPanelChild className="bg-surface-1/70">
                     <Tabs storageKey="console-trade-grid-main-left">
                       <Tab
                         id="chart"
@@ -99,7 +99,7 @@ const MainGrid = memo(
                   minSize={200}
                   preferredSize={innerRowSizes[1] || 275}
                 >
-                  <ResizableGridPanelChild>
+                  <ResizableGridPanelChild className="bg-surface-1/70">
                     <Tabs storageKey="console-trade-grid-main-right">
                       <Tab id="orderbook" name={t('Orderbook')}>
                         <ErrorBoundary feature="orderbook">
@@ -129,7 +129,7 @@ const MainGrid = memo(
               minSize={50}
               priority={LayoutPriority.Low}
             >
-              <ResizableGridPanelChild>
+              <ResizableGridPanelChild className="bg-surface-1/70">
                 <Tabs storageKey="console-trade-grid-bottom">
                   <Tab
                     id="positions"
@@ -233,7 +233,7 @@ export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
       <div>
         <MarketBanner market={market} />
       </div>
-      <div className="min-h-0 -mx-1 my-px">
+      <div className="min-h-0 m-1">
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>
