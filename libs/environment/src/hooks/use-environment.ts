@@ -487,12 +487,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_ISOLATED_MARGIN']
       ) as string
     ),
-    SUCCESSOR_MARKETS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_SUCCESSOR_MARKETS',
-        process.env['NX_SUCCESSOR_MARKETS']
-      ) as string
-    ),
     PRODUCT_PERPETUALS: TRUTHY.includes(
       windowOrDefault(
         'NX_PRODUCT_PERPETUALS',
