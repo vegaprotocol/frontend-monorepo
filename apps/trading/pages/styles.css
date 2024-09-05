@@ -217,7 +217,7 @@
     --content-accent-color: var(--color-blue);
 
     /* Border radius of grid panels */
-    --panel-border-radius: theme(borderRadius.lg);
+    --panel-border-radius: 0;
   }
 
   .dark {
@@ -318,7 +318,7 @@ html [data-theme='light'] {
 html [data-theme='light'] {
   /* Pennant expects some colors in hex, not using hex results
   in colors not being applied correctly */
-  --pennant-background-surface-color: transparent;
+  --pennant-background-surface-color: var(--gs-100-hex);
   --separator-border: var(--gs-400-hex);
   --pennant-background-label-color: var(--gs-50-hex);
   --pennant-hover-overlay: rgb(var(--gs-50) / 0.5);
@@ -332,7 +332,7 @@ html [data-theme='light'] {
 html [data-theme='dark'] {
   /* Pennant expects some colors in hex, not using hex results
   in colors not being applied correctly */
-  --pennant-background-surface-color: transparent;
+  --pennant-background-surface-color: var(--gs-900-hex);
   --separator-border: var(--gs-600-hex);
   --pennant-background-label-color: var(--gs-950-hex);
   --pennant-hover-overlay: rgb(var(--gs-950) / 0.5);

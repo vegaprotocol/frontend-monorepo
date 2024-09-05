@@ -15,7 +15,12 @@ export const ResizableGridPanelChild = ({
 }) => {
   return (
     <section className="h-full p-1">
-      <div className={cn('h-full rounded-panel overflow-hidden', className)}>
+      <div
+        className={cn(
+          'h-full rounded-panel overflow-hidden bg-surface-1/70',
+          className
+        )}
+      >
         {children}
       </div>
     </section>

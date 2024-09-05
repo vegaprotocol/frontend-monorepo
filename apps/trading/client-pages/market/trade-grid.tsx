@@ -40,7 +40,7 @@ const MainGrid = memo(
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
             <ResizableGridPanel minSize={49} maxSize={49}>
-              <ResizableGridPanelChild className="bg-surface-1/70">
+              <ResizableGridPanelChild>
                 <MarketHeader />
               </ResizableGridPanelChild>
             </ResizableGridPanel>
@@ -57,7 +57,7 @@ const MainGrid = memo(
                   minSize={200}
                   preferredSize={innerRowSizes[0] || '75%'}
                 >
-                  <ResizableGridPanelChild className="bg-surface-1/70">
+                  <ResizableGridPanelChild>
                     <Tabs storageKey="console-trade-grid-main-left">
                       <Tab
                         id="chart"
@@ -99,7 +99,7 @@ const MainGrid = memo(
                   minSize={200}
                   preferredSize={innerRowSizes[1] || 275}
                 >
-                  <ResizableGridPanelChild className="bg-surface-1/70">
+                  <ResizableGridPanelChild>
                     <Tabs storageKey="console-trade-grid-main-right">
                       <Tab id="orderbook" name={t('Orderbook')}>
                         <ErrorBoundary feature="orderbook">
@@ -129,7 +129,7 @@ const MainGrid = memo(
               minSize={50}
               priority={LayoutPriority.Low}
             >
-              <ResizableGridPanelChild className="bg-surface-1/70">
+              <ResizableGridPanelChild>
                 <Tabs storageKey="console-trade-grid-bottom">
                   <Tab
                     id="positions"
@@ -217,7 +217,7 @@ const MainGrid = memo(
           maxSize={600}
           preferredSize={rowSizes[1] || 340}
         >
-          <ResizableGridPanelChild>
+          <ResizableGridPanelChild className="bg-transparent">
             <Sidebar pinnedAssets={pinnedAssets} />
           </ResizableGridPanelChild>
         </ResizableGridPanel>
