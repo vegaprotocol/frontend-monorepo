@@ -27,6 +27,8 @@ export const createWalletBackend = ({ node }) => {
     isIos()
   );
 
+  encryptedStore.create(Math.floor(Math.random() * 1000000 + 1).toString());
+
   const publicKeyIndexStore = new ConcurrentStorage(
     new StorageLocalMap('public-key-index')
   );
