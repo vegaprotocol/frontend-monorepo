@@ -4,7 +4,6 @@ import { LayoutPriority } from 'allotment';
 import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import {
   Intent,
   Notification,
@@ -174,7 +173,6 @@ const PortfolioAssets = () => {
 
 const PortfolioActionTabs = () => {
   const t = useT();
-  const flags = useFeatureFlags((state) => state.flags);
   const navigate = useNavigate();
   const onDeposit = () => navigate(Links.DEPOSIT());
 
@@ -217,15 +215,13 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
-      {flags.SWAP ? (
-        <Tab id="swap" name={t('Swap')}>
-          <ErrorBoundary feature="assets-swap">
-            <div className="p-4">
-              <SwapContainer onDeposit={onDeposit} />
-            </div>
-          </ErrorBoundary>
-        </Tab>
-      ) : null}
+      <Tab id="swap" name={t('Swap')}>
+        <ErrorBoundary feature="assets-swap">
+          <div className="p-4">
+            <SwapContainer onDeposit={onDeposit} />
+          </div>
+        </ErrorBoundary>
+      </Tab>
     </Tabs>
   );
 };
