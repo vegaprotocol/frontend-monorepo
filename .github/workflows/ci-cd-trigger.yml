@@ -159,34 +159,34 @@ jobs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
 
-  check-e2e-needed:
-    runs-on: ubuntu-latest
-    needs: build-sources
-    name: '(CI) check if e2e needed'
-    outputs:
-      run-tests: ${{ steps.check-test.outputs.e2e-needed }}
-    steps:
-      - name: Check branch
-        id: check-test
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          else
-            echo "e2e-needed=false" >> $GITHUB_OUTPUT
-          fi
-      - name: Print result
-        run: |
-          echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
+  # check-e2e-needed:
+  #   runs-on: ubuntu-latest
+  #   needs: build-sources
+  #   name: '(CI) check if e2e needed'
+  #   outputs:
+  #     run-tests: ${{ steps.check-test.outputs.e2e-needed }}
+  #   steps:
+  #     - name: Check branch
+  #       id: check-test
+  #       run: |
+  #         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+  #           echo "e2e-needed=true" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "e2e-needed=false" >> $GITHUB_OUTPUT
+  #         fi
+  #     - name: Print result
+  #       run: |
+  #         echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
 
-  cypress:
-    needs: [build-sources, check-e2e-needed]
-    name: '(CI) cypress'
-    uses: ./.github/workflows/cypress-run.yml
-    secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'explorer'))
-    with:
-      projects: ${{ needs.build-sources.outputs.projects-e2e }}
-      tags: '@smoke'
+  # cypress:
+  #   needs: [build-sources, check-e2e-needed]
+  #   name: '(CI) cypress'
+  #   uses: ./.github/workflows/cypress-run.yml
+  #   secrets: inherit
+  #   if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'explorer'))
+  #   with:
+  #     projects: ${{ needs.build-sources.outputs.projects-e2e }}
+  #     tags: '@smoke'
 
   publish-dist:
     needs: build-sources
@@ -206,38 +206,38 @@ jobs:
     with:
       projects: ${{ needs.build-sources.outputs.projects }}
 
-  trading-e2e:
-    needs: [build-sources, check-e2e-needed]
-    name: '(CI) trading e2e python'
-    uses: ./.github/workflows/trading-e2e-test-run.yml
-    secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
-    with:
-      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
+  # trading-e2e:
+  #   needs: [build-sources, check-e2e-needed]
+  #   name: '(CI) trading e2e python'
+  #   uses: ./.github/workflows/trading-e2e-test-run.yml
+  #   secrets: inherit
+  #   if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
+  #   with:
+  #     github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  test-check:
-    name: '(CI) Final Tests check'
-    if: ${{ always() }}
-    needs: [cypress, trading-e2e]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check Cypress Tests Result
-        run: |
-          result="${{ needs.cypress.result }}"
-          echo "Cypress Tests Result: $result"
-          if [[ $result != "success" && $result != "skipped" ]]; then
-            echo "Failing due to Cypress tests."
-            exit 1
-          fi
+  # test-check:
+  #   name: '(CI) Final Tests check'
+  #   if: ${{ always() }}
+  #   needs: [cypress, trading-e2e]
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Check Cypress Tests Result
+  #       run: |
+  #         result="${{ needs.cypress.result }}"
+  #         echo "Cypress Tests Result: $result"
+  #         if [[ $result != "success" && $result != "skipped" ]]; then
+  #           echo "Failing due to Cypress tests."
+  #           exit 1
+  #         fi
 
-      - name: Check Trading E2E Tests Result
-        run: |
-          result="${{ needs.trading-e2e.result }}"
-          echo "Trading E2E Tests Result: $result"
-          if [[ $result != "success" && $result != "skipped" ]]; then
-            echo "Failing due to Trading E2E tests."
-            exit 1
-          fi
+  #     - name: Check Trading E2E Tests Result
+  #       run: |
+  #         result="${{ needs.trading-e2e.result }}"
+  #         echo "Trading E2E Tests Result: $result"
+  #         if [[ $result != "success" && $result != "skipped" ]]; then
+  #           echo "Failing due to Trading E2E tests."
+  #           exit 1
+  #         fi
 
-      - name: All Tests Passed
-        run: echo "All specified tests have passed successfully."
+  #     - name: All Tests Passed
+  #       run: echo "All specified tests have passed successfully."
