@@ -463,6 +463,9 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_DISABLE_CLOSE_POSITION']
       ) as string
     ),
+    ENABLE_AMM: TRUTHY.includes(
+      windowOrDefault('NX_ENABLE_AMM', process.env['NX_ENABLE_AMM']) as string
+    ),
     ENABLE_HOMEPAGE: TRUTHY.includes(
       windowOrDefault(
         'NX_ENABLE_HOMEPAGE',
@@ -524,12 +527,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       windowOrDefault(
         'NX_EXPLORER_VALIDATORS',
         process.env['NX_EXPLORER_VALIDATORS']
-      ) as string
-    ),
-    IN_BROWSER_WALLET: TRUTHY.includes(
-      windowOrDefault(
-        'NX_IN_BROWSER_WALLET',
-        process.env['NX_IN_BROWSER_WALLET']
       ) as string
     ),
   };

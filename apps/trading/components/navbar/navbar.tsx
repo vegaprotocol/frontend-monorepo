@@ -175,6 +175,7 @@ export const Navbar = () => {
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const t = useT();
+  const flags = useFeatureFlags((state) => state.flags);
   const marketId = useGlobalStore((store) => store.marketId);
   const GOVERNANCE_LINK = useLinks(DApp.Governance)();
   const EXPLORER_LINK = useLinks(DApp.Explorer)();
@@ -193,11 +194,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             <WithdrawalsIndicator />
           </NavbarLink>
         </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.AMM_POOLS()} onClick={onClick}>
-            {t('AMM_NAV_ROOT')}
-          </NavbarLink>
-        </NavbarItem>
+        {flags.ENABLE_AMM && (
+          <NavbarItem>
+            <NavbarLink to={Links.AMM_POOLS()} onClick={onClick}>
+              {t('AMM_NAV_ROOT')}
+            </NavbarLink>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
             {t('Competitions')}

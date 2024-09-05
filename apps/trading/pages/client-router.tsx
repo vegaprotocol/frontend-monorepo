@@ -211,10 +211,12 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.AMM,
-      element: (
+      element: flags.ENABLE_AMM ? (
         <AmmWrapper>
           <LayoutCentered backdrop={3} />
         </AmmWrapper>
+      ) : (
+        <Navigate to={AppRoutes.HOME} />
       ),
       children: [
         {

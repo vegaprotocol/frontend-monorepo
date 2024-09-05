@@ -126,6 +126,7 @@ export const envSchema = z
 const TRADING_FLAGS = {
   TWAP_REWARDS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
+  ENABLE_AMM: z.optional(z.boolean()),
   ENABLE_HOMEPAGE: z.optional(z.boolean()),
 };
 
