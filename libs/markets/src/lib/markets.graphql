@@ -13,6 +13,8 @@ fragment MarketFields on Market {
       makerFee
       infrastructureFee
       liquidityFee
+      treasuryFee
+      buyBackFee
     }
     liquidityFeeSettings {
       feeConstant

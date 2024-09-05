@@ -1,39 +1,32 @@
 import { render, screen } from '@testing-library/react';
 import { FeesBreakdown } from './fees-breakdown';
+import BigNumber from 'bignumber.js';
 
 describe('FeesBreakdown', () => {
   it('formats fee factors correctly', () => {
-    const feeFactors = {
-      makerFee: '0.00005',
-      infrastructureFee: '0.001',
-      liquidityFee: '0.5',
-    };
-    const fees = {
-      makerFee: '100',
-      infrastructureFee: '100',
-      liquidityFee: '100',
-    };
     const props = {
-      feeFactors,
-      symbol: 'USD',
       decimals: 2,
-
-      feeEstimate: {
-        referralDiscountFactor: '0.01',
-        volumeDiscountFactor: '0.01',
-        totalFeeAmount: '100',
-        fees,
+      estimate: {
+        fee: BigNumber(1234),
+        feeDiscounted: BigNumber(1230),
+        discount: BigNumber(4),
+        discountPct: BigNumber(2),
+        makerRebate: BigNumber(100),
+        makerRebatePct: BigNumber(8),
       },
     };
     render(<FeesBreakdown {...props} />);
-    expect(screen.getByText('Maker fee').nextElementSibling).toHaveTextContent(
-      '0.005%'
+    expect(screen.getByText('Fee').nextElementSibling).toHaveTextContent(
+      '12.34'
+    );
+    expect(screen.getByText('Discount').nextElementSibling).toHaveTextContent(
+      '0.04 (2%)'
     );
     expect(
-      screen.getByText('Infrastructure fee').nextElementSibling
-    ).toHaveTextContent('0.1%');
+      screen.getByText('Discounted fee').nextElementSibling
+    ).toHaveTextContent('12.30');
     expect(
-      screen.getByText('Liquidity fee').nextElementSibling
-    ).toHaveTextContent('50%');
+      screen.getByText('Maker rebate').nextElementSibling
+    ).toHaveTextContent('1.00 (8%)');
   });
 });

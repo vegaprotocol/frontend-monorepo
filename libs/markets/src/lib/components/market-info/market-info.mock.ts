@@ -86,6 +86,8 @@ export const marketInfoQuery = (
           makerFee: '0.0002',
           infrastructureFee: '0.0005',
           liquidityFee: '0.01',
+          treasuryFee: '0',
+          buyBackFee: '0',
         },
       },
       priceMonitoringSettings: {

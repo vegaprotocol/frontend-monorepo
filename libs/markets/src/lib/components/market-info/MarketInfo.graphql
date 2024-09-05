@@ -214,6 +214,8 @@ query MarketInfo($marketId: ID!) {
         makerFee
         infrastructureFee
         liquidityFee
+        treasuryFee
+        buyBackFee
       }
       liquidityFeeSettings {
         feeConstant

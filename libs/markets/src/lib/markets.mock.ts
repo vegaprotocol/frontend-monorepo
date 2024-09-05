@@ -53,6 +53,8 @@ export const createMarketFragment = (
         makerFee: '',
         infrastructureFee: '',
         liquidityFee: '',
+        treasuryFee: '',
+        buyBackFee: '',
       },
       liquidityFeeSettings: {
         __typename: 'LiquidityFeeSettings',

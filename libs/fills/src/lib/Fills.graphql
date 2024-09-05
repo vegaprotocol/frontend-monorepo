@@ -2,6 +2,9 @@ fragment TradeFeeFields on TradeFee {
   makerFee
   infrastructureFee
   liquidityFee
+  buyBackFee
+  treasuryFee
+  highVolumeMakerFee
   makerFeeReferralDiscount
   makerFeeVolumeDiscount
   infrastructureFeeReferralDiscount

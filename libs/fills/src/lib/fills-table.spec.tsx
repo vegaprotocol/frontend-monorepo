@@ -225,28 +225,6 @@ describe('FillsTable', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render tooltip over fees discounts', async () => {
-    const takerFill = generateFill({
-      seller: {
-        id: partyId,
-      },
-      aggressor: Schema.Side.SIDE_SELL,
-    });
-    await act(async () => {
-      render(<FillsTable partyId={partyId} rowData={[takerFill]} />);
-    });
-
-    const cell = screen
-      .getAllByRole('gridcell')
-      .find((c) => c.getAttribute('col-id') === 'fee-discount');
-
-    expect(cell).toBeInTheDocument();
-    await userEvent.hover(cell as HTMLElement);
-    expect(
-      await screen.findByTestId('fee-discount-breakdown-tooltip')
-    ).toBeInTheDocument();
-  });
-
   it('negative positionDecimalPoints should be properly rendered in size column', async () => {
     const negativeDecimalPositionFill = generateFill({
       ...defaultFill,

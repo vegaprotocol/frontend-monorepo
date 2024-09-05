@@ -528,6 +528,7 @@ export const createOrderWithTpSl = (
         notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
+        postOnly: false,
         oco: true,
         ocoTriggerDirection:
           fields.side === Side.SIDE_BUY
@@ -561,6 +562,7 @@ export const createOrderWithTpSl = (
         notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
+        postOnly: false,
         oco: false,
         stopExpiryStrategy: 'none',
       },
@@ -583,6 +585,7 @@ export const createOrderWithTpSl = (
         notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
+        postOnly: false,
         oco: false,
         stopExpiryStrategy: 'none',
       },
