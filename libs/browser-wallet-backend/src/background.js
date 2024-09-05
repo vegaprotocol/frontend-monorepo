@@ -27,6 +27,7 @@ export const createWalletBackend = ({ node }) => {
     isIos()
   );
 
+  // TODO: this is async and so could lead to weird race conditions if the user is fast enough. Unlikely.
   encryptedStore.create(Math.floor(Math.random() * 1000000 + 1).toString());
 
   const publicKeyIndexStore = new ConcurrentStorage(
