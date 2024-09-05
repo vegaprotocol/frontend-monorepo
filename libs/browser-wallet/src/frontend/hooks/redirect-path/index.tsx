@@ -27,19 +27,6 @@ export const useGetRedirectPath = () => {
         loading: true,
         path: null,
       });
-    } else if (!globals.passphrase) {
-      // If the user has no passphrase set redirect to the get started page
-      setResult({
-        loading: false,
-        path: FULL_ROUTES.createPassword,
-      });
-      // If the user has a passphrase but the wallet is locked then redirect to the login page
-    } else if (globals.locked) {
-      setResult({
-        loading: false,
-        path: FULL_ROUTES.login,
-      });
-      // If the user has a passphrase and the app is unlocked but and has no wallets created but does have a saved mnemonic redirect to the save mnemonic page
     } else if (globals.wallet) {
       // If the user has a path they were previously on then redirect to that
       const path = localStorage.getItem(LOCATION_KEY);
@@ -48,9 +35,10 @@ export const useGetRedirectPath = () => {
         path: path ?? FULL_ROUTES.wallets,
       });
     } else {
+      // As we only allow for importing a wallet at this time, this is enough
       setResult({
         loading: false,
-        path: FULL_ROUTES.createWallet,
+        path: FULL_ROUTES.importWallet,
       });
     }
   }, [globals, loading]);
