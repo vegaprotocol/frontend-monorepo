@@ -632,12 +632,11 @@ describe('getUserEnabledFeatureFlags', () => {
     localStorage.clear();
   });
   it('reads enabled flags from local storage', () => {
-    localStorage.setItem(
-      featureFlagsLocalStorageKey,
-      'STOP_ORDERS,STOP_ORDERS,BLAH'
-    );
-    const userEnabledFlags = getUserEnabledFeatureFlags(true, ['STOP_ORDERS']);
-    expect(userEnabledFlags).toEqual(['STOP_ORDERS']);
+    localStorage.setItem(featureFlagsLocalStorageKey, 'ENABLE_HOMEPAGE,BLAH');
+    const userEnabledFlags = getUserEnabledFeatureFlags(true, [
+      'ENABLE_HOMEPAGE',
+    ]);
+    expect(userEnabledFlags).toEqual(['ENABLE_HOMEPAGE']);
   });
 });
 
@@ -646,10 +645,10 @@ describe('setUserEnabledFeatureFlag', () => {
     localStorage.clear();
   });
   it('saves enabled flags to local storage', () => {
-    setUserEnabledFeatureFlag('STOP_ORDERS', true);
+    setUserEnabledFeatureFlag('ENABLE_HOMEPAGE', true);
     expect(localStorage.getItem(featureFlagsLocalStorageKey)).toEqual(
-      'STOP_ORDERS'
+      'ENABLE_HOMEPAGE'
     );
-    expect(getUserEnabledFeatureFlags()).toEqual(['STOP_ORDERS']);
+    expect(getUserEnabledFeatureFlags()).toEqual(['ENABLE_HOMEPAGE']);
   });
 });

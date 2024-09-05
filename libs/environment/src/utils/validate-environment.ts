@@ -124,7 +124,6 @@ export const envSchema = z
   );
 
 const COSMIC_ELEVATOR_FLAGS = {
-  STOP_ORDERS: z.optional(z.boolean()),
   TWAP_REWARDS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
   ENABLE_HOMEPAGE: z.optional(z.boolean()),

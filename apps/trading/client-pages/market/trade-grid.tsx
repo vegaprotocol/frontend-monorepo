@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { LayoutPriority } from 'allotment';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
@@ -23,7 +22,6 @@ interface TradeGridProps {
 
 const MainGrid = memo(
   ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
-    const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const [rowSizes, handleRowSizes] = usePaneLayout({
       id: 'trade-row',
@@ -169,20 +167,16 @@ const MainGrid = memo(
                       />
                     </ErrorBoundary>
                   </Tab>
-                  {featureFlags.STOP_ORDERS ? (
-                    <Tab
-                      id="stop-orders"
-                      name={t('Advanced orders')}
-                      settings={<TradingViews.stopOrders.settings />}
-                      menu={<TradingViews.stopOrders.menu />}
-                    >
-                      <ErrorBoundary feature="stop-orders">
-                        <TradingViews.stopOrders.component
-                          marketId={market.id}
-                        />
-                      </ErrorBoundary>
-                    </Tab>
-                  ) : null}
+                  <Tab
+                    id="stop-orders"
+                    name={t('Advanced orders')}
+                    settings={<TradingViews.stopOrders.settings />}
+                    menu={<TradingViews.stopOrders.menu />}
+                  >
+                    <ErrorBoundary feature="stop-orders">
+                      <TradingViews.stopOrders.component marketId={market.id} />
+                    </ErrorBoundary>
+                  </Tab>
                   <Tab
                     id="fills"
                     name={t('Trades')}
