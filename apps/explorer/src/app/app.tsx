@@ -33,7 +33,7 @@ function App() {
       <Suspense fallback={splashLoading}>
         <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
           <NodeGuard
-            skeleton={<div>{t('Loading')}</div>}
+            skeleton={<div>{t('Loading for change for explorer e2e')}</div>}
             failure={
               <NodeFailure
                 title={t(`Node: ${API_NODE?.graphQLApiUrl} is unsuitable`)}
