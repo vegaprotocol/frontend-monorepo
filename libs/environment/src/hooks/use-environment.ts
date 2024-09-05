@@ -511,12 +511,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_UPDATE_MARKET_STATE']
       ) as string
     ),
-    GOVERNANCE_TRANSFERS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_GOVERNANCE_TRANSFERS',
-        process.env['NX_GOVERNANCE_TRANSFERS']
-      ) as string
-    ),
     ENABLE_HOMEPAGE: TRUTHY.includes(
       windowOrDefault(
         'NX_ENABLE_HOMEPAGE',

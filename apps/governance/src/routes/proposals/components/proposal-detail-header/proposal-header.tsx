@@ -298,13 +298,9 @@ const ProposalDetails = ({
         );
       }
       case 'NewTransfer':
-        return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <NewTransferSummary proposalId={proposalId} />
-        ) : null;
+        return <NewTransferSummary proposalId={proposalId} />;
       case 'CancelTransfer':
-        return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <CancelTransferSummary proposalId={proposalId} />
-        ) : null;
+        return <CancelTransferSummary proposalId={proposalId} />;
       default: {
         return null;
       }
