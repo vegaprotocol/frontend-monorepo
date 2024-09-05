@@ -144,7 +144,7 @@ const Web3Container = ({
                     <TemplateSidebar sidebar={[<EthWallet />, <VegaWallet />]}>
                       <AppRouter />
                     </TemplateSidebar>
-                    <footer className="p-4 break-all text-surface-0-fg-muted border-t border-gs-700">
+                    <footer className="p-4 break-all text-surface-0-fg-muted border-t border-gs-700 arbitary-change-to-trigger-e2e">
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
