@@ -44,6 +44,18 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         </span>
       );
     }
+    case 'in-browser-wallet': {
+      return (
+        <span
+          className={cn(
+            defaultWrapperClasses,
+            'bg-white text-gs-50 dark:text-gs-950'
+          )}
+        >
+          <VegaIcon name={VegaIconNames.STREAK} size={20} />
+        </span>
+      );
+    }
     default: {
       return (
         <span
