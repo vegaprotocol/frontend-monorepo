@@ -20,8 +20,6 @@ export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
   | 'ISOLATED_MARGIN'
-  | 'TAKE_PROFIT_STOP_LOSS'
-  | 'SWAP'
   | 'TWAP_REWARDS'
   | 'STOP_ORDERS'
   | 'DISABLE_CLOSE_POSITION'
