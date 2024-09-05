@@ -517,12 +517,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_GOVERNANCE_TRANSFERS']
       ) as string
     ),
-    VOLUME_DISCOUNTS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_VOLUME_DISCOUNTS',
-        process.env['NX_VOLUME_DISCOUNTS']
-      ) as string
-    ),
     ENABLE_HOMEPAGE: TRUTHY.includes(
       windowOrDefault(
         'NX_ENABLE_HOMEPAGE',

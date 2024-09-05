@@ -29,7 +29,6 @@ export type CosmicElevatorFlags = Pick<
   | 'METAMASK_SNAPS'
   | 'UPDATE_MARKET_STATE'
   | 'GOVERNANCE_TRANSFERS'
-  | 'VOLUME_DISCOUNTS'
   | 'DISABLE_CLOSE_POSITION'
   | 'ENABLE_HOMEPAGE'
 >;
