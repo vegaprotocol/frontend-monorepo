@@ -2,7 +2,7 @@ import { BasePage } from '@/components/pages/page';
 
 import { DeleteWallet } from './sections/delete-wallet-section';
 import { ExportRecoveryPhraseSection } from './sections/export-recovery-phrase-section';
-import { LockSection } from './sections/lock-section';
+// import { LockSection } from './sections/lock-section';
 
 export const locators = {
   settingsPage: 'settings-page',
@@ -14,7 +14,7 @@ export const Settings = () => {
     <BasePage dataTestId={locators.settingsPage} title="Settings">
       <ExportRecoveryPhraseSection />
       <DeleteWallet />
-      <LockSection />
+      {/* <LockSection /> */}
     </BasePage>
   );
 };
