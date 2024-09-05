@@ -1,4 +1,4 @@
-import { useEnvironment, useFeatureFlags } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMemo } from 'react';
 import {
@@ -66,6 +66,7 @@ const isSquidFriendlyAsset = (
       asset.source.contractAddress
   );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const HARDCODED_EVM_CONFIGS: EVMBridgeConfig[] = [
   {
     chain_id: String(ARBITRUM_CHAIN_ID),
@@ -84,6 +85,7 @@ const HARDCODED_EVM_CONFIGS: EVMBridgeConfig[] = [
   },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const HARDCODED_TEST_ASSETS: SquidFriendlyAsset[] = [
   {
     id: 'a4a16e250a09a86061ec83c2f9466fc9dc33d332f86876ee74b6f128a5cd6710',
@@ -148,19 +150,12 @@ const HARDCODED_TEST_ASSETS: SquidFriendlyAsset[] = [
 ];
 
 export const useEnrichedSquidFriendlyAssets = () => {
-  const flags = useFeatureFlags((state) => state.flags);
-  const isArbitrumTestBridgeEnabled = flags.CROSS_CHAIN_DEPOSITS_TEST;
-
   const { config, loading: ethLoading, error: ethError } = useEthereumConfig();
   const {
-    configs,
+    configs: evmConfigs,
     loading: evmLoading,
     error: evmError,
   } = useEVMBridgeConfigs();
-
-  const evmConfigs = isArbitrumTestBridgeEnabled
-    ? HARDCODED_EVM_CONFIGS
-    : configs;
 
   const {
     data: enabledAssets,
@@ -168,9 +163,7 @@ export const useEnrichedSquidFriendlyAssets = () => {
     error: enabledAssetsError,
   } = useEnabledAssets();
 
-  const assets = isArbitrumTestBridgeEnabled
-    ? HARDCODED_TEST_ASSETS
-    : compact(enabledAssets).filter(isSquidFriendlyAsset);
+  const assets = compact(enabledAssets).filter(isSquidFriendlyAsset);
 
   const chains: ChainInfo[] = useMemo(
     () =>

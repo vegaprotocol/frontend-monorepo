@@ -147,7 +147,6 @@ const GOVERNANCE_FLAGS = {
 };
 
 const EXPERIMENTAL_FLAGS = {
-  CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()), // not needed
   IN_BROWSER_WALLET: z.optional(z.boolean()),
 };
 

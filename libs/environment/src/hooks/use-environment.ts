@@ -262,9 +262,7 @@ const testSubscription = (
   });
 };
 
-export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
-  'CROSS_CHAIN_DEPOSITS_TEST',
-];
+export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [];
 
 /**
  * Retrieve env vars, parsing where needed some type casting is needed
@@ -552,12 +550,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   };
 
   const EXPERIMENTAL_FLAGS = {
-    CROSS_CHAIN_DEPOSITS_TEST: TRUTHY.includes(
-      windowOrDefault(
-        'NX_CROSS_CHAIN_DEPOSITS_TEST',
-        process.env['NX_CROSS_CHAIN_DEPOSITS_TEST']
-      ) as string
-    ),
     IN_BROWSER_WALLET: TRUTHY.includes(
       windowOrDefault(
         'NX_IN_BROWSER_WALLET',
