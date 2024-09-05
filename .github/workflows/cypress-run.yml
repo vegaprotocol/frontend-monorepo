@@ -50,7 +50,6 @@ jobs:
         run: |
           echo ${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]'
       - name: Set output
-        id: set-projects
         run: |
           echo projects=$(${{ inputs.projects }} | jq '[.[] | select(contains("governance") | not)]')  >> $GITHUB_OUTPUT
       - name: Set output
