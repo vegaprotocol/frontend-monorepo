@@ -19,11 +19,7 @@ export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
-  | 'ISOLATED_MARGIN'
-  | 'TWAP_REWARDS'
-  | 'STOP_ORDERS'
-  | 'DISABLE_CLOSE_POSITION'
-  | 'ENABLE_HOMEPAGE'
+  'TWAP_REWARDS' | 'STOP_ORDERS' | 'DISABLE_CLOSE_POSITION' | 'ENABLE_HOMEPAGE'
 >;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;

@@ -466,12 +466,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_TWAP_REWARDS']
       ) as string
     ),
-    ISOLATED_MARGIN: TRUTHY.includes(
-      windowOrDefault(
-        'NX_ISOLATED_MARGIN',
-        process.env['NX_ISOLATED_MARGIN']
-      ) as string
-    ),
     DISABLE_CLOSE_POSITION: TRUTHY.includes(
       windowOrDefault(
         'NX_DISABLE_CLOSE_POSITION',
