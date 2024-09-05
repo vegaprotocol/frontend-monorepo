@@ -130,7 +130,6 @@ const COSMIC_ELEVATOR_FLAGS = {
   TWAP_REWARDS: z.optional(z.boolean()), // this is disables currently
   ISOLATED_MARGIN: z.optional(z.boolean()), // ?
   ICEBERG_ORDERS: z.optional(z.boolean()), // not needed
-  PRODUCT_PERPETUALS: z.optional(z.boolean()), // not needed
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
   ENABLE_HOMEPAGE: z.optional(z.boolean()),
 };
