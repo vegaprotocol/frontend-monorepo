@@ -505,12 +505,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_DISABLE_CLOSE_POSITION']
       ) as string
     ),
-    UPDATE_MARKET_STATE: TRUTHY.includes(
-      windowOrDefault(
-        'NX_UPDATE_MARKET_STATE',
-        process.env['NX_UPDATE_MARKET_STATE']
-      ) as string
-    ),
     ENABLE_HOMEPAGE: TRUTHY.includes(
       windowOrDefault(
         'NX_ENABLE_HOMEPAGE',

@@ -27,7 +27,6 @@ export type CosmicElevatorFlags = Pick<
   | 'STOP_ORDERS'
   | 'PRODUCT_PERPETUALS'
   | 'METAMASK_SNAPS'
-  | 'UPDATE_MARKET_STATE'
   | 'DISABLE_CLOSE_POSITION'
   | 'ENABLE_HOMEPAGE'
 >;
