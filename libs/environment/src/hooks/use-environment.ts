@@ -457,12 +457,6 @@ export const getUserEnabledFeatureFlags = (
 const TRUTHY = ['1', 'true'];
 export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
-    ICEBERG_ORDERS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_ICEBERG_ORDERS',
-        process.env['NX_ICEBERG_ORDERS']
-      ) as string
-    ),
     STOP_ORDERS: TRUTHY.includes(
       windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
     ),
