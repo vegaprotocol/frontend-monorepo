@@ -9,11 +9,7 @@ import {
   type NodeCheckTimeUpdateSubscription,
   type NodeCheckQuery,
 } from '../utils/__generated__/NodeCheck';
-import {
-  type TradingFlags,
-  type Environment,
-  type FeatureFlags,
-} from '../types';
+import { type Environment, type FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { tomlConfigSchema } from '../utils/validate-configuration';
@@ -456,7 +452,7 @@ export const getUserEnabledFeatureFlags = (
 
 const TRUTHY = ['1', 'true'];
 export const compileFeatureFlags = (refresh = false): FeatureFlags => {
-  const TRADING_FLAGS: TradingFlags = {
+  const TRADING_FLAGS = {
     TWAP_REWARDS: TRUTHY.includes(
       windowOrDefault(
         'NX_TWAP_REWARDS',
