@@ -34,6 +34,7 @@ export class InjectedConnector implements Connector {
   readonly name = 'Vega Wallet';
   readonly description =
     'Connect with Vega Wallet extension to access all features including key management and detailed transaction views from your browser.';
+  prominent = true;
 
   bindStore() {}
 

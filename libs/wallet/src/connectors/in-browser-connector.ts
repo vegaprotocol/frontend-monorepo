@@ -38,6 +38,8 @@ export class InBrowserConnector implements Connector {
   readonly name = 'Embedded wallet';
   readonly description =
     'Connect with Embedded Vega Wallet to get started quickly';
+  prominent = true;
+
   store: StoreApi<Store> | undefined;
 
   static client = new JSONRPCClient({

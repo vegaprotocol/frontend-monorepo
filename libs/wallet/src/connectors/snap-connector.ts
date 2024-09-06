@@ -65,6 +65,7 @@ export class SnapConnector implements Connector {
   readonly name = 'MetaMask Snap';
   readonly description =
     'Connect directly via MetaMask with the Vega Snap for single key support without advanced features.';
+  prominent = false;
 
   node: string;
   version: string;

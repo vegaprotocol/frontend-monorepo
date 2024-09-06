@@ -24,6 +24,7 @@ export class JsonRpcConnector implements Connector {
   readonly name = 'CLI/Desktop Wallet';
   readonly description =
     'Connect using the command line wallet or the legacy desktop app.';
+  prominent = false;
 
   url: string;
   requestId: number = 0;
