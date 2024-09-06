@@ -17,7 +17,6 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
-import { RainbowButton } from '../../components/rainbow-button';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { Box } from '../../components/competitions/box';
@@ -80,9 +79,13 @@ export const CompetitionsCreateTeam = () => {
                   'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
                 )}
               </p>
-              <RainbowButton variant="border" onClick={openWalletDialog}>
+              <Button
+                intent={Intent.Primary}
+                size="lg"
+                onClick={openWalletDialog}
+              >
                 {t('Connect wallet')}
-              </RainbowButton>
+              </Button>
             </>
           )}
           {isUpgrade && (

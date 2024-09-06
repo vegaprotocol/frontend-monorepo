@@ -13,8 +13,9 @@ import {
   Dialog,
   VegaIcon,
   VegaIconNames,
+  Intent,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
-import { RainbowButton } from '../../components/rainbow-button';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
@@ -62,9 +63,13 @@ export const CompetitionsUpdateTeam = () => {
           ) : (
             <>
               <p>{t('Connect to update the details of your team.')}</p>
-              <RainbowButton variant="border" onClick={openWalletDialog}>
+              <Button
+                intent={Intent.Primary}
+                size="lg"
+                onClick={openWalletDialog}
+              >
                 {t('Connect wallet')}
-              </RainbowButton>
+              </Button>
             </>
           )}
         </Box>
