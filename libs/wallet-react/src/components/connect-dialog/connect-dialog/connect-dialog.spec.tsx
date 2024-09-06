@@ -10,7 +10,7 @@ import {
   userRejectedError,
   type Wallet,
 } from '@vegaprotocol/wallet';
-import { MockedWalletProvider } from '../../testing';
+import { MockedWalletProvider } from '../../../testing';
 import { ConnectDialog, DIALOG_CLOSE_DELAY } from './connect-dialog';
 
 describe('ConnectDialog', () => {
