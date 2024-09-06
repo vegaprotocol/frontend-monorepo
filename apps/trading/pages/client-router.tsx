@@ -68,7 +68,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REFERRALS,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           element: <Referrals />,

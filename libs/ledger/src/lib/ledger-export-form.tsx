@@ -6,7 +6,7 @@ import {
   Intent,
   Button,
   FormGroup,
-  TradingInput,
+  Input,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
 import {
@@ -235,7 +235,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         render={({ field, fieldState }) => (
           <div className="mb-2">
             <FormGroup label={t('Date from')} labelFor="date-from" compact>
-              <TradingInput
+              <Input
                 {...field}
                 type="datetime-local"
                 data-testid="date-from"
@@ -261,7 +261,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         render={({ field, fieldState }) => (
           <div className="mb-2">
             <FormGroup label={t('Date to')} labelFor="date-to" compact>
-              <TradingInput
+              <Input
                 {...field}
                 type="datetime-local"
                 data-testid="date-to"

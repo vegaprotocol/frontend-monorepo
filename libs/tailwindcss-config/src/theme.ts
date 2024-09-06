@@ -26,6 +26,10 @@ export const theme = {
     999: 'var(--button-border-width)',
   },
   colors: {
+    transparent: 'transparent',
+    current: 'currentColor',
+    black: 'rgb(var(--color-black) / <alpha-value>)',
+    white: 'rgb(var(--color-white) / <alpha-value>)',
     gs: {
       0: 'rgb(var(--gs-0) / <alpha-value>)',
       50: 'rgb(var(--gs-50) / <alpha-value>)',
@@ -43,9 +47,12 @@ export const theme = {
     },
     highlight: 'rgb(var(--highlight) / <alpha-value>)',
     'highlight-secondary': 'rgb(var(--highlight-secondary) / <alpha-value>)',
+    'highlight-tertiary': 'rgb(var(--highlight-tertiary) / <alpha-value>)',
     'highlight-fg': 'rgb(var(--highlight-fg) / <alpha-value>)',
     'highlight-secondary-fg':
       'rgb(var(--highlight-secondary-fg) / <alpha-value>)',
+    'highlight-tertiary-fg':
+      'rgb(var(--highlight-tertiary-fg) / <alpha-value>)',
     surface: {
       0: {
         DEFAULT: 'rgb(var(--surface-0) / <alpha-value>)',
@@ -118,10 +125,6 @@ export const theme = {
         outline: 'rgb(var(--intent-success-outline) / <alpha-value>)',
       },
     },
-    transparent: 'transparent',
-    current: 'currentColor',
-    black: 'rgb(var(--color-black) / <alpha-value>)',
-    white: 'rgb(var(--color-white) / <alpha-value>)',
     pink: {
       700: 'rgb(var(--color-pink-700) / <alpha-value>)',
       650: 'rgb(var(--color-pink-650) / <alpha-value>)',

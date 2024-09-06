@@ -11,7 +11,7 @@ import {
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   FormGroup,
-  TradingInput,
+  Input,
   TradingInputError,
   Notification,
   TradingRichSelect,
@@ -352,7 +352,7 @@ export const WithdrawForm = ({
           </div>
         )}
         <FormGroup label={t('Amount')} labelFor="amount">
-          <TradingInput
+          <Input
             data-testid="amount-input"
             type="number"
             autoComplete="off"

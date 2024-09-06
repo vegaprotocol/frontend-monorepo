@@ -1,7 +1,7 @@
 import type { ReactNode, SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
-import { defaultSelectElement } from '../../utils/trading-shared';
+import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
 export interface TradingSelectProps

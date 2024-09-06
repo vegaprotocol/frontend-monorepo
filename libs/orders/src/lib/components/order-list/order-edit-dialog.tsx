@@ -11,12 +11,12 @@ import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
   FormGroup,
-  TradingInput,
-  TradingInputError,
+  Input,
   Dialog,
   VegaIcon,
   VegaIconNames,
   Button,
+  TradingInputError,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
@@ -110,7 +110,7 @@ export const OrderEditDialog = ({
       >
         <div className="flex flex-col gap-4 md:flex-row">
           <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
-            <TradingInput
+            <Input
               type="number"
               step={step}
               {...register('limitPrice', {
@@ -134,7 +134,7 @@ export const OrderEditDialog = ({
             )}
           </FormGroup>
           <FormGroup label={t('Size')} labelFor="size" className="grow">
-            <TradingInput
+            <Input
               type="number"
               step={stepSize}
               {...register('size', {

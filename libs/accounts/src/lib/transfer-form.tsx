@@ -11,7 +11,7 @@ import {
 import { useT } from './use-t';
 import {
   FormGroup,
-  TradingInput,
+  Input,
   TradingInputError,
   TradingRichSelect,
   TradingRichSelectOption,
@@ -344,7 +344,7 @@ export const TransferForm = ({
           }
           input={
             fromVested ? null : (
-              <TradingInput
+              <Input
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={true} // focus input immediately after is shown
                 id="toVegaKey"
@@ -374,7 +374,7 @@ export const TransferForm = ({
           )}
       </FormGroup>
       <FormGroup label={t('Amount')} labelFor="amount">
-        <TradingInput
+        <Input
           id="amount"
           autoComplete="off"
           appendElement={

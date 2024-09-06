@@ -1,5 +1,5 @@
 import {
-  TradingInput as Input,
+  Input,
   InputError,
   Loader,
   Dialog,

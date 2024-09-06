@@ -1,8 +1,4 @@
-import {
-  FormGroup,
-  TradingInput,
-  TradingInputError,
-} from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, TradingInputError } from '@vegaprotocol/ui-toolkit';
 import { type Control, Controller, useFormContext } from 'react-hook-form';
 import { type FormFields } from '../form-schema';
 import {
@@ -27,7 +23,7 @@ export function Amount(props: {
       render={({ field, fieldState }) => {
         return (
           <FormGroup label="Amount" labelFor="amount">
-            <TradingInput {...field} />
+            <Input {...field} />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}

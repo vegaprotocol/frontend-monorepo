@@ -25,7 +25,7 @@ import {
 } from 'wagmi';
 import {
   FormGroup,
-  TradingInput as Input,
+  Input,
   Button,
   TradingInputError,
   Intent,

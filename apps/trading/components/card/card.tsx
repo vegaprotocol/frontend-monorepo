@@ -1,6 +1,7 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLProps, ReactNode } from 'react';
+import { GradientText } from '../gradient-text';
 
 export const Card = ({
   children,
@@ -78,16 +79,17 @@ export const CardStat = ({
   description?: ReactNode;
   testId?: string;
 }) => {
-  const val = (
-    <span
-      className={cn('inline-block text-3xl leading-none', {
-        'bg-rainbow bg-clip-text text-transparent': highlight,
-        'cursor-help': description,
-      })}
-      data-testid={testId}
-    >
-      {value}
-    </span>
+  const valProps = {
+    className: cn('inline-block text-3xl leading-none', {
+      'cursor-help': description,
+    }),
+    'data-testid': testId,
+    children: value,
+  };
+  const val = highlight ? (
+    <GradientText {...valProps} />
+  ) : (
+    <span {...valProps} />
   );
 
   return (

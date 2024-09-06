@@ -1,6 +1,6 @@
 import {
   FormGroup,
-  TradingInput,
+  Input,
   TradingInputError,
   TradingCheckbox,
   TextArea,
@@ -118,7 +118,7 @@ export const TeamForm = ({
     <form onSubmit={handleSubmit(sendTransaction)}>
       <input type="hidden" {...register('id')} />
       <FormGroup label={t('Team name')} labelFor="name">
-        <TradingInput
+        <Input
           {...register('name', {
             required: t('Required'),
             validate: {
@@ -145,7 +145,7 @@ export const TeamForm = ({
           'Provide a link so users can learn more about your team'
         )}
       >
-        <TradingInput
+        <Input
           {...register('url', {
             pattern: { value: URL_REGEX, message: t('Invalid URL') },
           })}
@@ -162,7 +162,7 @@ export const TeamForm = ({
         labelFor="avatarUrl"
         labelDescription={t('Provide a URL to a hosted image')}
       >
-        <TradingInput
+        <Input
           {...register('avatarUrl', {
             pattern: {
               value: URL_REGEX,

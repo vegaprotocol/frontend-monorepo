@@ -2,7 +2,7 @@ import * as Schema from '@vegaprotocol/types';
 import {
   Button,
   FormGroup,
-  TradingInput as Input,
+  Input,
   InputError,
   Intent,
   Notification,
