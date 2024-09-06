@@ -24,6 +24,7 @@ export const ProminentConnectorsList = ({
             showDescription: false,
             onClick: () => onConnect(c.id),
             onInstall: () => setIsInstalling(true),
+            connector: c,
           };
 
           if (ConnectionOption) {

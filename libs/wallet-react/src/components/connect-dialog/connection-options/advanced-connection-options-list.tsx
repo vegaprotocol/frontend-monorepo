@@ -28,6 +28,7 @@ export const AdvancedConnectionOptionsList = ({
               description: c.description,
               onClick: () => onConnect(c.id),
               onInstall: () => setIsInstalling(true),
+              connector: c,
             };
 
             return (

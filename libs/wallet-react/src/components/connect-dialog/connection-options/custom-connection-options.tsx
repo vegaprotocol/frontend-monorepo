@@ -1,5 +1,6 @@
 import { type FunctionComponent } from 'react';
 import {
+  type Connector,
   isBrowserWalletInstalled,
   type ConnectorType,
 } from '@vegaprotocol/wallet';
@@ -29,6 +30,7 @@ interface ConnectionOptionProps {
   showDescription?: boolean;
   onClick: () => void;
   onInstall?: () => void;
+  connector: Connector;
 }
 
 /**
@@ -109,8 +111,22 @@ export const ConnectionOptionInjected = ({
   );
 };
 
+export const ConnectionOptionQuickstart = (props: ConnectionOptionProps) => {
+  const t = useT();
+  return (
+    <ConnectionOptionButton
+      icon={<ConnectorIcon id="embedded-wallet-quickstart" />}
+      id="embedded-wallet-quickstart"
+      onClick={() => {}}
+    >
+      {t('Quickstart')}
+    </ConnectionOptionButton>
+  );
+};
+
 export const ConnectionOptionRecord: {
   [C in ConnectorType]?: FunctionComponent<ConnectionOptionProps>;
 } = {
   injected: ConnectionOptionInjected,
+  'embedded-wallet-quickstart': ConnectionOptionQuickstart,
 };
