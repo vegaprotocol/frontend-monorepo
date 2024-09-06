@@ -17,12 +17,7 @@ import {
   useInstrumentDetailsQuery,
   useNewTransferProposalDetails,
 } from '@vegaprotocol/proposals';
-import {
-  CONSOLE_MARKET_PAGE,
-  DApp,
-  useFeatureFlags,
-  useLinks,
-} from '@vegaprotocol/environment';
+import { CONSOLE_MARKET_PAGE, DApp, useLinks } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import { type VoteState } from '../vote-details/use-user-vote';
@@ -110,7 +105,6 @@ const ProposalDetails = ({
   restData?: ProposalNode | null;
 }) => {
   const { t } = useTranslation();
-  const featureFlags = useFeatureFlags((store) => store.flags);
   const consoleLink = useLinks(DApp.Console);
 
   const renderDetails = (
@@ -167,9 +161,7 @@ const ProposalDetails = ({
         );
         return (
           <span>
-            {featureFlags.UPDATE_MARKET_STATE &&
-            terms.change?.market?.id &&
-            terms.change.updateType ? (
+            {terms.change?.market?.id && terms.change.updateType ? (
               <>
                 <span>{t(terms.change.updateType)}: </span>
                 <span className="inline-flex gap-2">
@@ -298,13 +290,9 @@ const ProposalDetails = ({
         );
       }
       case 'NewTransfer':
-        return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <NewTransferSummary proposalId={proposalId} />
-        ) : null;
+        return <NewTransferSummary proposalId={proposalId} />;
       case 'CancelTransfer':
-        return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <CancelTransferSummary proposalId={proposalId} />
-        ) : null;
+        return <CancelTransferSummary proposalId={proposalId} />;
       default: {
         return null;
       }

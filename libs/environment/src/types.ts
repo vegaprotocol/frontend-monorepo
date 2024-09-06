@@ -17,22 +17,5 @@ export enum Networks {
 
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
-export type CosmicElevatorFlags = Pick<
-  FeatureFlags,
-  | 'ICEBERG_ORDERS'
-  | 'ISOLATED_MARGIN'
-  | 'TAKE_PROFIT_STOP_LOSS'
-  | 'SWAP'
-  | 'TWAP_REWARDS'
-  | 'STOP_ORDERS'
-  | 'SUCCESSOR_MARKETS'
-  | 'PRODUCT_PERPETUALS'
-  | 'METAMASK_SNAPS'
-  | 'UPDATE_MARKET_STATE'
-  | 'GOVERNANCE_TRANSFERS'
-  | 'VOLUME_DISCOUNTS'
-  | 'DISABLE_CLOSE_POSITION'
-  | 'ENABLE_HOMEPAGE'
->;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;

@@ -39,7 +39,7 @@ import {
   PositionStatusMapping,
   TradeType,
 } from '@vegaprotocol/types';
-import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
+import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
@@ -212,7 +212,6 @@ export const PositionsTable = ({
   pubKey,
   ...props
 }: Props) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
 
   const colDefs = useMemo<ColDef[]>(() => {
@@ -377,14 +376,12 @@ export const PositionsTable = ({
                   primary={margin}
                   secondary={
                     <>
-                      {featureFlags.ISOLATED_MARGIN && (
-                        <Lozenge className="mr-1">
-                          {data?.marginMode ===
-                          MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-                            ? t('Isolated')
-                            : t('Cross')}
-                        </Lozenge>
-                      )}
+                      <Lozenge className="mr-1">
+                        {data?.marginMode ===
+                        MarginMode.MARGIN_MODE_ISOLATED_MARGIN
+                          ? t('Isolated')
+                          : t('Cross')}
+                      </Lozenge>
                       {leverage}x
                     </>
                   }
@@ -618,7 +615,6 @@ export const PositionsTable = ({
     pubKey,
     pubKeys,
     t,
-    featureFlags.ISOLATED_MARGIN,
   ]);
 
   return (
