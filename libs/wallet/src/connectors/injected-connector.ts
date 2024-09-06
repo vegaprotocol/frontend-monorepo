@@ -31,8 +31,8 @@ const USER_REJECTED_CODE = -4;
 
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
-  readonly name = 'Vega Wallet';
-  readonly description =
+  name = 'Vega Wallet';
+  description =
     'Connect with Vega Wallet extension to access all features including key management and detailed transaction views from your browser.';
   prominent = true;
 

@@ -62,8 +62,8 @@ const USER_REJECTED_CODE = -4;
 
 export class SnapConnector implements Connector {
   readonly id = 'snap';
-  readonly name = 'MetaMask Snap';
-  readonly description =
+  name = 'MetaMask Snap';
+  description =
     'Connect directly via MetaMask with the Vega Snap for single key support without advanced features.';
   prominent = false;
 

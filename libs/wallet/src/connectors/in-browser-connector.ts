@@ -35,9 +35,8 @@ const USER_REJECTED_CODE = -4;
 
 export class InBrowserConnector implements Connector {
   readonly id = 'in-browser-wallet';
-  readonly name = 'Embedded wallet';
-  readonly description =
-    'Connect with Embedded Vega Wallet to get started quickly';
+  name = 'Embedded wallet';
+  description = 'Connect with Embedded Vega Wallet to get started quickly';
   prominent = true;
 
   store: StoreApi<Store> | undefined;

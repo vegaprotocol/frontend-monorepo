@@ -33,8 +33,8 @@ export type ConnectorType =
 
 export interface Connector {
   readonly id: ConnectorType;
-  readonly name: string;
-  readonly description: string;
+  name: string;
+  description: string;
   prominent: boolean;
 
   bindStore(state: StoreApi<Store>): void;
