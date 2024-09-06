@@ -42,37 +42,9 @@ export const ConnectionOptions = ({
         <>
           <ul className="w-full" data-testid="connectors-list">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2">
-              {connectors.map((c) => {
-                const ConnectionOption = ConnectionOptionRecord[c.id];
-                const props = {
-                  id: c.id,
-                  name: c.name,
-                  description: c.description,
-                  showDescription: false,
-                  onClick: () => onConnect(c.id),
-                  onInstall: () => setIsInstalling(true),
-                };
-
-                if (ConnectionOption) {
-                  return (
-                    <li key={c.id}>
-                      <ConnectionOption {...props} />
-                    </li>
-                  );
-                }
-
-                return (
-                  <li key={c.id}>
-                    <ConnectionOptionDefault {...props} />
-                  </li>
-                );
-              })}
-            </div>
-            <Accordion>
-              <AccordionItem
-                itemId="current-fees"
-                title={t('Advanced options')}
-                content={connectors.map((c) => {
+              {connectors
+                .filter((c) => c.prominent)
+                .map((c) => {
                   const ConnectionOption = ConnectionOptionRecord[c.id];
                   const props = {
                     id: c.id,
@@ -97,6 +69,38 @@ export const ConnectionOptions = ({
                     </li>
                   );
                 })}
+            </div>
+            <Accordion>
+              <AccordionItem
+                itemId="current-fees"
+                title={t('Advanced options')}
+                content={connectors
+                  .filter((c) => !c.prominent)
+                  .map((c) => {
+                    const ConnectionOption = ConnectionOptionRecord[c.id];
+                    const props = {
+                      id: c.id,
+                      name: c.name,
+                      description: c.description,
+                      showDescription: false,
+                      onClick: () => onConnect(c.id),
+                      onInstall: () => setIsInstalling(true),
+                    };
+
+                    if (ConnectionOption) {
+                      return (
+                        <li key={c.id}>
+                          <ConnectionOption {...props} />
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li key={c.id}>
+                        <ConnectionOptionDefault {...props} />
+                      </li>
+                    );
+                  })}
               />
             </Accordion>
           </ul>
