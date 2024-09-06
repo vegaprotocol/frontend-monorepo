@@ -5,7 +5,7 @@ import {
   InputError,
   Intent,
   Button,
-  TradingFormGroup,
+  FormGroup,
   TradingInput,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
@@ -195,11 +195,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup
-              label={t('Select asset')}
-              labelFor="asset"
-              compact
-            >
+            <FormGroup label={t('Select asset')} labelFor="asset" compact>
               <TradingSelect
                 {...field}
                 id="select-ledger-asset"
@@ -216,7 +212,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
                   );
                 })}
               </TradingSelect>
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}
@@ -238,11 +234,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup
-              label={t('Date from')}
-              labelFor="date-from"
-              compact
-            >
+            <FormGroup label={t('Date from')} labelFor="date-from" compact>
               <TradingInput
                 {...field}
                 type="datetime-local"
@@ -250,7 +242,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
                 id="date-from"
                 max={maxFromDate}
               />
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}
@@ -268,7 +260,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup label={t('Date to')} labelFor="date-to" compact>
+            <FormGroup label={t('Date to')} labelFor="date-to" compact>
               <TradingInput
                 {...field}
                 type="datetime-local"
@@ -276,7 +268,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
                 id="date-to"
                 max={maxToDate}
               />
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}

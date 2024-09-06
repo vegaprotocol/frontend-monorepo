@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import {
-  TradingFormGroup,
+  FormGroup,
   TradingInput,
   TradingInputError,
   TradingRichSelect,
@@ -191,7 +191,7 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label={t('Asset')} labelFor="asset">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -233,8 +233,8 @@ export const TransferForm = ({
             {errors.asset.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('From account')} labelFor="fromAccount">
+      </FormGroup>
+      <FormGroup label={t('From account')} labelFor="fromAccount">
         <Controller
           control={control}
           name="fromAccount"
@@ -310,8 +310,8 @@ export const TransferForm = ({
             {errors.fromAccount.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('To Vega key')} labelFor="toVegaKey">
+      </FormGroup>
+      <FormGroup label={t('To Vega key')} labelFor="toVegaKey">
         <AddressField
           onChange={() => {
             setValue('toVegaKey', '');
@@ -372,8 +372,8 @@ export const TransferForm = ({
               {t('You do not own this Vega public key')}
             </TradingInputError>
           )}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('Amount')} labelFor="amount">
+      </FormGroup>
+      <FormGroup label={t('Amount')} labelFor="amount">
         <TradingInput
           id="amount"
           autoComplete="off"
@@ -449,7 +449,7 @@ export const TransferForm = ({
             {errors.amount.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
+      </FormGroup>
       {(transferFee?.estimateTransferFee || fromVested) && amount && asset && (
         <TransferFee
           amount={normalizedAmount}

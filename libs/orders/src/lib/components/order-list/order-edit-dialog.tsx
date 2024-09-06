@@ -10,7 +10,7 @@ import {
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingFormGroup,
+  FormGroup,
   TradingInput,
   TradingInputError,
   Dialog,
@@ -109,11 +109,7 @@ export const OrderEditDialog = ({
         noValidate
       >
         <div className="flex flex-col gap-4 md:flex-row">
-          <TradingFormGroup
-            label={t('Price')}
-            labelFor="limitPrice"
-            className="grow"
-          >
+          <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
             <TradingInput
               type="number"
               step={step}
@@ -136,8 +132,8 @@ export const OrderEditDialog = ({
                 {errors.limitPrice.message}
               </TradingInputError>
             )}
-          </TradingFormGroup>
-          <TradingFormGroup label={t('Size')} labelFor="size" className="grow">
+          </FormGroup>
+          <FormGroup label={t('Size')} labelFor="size" className="grow">
             <TradingInput
               type="number"
               step={stepSize}
@@ -160,7 +156,7 @@ export const OrderEditDialog = ({
                 {errors.size.message}
               </TradingInputError>
             )}
-          </TradingFormGroup>
+          </FormGroup>
         </div>
         <Button type="submit">{t('Update')}</Button>
       </form>

@@ -1,5 +1,5 @@
 import {
-  TradingFormGroup,
+  FormGroup,
   TradingInput,
   TradingInputError,
   TradingCheckbox,
@@ -117,7 +117,7 @@ export const TeamForm = ({
   return (
     <form onSubmit={handleSubmit(sendTransaction)}>
       <input type="hidden" {...register('id')} />
-      <TradingFormGroup label={t('Team name')} labelFor="name">
+      <FormGroup label={t('Team name')} labelFor="name">
         <TradingInput
           {...register('name', {
             required: t('Required'),
@@ -137,8 +137,8 @@ export const TeamForm = ({
             {errors.name.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup
+      </FormGroup>
+      <FormGroup
         label={t('URL')}
         labelFor="url"
         labelDescription={t(
@@ -156,8 +156,8 @@ export const TeamForm = ({
             {errors.url.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup
+      </FormGroup>
+      <FormGroup
         label={t('Avatar URL')}
         labelFor="avatarUrl"
         labelDescription={t('Provide a URL to a hosted image')}
@@ -179,12 +179,12 @@ export const TeamForm = ({
             {errors.avatarUrl.message}
           </TradingInputError>
         )}
-      </TradingFormGroup>
+      </FormGroup>
       {
         // allow changing to private/public if editing, but don't show these options if making a solo team
         (type === TransactionType.UpdateReferralSet || !isCreatingSoloTeam) && (
           <>
-            <TradingFormGroup
+            <FormGroup
               label={t('Make team private')}
               labelFor="private"
               hideLabel={true}
@@ -205,9 +205,9 @@ export const TeamForm = ({
                   );
                 }}
               />
-            </TradingFormGroup>
+            </FormGroup>
             {isPrivate && (
-              <TradingFormGroup
+              <FormGroup
                 label={t('Public key allow list')}
                 labelFor="allowList"
                 labelDescription={t(
@@ -238,7 +238,7 @@ export const TeamForm = ({
                     {errors.allowList.message}
                   </TradingInputError>
                 )}
-              </TradingFormGroup>
+              </FormGroup>
             )}
           </>
         )
@@ -263,7 +263,7 @@ const SubmitButton = ({
   const t = useT();
   const disabled = status === TxStatus.Pending || status === TxStatus.Requested;
 
-  let text = t('Create');
+  let text = t('Create a team');
   if (type === TransactionType.UpdateReferralSet) {
     text = t('Update');
   }
@@ -286,6 +286,7 @@ const SubmitButton = ({
   }
 
   const [showConfirmed, setShowConfirmed] = useState<boolean>(false);
+
   useLayoutEffect(() => {
     let to: ReturnType<typeof setTimeout>;
     if (status === TxStatus.Confirmed && !showConfirmed) {
@@ -317,7 +318,7 @@ const SubmitButton = ({
     <div className="flex gap-2 items-baseline">
       <Button
         type="submit"
-        intent={Intent.Info}
+        intent={Intent.Primary}
         disabled={disabled}
         data-testid="team-form-submit-button"
       >

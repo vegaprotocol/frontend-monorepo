@@ -58,7 +58,6 @@ export * from './epoch-countdown';
 
 // Trading specific components
 export * from './trading-checkbox';
-export * from './trading-form-group';
 export * from './trading-input-error';
 export * from './trading-input';
 export * from './trading-radio-group';
