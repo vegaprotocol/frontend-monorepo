@@ -1,6 +1,5 @@
 import { type ReactNode, forwardRef } from 'react';
 import { type ConnectorType } from '@vegaprotocol/wallet';
-import { ConnectorIcon } from './connector-icon';
 
 const CONNECTION_OPTION_CLASSES =
   'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1';
@@ -14,8 +13,9 @@ export const ConnectionOptionLink = forwardRef<
     id: ConnectorType;
     href: string;
     onClick?: () => void;
+    icon?: ReactNode;
   }
->(({ children, id, href, onClick }, ref) => {
+>(({ children, id, icon, href, onClick }, ref) => {
   return (
     <a
       href={href}
@@ -26,7 +26,7 @@ export const ConnectionOptionLink = forwardRef<
       ref={ref}
       onClick={onClick}
     >
-      <ConnectorIcon id={id} />
+      {icon}
       {children}
     </a>
   );
@@ -38,10 +38,10 @@ export const ConnectionOptionLinkWithDescription = forwardRef<
     children: ReactNode;
     id: ConnectorType;
     href: string;
-
+    icon?: ReactNode;
     onClick?: () => void;
   }
->(({ children, id, href, onClick }, ref) => {
+>(({ children, icon, href, onClick }, ref) => {
   return (
     <a
       ref={ref}
@@ -51,9 +51,7 @@ export const ConnectionOptionLinkWithDescription = forwardRef<
       rel="noreferrer"
       onClick={onClick}
     >
-      <span>
-        <ConnectorIcon id={id} />
-      </span>
+      {icon}
       {children}
     </a>
   );

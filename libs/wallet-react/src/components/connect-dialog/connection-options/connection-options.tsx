@@ -10,8 +10,12 @@ import { useWallet } from '../../../hooks/use-wallet';
 import { useConnect } from '../../../hooks/use-connect';
 import { Links } from '../../../constants';
 import { Trans } from 'react-i18next';
-import { ConnectionOptionRecord } from './custom-connection-options';
+import {
+  ConnectionOptionDeemphasizedRecord,
+  ConnectionOptionRecord,
+} from './custom-connection-options';
 import { ConnectionOptionDefault } from './connection-option-default';
+import { ConnectionOptionDeemphasizedDefault } from './connection-option-deemphasized-default';
 
 export const ConnectionOptions = ({
   onConnect,
@@ -77,7 +81,8 @@ export const ConnectionOptions = ({
                 content={connectors
                   .filter((c) => !c.prominent)
                   .map((c) => {
-                    const ConnectionOption = ConnectionOptionRecord[c.id];
+                    const ConnectionOption =
+                      ConnectionOptionDeemphasizedRecord[c.id];
                     const props = {
                       id: c.id,
                       name: c.name,
@@ -97,7 +102,7 @@ export const ConnectionOptions = ({
 
                     return (
                       <li key={c.id}>
-                        <ConnectionOptionDefault {...props} />
+                        <ConnectionOptionDeemphasizedDefault {...props} />
                       </li>
                     );
                   })}

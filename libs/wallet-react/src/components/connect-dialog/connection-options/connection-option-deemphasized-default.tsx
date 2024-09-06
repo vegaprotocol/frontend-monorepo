@@ -4,7 +4,6 @@ import {
   ConnectionOptionButtonWithDescription,
 } from './connection-option-button';
 import { type ConnectorType } from '@vegaprotocol/wallet';
-import { ConnectorIcon } from './connector-icon';
 
 interface ConnectionOptionProps {
   id: ConnectorType;
@@ -15,7 +14,7 @@ interface ConnectionOptionProps {
   onInstall?: () => void;
 }
 
-export const ConnectionOptionDefault = ({
+export const ConnectionOptionDeemphasizedDefault = ({
   id,
   name,
   description,
@@ -24,10 +23,7 @@ export const ConnectionOptionDefault = ({
 }: ConnectionOptionProps) => {
   if (showDescription) {
     return (
-      <ConnectionOptionButtonWithDescription
-        onClick={onClick}
-        icon={<ConnectorIcon id={id} />}
-      >
+      <ConnectionOptionButtonWithDescription onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="first-letter:capitalize">{name}</span>
           <span className="text-surface-0-fg-muted text-sm">{description}</span>
@@ -45,11 +41,7 @@ export const ConnectionOptionDefault = ({
       delayDuration={400}
     >
       <span>
-        <ConnectionOptionButton
-          icon={<ConnectorIcon id={id} />}
-          id={id}
-          onClick={onClick}
-        >
+        <ConnectionOptionButton id={id} onClick={onClick}>
           {name}
         </ConnectionOptionButton>
       </span>
