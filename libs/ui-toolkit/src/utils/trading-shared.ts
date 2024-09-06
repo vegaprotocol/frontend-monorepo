@@ -6,11 +6,10 @@ export const defaultSelectElement = (hasError?: boolean) =>
 export const defaultFormElement = (hasError?: boolean) =>
   cn(
     'flex items-center w-full text-sm',
-    'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden disabled:opacity-40',
+    'p-2 rounded-input whitespace-nowrap text-ellipsis overflow-hidden disabled:opacity-40',
     {
       'bg-surface-2 ': !hasError,
-      'bg-transparent': hasError,
-      'border-vega-red-500': hasError,
-      'border-gs-300 dark:border-gs-700 ': !hasError,
+      'border-danger': hasError,
+      border: !hasError,
     }
   );

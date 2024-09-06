@@ -54,7 +54,7 @@ export const AccordionItem = ({
 }: AccordionPanelProps) => {
   const triggerClassNames = cn(
     'w-full py-2',
-    'flex items-center justify-between gap-2 border-b border-gs-300 dark:border-gs-700 text-sm',
+    'flex items-center justify-between gap-2 border-b text-sm',
     'group'
   );
   return (

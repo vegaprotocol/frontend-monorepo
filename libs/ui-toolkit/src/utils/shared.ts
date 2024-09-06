@@ -6,7 +6,7 @@ export const defaultSelectElement = (hasError?: boolean) =>
 export const defaultFormElement = (hasError?: boolean) =>
   cn(
     'flex items-center w-full text-sm',
-    'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
+    'p-2 rounded-input whitespace-nowrap text-ellipsis overflow-hidden',
     'border',
     'focus:border-gs-300 dark:border-gs-700',
     'disabled:opacity-40',

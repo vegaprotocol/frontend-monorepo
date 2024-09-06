@@ -22,7 +22,7 @@ export const Side = (props: {
       render={({ field }) => {
         return (
           <RadioGroup.Root
-            className="relative flex h-10 leading-10 bg-surface-2 rounded"
+            className="relative flex h-10 leading-10 bg-surface-2 rounded-button-lg"
             type="single"
             {...field}
             onValueChange={(value) => {
@@ -33,7 +33,7 @@ export const Side = (props: {
           >
             <span
               className={cn(
-                'absolute top-0 left-0 rounded w-1/2 h-full transition-transform',
+                'absolute top-0 left-0 rounded-button-lg w-1/2 h-full transition-transform',
                 {
                   'bg-green-600 dark:bg-green-650':
                     field.value === ESide.SIDE_BUY,
@@ -48,7 +48,7 @@ export const Side = (props: {
                 key={value}
                 data-testid={`order-side-${value}`}
                 className={cn(
-                  'flex gap-2 justify-center items-center flex-1 relative text-sm rounded transition-colors',
+                  'flex gap-2 justify-center items-center flex-1 relative text-sm rounded-button-lg transition-colors',
                   'data-[state=off]:hover:bg-surface-3',
                   'data-[state=on]:text-white'
                 )}

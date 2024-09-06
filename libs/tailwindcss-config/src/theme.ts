@@ -20,6 +20,7 @@ export const theme = {
     'button-md': 'var(--button-border-radius-md)',
     'button-lg': 'var(--button-border-radius-lg)',
     panel: 'var(--panel-border-radius)',
+    input: 'var(--input-border-radius)',
   },
   borderWidth: {
     999: 'var(--button-border-width)',
