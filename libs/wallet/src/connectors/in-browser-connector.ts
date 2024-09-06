@@ -33,15 +33,10 @@ interface InjectedError {
 
 const USER_REJECTED_CODE = -4;
 
-export class InBrowserConnector implements Connector {
-  readonly id = 'in-browser-wallet';
-  name = 'Embedded wallet';
-  description = 'Connect with Embedded Vega Wallet to get started quickly';
-  prominent = true;
-
+class BrowserConnector {
   store: StoreApi<Store> | undefined;
 
-  static client = new JSONRPCClient({
+  private static client = new JSONRPCClient({
     idPrefix: 'vega.in-page-',
     send(msg: unknown) {
       window.dispatchEvent(
@@ -51,15 +46,15 @@ export class InBrowserConnector implements Connector {
       );
     },
     onnotification: (msg) => {
-      InBrowserConnector.emitter.emit(msg.method, msg.params);
+      BrowserConnector.emitter.emit(msg.method, msg.params);
     },
   });
 
-  static emitter = new EventEmitter();
+  private static emitter = new EventEmitter();
 
   private static onMessage = (event: Event) => {
     const msg = (event as CustomEvent).detail;
-    InBrowserConnector.client.onmessage(msg);
+    BrowserConnector.client.onmessage(msg);
   };
 
   /**
@@ -69,11 +64,11 @@ export class InBrowserConnector implements Connector {
     if (typeof window !== 'undefined') {
       window.removeEventListener(
         'content-script-response',
-        InBrowserConnector.onMessage
+        BrowserConnector.onMessage
       );
       window.addEventListener(
         'content-script-response',
-        InBrowserConnector.onMessage
+        BrowserConnector.onMessage
       );
     }
   }
@@ -84,7 +79,7 @@ export class InBrowserConnector implements Connector {
 
   async connectWallet(chainId?: string): Promise<{ success: boolean }> {
     try {
-      await InBrowserConnector.client.request('client.connect_wallet', {
+      await BrowserConnector.client.request('client.connect_wallet', {
         chainId,
       });
       return { success: true };
@@ -103,7 +98,7 @@ export class InBrowserConnector implements Connector {
 
   async disconnectWallet(): Promise<void> {
     try {
-      await InBrowserConnector.client.request('client.disconnect_wallet', null);
+      await BrowserConnector.client.request('client.disconnect_wallet', null);
     } catch (err) {
       throw disconnectError();
     }
@@ -111,7 +106,7 @@ export class InBrowserConnector implements Connector {
 
   async getChainId(): Promise<{ chainId: string }> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.get_chain_id',
         null
       )) as unknown as {
@@ -125,7 +120,7 @@ export class InBrowserConnector implements Connector {
 
   async listKeys(): Promise<Array<{ publicKey: string; name: string }>> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.list_keys',
         null
       )) as unknown as {
@@ -139,7 +134,7 @@ export class InBrowserConnector implements Connector {
 
   async isConnected(): Promise<{ connected: boolean }> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.is_connected',
         null
       )) as unknown as {
@@ -197,5 +192,63 @@ export class InBrowserConnector implements Connector {
       return true;
     }
     return false;
+  }
+}
+
+export class InBrowserConnector extends BrowserConnector implements Connector {
+  readonly id = 'in-browser-wallet';
+  name = 'Embedded wallet';
+  description = 'Connect with Embedded Vega Wallet to get started quickly';
+  prominent = false;
+}
+
+export class QuickStart extends BrowserConnector implements Connector {
+  // TODO this ID is wrongggggg
+  readonly id = 'in-browser-wallet-quickstart';
+  name = 'Quickstart wallet';
+  description =
+    'Generate credentials using an Ethereum wallet and start using Vega';
+  prominent = true;
+
+  static adminClient = new JSONRPCClient({
+    idPrefix: 'vega.popup-',
+    send(msg: unknown) {
+      window.dispatchEvent(
+        new CustomEvent('popup', {
+          detail: msg,
+        })
+      );
+    },
+    onnotification: () => {},
+  });
+
+  private static onAdminMessage = (event: Event) => {
+    const msg = (event as CustomEvent).detail;
+    QuickStart.adminClient.onmessage(msg);
+  };
+
+  /**
+   *
+   */
+  constructor() {
+    super();
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('popup-response', QuickStart.onAdminMessage);
+      window.addEventListener('popup-response', QuickStart.onAdminMessage);
+    }
+  }
+
+  async importWallet(mnemonic: string) {
+    try {
+      const res = await QuickStart.adminClient.request('admin.import_wallet', {
+        recoveryPhrase: mnemonic,
+        name: 'Wallet',
+      });
+      // eslint-disable-next-line no-console
+      console.log(res);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
   }
 }

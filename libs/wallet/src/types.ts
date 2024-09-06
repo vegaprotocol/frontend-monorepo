@@ -29,7 +29,8 @@ export type ConnectorType =
   | 'snap'
   | 'viewParty'
   | 'mock'
-  | 'in-browser-wallet';
+  | 'in-browser-wallet'
+  | 'in-browser-wallet-quickstart';
 
 export interface Connector {
   readonly id: ConnectorType;
