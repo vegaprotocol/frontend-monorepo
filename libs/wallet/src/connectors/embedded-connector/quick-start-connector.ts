@@ -6,7 +6,7 @@ export class QuickStartConnector extends BrowserConnector implements Connector {
   readonly id = 'embedded-wallet-quickstart';
   name = 'Quickstart wallet';
   description =
-    'Generate credentials using an Ethereum wallet and start using Vega';
+    'Generate credentials using an Ethereum wallet and start using the network';
   prominent = true;
 
   static adminClient = new JSONRPCClient({
