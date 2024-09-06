@@ -5,6 +5,8 @@ import {
   type PropsWithChildren,
 } from 'react';
 import { type Wallet } from '@vegaprotocol/wallet';
+// @ts-ignore -- Creating an index file in this package causes the build to mess up.
+// likely because at the time of writing this is a JS package and not a TS package.
 import { createWalletBackend } from '@vegaprotocol/browser-wallet-backend';
 
 export const WalletContext = createContext<Wallet | undefined>(undefined);
