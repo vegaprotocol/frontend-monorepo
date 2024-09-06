@@ -4,6 +4,7 @@ import {
   SnapConnector,
   ViewPartyConnector,
   InBrowserConnector,
+  QuickStartConnector,
   createConfig,
   fairground,
   validatorsTestnet,
@@ -17,7 +18,6 @@ import {
   useFeatureFlags,
 } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
-import { QuickStart } from 'libs/wallet/src/connectors/in-browser-connector';
 
 /**
  * Hook for memoizing the vega wallet config, since we can't be certain of the
@@ -33,7 +33,7 @@ export const useVegaWalletConfig = () => {
 
     const injected = new InjectedConnector();
     const inBrowser = new InBrowserConnector();
-    const quickStart = new QuickStart();
+    const quickStart = new QuickStartConnector();
 
     const jsonRpc = new JsonRpcConnector({
       url: VEGA_WALLET_URL,

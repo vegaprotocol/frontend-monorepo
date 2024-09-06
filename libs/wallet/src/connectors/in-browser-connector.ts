@@ -202,7 +202,7 @@ export class InBrowserConnector extends BrowserConnector implements Connector {
   prominent = false;
 }
 
-export class QuickStart extends BrowserConnector implements Connector {
+export class QuickStartConnector extends BrowserConnector implements Connector {
   // TODO this ID is wrongggggg
   readonly id = 'in-browser-wallet-quickstart';
   name = 'Quickstart wallet';
@@ -224,7 +224,7 @@ export class QuickStart extends BrowserConnector implements Connector {
 
   private static onAdminMessage = (event: Event) => {
     const msg = (event as CustomEvent).detail;
-    QuickStart.adminClient.onmessage(msg);
+    QuickStartConnector.adminClient.onmessage(msg);
   };
 
   /**
@@ -233,17 +233,26 @@ export class QuickStart extends BrowserConnector implements Connector {
   constructor() {
     super();
     if (typeof window !== 'undefined') {
-      window.removeEventListener('popup-response', QuickStart.onAdminMessage);
-      window.addEventListener('popup-response', QuickStart.onAdminMessage);
+      window.removeEventListener(
+        'popup-response',
+        QuickStartConnector.onAdminMessage
+      );
+      window.addEventListener(
+        'popup-response',
+        QuickStartConnector.onAdminMessage
+      );
     }
   }
 
   async importWallet(mnemonic: string) {
     try {
-      const res = await QuickStart.adminClient.request('admin.import_wallet', {
-        recoveryPhrase: mnemonic,
-        name: 'Wallet',
-      });
+      const res = await QuickStartConnector.adminClient.request(
+        'admin.import_wallet',
+        {
+          recoveryPhrase: mnemonic,
+          name: 'Wallet',
+        }
+      );
       // eslint-disable-next-line no-console
       console.log(res);
     } catch (err) {

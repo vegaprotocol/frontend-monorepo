@@ -19,6 +19,7 @@ export {
   InjectedConnector,
   SnapConnector,
   InBrowserConnector,
+  QuickStartConnector,
   JsonRpcConnector,
   ViewPartyConnector,
   MockConnector,
