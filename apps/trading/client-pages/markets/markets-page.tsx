@@ -399,7 +399,7 @@ export const MarketTable = ({
           </div>
         </div>
       </div>
-      <div className="h-full border rounded border-gs-300 dark:border-gs-700">
+      <div className="h-full border rounded-lg overflow-hidden bg-surface-1/70">
         <ErrorBoundary feature="all-markets">
           <MarketListTable
             rowData={markets}
