@@ -158,7 +158,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.MARKETS,
-      element: <LayoutFull backdrop={2} />,
+      element: <LayoutFull backdrop={1} />,
       children: [
         {
           index: true,
@@ -180,7 +180,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.PORTFOLIO,
-      element: <LayoutFull backdrop={2} />,
+      element: <LayoutFull backdrop={1} />,
       children: [
         {
           index: true,

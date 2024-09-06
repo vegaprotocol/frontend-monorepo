@@ -123,7 +123,7 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="flex justify-between bg-surface-2 ">
+      <div className="flex justify-between bg-surface-2/70">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
           className={cn('transition-all w-1/3 p-1 relative', {
