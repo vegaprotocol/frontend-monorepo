@@ -18,7 +18,7 @@ import {
   useUpdateMarketProposals,
   useUpdateMarketStateProposals,
 } from './use-market-proposals';
-import { SECOND } from '@vegaprotocol/utils';
+import { DAY } from '@vegaprotocol/utils';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { type EnrichedRewardTransfer, useRewards } from './use-rewards';
@@ -176,7 +176,7 @@ export const useMarketBanners = (
   };
 };
 
-export const DISMISSAL_PERIOD = 3000 * SECOND;
+export const DISMISSAL_PERIOD = DAY;
 
 type MarketBannerInfo = {
   marketId: string;
