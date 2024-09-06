@@ -1,11 +1,10 @@
 import { type StoreApi } from 'zustand';
-import { type TransactionResponse } from '../transaction-types';
+import { type TransactionResponse } from '../../transaction-types';
 import {
   type Store,
   type TransactionParams,
   type VegaWalletEvent,
-  type Connector,
-} from '../types';
+} from '../../types';
 import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 import {
   chainIdError,
@@ -16,8 +15,10 @@ import {
   listKeysError,
   sendTransactionError,
   userRejectedError,
-} from '../errors';
+} from '../../errors';
 import EventEmitter from 'eventemitter3';
+
+const USER_REJECTED_CODE = -4;
 
 interface InjectedError {
   message: string;
@@ -31,9 +32,7 @@ interface InjectedError {
     | string;
 }
 
-const USER_REJECTED_CODE = -4;
-
-class BrowserConnector {
+export class BrowserConnector {
   store: StoreApi<Store> | undefined;
 
   private static client = new JSONRPCClient({
@@ -154,7 +153,7 @@ class BrowserConnector {
     params: TransactionParams
   ): Promise<TransactionResponse> {
     try {
-      const res = await InBrowserConnector.client.request(
+      const res = await BrowserConnector.client.request(
         'client.send_transaction',
         params
       );
@@ -173,11 +172,11 @@ class BrowserConnector {
   }
 
   on(event: VegaWalletEvent, callback: () => void): void {
-    InBrowserConnector.emitter.on(event, callback);
+    BrowserConnector.emitter.on(event, callback);
   }
 
   off(event: VegaWalletEvent, callback?: () => void): void {
-    InBrowserConnector.emitter.off(event, callback);
+    BrowserConnector.emitter.off(event, callback);
   }
 
   private isInjectedError(obj: unknown): obj is InjectedError {
@@ -192,72 +191,5 @@ class BrowserConnector {
       return true;
     }
     return false;
-  }
-}
-
-export class InBrowserConnector extends BrowserConnector implements Connector {
-  readonly id = 'in-browser-wallet';
-  name = 'Embedded wallet';
-  description = 'Connect with Embedded Vega Wallet to get started quickly';
-  prominent = false;
-}
-
-export class QuickStartConnector extends BrowserConnector implements Connector {
-  // TODO this ID is wrongggggg
-  readonly id = 'in-browser-wallet-quickstart';
-  name = 'Quickstart wallet';
-  description =
-    'Generate credentials using an Ethereum wallet and start using Vega';
-  prominent = true;
-
-  static adminClient = new JSONRPCClient({
-    idPrefix: 'vega.popup-',
-    send(msg: unknown) {
-      window.dispatchEvent(
-        new CustomEvent('popup', {
-          detail: msg,
-        })
-      );
-    },
-    onnotification: () => {},
-  });
-
-  private static onAdminMessage = (event: Event) => {
-    const msg = (event as CustomEvent).detail;
-    QuickStartConnector.adminClient.onmessage(msg);
-  };
-
-  /**
-   *
-   */
-  constructor() {
-    super();
-    if (typeof window !== 'undefined') {
-      window.removeEventListener(
-        'popup-response',
-        QuickStartConnector.onAdminMessage
-      );
-      window.addEventListener(
-        'popup-response',
-        QuickStartConnector.onAdminMessage
-      );
-    }
-  }
-
-  async importWallet(mnemonic: string) {
-    try {
-      const res = await QuickStartConnector.adminClient.request(
-        'admin.import_wallet',
-        {
-          recoveryPhrase: mnemonic,
-          name: 'Wallet',
-        }
-      );
-      // eslint-disable-next-line no-console
-      console.log(res);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
   }
 }

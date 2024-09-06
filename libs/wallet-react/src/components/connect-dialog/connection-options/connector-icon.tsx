@@ -44,7 +44,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         </span>
       );
     }
-    case 'in-browser-wallet': {
+    case 'embedded-wallet': {
       return (
         <span
           className={cn(
