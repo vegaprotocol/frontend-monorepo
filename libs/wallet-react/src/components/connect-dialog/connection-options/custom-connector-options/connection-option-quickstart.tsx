@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  type ConnectorError,
-  ConnectorErrors,
-  QuickStartConnector,
-} from '@vegaprotocol/wallet';
+import { type ConnectorError, QuickStartConnector } from '@vegaprotocol/wallet';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../../hooks/use-t';
 import { ConnectionOptionButton } from '../connection-option-button';
@@ -12,6 +8,8 @@ import { useAccount, useChainId } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { useCreateDerivedWallet } from './use-derived-wallet';
 import { type ConnectionOptionProps } from '../types';
+
+const USER_REJECTED_CODE = 4001;
 
 export const QuickstartButton = ({
   connector,
@@ -53,7 +51,7 @@ export const QuickstartButton = ({
       >
         {t('Quickstart')}
       </ConnectionOptionButton>
-      {error && error.code !== ConnectorErrors.userRejected.code && (
+      {error && error.code !== USER_REJECTED_CODE && (
         <p
           className="text-intent-danger text-sm first-letter:uppercase"
           data-testid="connection-error"
