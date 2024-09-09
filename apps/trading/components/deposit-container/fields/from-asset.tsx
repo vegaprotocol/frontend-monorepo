@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import {
   FormGroup,
   TradingInputError,
@@ -22,6 +23,7 @@ export function FromAsset({
   tokens?: Token[];
   chain?: ChainData | undefined;
   disabled?: boolean;
+  disabledMessage?: ReactNode;
 }) {
   const t = useT();
   const form = useFormContext();
@@ -36,9 +38,13 @@ export function FromAsset({
         return (
           <FormGroup label={t('From asset')} labelFor="asset">
             {disabled ? (
-              <p className="text-surface-1-fg-muted text-xs">
-                {t('Swaps not available')}
-              </p>
+              props.disabledMessage ? (
+                props.disabledMessage
+              ) : (
+                <p className="text-surface-1-fg-muted text-xs">
+                  {t('Swaps not available')}
+                </p>
+              )
             ) : (
               <>
                 <TradingRichSelect
