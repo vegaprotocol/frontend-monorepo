@@ -5,8 +5,8 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
-import PriceInMarket from '../../price-in-market/price-in-market';
 import { ConcentratedLiquidityParametersDetails } from './amm/amm-liquidity-parameters';
+import SizeInMarket from '../../size-in-market/size-in-market';
 
 interface TxDetailsAMMSubmitProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -52,7 +52,12 @@ export const TxDetailsAMMSubmit = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Amount')}</TableCell>
           <TableCell>
-            <PriceInMarket marketId={marketId} price={commitmentAmount} />
+            <SizeInMarket
+              marketId={marketId}
+              size={commitmentAmount}
+              decimalSource="ASSET"
+              showAssetLabel={true}
+            />
           </TableCell>
         </TableRow>
       )}
@@ -60,18 +65,14 @@ export const TxDetailsAMMSubmit = ({
       {proposedFee && marketId && (
         <TableRow modifier="bordered">
           <TableCell>{t('Proposed Fee')}</TableCell>
-          <TableCell>
-            <PriceInMarket marketId={marketId} price={proposedFee} />
-          </TableCell>
+          <TableCell>{proposedFee}%</TableCell>
         </TableRow>
       )}
 
       {slippageTolerance && marketId && (
         <TableRow modifier="bordered">
           <TableCell>{t('Slippage tolerance')}</TableCell>
-          <TableCell>
-            <PriceInMarket marketId={marketId} price={slippageTolerance} />
-          </TableCell>
+          <TableCell>{slippageTolerance}%</TableCell>
         </TableRow>
       )}
 
