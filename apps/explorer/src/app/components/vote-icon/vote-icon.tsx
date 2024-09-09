@@ -22,7 +22,7 @@ function getBgColour(useVoteColour: boolean, vote: boolean) {
 
 function getFillColour(useVoteColour: boolean, vote: boolean) {
   if (useVoteColour === false) {
-    return 'white';
+    return 'surface-2-fg';
   }
 
   return vote ? 'green-300' : 'pink-300';
@@ -30,7 +30,7 @@ function getFillColour(useVoteColour: boolean, vote: boolean) {
 
 function getTextColour(useVoteColour: boolean, vote: boolean) {
   if (useVoteColour === false) {
-    return 'white';
+    return 'surface-2-fg';
   }
 
   return vote ? 'green-200' : 'pink-200';
@@ -56,7 +56,7 @@ export function VoteIcon({
 
   return (
     <div
-      className={`voteicon inline-block py-0 px-2 py rounded-md text-white whitespace-nowrap leading-tight sm align-top ${bg}`}
+      className={`voteicon inline-block py-0 px-2 py rounded-md whitespace-nowrap leading-tight sm align-top ${bg}`}
     >
       <Icon
         name={icon}

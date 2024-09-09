@@ -53,7 +53,7 @@ const displayString: StringMap = {
   'Apply Referral Code': 'Referral',
   'Create Referral Set': 'Create referral',
   'Update Party Profile': 'Update profile',
-  'Submit AMM': 'Submit AMM',
+  'Submit AMM': 'SubmitAMM',
   'Amend AMM': 'Amend AMM',
   'Cancel AMM': 'Cancel AMM',
   'Delayed Transaction Wrapper': 'Delayed',
@@ -173,7 +173,7 @@ export function getLabelForTransfer(
   }
   return {
     type,
-    colours: 'text-black dark:text-white bg-surface-3',
+    colours: 'text-surface-2-fg bg-surface-3',
   };
 }
 
@@ -267,7 +267,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
     if (command && !!command.proposalSubmission) {
       type = getLabelForProposal(command.proposalSubmission);
     }
-    colours = 'text-black bg-yellow';
+    colours = 'text-surface-2-fg bg-gray-600';
   } else if (type === 'Order' && command) {
     type = getLabelForOrderType(orderType, command);
     colours = 'text-white dark-text-white bg-blue dark:bg-blue';

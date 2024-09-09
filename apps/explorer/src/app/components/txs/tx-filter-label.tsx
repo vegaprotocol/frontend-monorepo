@@ -11,7 +11,7 @@ export interface FilterLabelProps {
 export function FilterLabel({ filters }: FilterLabelProps) {
   if (!filters || filters.size !== 1) {
     return (
-      <span data-testid="filter-empty" className="uppercase dark:text-white">
+      <span data-testid="filter-empty" className="text-surface-2-fg uppercase">
         {t('Filter')}
       </span>
     );
@@ -19,8 +19,8 @@ export function FilterLabel({ filters }: FilterLabelProps) {
 
   return (
     <div data-testid="filter-selected">
-      <span className="uppercase dark:text-white">{t('Filters')}:</span>&nbsp;
-      <code className="bg-gs-500 px-2 rounded-md capitalize dark:text-white">
+      <span className="uppercase text-surface-2-fg">{t('Filters')}:</span>&nbsp;
+      <code className="bg-gs-500 px-2 rounded-md capitalize text-surface-1">
         {Array.from(filters)[0]}
       </code>
     </div>
