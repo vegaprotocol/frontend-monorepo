@@ -33,7 +33,7 @@ export const TxsListNavigation = ({
         <BlocksRefetch refetch={refreshTxs} />
         <div className="float-right">
           <Button
-            className="mr-2"
+            className="mr-2 text-surface-2-fg"
             size="xs"
             onClick={() => {
               previousPage();
@@ -43,6 +43,7 @@ export const TxsListNavigation = ({
           </Button>
           <Button
             size="xs"
+            className="text-surface-2-fg"
             disabled={isEmpty}
             onClick={() => {
               nextPage();
