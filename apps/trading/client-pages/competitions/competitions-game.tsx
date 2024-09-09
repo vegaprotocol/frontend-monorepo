@@ -579,6 +579,9 @@ const HistoricScoresTable = ({
       epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
       gameId: gameId || '',
       partyId: pubKey || '',
+      pagination: {
+        last: 2000,
+      },
     },
     skip: !currentEpoch || !gameId,
   });
