@@ -17,7 +17,7 @@ export const ResizableGridPanelChild = ({
     <section className="h-full p-2">
       <div
         className={cn(
-          'h-full rounded-panel overflow-hidden bg-surface-1/70',
+          'h-full rounded-grid overflow-hidden bg-surface-1/70',
           className
         )}
       >

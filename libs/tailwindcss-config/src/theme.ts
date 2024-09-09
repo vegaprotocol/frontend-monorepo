@@ -19,7 +19,7 @@ export const theme = {
     'button-sm': 'var(--button-border-radius-sm)',
     'button-md': 'var(--button-border-radius-md)',
     'button-lg': 'var(--button-border-radius-lg)',
-    panel: 'var(--panel-border-radius)',
+    grid: 'var(--grid-border-radius)',
     input: 'var(--input-border-radius)',
   },
   borderWidth: {

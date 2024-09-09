@@ -238,7 +238,7 @@
     --border: rgb(var(--gs-300));
 
     /* Border radius */
-    --panel-border-radius: theme(borderRadius.lg);
+    --grid-border-radius: theme(borderRadius.none);
     --input-border-radius: theme(borderRadius.lg);
   }
 
