@@ -37,7 +37,14 @@ export const ConnectDialogWithRiskAck = ({
   };
 
   return (
-    <Dialog open={open} size="small" onChange={onChange}>
+    <Dialog
+      open={open}
+      size="small"
+      onChange={onChange}
+      onInteractOutside={(e) => {
+        e.preventDefault();
+      }}
+    >
       <Content
         riskAccepted={riskAccepted}
         riskAckContent={riskAckContent}
@@ -98,7 +105,14 @@ export const ConnectDialog = ({
   };
 
   return (
-    <Dialog open={open} size="small" onChange={onChange}>
+    <Dialog
+      open={open}
+      size="small"
+      onChange={onChange}
+      onInteractOutside={(e) => {
+        e.preventDefault();
+      }}
+    >
       {status === 'disconnected' ? (
         <ConnectionOptionsList onConnect={onConnect} />
       ) : (
