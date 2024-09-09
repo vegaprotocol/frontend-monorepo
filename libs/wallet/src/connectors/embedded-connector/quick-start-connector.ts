@@ -44,19 +44,22 @@ export class QuickStartConnector extends BrowserConnector implements Connector {
   }
 
   async importWallet(mnemonic: string) {
-    try {
-      const res = await QuickStartConnector.adminClient.request(
-        'admin.import_wallet',
-        {
-          recoveryPhrase: mnemonic,
-          name: 'Wallet',
-        }
-      );
-      // eslint-disable-next-line no-console
-      console.log(res);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
+    await QuickStartConnector.adminClient.request('admin.import_wallet', {
+      recoveryPhrase: mnemonic,
+      name: 'Wallet',
+    });
+    await QuickStartConnector.adminClient.request('admin.generate_key', {
+      wallet: 'Wallet',
+    });
+  }
+
+  async deriveMnemonic(signedMessage: string) {
+    const { derivedMnemonic } = (await QuickStartConnector.adminClient.request(
+      'admin.create_derived_mnemonic',
+      {
+        signedData: signedMessage,
+      }
+    )) as unknown as { derivedMnemonic: string };
+    return derivedMnemonic;
   }
 }

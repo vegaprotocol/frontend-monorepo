@@ -72,9 +72,7 @@ export class BrowserConnector {
     }
   }
 
-  bindStore(store: StoreApi<Store>) {
-    this.store = store;
-  }
+  bindStore() {}
 
   async connectWallet(chainId?: string): Promise<{ success: boolean }> {
     try {

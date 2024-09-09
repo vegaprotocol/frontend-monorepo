@@ -1,4 +1,4 @@
-import { type ReactNode, forwardRef } from 'react';
+import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from 'react';
 import { type ConnectorType } from '@vegaprotocol/wallet';
 
 const CONNECTION_OPTION_CLASSES =
@@ -11,16 +11,15 @@ export const ConnectionOptionButton = forwardRef<
   {
     children: ReactNode;
     id: ConnectorType;
-    onClick: () => void;
     icon?: ReactNode;
-  }
->(({ children, id, onClick, icon }, ref) => {
+  } & ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, id, icon, ...props }, ref) => {
   return (
     <button
       className={CONNECTION_OPTION_CLASSES}
-      onClick={onClick}
       data-testid={`connector-${id}`}
       ref={ref}
+      {...props}
     >
       {icon}
       {children}

@@ -17,6 +17,7 @@ const createPortMock = (name) => ({
   },
   onMessage: {
     addListener: (callback) => {
+      // TODO: leaking event listeners here
       window.addEventListener(name, (message) => {
         callback(message.detail);
       });
