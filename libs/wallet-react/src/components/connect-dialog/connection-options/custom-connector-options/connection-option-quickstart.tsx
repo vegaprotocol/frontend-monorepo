@@ -24,7 +24,7 @@ export const QuickstartButton = ({
     throw new Error('Tried to render QuickStartButton without an account');
   }
   const chainId = useChainId();
-  const { isLoading, isError, refetch } = useCreateDerivedWallet(
+  const { isLoading, refetch } = useCreateDerivedWallet(
     chainId,
     connector,
     address,
@@ -38,7 +38,7 @@ export const QuickstartButton = ({
         await refetch();
         onClick();
       }}
-      disabled={isLoading || isError}
+      disabled={isLoading}
     >
       {t('Quickstart')}
     </ConnectionOptionButton>
