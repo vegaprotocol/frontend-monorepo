@@ -66,7 +66,7 @@ export const Navbar = () => {
             src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
             className="block w-4"
           /> */}
-          <GradientText className="font-semibold">Nebula</GradientText>
+          <GradientText className="text-2xl font-semibold">Nebula</GradientText>
         </NavLink>
       </div>
 
