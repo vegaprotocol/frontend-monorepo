@@ -258,7 +258,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   // Note that colours are currently arbitrary
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
-    colours = 'text-black dark-text-white bg-green-200';
+    colours = 'text-black bg-green-200';
   } else if (type === 'Transfer Funds' && command?.transfer) {
     const res = getLabelForTransfer(command.transfer);
     type = res.type;
