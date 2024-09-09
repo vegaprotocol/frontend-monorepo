@@ -6,14 +6,12 @@ import {
   useLinks,
   useFeatureFlags,
 } from '@vegaprotocol/environment';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
   VegaIconNames,
   VegaIcon,
   LanguageSelector,
-  ThemeSwitcher,
   Icon,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
@@ -35,6 +33,7 @@ import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
 import { InBrowserWalletButton } from '../browser-wallet-button';
 import { BrowserWallet } from '../browser-wallet';
+import { GradientText } from '../gradient-text';
 
 type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
 
@@ -44,7 +43,6 @@ export const Navbar = () => {
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
   const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
-  const { theme } = useThemeSwitcher();
 
   const status = useWallet((store) => store.status);
 
@@ -63,11 +61,12 @@ export const Navbar = () => {
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          {/* <img
             alt="Logo"
             src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
             className="block w-4"
-          />
+          /> */}
+          <GradientText className="font-semibold">Nebula</GradientText>
         </NavLink>
       </div>
 
@@ -80,7 +79,6 @@ export const Navbar = () => {
       <div className="grow basis-0 flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
         <div className="flex items-center">
-          <ThemeSwitcher />
           <SettingsPopover />
           {IN_BROWSER_WALLET && (
             <div className="hidden lg:block">

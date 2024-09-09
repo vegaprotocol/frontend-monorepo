@@ -23,14 +23,28 @@ export default function Document() {
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-
-        {/* scripts */}
-        <script src="/theme-setter.js" type="text/javascript" async />
-
-        {/* manifest */}
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap"
+          rel="stylesheet"
+        />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <Html>
+      <Html className="dark">
         <body
           // Next.js will set body to display none until js runs. Because the entire app is client rendered
           // and delivered via IPFS we override this to show a server side render loading animation until the
