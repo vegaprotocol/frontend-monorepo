@@ -45,8 +45,9 @@ export const Card = ({
           className={cn(
             'absolute inset-0 p-px bg-gradient-to-br rounded-lg pointer-events-none',
             {
-              'from-blue to-green': variant === 'cool',
-              'from-pink to-blue': variant == 'hot',
+              'from-highlight to-highlight-secondary': variant === 'cool',
+              'from-highlight-secondary to-highlight-tertiary':
+                variant == 'hot',
             }
           )}
         />

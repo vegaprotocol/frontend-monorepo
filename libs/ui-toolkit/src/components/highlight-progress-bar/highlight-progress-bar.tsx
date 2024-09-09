@@ -16,7 +16,7 @@ export const HighlightProgressBar = ({ value }: ProgressBarProps) => {
       className="relative h-2 bg-gs-500 rounded-full overflow-hidden"
     >
       <div
-        className="rounded-full bg-gradient-to-r from-[#4e05cf] to-pink h-full absolute transition-[width] ease-in-out"
+        className="rounded-full bg-gradient-to-r from-highlight to-highlight-secondary h-full absolute transition-[width] ease-in-out"
         style={{ width }}
       />
     </div>
