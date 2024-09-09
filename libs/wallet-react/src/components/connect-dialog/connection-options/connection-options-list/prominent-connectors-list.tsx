@@ -12,7 +12,7 @@ export const ProminentConnectorsList = ({
   connectors: Connector[];
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
       {connectors
         .filter((c) => c.prominent)
         .map((c) => {

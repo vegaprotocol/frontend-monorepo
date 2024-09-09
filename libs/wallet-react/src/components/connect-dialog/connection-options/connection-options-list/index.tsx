@@ -35,15 +35,10 @@ export const ConnectionOptionsList = ({
           />
         </p>
       ) : (
-        <>
-          <ul className="w-full" data-testid="connectors-list">
-            <ProminentConnectorsList
-              {...{ onConnect, setIsInstalling, connectors }}
-            />
-            <AdvancedConnectionOptionsList
-              {...{ onConnect, setIsInstalling, connectors }}
-            />
-          </ul>
+        <ul className="w-full" data-testid="connectors-list">
+          <ProminentConnectorsList
+            {...{ onConnect, setIsInstalling, connectors }}
+          />
           {error && error.code !== ConnectorErrors.userRejected.code && (
             <p
               className="text-intent-danger text-sm first-letter:uppercase"
@@ -53,7 +48,10 @@ export const ConnectionOptionsList = ({
               {error.data ? `: ${error.data}` : ''}
             </p>
           )}
-        </>
+          <AdvancedConnectionOptionsList
+            {...{ onConnect, setIsInstalling, connectors }}
+          />
+        </ul>
       )}
       <a
         href={Links.walletOverview}
