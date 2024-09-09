@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type ConnectorError, QuickStartConnector } from '@vegaprotocol/wallet';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../../hooks/use-t';
@@ -30,9 +30,18 @@ export const QuickstartButton = ({
   const { isLoading, refetch } = useCreateDerivedWallet(
     chainId,
     connector,
-    address,
-    !wasConnected
+    address
   );
+
+  useEffect(() => {
+    const run = async () => {
+      if (!wasConnected) {
+        await refetch();
+        onClick();
+      }
+    };
+    run();
+  }, [onClick, refetch, wasConnected]);
 
   return (
     <>

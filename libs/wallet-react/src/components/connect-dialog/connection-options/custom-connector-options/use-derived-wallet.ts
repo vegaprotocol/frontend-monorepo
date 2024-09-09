@@ -8,12 +8,11 @@ import { useSignTypedData } from 'wagmi';
 export const useCreateDerivedWallet = (
   chainId: number,
   connector: QuickStartConnector,
-  address: string,
-  executeImmediately: boolean
+  address: string
 ) => {
   const { signTypedDataAsync } = useSignTypedData();
   return useQuery({
-    enabled: executeImmediately,
+    enabled: false,
     retryOnMount: false,
     retry: false,
     queryKey: ['ethereum.signTypedData', chainId, address],
@@ -35,6 +34,8 @@ export const useCreateDerivedWallet = (
       )) as unknown as string[];
       const mnemonicString = mnemonic.join(' ');
       await connector.importWallet(mnemonicString);
+
+      return { success: true };
     },
   });
 };
