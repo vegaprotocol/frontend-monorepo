@@ -34,7 +34,6 @@ export const useCreateDerivedWallet = (
       )) as unknown as string[];
       const mnemonicString = mnemonic.join(' ');
       await connector.importWallet(mnemonicString);
-
       return { success: true };
     },
   });

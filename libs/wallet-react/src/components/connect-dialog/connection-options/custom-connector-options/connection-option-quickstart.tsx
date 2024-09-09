@@ -43,8 +43,10 @@ export const QuickstartButton = ({
   }, [onClick, refetch]);
 
   useEffect(() => {
-    createWallet();
-  }, [createWallet]);
+    if (!wasConnected) {
+      createWallet();
+    }
+  }, [createWallet, wasConnected]);
 
   return (
     <>

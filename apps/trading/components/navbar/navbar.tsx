@@ -1,11 +1,6 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
-import {
-  DocsLinks,
-  DApp,
-  useLinks,
-  useFeatureFlags,
-} from '@vegaprotocol/environment';
+import { DocsLinks, DApp, useLinks } from '@vegaprotocol/environment';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
@@ -32,7 +27,6 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
-import { InBrowserWalletButton } from '../browser-wallet-button';
 
 type MenuState = 'wallet' | 'nav' | null;
 
@@ -41,7 +35,6 @@ export const Navbar = () => {
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
-  const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
   const { theme } = useThemeSwitcher();
 
   const status = useWallet((store) => store.status);
@@ -80,11 +73,6 @@ export const Navbar = () => {
         <div className="flex items-center">
           <ThemeSwitcher />
           <SettingsPopover />
-          {IN_BROWSER_WALLET && (
-            <div className="hidden lg:block">
-              <InBrowserWalletButton />
-            </div>
-          )}
           {supportedLngs.length > 1 ? (
             <LanguageSelector
               languages={supportedLngs}
