@@ -10,13 +10,13 @@ import {
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
+  FormGroup,
+  Input,
   Dialog,
   VegaIcon,
   VegaIconNames,
   Button,
+  TradingInputError,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
@@ -109,12 +109,8 @@ export const OrderEditDialog = ({
         noValidate
       >
         <div className="flex flex-col gap-4 md:flex-row">
-          <TradingFormGroup
-            label={t('Price')}
-            labelFor="limitPrice"
-            className="grow"
-          >
-            <TradingInput
+          <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
+            <Input
               type="number"
               step={step}
               {...register('limitPrice', {
@@ -136,9 +132,9 @@ export const OrderEditDialog = ({
                 {errors.limitPrice.message}
               </TradingInputError>
             )}
-          </TradingFormGroup>
-          <TradingFormGroup label={t('Size')} labelFor="size" className="grow">
-            <TradingInput
+          </FormGroup>
+          <FormGroup label={t('Size')} labelFor="size" className="grow">
+            <Input
               type="number"
               step={stepSize}
               {...register('size', {
@@ -160,7 +156,7 @@ export const OrderEditDialog = ({
                 {errors.size.message}
               </TradingInputError>
             )}
-          </TradingFormGroup>
+          </FormGroup>
         </div>
         <Button type="submit">{t('Update')}</Button>
       </form>

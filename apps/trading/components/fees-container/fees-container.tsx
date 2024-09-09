@@ -668,7 +668,7 @@ const YourTier = ({ testId }: YourTierProps) => {
 
   return (
     <span
-      className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white text-xs"
+      className="bg-gradient-to-r from-highlight-tertiary via-highlight to-highlight-secondary whitespace-nowrap rounded-xl px-4 py-1.5 text-black font-semibold uppercase text-xs"
       data-testid={testId}
     >
       {t('Your tier')}

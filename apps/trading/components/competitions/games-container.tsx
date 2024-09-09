@@ -7,11 +7,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { ActiveRewardCard, LinkToGame } from '../rewards-container/reward-card';
-import {
-  VegaIcon,
-  VegaIconNames,
-  TradingInput,
-} from '@vegaprotocol/ui-toolkit';
+import { VegaIcon, VegaIconNames, Input } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { type MarketFieldsFragment } from '@vegaprotocol/markets';
@@ -117,7 +113,7 @@ export const GamesContainer = ({
     <div>
       {/** CARDS FILTER */}
       {data.length > 1 && (
-        <TradingInput
+        <Input
           onChange={(e) =>
             setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
           }

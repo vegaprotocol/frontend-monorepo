@@ -1,10 +1,9 @@
 import flow from 'lodash/flow';
 import compact from 'lodash/compact';
-import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { Loader, Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { getNodes } from '@vegaprotocol/utils';
 import {
@@ -158,7 +157,7 @@ export const ProposalsContainer = () => {
   if (loading || protocolUpgradesLoading) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }

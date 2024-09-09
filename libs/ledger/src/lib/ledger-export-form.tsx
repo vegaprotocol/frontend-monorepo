@@ -5,8 +5,8 @@ import {
   InputError,
   Intent,
   Button,
-  TradingFormGroup,
-  TradingInput,
+  FormGroup,
+  Input,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
 import {
@@ -195,11 +195,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup
-              label={t('Select asset')}
-              labelFor="asset"
-              compact
-            >
+            <FormGroup label={t('Select asset')} labelFor="asset" compact>
               <TradingSelect
                 {...field}
                 id="select-ledger-asset"
@@ -216,7 +212,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
                   );
                 })}
               </TradingSelect>
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}
@@ -238,19 +234,15 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup
-              label={t('Date from')}
-              labelFor="date-from"
-              compact
-            >
-              <TradingInput
+            <FormGroup label={t('Date from')} labelFor="date-from" compact>
+              <Input
                 {...field}
                 type="datetime-local"
                 data-testid="date-from"
                 id="date-from"
                 max={maxFromDate}
               />
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}
@@ -268,15 +260,15 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         }}
         render={({ field, fieldState }) => (
           <div className="mb-2">
-            <TradingFormGroup label={t('Date to')} labelFor="date-to" compact>
-              <TradingInput
+            <FormGroup label={t('Date to')} labelFor="date-to" compact>
+              <Input
                 {...field}
                 type="datetime-local"
                 data-testid="date-to"
                 id="date-to"
                 max={maxToDate}
               />
-            </TradingFormGroup>
+            </FormGroup>
             {fieldState.error && (
               <InputError>{fieldState.error.message}</InputError>
             )}

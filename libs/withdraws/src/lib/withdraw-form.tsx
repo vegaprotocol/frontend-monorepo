@@ -10,8 +10,8 @@ import {
 } from '@vegaprotocol/utils';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
-  TradingFormGroup,
-  TradingInput,
+  FormGroup,
+  Input,
   TradingInputError,
   Notification,
   TradingRichSelect,
@@ -195,7 +195,7 @@ export const WithdrawForm = ({
         noValidate={true}
         data-testid="withdraw-form"
       >
-        <TradingFormGroup
+        <FormGroup
           label={t('To {{chainName}} address', {
             chainName: selectedAsset?.chainId
               ? getChainName(selectedAsset.chainId)
@@ -278,9 +278,9 @@ export const WithdrawForm = ({
               {errors.to.message}
             </TradingInputError>
           )}
-        </TradingFormGroup>
+        </FormGroup>
 
-        <TradingFormGroup label={t('Asset')} labelFor="asset">
+        <FormGroup label={t('Asset')} labelFor="asset">
           <Controller
             control={control}
             name="asset"
@@ -337,7 +337,7 @@ export const WithdrawForm = ({
               {errors.asset.message}
             </TradingInputError>
           )}
-        </TradingFormGroup>
+        </FormGroup>
 
         {selectedAsset && (
           <div className="mb-4">
@@ -351,8 +351,8 @@ export const WithdrawForm = ({
             />
           </div>
         )}
-        <TradingFormGroup label={t('Amount')} labelFor="amount">
-          <TradingInput
+        <FormGroup label={t('Amount')} labelFor="amount">
+          <Input
             data-testid="amount-input"
             type="number"
             autoComplete="off"
@@ -397,7 +397,7 @@ export const WithdrawForm = ({
               />
             </div>
           )}
-        </TradingFormGroup>
+        </FormGroup>
 
         <Button data-testid="submit-withdrawal" type="submit" fill={true}>
           {t('Release funds')}

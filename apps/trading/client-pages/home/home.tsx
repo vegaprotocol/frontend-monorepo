@@ -32,9 +32,7 @@ export const Home = () => {
   return (
     <>
       <header className="flex flex-col items-start gap-6 py-10">
-        <HeaderPage>
-          Explore the <span className="text-accent calt">Console</span>
-        </HeaderPage>
+        <HeaderPage>Explore the Console</HeaderPage>
         <p>Earn on the newest, most exciting markets on the Vega network.</p>
         <Button intent={Intent.Primary} size="lg">
           Get started <VegaIcon name={VegaIconNames.ARROW_RIGHT} />

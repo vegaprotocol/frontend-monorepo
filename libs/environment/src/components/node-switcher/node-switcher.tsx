@@ -3,7 +3,7 @@ import { isValidUrl } from '@vegaprotocol/utils';
 import {
   Button,
   ButtonLink,
-  TradingInput,
+  Input,
   Loader,
   TradingRadio,
   TradingRadioGroup,
@@ -183,7 +183,7 @@ const CustomRowWrapper = ({
             data-testid="custom-node"
             className="flex items-center w-full gap-2"
           >
-            <TradingInput
+            <Input
               data-testid="gql-input"
               placeholder="https://"
               value={customUrl}

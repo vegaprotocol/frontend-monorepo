@@ -10,7 +10,7 @@ import {
   Tab,
   LocalStoragePersistTabs as Tabs,
   TinyScroll,
-  TradingInput,
+  Input,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -130,7 +130,7 @@ const PortfolioAssets = () => {
             '!w-1/2': searchTerm?.length > 10,
           })}
         >
-          <TradingInput
+          <Input
             onChange={(e) => {
               const searchTerm = e.target.value;
               setSearchTerm(searchTerm);

@@ -51,7 +51,7 @@ export const Navbar = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   return (
-    <N.Root className="flex justify-between gap-3 h-10 pr-1 text-surface-1-fg">
+    <N.Root className="flex justify-between gap-3 px-1 lg:px-4 h-12 text-surface-1-fg">
       {/* Left section */}
       <div className="grow basis-0 flex justify-start items-center">
         <NavLink
@@ -269,7 +269,7 @@ const NavbarTrigger = ({
       className={cn(
         'w-full lg:h-full lg:w-auto',
         'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
-        'text-lg lg:text-sm',
+        'text-lg lg:text-base',
         'hover:text-surface-1-fg'
       )}
     >
@@ -300,37 +300,32 @@ const NavbarLink = ({
         end={end}
         className={cn(
           'block flex-col justify-center lg:flex lg:h-full',
-          'px-6 py-2 text-lg lg:p-0 lg:text-sm',
+          'px-6 py-2 text-lg lg:p-0 lg:text-base',
           'hover:text-surface-1-fg'
         )}
         onClick={onClick}
       >
         {({ isActive }) => {
-          const borderClasses = {
-            'border-b-2': true,
-            'border-transparent': !isActive,
-            'border-[color:var(--nav-accent-color)] lg:group-[.navbar-content]:border-transparent':
+          const borderClasses = cn('absolute bottom-0 left-0 h-0.5 w-full', {
+            'bg-gradient-to-r from-highlight-fg to-highlight-secondary-fg':
               isActive,
-          };
+            'bg-transparent': !isActive,
+            'lg:group-[.navbar-content]:hidden': true,
+          });
+
           return (
             <>
               <span
-                className={cn(
-                  'inline-flex gap-1 items-center lg:border-0',
-                  borderClasses,
-                  {
-                    'text-surface-1-fg ': isActive,
-                  }
-                )}
+                className={cn('inline-flex gap-1 items-center lg:border-0', {
+                  'text-surface-1-fg ': isActive,
+                })}
               >
-                {children}
+                <span className="relative">
+                  {children}
+                  <span className={cn('lg:hidden block', borderClasses)} />
+                </span>
               </span>
-              <span
-                className={cn(
-                  'absolute bottom-0 left-0 hidden h-0 w-full lg:block',
-                  borderClasses
-                )}
-              />
+              <span className={cn('hidden lg:block', borderClasses)} />
             </>
           );
         }}
@@ -359,7 +354,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
     <N.Content
       {...props}
       className={cn(
-        'navbar-content group',
+        'group navbar-content',
         'z-20 lg:absolute lg:mt-2 lg:min-w-[290px]',
         'bg-surface-1 lg:border lg:rounded'
       )}
@@ -387,7 +382,7 @@ const NavbarLinkExternal = ({
         to={to}
         className={cn(
           'flex items-center gap-2 lg:h-full',
-          'px-6 py-2 text-lg lg:p-0 lg:text-sm',
+          'px-6 py-2 text-lg lg:p-0 lg:text-base',
           'hover:text-surface-1-fg'
         )}
         onClick={onClick}

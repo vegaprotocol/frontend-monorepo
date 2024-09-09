@@ -4,7 +4,7 @@ import {
   Button,
   Dialog,
   FormGroup,
-  TradingInput as Input,
+  Input,
   LeverageSlider,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';

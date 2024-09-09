@@ -93,7 +93,7 @@ const Title = () => {
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const gridClasses = cn(
-    'grid relative h-full z-0',
+    'grid relative h-full z-0 pt-2',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
 

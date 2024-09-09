@@ -57,21 +57,6 @@ type AffixProps = InputPrepend | InputAppend;
 
 export type InputProps = InputRootProps & AffixProps;
 
-export const inputStyle = ({
-  style,
-  disabled,
-}: {
-  style?: React.CSSProperties;
-  disabled?: boolean;
-}) =>
-  disabled
-    ? {
-        ...style,
-        backgroundImage:
-          'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAAXNSR0IArs4c6QAAACNJREFUGFdjtLS0/M8ABcePH2eEsRlJl4BpBdHIuuFmEi0BABqjEQVjx/LTAAAAAElFTkSuQmCC)',
-      }
-    : style;
-
 const getAffixElement = ({
   prependElement,
   prependIconName,
@@ -80,11 +65,9 @@ const getAffixElement = ({
   appendIconName,
   appendIconDescription,
 }: Pick<InputProps, keyof AffixProps>) => {
-  const position = prependIconName || prependElement ? 'pre' : 'post';
-
-  const className = cn(['fill-black dark:fill-white', 'absolute', 'z-10'], {
-    'left-3': position === 'pre',
-    'right-3': position === 'post',
+  const className = cn('absolute top-0 bottom-0 flex items-center', {
+    'left-2': prependIconName || prependElement,
+    'right-2': appendIconName || appendElement,
   });
 
   const element = prependElement || appendElement;
@@ -97,12 +80,14 @@ const getAffixElement = ({
 
   if (iconName) {
     return (
-      <Icon
-        name={iconName}
-        className={className}
-        aria-label={iconDescription}
-        aria-hidden={!iconDescription}
-      />
+      <span className={className}>
+        <Icon
+          name={iconName}
+          className="fill-black dark:fill-white"
+          aria-label={iconDescription}
+          aria-hidden={!iconDescription}
+        />
+      </span>
     );
   }
 
@@ -127,20 +112,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    const inputClassName = cn(
-      'appearance-none dark:color-scheme-dark',
-      className,
-      {
-        'pl-9': hasPrepended,
-        'pr-9': hasAppended,
-      }
-    );
-
     const input = (
       <input
         {...props}
         ref={ref}
-        className={cn(defaultFormElement(hasError), inputClassName)}
+        className={cn(
+          defaultFormElement(hasError),
+          'appearance-none dark:color-scheme-dark px-3 h-10',
+          {
+            'pl-9': hasPrepended,
+            'pr-9': hasAppended,
+          },
+          className
+        )}
       />
     );
 
@@ -155,7 +139,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     if (element) {
       return (
-        <div className="flex items-center relative">
+        <div className="relative">
           {hasPrepended && element}
           {input}
           {hasAppended && element}

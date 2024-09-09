@@ -19,12 +19,17 @@ export const theme = {
     'button-sm': 'var(--button-border-radius-sm)',
     'button-md': 'var(--button-border-radius-md)',
     'button-lg': 'var(--button-border-radius-lg)',
-    panel: 'var(--panel-border-radius)',
+    grid: 'var(--grid-border-radius)',
+    input: 'var(--input-border-radius)',
   },
   borderWidth: {
     999: 'var(--button-border-width)',
   },
   colors: {
+    transparent: 'transparent',
+    current: 'currentColor',
+    black: 'rgb(var(--color-black) / <alpha-value>)',
+    white: 'rgb(var(--color-white) / <alpha-value>)',
     gs: {
       0: 'rgb(var(--gs-0) / <alpha-value>)',
       50: 'rgb(var(--gs-50) / <alpha-value>)',
@@ -40,7 +45,14 @@ export const theme = {
       900: 'rgb(var(--gs-900) / <alpha-value>)',
       950: 'rgb(var(--gs-950) / <alpha-value>)',
     },
-    accent: 'rgb(var(--content-accent-color) / <alpha-value>)',
+    highlight: 'rgb(var(--highlight) / <alpha-value>)',
+    'highlight-secondary': 'rgb(var(--highlight-secondary) / <alpha-value>)',
+    'highlight-tertiary': 'rgb(var(--highlight-tertiary) / <alpha-value>)',
+    'highlight-fg': 'rgb(var(--highlight-fg) / <alpha-value>)',
+    'highlight-secondary-fg':
+      'rgb(var(--highlight-secondary-fg) / <alpha-value>)',
+    'highlight-tertiary-fg':
+      'rgb(var(--highlight-tertiary-fg) / <alpha-value>)',
     surface: {
       0: {
         DEFAULT: 'rgb(var(--surface-0) / <alpha-value>)',
@@ -113,10 +125,6 @@ export const theme = {
         outline: 'rgb(var(--intent-success-outline) / <alpha-value>)',
       },
     },
-    transparent: 'transparent',
-    current: 'currentColor',
-    black: 'rgb(var(--color-black) / <alpha-value>)',
-    white: 'rgb(var(--color-white) / <alpha-value>)',
     pink: {
       700: 'rgb(var(--color-pink-700) / <alpha-value>)',
       650: 'rgb(var(--color-pink-650) / <alpha-value>)',
@@ -201,6 +209,30 @@ export const theme = {
       350: 'rgb(var(--color-orange-350) / <alpha-value>)',
       300: 'rgb(var(--color-orange-300) / <alpha-value>)',
     },
+    cyan: {
+      700: 'rgb(var(--color-cyan-700) / <alpha-value>)',
+      650: 'rgb(var(--color-cyan-650) / <alpha-value>)',
+      600: 'rgb(var(--color-cyan-600) / <alpha-value>)',
+      550: 'rgb(var(--color-cyan-550) / <alpha-value>)',
+      DEFAULT: 'rgb(var(--color-cyan) / <alpha-value>)',
+      500: 'rgb(var(--color-cyan) / <alpha-value>)',
+      450: 'rgb(var(--color-cyan-450) / <alpha-value>)',
+      400: 'rgb(var(--color-cyan-400) / <alpha-value>)',
+      350: 'rgb(var(--color-cyan-350) / <alpha-value>)',
+      300: 'rgb(var(--color-cyan-300) / <alpha-value>)',
+    },
+    teal: {
+      700: 'rgb(var(--color-teal-700) / <alpha-value>)',
+      650: 'rgb(var(--color-teal-650) / <alpha-value>)',
+      600: 'rgb(var(--color-teal-600) / <alpha-value>)',
+      550: 'rgb(var(--color-teal-550) / <alpha-value>)',
+      DEFAULT: 'rgb(var(--color-teal) / <alpha-value>)',
+      500: 'rgb(var(--color-teal) / <alpha-value>)',
+      450: 'rgb(var(--color-teal-450) / <alpha-value>)',
+      400: 'rgb(var(--color-teal-400) / <alpha-value>)',
+      350: 'rgb(var(--color-teal-350) / <alpha-value>)',
+      300: 'rgb(var(--color-teal-300) / <alpha-value>)',
+    },
     dir: {
       down: {
         DEFAULT: 'rgb(var(--dir-down) / <alpha-value>)',
@@ -217,8 +249,8 @@ export const theme = {
     },
   },
   fontFamily: {
-    mono: ['var(--font-mono)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
-    sans: ['var(--font-sans)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    mono: ['var(--font-mono)'],
+    sans: ['var(--font-sans)'],
     alt: ['var(--font-alt)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
   },
   keyframes: {

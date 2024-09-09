@@ -27,7 +27,7 @@ const SidebarAccordionItem = forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={cn(
-      'rounded-panel overflow-hidden min-h-[40px]',
+      'rounded-grid overflow-hidden min-h-[40px]',
       'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] transition-[flex] flex flex-col',
       className
     )}

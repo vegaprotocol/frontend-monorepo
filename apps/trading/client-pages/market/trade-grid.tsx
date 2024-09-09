@@ -37,7 +37,7 @@ const MainGrid = memo(
       <ResizableGrid onChange={handleRowSizes}>
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
-            <ResizableGridPanel minSize={49} maxSize={49}>
+            <ResizableGridPanel minSize={72} maxSize={72}>
               <ResizableGridPanelChild>
                 <MarketHeader />
               </ResizableGridPanelChild>
@@ -227,7 +227,7 @@ export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
       <div>
         <MarketBanner market={market} />
       </div>
-      <div className="min-h-0 m-1">
+      <div className="min-h-0 m-2">
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>

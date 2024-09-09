@@ -85,7 +85,7 @@ export const CompetitionsActions = ({
 
   /** Action A */
   let createTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Create a public team'),
     disabled: false,
     onClick: (e: event) => {
@@ -99,7 +99,7 @@ export const CompetitionsActions = ({
 
   /** Action B */
   let createPrivateTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Create a private team'),
     disabled: false,
     onClick: (e: event) => {
@@ -113,7 +113,7 @@ export const CompetitionsActions = ({
 
   /** Action C */
   let chooseTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Choose a team'),
     disabled: false,
     onClick: (e: event) => {

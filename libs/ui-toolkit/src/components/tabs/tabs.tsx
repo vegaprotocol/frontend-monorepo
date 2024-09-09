@@ -60,7 +60,7 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = cn(
-              'relative text-xs py-2 px-3',
+              'relative text-xs p-4',
               {
                 'cursor-default bg-surface-2': isActive,
                 'text-surface-1-fg': isActive,

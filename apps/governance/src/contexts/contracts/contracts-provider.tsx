@@ -1,9 +1,8 @@
 import { Token, StakingBridge } from '@vegaprotocol/smart-contracts';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
-import { SplashLoader } from '../../components/splash-loader';
 import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
@@ -82,7 +81,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   if (!contracts) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }

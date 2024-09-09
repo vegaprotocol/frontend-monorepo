@@ -16,16 +16,17 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
           }
         )}
       >
-        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded bg-surface-2">
-          <SliderPrimitives.Range className="absolute h-1 bg-gs-500" />
+        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded dark:bg-gs-300">
+          <SliderPrimitives.Range className="absolute h-1 bg-suface-1-fg" />
           {markers.map((m) => {
             return (
               <button
                 key={m}
                 type="button"
                 className={cn('relative -top-1 w-3 h-3 rounded-full', {
-                  'bg-gs-500': props.value !== undefined && props.value[0] >= m,
-                  'bg-surface-3':
+                  'bg-surface-0-fg':
+                    props.value !== undefined && props.value[0] >= m,
+                  'dark:bg-gs-200':
                     props.value === undefined || props.value[0] < m,
                 })}
                 disabled={props.disabled}
@@ -39,8 +40,8 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
             );
           })}
         </SliderPrimitives.Track>
-        <SliderPrimitives.Thumb className="group cursor-pointer relative block w-5 h-5 border-2 bg-gs-700 dark:bg-gs-300 rounded-full border-surface-1">
-          <span className="group-active:block hidden absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 rounded">
+        <SliderPrimitives.Thumb className="group cursor-pointer relative block w-5 h-5 border-2 bg-surface-0-fg rounded-full border-surface-1">
+          <span className="group-active:block hidden absolute text-xs p-1 -top-1.5 -translate-y-full left-1/2 -translate-x-1/2 rounded bg-surface-1-fg text-surface-1">
             {props.value}
           </span>
         </SliderPrimitives.Thumb>

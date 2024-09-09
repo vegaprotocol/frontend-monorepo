@@ -4,7 +4,7 @@ import { useT } from '../../lib/use-t';
 import { useTeams } from '../../lib/hooks/use-teams';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import {
-  TradingInput as Input,
+  Input,
   Loader,
   VegaIcon,
   VegaIconNames,
@@ -32,7 +32,6 @@ export const CompetitionsTeams = () => {
         <div className="w-full md:w-60">
           <Input
             ref={inputRef}
-            className="bg-surface-2/60"
             placeholder={t('Name')}
             onKeyUp={() => {
               const value = inputRef.current?.value;

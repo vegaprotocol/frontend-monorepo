@@ -63,12 +63,12 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.DISCLAIMER,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [{ index: true, element: <Disclaimer /> }],
     },
     {
       path: AppRoutes.REFERRALS,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           element: <Referrals />,
@@ -128,7 +128,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.FEES,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           index: true,
@@ -138,7 +138,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           index: true,
@@ -148,7 +148,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS_DETAIL,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={1} />,
       children: [
         {
           index: true,

@@ -1,11 +1,10 @@
 import * as Sentry from '@sentry/react';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import type { WithTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
 import { useRoutes } from 'react-router-dom';
 
-import { SplashLoader } from '../components/splash-loader';
 import routerConfig from './router-config';
 
 export interface RouteChildProps {
@@ -49,7 +48,7 @@ export const AppRouter = () => {
 
   const splashLoading = (
     <Splash>
-      <SplashLoader />
+      <Loader />
     </Splash>
   );
 

@@ -1,5 +1,4 @@
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
-import { RainbowButton } from '../../components/rainbow-button';
 import { useState } from 'react';
 import {
   CopyWithTooltip,
@@ -16,7 +15,7 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useT } from '../../lib/use-t';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
@@ -56,13 +55,13 @@ export const CreateCodeContainer = () => {
         {pubKey ? (
           <CreateCodeForm />
         ) : (
-          <RainbowButton
-            variant="border"
+          <Button
+            intent={Intent.Primary}
             disabled={isReadOnly}
             onClick={openWalletDialog}
           >
             {t('Connect wallet')}
-          </RainbowButton>
+          </Button>
         )}
       </div>
     </div>
@@ -71,7 +70,6 @@ export const CreateCodeContainer = () => {
 
 export const CreateCodeForm = () => {
   const t = useT();
-  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [txDialogOpen, setTxDialogOpen] = useState(false);
   const { isReadOnly } = useVegaWallet();
@@ -107,14 +105,14 @@ export const CreateCodeForm = () => {
         )}
       >
         <span>
-          <RainbowButton
-            variant="border"
+          <Button
+            intent={Intent.Primary}
             disabled={isReadOnly}
             onClick={() => setDialogOpen(true)}
             className="w-full"
           >
             {t('Create a referral code')}
-          </RainbowButton>
+          </Button>
         </span>
       </Tooltip>
       <Tooltip
@@ -136,15 +134,14 @@ export const CreateCodeForm = () => {
         }
       >
         <span>
-          <RainbowButton
-            role="link"
-            variant="border"
+          <AnchorButton
+            intent={Intent.Primary}
             disabled={isReadOnly}
-            onClick={() => navigate(Links.COMPETITIONS_CREATE_TEAM())}
             className="w-full"
+            href={Links.COMPETITIONS_CREATE_TEAM()}
           >
             {t('Create a team')}
-          </RainbowButton>
+          </AnchorButton>
         </span>
       </Tooltip>
       <p className="text-xs">
