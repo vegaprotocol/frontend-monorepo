@@ -44,7 +44,6 @@ import {
 } from '@vegaprotocol/environment';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
-import { SplashLoader } from './components/splash-loader';
 import { ToastsManager } from './toasts-manager';
 import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog';
 import { useTranslation } from 'react-i18next';
@@ -129,7 +128,7 @@ const Web3Container = ({
 
   if (!vegaWalletConfig || connectors.length === 0) {
     // Prevent loading when the connectors are not initialized
-    return <SplashLoader />;
+    return <Loader />;
   }
 
   return (

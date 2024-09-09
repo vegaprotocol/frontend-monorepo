@@ -1,8 +1,7 @@
-import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useTranslation } from 'react-i18next';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
-import { SplashLoader } from '../../../components/splash-loader';
 import { useStakingQuery } from '../__generated__/Staking';
 import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import type { ReactElement } from 'react';
@@ -62,7 +61,7 @@ export const NodeContainer = ({
   if (loading) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }

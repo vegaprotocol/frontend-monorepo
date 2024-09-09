@@ -1,10 +1,9 @@
 import { t } from '@vegaprotocol/i18n';
-import { Link, Splash } from '@vegaprotocol/ui-toolkit';
+import { Link, Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../components/heading';
-import { SplashLoader } from '../../components/splash-loader';
 import { ENV } from '../../config/env';
 import type { RouteChildProps } from '../index';
 import { useDocumentTitle } from '../../hooks/use-document-title';
@@ -17,7 +16,7 @@ const Contracts = ({ name }: RouteChildProps) => {
   if (!config) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }

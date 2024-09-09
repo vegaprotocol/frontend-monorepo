@@ -1,6 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Callout,
+  Link,
+  Intent,
+  Splash,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   KeyValueTable,
@@ -11,7 +17,6 @@ import { useTranches } from '../../../lib/tranches/tranches-store';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
-import { SplashLoader } from '../../../components/splash-loader';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 
@@ -44,7 +49,7 @@ export const TokenDetails = ({
   if (!tranches || loading || !config) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }
