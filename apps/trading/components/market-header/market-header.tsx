@@ -22,6 +22,7 @@ import {
 } from '../../client-pages/markets/market-icon';
 import { useT } from '../../lib/use-t';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
+import { MarketBannerIndicator } from '../market-banner/market-banner';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -76,6 +77,9 @@ export const MarketHeader = () => {
       }
     >
       <MarketHeaderSwitch market={data} />
+      <div className="flex w-full justify-end">
+        <MarketBannerIndicator market={data} kind={'ActiveReward'} />
+      </div>
     </Header>
   );
 };

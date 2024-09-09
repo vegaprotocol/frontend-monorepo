@@ -57,6 +57,7 @@ import { IconPause } from './svg-icons/icon-pause';
 import { IconClosed } from './svg-icons/icon-closed';
 import { IconLong } from './svg-icons/icon-long';
 import { IconShort } from './svg-icons/icon-short';
+import { IconTrophy } from './svg-icons/icon-trophy';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -108,6 +109,7 @@ export enum VegaIconNames {
   TRANSFER = 'transfer',
   TREND_DOWN = 'trend-down',
   TREND_UP = 'trend-up',
+  TROPHY = 'trophy',
   TWITTER = 'twitter',
   VOTE = 'vote',
   WITHDRAW = 'withdraw',
@@ -171,6 +173,7 @@ export const VegaIconNameMap: Record<
   tick: IconTick,
   ticket: IconTicket,
   transfer: IconTransfer,
+  trophy: IconTrophy,
   twitter: IconTwitter,
   vote: IconVote,
   withdraw: IconWithdraw,

@@ -7,13 +7,14 @@ import {
   Intent,
 } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
 interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;
   onClose?: () => void;
   className?: string;
+  prefixElement?: ReactNode;
 }
 
 export const NotificationBanner = ({
@@ -34,7 +35,8 @@ export const NotificationBanner = ({
       )}
       {...props}
     >
-      {intent === Intent.None ? null : (
+      {props.prefixElement}
+      {intent === Intent.None || props.prefixElement ? null : (
         <Icon
           name={toastIconMapping[intent]}
           size={4}
