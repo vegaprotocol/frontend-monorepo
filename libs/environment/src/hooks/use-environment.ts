@@ -302,10 +302,6 @@ const compileEnvVars = () => {
       'VEGA_WALLET_URL',
       process.env['NX_VEGA_WALLET_URL'] as string
     ),
-    HOSTED_WALLET_URL: windowOrDefault(
-      'HOSTED_WALLET_URL',
-      process.env['NX_HOSTED_WALLET_URL']
-    ),
     ETHERSCAN_URL: getEtherscanUrl(
       VEGA_ENV,
       windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
