@@ -1,11 +1,6 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
-import {
-  DocsLinks,
-  DApp,
-  useLinks,
-  useFeatureFlags,
-} from '@vegaprotocol/environment';
+import { DApp, useLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
@@ -229,13 +224,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
                 <NavbarSubItem>
                   <NavbarLinkExternal to={EXPLORER_LINK}>
                     {t('Explorer')}
-                  </NavbarLinkExternal>
-                </NavbarSubItem>
-              )}
-              {DocsLinks?.NEW_TO_VEGA && (
-                <NavbarSubItem>
-                  <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
-                    {t('Docs')}
                   </NavbarLinkExternal>
                 </NavbarSubItem>
               )}
