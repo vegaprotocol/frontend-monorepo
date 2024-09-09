@@ -36,8 +36,12 @@ export const QuickstartButton = ({
   useEffect(() => {
     const run = async () => {
       if (!wasConnected) {
-        await refetch();
-        onClick();
+        const res = await refetch();
+        const { status, error } = res;
+        setError(error as ConnectorError);
+        if (status === 'success') {
+          onClick();
+        }
       }
     };
     run();
