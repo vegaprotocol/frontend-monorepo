@@ -1,5 +1,5 @@
 import { type Connector, type ConnectorType } from '@vegaprotocol/wallet';
-import { ConnectionOptionRecord } from './custom-connection-options';
+import { ConnectionOptionRecord } from './custom-connector-options';
 import { ConnectionOptionDefault } from './connection-option-default';
 
 export const ProminentConnectorsList = ({
