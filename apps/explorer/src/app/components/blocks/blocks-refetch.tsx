@@ -11,7 +11,12 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
   };
 
   return (
-    <Button onClick={refresh} data-testid="refresh" size="xs">
+    <Button
+      onClick={refresh}
+      data-testid="refresh"
+      size="xs"
+      className="dark:text-white"
+    >
       <Icon name="refresh" size={3} />
       {t('Load new')}
     </Button>

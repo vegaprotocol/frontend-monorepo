@@ -33,7 +33,7 @@ export const TxsListNavigation = ({
         <BlocksRefetch refetch={refreshTxs} />
         <div className="float-right">
           <Button
-            className="mr-2"
+            className="mr-2 dark:text-white"
             size="xs"
             onClick={() => {
               previousPage();
@@ -42,6 +42,7 @@ export const TxsListNavigation = ({
             {t('Newer')}
           </Button>
           <Button
+            className="dark:text-white"
             size="xs"
             disabled={isEmpty}
             onClick={() => {
