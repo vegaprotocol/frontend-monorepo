@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { type ConnectorError, QuickStartConnector } from '@vegaprotocol/wallet';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../../hooks/use-t';
@@ -33,33 +33,25 @@ export const QuickstartButton = ({
     address
   );
 
+  const createWallet = useCallback(async () => {
+    const res = await refetch();
+    const { status, error } = res;
+    setError(error as ConnectorError);
+    if (status === 'success') {
+      onClick();
+    }
+  }, [onClick, refetch]);
+
   useEffect(() => {
-    const run = async () => {
-      if (!wasConnected) {
-        const res = await refetch();
-        const { status, error } = res;
-        setError(error as ConnectorError);
-        if (status === 'success') {
-          onClick();
-        }
-      }
-    };
-    run();
-  }, [onClick, refetch, wasConnected]);
+    createWallet();
+  }, [createWallet]);
 
   return (
     <>
       <ConnectionOptionButton
         icon={<ConnectorIcon id="embedded-wallet-quickstart" />}
         id="embedded-wallet-quickstart"
-        onClick={async () => {
-          const res = await refetch();
-          const { status, error } = res;
-          setError(error as ConnectorError);
-          if (status === 'success') {
-            onClick();
-          }
-        }}
+        onClick={() => createWallet()}
         disabled={isLoading}
       >
         {t('Quickstart')}
