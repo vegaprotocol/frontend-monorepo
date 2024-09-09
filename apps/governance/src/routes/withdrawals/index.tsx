@@ -1,8 +1,7 @@
-import { Button, Splash } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { Heading } from '../../components/heading';
-import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
   withdrawalProvider,
@@ -52,7 +51,7 @@ const WithdrawPendingContainer = () => {
   if (loading) {
     return (
       <Splash>
-        <SplashLoader />
+        <Loader />
       </Splash>
     );
   }

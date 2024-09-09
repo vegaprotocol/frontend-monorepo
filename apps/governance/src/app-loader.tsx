@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet-react';
 import { useFeatureFlags, useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
@@ -8,7 +8,6 @@ import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashError } from './components/splash-error';
-import { SplashLoader } from './components/splash-loader';
 import {
   AppStateActionType,
   useAppState,
@@ -148,7 +147,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
 
   const loading = (
     <Splash>
-      <SplashLoader />
+      <Loader />
     </Splash>
   );
 
