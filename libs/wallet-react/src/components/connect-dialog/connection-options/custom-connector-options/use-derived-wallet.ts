@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
+import { useConfig } from '../../../../hooks/use-config';
 import { useSignTypedData } from 'wagmi';
 
 /**
@@ -10,6 +11,7 @@ export const useCreateDerivedWallet = (
   connector: QuickStartConnector,
   address: string
 ) => {
+  const state = useConfig();
   const { signTypedDataAsync } = useSignTypedData();
   return useQuery({
     enabled: false,
@@ -17,6 +19,9 @@ export const useCreateDerivedWallet = (
     retry: false,
     queryKey: ['ethereum.signTypedData', chainId, address],
     queryFn: async () => {
+      state.store.setState({
+        status: 'creating',
+      });
       const signedMessage = await signTypedDataAsync({
         domain: { name: 'Vega', chainId: BigInt(chainId) },
         message: { action: 'Vega Onboarding' },
