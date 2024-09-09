@@ -3,17 +3,8 @@ import {
   ConnectionOptionButton,
   ConnectionOptionButtonWithDescription,
 } from './connection-option-button';
-import { type ConnectorType } from '@vegaprotocol/wallet';
 import { ConnectorIcon } from './connector-icon';
-
-interface ConnectionOptionProps {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  showDescription?: boolean;
-  onClick: () => void;
-  onInstall?: () => void;
-}
+import { type ConnectionOptionProps } from './types';
 
 export const ConnectionOptionDefault = ({
   id,

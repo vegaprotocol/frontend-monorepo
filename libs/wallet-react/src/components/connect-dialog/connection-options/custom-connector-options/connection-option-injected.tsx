@@ -1,8 +1,4 @@
-import {
-  type Connector,
-  isBrowserWalletInstalled,
-  type ConnectorType,
-} from '@vegaprotocol/wallet';
+import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../../hooks/use-t';
 import { Links } from '../../../../constants';
@@ -16,21 +12,12 @@ import {
   ConnectionOptionLinkWithDescription,
 } from '../connection-option-link';
 import { ConnectorIcon } from '../connector-icon';
+import { type ConnectionOptionProps } from '../types';
 
 const vegaExtensionsLinks = {
   chrome: Links.chromeExtension,
   firefox: Links.mozillaExtension,
 } as const;
-
-interface ConnectionOptionProps {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  showDescription?: boolean;
-  onClick: () => void;
-  onInstall?: () => void;
-  connector: Connector;
-}
 
 /**
  * This component is specific for the Vega wallet connection option,

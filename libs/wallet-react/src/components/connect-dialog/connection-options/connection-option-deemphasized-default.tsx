@@ -1,14 +1,6 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { ConnectionOptionButton } from './connection-option-button';
-import { type ConnectorType } from '@vegaprotocol/wallet';
-
-interface ConnectionOptionProps {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  onClick: () => void;
-  onInstall?: () => void;
-}
+import { type ConnectionOptionProps } from './types';
 
 export const ConnectionOptionDeemphasizedDefault = ({
   id,

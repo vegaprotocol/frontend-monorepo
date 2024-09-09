@@ -61,10 +61,10 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={cn(
             defaultWrapperClasses,
-            'bg-white text-gs-50 dark:text-gs-950'
+            'bg-black dark:bg-white text-gs-50 dark:text-gs-950 text-xs'
           )}
         >
-          <VegaIcon name={VegaIconNames.STAR} size={20} />
+          <span className="relative -top-0.5">{'>_'}</span>
         </span>
       );
     }

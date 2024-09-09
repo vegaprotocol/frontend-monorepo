@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  type Connector,
-  QuickStartConnector,
-  type ConnectorType,
-} from '@vegaprotocol/wallet';
+import { QuickStartConnector } from '@vegaprotocol/wallet';
 import { Button, Intent } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../../hooks/use-t';
 import { ConnectionOptionButton } from '../connection-option-button';
@@ -11,16 +7,7 @@ import { ConnectorIcon } from '../connector-icon';
 import { useAccount, useChainId } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import { useCreateDerivedWallet } from './use-derived-wallet';
-
-interface ConnectionOptionProps {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  showDescription?: boolean;
-  onClick: () => void;
-  onInstall?: () => void;
-  connector: Connector;
-}
+import { type ConnectionOptionProps } from '../types';
 
 export const QuickstartButton = ({
   connector,

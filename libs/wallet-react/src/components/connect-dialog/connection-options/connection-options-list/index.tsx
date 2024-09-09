@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { ConnectorErrors, type ConnectorType } from '@vegaprotocol/wallet';
 import { DialogTitle } from '@vegaprotocol/ui-toolkit';
-import { useT } from '../../../hooks/use-t';
-import { useWallet } from '../../../hooks/use-wallet';
-import { useConnect } from '../../../hooks/use-connect';
-import { Links } from '../../../constants';
+import { useT } from '../../../../hooks/use-t';
+import { useWallet } from '../../../../hooks/use-wallet';
+import { useConnect } from '../../../../hooks/use-connect';
+import { Links } from '../../../../constants';
 import { Trans } from 'react-i18next';
 import { ProminentConnectorsList } from './prominent-connectors-list';
 import { AdvancedConnectionOptionsList } from './advanced-connection-options-list';
 
-export const ConnectionOptions = ({
+export const ConnectionOptionsList = ({
   onConnect,
 }: {
   onConnect: (id: ConnectorType) => void;

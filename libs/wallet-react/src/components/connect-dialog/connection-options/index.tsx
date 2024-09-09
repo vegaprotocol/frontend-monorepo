@@ -1,3 +1,3 @@
-export * from './connection-options';
+export * from './connection-options-list';
 export * from './connection-option-default';
-export * from './custom-connector-options/custom-connection-options';
+export * from './custom-connector-options';

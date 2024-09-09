@@ -1,7 +1,7 @@
 import { type Connector, type ConnectorType } from '@vegaprotocol/wallet';
 import { Accordion, AccordionItem } from '@vegaprotocol/ui-toolkit';
-import { useT } from '../../../hooks/use-t';
-import { ConnectionOptionDeemphasizedDefault } from './connection-option-deemphasized-default';
+import { useT } from '../../../../hooks/use-t';
+import { ConnectionOptionDeemphasizedDefault } from '../connection-option-deemphasized-default';
 
 export const AdvancedConnectionOptionsList = ({
   onConnect,
