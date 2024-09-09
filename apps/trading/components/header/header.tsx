@@ -9,16 +9,17 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header className="h-10 flex items-center">
+    <header className="h-full flex">
       <div className="flex flex-col items-start justify-center pl-2">
         {title}
       </div>
-      <div data-testid="header-summary" className="grow min-w-0">
+      <div data-testid="header-summary" className="relative grow min-w-0">
         <TinyScroll orientation="horizontal">
-          <div className="flex items-center px-3 py-1 text-xs lg:px-4 flex-nowrap gap-6">
+          <div className="flex items-center px-3 py-3 text-xs lg:px-4 flex-nowrap gap-6">
             {children}
           </div>
         </TinyScroll>
+        <span className="absolute top-0 right-0 h-full w-14 bg-gradient-to-r from-transparent to-surface-1/70" />
       </div>
     </header>
   );

@@ -1,5 +1,20 @@
 import { parseISO, isValid } from 'date-fns';
 
+/** A representation of a second in milliseconds */
+export const SECOND = 1000;
+
+/** A representation of a minute in milliseconds */
+export const MINUTE = 60 * SECOND;
+
+/** A representation of an hour in milliseconds */
+export const HOUR = 60 * MINUTE;
+
+/** A representation of a day in milliseconds */
+export const DAY = 24 * HOUR;
+
+/** A representation of a week in milliseconds */
+export const WEEK = 7 * DAY;
+
 export const toNanoSeconds = (date: Date | string) => {
   return new Date(date).getTime().toString() + '000000';
 };
@@ -55,17 +70,13 @@ type Duration = {
 };
 
 export const convertToDuration = (time: number): Duration => {
-  const s = 1000;
-  const m = 1000 * 60;
-  const h = 1000 * 60 * 60;
-  const d = 1000 * 60 * 60 * 24;
-
   const t = Math.abs(time);
-
-  const days = Math.floor(t / d);
-  const hours = Math.floor((t - days * d) / h);
-  const minutes = Math.floor((t - days * d - hours * h) / m);
-  const seconds = Math.floor((t - days * d - hours * h - minutes * m) / s);
+  const days = Math.floor(t / DAY);
+  const hours = Math.floor((t - days * DAY) / HOUR);
+  const minutes = Math.floor((t - days * DAY - hours * HOUR) / MINUTE);
+  const seconds = Math.floor(
+    (t - days * DAY - hours * HOUR - minutes * MINUTE) / SECOND
+  );
 
   return { days, hours, minutes, seconds };
 };

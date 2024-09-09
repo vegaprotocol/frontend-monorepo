@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { cn } from '../../utils/cn';
+import type { ReactNode } from 'react';
 
 export interface FormGroupProps {
   children: ReactNode;
@@ -7,6 +7,7 @@ export interface FormGroupProps {
   label: string | ReactNode; // For accessibility reasons this must always be set for screen readers. If you want it to not show, then use the hideLabel prop"
   labelFor: string; // Same as above
   hideLabel?: boolean;
+  disabled?: boolean;
   labelDescription?: string;
   labelAlign?: 'left' | 'right';
   compact?: boolean;
@@ -21,6 +22,7 @@ export const FormGroup = ({
   labelAlign = 'left',
   hideLabel = false,
   compact = false,
+  disabled = false,
 }: FormGroupProps) => {
   const wrapperClasses = cn(
     'relative',
@@ -30,9 +32,10 @@ export const FormGroup = ({
     },
     className
   );
-  const labelClasses = cn('block mb-2 text-sm', {
+  const labelClasses = cn('block mb-1 text-xs text-surface-1-fg', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
+    'text-surface-1-fg-muted': disabled,
   });
   return (
     <div data-testid="form-group" className={wrapperClasses}>
@@ -40,7 +43,9 @@ export const FormGroup = ({
         <label htmlFor={labelFor} className={labelClasses}>
           {label}
           {labelDescription && (
-            <div className="font-light mt-1">{labelDescription}</div>
+            <div className="font-light mt-1 text-surface-1-fg-muted">
+              {labelDescription}
+            </div>
           )}
         </label>
       )}

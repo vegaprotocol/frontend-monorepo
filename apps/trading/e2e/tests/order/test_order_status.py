@@ -204,7 +204,7 @@ def page(setup_environment, browser, request):
     with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
-        page.goto("/")
+        page.goto(f"/#/markets/{market_id}")
         yield page
 
 

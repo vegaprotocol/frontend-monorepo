@@ -19,12 +19,7 @@ export const CompetitionsActionsContainer = ({
     | ReactElement<typeof CompetitionsAction>
     | Iterable<ReactElement<typeof CompetitionsAction>>;
 }) => (
-  <div
-    className="grid grid-cols-1 md:grid-cols-3 grid-rows-4'
- gap-6"
-  >
-    {children}
-  </div>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">{children}</div>
 );
 
 export const CompetitionsAction = ({
@@ -90,7 +85,7 @@ export const CompetitionsActions = ({
 
   /** Action A */
   let createTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Create a public team'),
     disabled: false,
     onClick: (e: event) => {
@@ -104,7 +99,7 @@ export const CompetitionsActions = ({
 
   /** Action B */
   let createPrivateTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Create a private team'),
     disabled: false,
     onClick: (e: event) => {
@@ -118,7 +113,7 @@ export const CompetitionsActions = ({
 
   /** Action C */
   let chooseTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Primary,
+    intent: Intent.Secondary,
     children: t('Choose a team'),
     disabled: false,
     onClick: (e: event) => {

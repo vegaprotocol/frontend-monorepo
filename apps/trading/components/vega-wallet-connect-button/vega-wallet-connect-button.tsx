@@ -27,7 +27,7 @@ import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
 
 export const VegaWalletConnectButton = ({
-  intent = Intent.None,
+  intent = Intent.Primary,
   onClick,
 }: {
   intent?: Intent;

@@ -32,8 +32,7 @@ import { CompetitionsGame } from '../client-pages/competitions/competitions-game
 import { Swap } from '../client-pages/swap/swap';
 import { NotFound } from '../client-pages/not-found';
 
-import { LayoutCentered } from '../components/layouts';
-import { LayoutFull } from '../components/layouts/layout-full';
+import { LayoutCentered, LayoutFull } from '../components/layouts';
 
 import { Routes as AppRoutes } from '../lib/links';
 import { Explore } from '../client-pages/amm/explore';
@@ -42,6 +41,7 @@ import { MarketPage as Pool } from '../client-pages/amm/pools/market/index';
 import { Liquidity as MyLiquidity } from '../client-pages/amm/liquidity';
 import { ManageLiquidity } from '../client-pages/amm/pools/market/manage-liquidity';
 import { AmmWrapper } from '../client-pages/amm/amm-wrapper';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -49,19 +49,26 @@ const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
 export const useRouterConfig = (): RouteObject[] => {
+  const { flags } = useFeatureFlags();
   const routeConfig = compact([
     {
       index: true,
-      element: <Home />,
+      element: flags.ENABLE_HOMEPAGE ? (
+        <LayoutCentered backdrop={1}>
+          <Home />
+        </LayoutCentered>
+      ) : (
+        <Navigate to={AppRoutes.MARKETS} />
+      ),
     },
     {
       path: AppRoutes.DISCLAIMER,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [{ index: true, element: <Disclaimer /> }],
     },
     {
       path: AppRoutes.REFERRALS,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           element: <Referrals />,
@@ -86,9 +93,8 @@ export const useRouterConfig = (): RouteObject[] => {
       path: AppRoutes.COMPETITIONS,
       element: <Outlet />,
       children: [
-        // with planet/stars
         {
-          element: <LayoutCentered />,
+          element: <LayoutCentered backdrop={1} />,
           children: [
             { index: true, element: <CompetitionsHome /> },
             {
@@ -97,9 +103,8 @@ export const useRouterConfig = (): RouteObject[] => {
             },
           ],
         },
-        // pages with blurred background
         {
-          element: <LayoutCentered variant="gradient" />,
+          element: <LayoutCentered backdrop={2} />,
           children: [
             {
               path: AppRoutes.COMPETITIONS_CREATE_TEAM,
@@ -123,7 +128,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.FEES,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           index: true,
@@ -133,7 +138,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS,
-      element: <LayoutCentered />,
+      element: <LayoutCentered backdrop={2} />,
       children: [
         {
           index: true,
@@ -143,7 +148,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS_DETAIL,
-      element: <LayoutCentered variant="gradient" />,
+      element: <LayoutCentered backdrop={1} />,
       children: [
         {
           index: true,
@@ -153,11 +158,15 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.MARKETS,
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={1} />,
       children: [
         {
-          element: <LayoutCentered />,
-          children: [{ index: true, element: <MarketsPage /> }],
+          index: true,
+          element: (
+            <LayoutCentered>
+              <MarketsPage />
+            </LayoutCentered>
+          ),
         },
         {
           path: 'all',
@@ -171,7 +180,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.PORTFOLIO,
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={1} />,
       children: [
         {
           index: true,
@@ -192,7 +201,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'liquidity',
-      element: <LayoutFull />,
+      element: <LayoutFull backdrop={2} />,
       children: [
         {
           path: ':marketId',
@@ -202,10 +211,12 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.AMM,
-      element: (
+      element: flags.ENABLE_AMM ? (
         <AmmWrapper>
-          <LayoutCentered />
+          <LayoutCentered backdrop={3} />
         </AmmWrapper>
+      ) : (
+        <Navigate to={AppRoutes.HOME} />
       ),
       children: [
         {

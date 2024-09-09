@@ -1,6 +1,6 @@
 import {
   FormGroup,
-  TradingInput,
+  Input,
   TradingInputError,
   TradingRichSelect,
   TradingRichSelectOption,
@@ -27,7 +27,7 @@ export function ToPubKey(props: {
           <FormGroup label={t('To (Vega key)')} labelFor="toPubKey">
             <VegaKeySelect
               onChange={() => form.setValue('toPubKey', '')}
-              input={<TradingInput {...field} />}
+              input={<Input {...field} />}
               select={
                 <TradingRichSelect
                   placeholder={t('Select public key')}

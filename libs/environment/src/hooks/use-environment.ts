@@ -9,11 +9,7 @@ import {
   type NodeCheckTimeUpdateSubscription,
   type NodeCheckQuery,
 } from '../utils/__generated__/NodeCheck';
-import {
-  type CosmicElevatorFlags,
-  type Environment,
-  type FeatureFlags,
-} from '../types';
+import { type Environment, type FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { tomlConfigSchema } from '../utils/validate-configuration';
@@ -266,9 +262,7 @@ const testSubscription = (
   });
 };
 
-export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
-  'CROSS_CHAIN_DEPOSITS_TEST',
-];
+export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [];
 
 /**
  * Retrieve env vars, parsing where needed some type casting is needed
@@ -307,10 +301,6 @@ const compileEnvVars = () => {
     VEGA_WALLET_URL: windowOrDefault(
       'VEGA_WALLET_URL',
       process.env['NX_VEGA_WALLET_URL'] as string
-    ),
-    HOSTED_WALLET_URL: windowOrDefault(
-      'HOSTED_WALLET_URL',
-      process.env['NX_HOSTED_WALLET_URL']
     ),
     ETHERSCAN_URL: getEtherscanUrl(
       VEGA_ENV,
@@ -456,53 +446,11 @@ export const getUserEnabledFeatureFlags = (
 
 const TRUTHY = ['1', 'true'];
 export const compileFeatureFlags = (refresh = false): FeatureFlags => {
-  const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
-    ICEBERG_ORDERS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_ICEBERG_ORDERS',
-        process.env['NX_ICEBERG_ORDERS']
-      ) as string
-    ),
-    STOP_ORDERS: TRUTHY.includes(
-      windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
-    ),
+  const TRADING_FLAGS = {
     TWAP_REWARDS: TRUTHY.includes(
       windowOrDefault(
         'NX_TWAP_REWARDS',
         process.env['NX_TWAP_REWARDS']
-      ) as string
-    ),
-    TAKE_PROFIT_STOP_LOSS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_TAKE_PROFIT_STOP_LOSS',
-        process.env['NX_TAKE_PROFIT_STOP_LOSS']
-      ) as string
-    ),
-    SWAP: TRUTHY.includes(
-      windowOrDefault('NX_SWAP', process.env['NX_SWAP']) as string
-    ),
-    ISOLATED_MARGIN: TRUTHY.includes(
-      windowOrDefault(
-        'NX_ISOLATED_MARGIN',
-        process.env['NX_ISOLATED_MARGIN']
-      ) as string
-    ),
-    SUCCESSOR_MARKETS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_SUCCESSOR_MARKETS',
-        process.env['NX_SUCCESSOR_MARKETS']
-      ) as string
-    ),
-    PRODUCT_PERPETUALS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_PRODUCT_PERPETUALS',
-        process.env['NX_PRODUCT_PERPETUALS']
-      ) as string
-    ),
-    METAMASK_SNAPS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_METAMASK_SNAPS',
-        process.env['NX_METAMASK_SNAPS']
       ) as string
     ),
     DISABLE_CLOSE_POSITION: TRUTHY.includes(
@@ -511,22 +459,13 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_DISABLE_CLOSE_POSITION']
       ) as string
     ),
-    UPDATE_MARKET_STATE: TRUTHY.includes(
-      windowOrDefault(
-        'NX_UPDATE_MARKET_STATE',
-        process.env['NX_UPDATE_MARKET_STATE']
-      ) as string
+    ENABLE_AMM: TRUTHY.includes(
+      windowOrDefault('NX_ENABLE_AMM', process.env['NX_ENABLE_AMM']) as string
     ),
-    GOVERNANCE_TRANSFERS: TRUTHY.includes(
+    ENABLE_HOMEPAGE: TRUTHY.includes(
       windowOrDefault(
-        'NX_GOVERNANCE_TRANSFERS',
-        process.env['NX_GOVERNANCE_TRANSFERS']
-      ) as string
-    ),
-    VOLUME_DISCOUNTS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_VOLUME_DISCOUNTS',
-        process.env['NX_VOLUME_DISCOUNTS']
+        'NX_ENABLE_HOMEPAGE',
+        process.env['NX_ENABLE_HOMEPAGE']
       ) as string
     ),
   };
@@ -586,12 +525,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_EXPLORER_VALIDATORS']
       ) as string
     ),
-    IN_BROWSER_WALLET: TRUTHY.includes(
-      windowOrDefault(
-        'NX_IN_BROWSER_WALLET',
-        process.env['NX_IN_BROWSER_WALLET']
-      ) as string
-    ),
   };
 
   const GOVERNANCE_FLAGS = {
@@ -610,18 +543,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   };
 
   const EXPERIMENTAL_FLAGS = {
-    CROSS_CHAIN_DEPOSITS_ENABLED: TRUTHY.includes(
-      windowOrDefault(
-        'NX_CROSS_CHAIN_DEPOSITS_ENABLED',
-        process.env['NX_CROSS_CHAIN_DEPOSITS_ENABLED']
-      ) as string
-    ),
-    CROSS_CHAIN_DEPOSITS_TEST: TRUTHY.includes(
-      windowOrDefault(
-        'NX_CROSS_CHAIN_DEPOSITS_TEST',
-        process.env['NX_CROSS_CHAIN_DEPOSITS_TEST']
-      ) as string
-    ),
     IN_BROWSER_WALLET: TRUTHY.includes(
       windowOrDefault(
         'NX_IN_BROWSER_WALLET',
@@ -631,7 +552,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   };
 
   const flags = {
-    ...COSMIC_ELEVATOR_FLAGS,
+    ...TRADING_FLAGS,
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
     ...EXPERIMENTAL_FLAGS,

@@ -8,6 +8,7 @@ export type EmblemByAssetProps = {
   asset: string;
   vegaChain?: string;
   showSourceChain?: boolean;
+  size?: number;
 };
 
 /**

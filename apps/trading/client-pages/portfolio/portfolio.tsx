@@ -4,14 +4,13 @@ import { LayoutPriority } from 'allotment';
 import { cn } from '@vegaprotocol/ui-toolkit';
 
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import {
   Intent,
   Notification,
   Tab,
   LocalStoragePersistTabs as Tabs,
   TinyScroll,
-  TradingInput,
+  Input,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -124,14 +123,14 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="flex justify-between bg-surface-2 ">
+      <div className="flex justify-between bg-surface-2/70">
         <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
           className={cn('transition-all w-1/3 p-1 relative', {
             '!w-1/2': searchTerm?.length > 10,
           })}
         >
-          <TradingInput
+          <Input
             onChange={(e) => {
               const searchTerm = e.target.value;
               setSearchTerm(searchTerm);
@@ -174,7 +173,6 @@ const PortfolioAssets = () => {
 
 const PortfolioActionTabs = () => {
   const t = useT();
-  const flags = useFeatureFlags((state) => state.flags);
   const navigate = useNavigate();
   const onDeposit = () => navigate(Links.DEPOSIT());
 
@@ -217,15 +215,13 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
-      {flags.SWAP ? (
-        <Tab id="swap" name={t('Swap')}>
-          <ErrorBoundary feature="assets-swap">
-            <div className="p-4">
-              <SwapContainer onDeposit={onDeposit} />
-            </div>
-          </ErrorBoundary>
-        </Tab>
-      ) : null}
+      <Tab id="swap" name={t('Swap')}>
+        <ErrorBoundary feature="assets-swap">
+          <div className="p-4">
+            <SwapContainer onDeposit={onDeposit} />
+          </div>
+        </ErrorBoundary>
+      </Tab>
     </Tabs>
   );
 };

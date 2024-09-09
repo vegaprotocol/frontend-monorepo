@@ -61,7 +61,6 @@ import {
 import {
   DApp,
   BlockExplorerLink,
-  useFeatureFlags,
   TOKEN_PROPOSAL,
   useEnvironment,
   useLinks,
@@ -257,13 +256,11 @@ export const KeyDetailsInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const { data: parentMarketIdData } = useParentMarketIdQuery({
     variables: {
       marketId: market.id,
     },
-    skip: !featureFlags.SUCCESSOR_MARKETS,
   });
   const proposalId =
     (market.marketProposal?.__typename === 'Proposal' &&
@@ -275,12 +272,10 @@ export const KeyDetailsInfoPanel = ({
       variables: {
         proposalId,
       },
-      skip:
-        !featureFlags.SUCCESSOR_MARKETS ||
-        !(
-          market.marketProposal?.__typename === 'Proposal' &&
-          market.marketProposal?.id
-        ),
+      skip: !(
+        market.marketProposal?.__typename === 'Proposal' &&
+        market.marketProposal?.id
+      ),
     });
 
   let successorConfiguration: SuccessorConfiguration | false = false;
@@ -424,7 +419,7 @@ export const KeyDetailsInfoPanel = ({
       </KeyValueTable>
       <MarketInfoTable
         data={
-          featureFlags.SUCCESSOR_MARKETS && successorConfiguration
+          successorConfiguration
             ? {
                 name: market.tradableInstrument.instrument.name,
                 parentMarketID:

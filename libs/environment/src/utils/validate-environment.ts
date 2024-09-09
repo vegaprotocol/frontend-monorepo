@@ -97,7 +97,6 @@ export const envSchema = z
     ETHERSCAN_URL: z.string().url({
       message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
     }),
-    HOSTED_WALLET_URL: z.optional(z.string()),
     ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
@@ -123,20 +122,11 @@ export const envSchema = z
     }
   );
 
-const COSMIC_ELEVATOR_FLAGS = {
-  SUCCESSOR_MARKETS: z.optional(z.boolean()),
-  STOP_ORDERS: z.optional(z.boolean()),
-  TAKE_PROFIT_STOP_LOSS: z.optional(z.boolean()),
-  SWAP: z.optional(z.boolean()),
+const TRADING_FLAGS = {
   TWAP_REWARDS: z.optional(z.boolean()),
-  ISOLATED_MARGIN: z.optional(z.boolean()),
-  ICEBERG_ORDERS: z.optional(z.boolean()),
-  PRODUCT_PERPETUALS: z.optional(z.boolean()),
-  METAMASK_SNAPS: z.optional(z.boolean()),
-  UPDATE_MARKET_STATE: z.optional(z.boolean()),
-  GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
-  VOLUME_DISCOUNTS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
+  ENABLE_AMM: z.optional(z.boolean()),
+  ENABLE_HOMEPAGE: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {
@@ -157,13 +147,11 @@ const GOVERNANCE_FLAGS = {
 };
 
 const EXPERIMENTAL_FLAGS = {
-  CROSS_CHAIN_DEPOSITS_ENABLED: z.optional(z.boolean()),
-  CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()),
   IN_BROWSER_WALLET: z.optional(z.boolean()),
 };
 
 export const featureFlagsSchema = z.object({
-  ...COSMIC_ELEVATOR_FLAGS,
+  ...TRADING_FLAGS,
   ...EXPLORER_FLAGS,
   ...GOVERNANCE_FLAGS,
   ...EXPERIMENTAL_FLAGS,

@@ -50,10 +50,7 @@ export const Tabs = ({
       }}
       className="h-full grid grid-rows-[min-content_1fr] relative"
     >
-      <div
-        ref={wrapperRef}
-        className="flex flex-wrap justify-between min-w-0 bg-surface-1"
-      >
+      <div ref={wrapperRef} className="flex flex-wrap justify-between min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -63,7 +60,7 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = cn(
-              'relative text-xs py-2 px-3',
+              'relative text-xs p-4',
               {
                 'cursor-default bg-surface-2': isActive,
                 'text-surface-1-fg': isActive,
@@ -124,7 +121,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className={cn('h-full bg-surface-1', {
+              className={cn('h-full', {
                 'overflow-hidden': child.props.overflowHidden,
               })}
               data-testid={`tab-${child.props.id}`}

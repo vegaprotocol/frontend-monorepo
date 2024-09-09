@@ -1,6 +1,8 @@
 import { restApiUrl } from '../paths';
 import {
   type v2ListLatestMarketDataResponse,
+  type v2GetLatestMarketDataResponse,
+  type vegaMarketData,
   vegaCompositePriceType,
   vegaMarketState,
 } from '@vegaprotocol/rest-clients/dist/trading-data';
@@ -8,17 +10,9 @@ import axios from 'axios';
 import compact from 'lodash/compact';
 import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
-import { Decimal } from '../utils';
-import { type Markets, queryKeys as marketQueryKeys } from './markets';
-import type { QueryClient } from '@tanstack/react-query';
-
-const parametersSchema = z.optional(
-  z.object({
-    market: z.optional(z.string()),
-  })
-);
-
-export type MarketsDataQueryParams = z.infer<typeof parametersSchema>;
+import { Decimal, Time } from '../utils';
+import { type Market, getMarket, getMarkets } from './markets';
+import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
 export const marketDataSchema = z.object({
   marketId: z.string(),
@@ -32,65 +26,104 @@ export const marketDataSchema = z.object({
     })
   ),
   state: z.nativeEnum(vegaMarketState),
+  openInterest: z.instanceof(Decimal),
 });
 export type MarketData = z.infer<typeof marketDataSchema>;
 
 const marketsDataSchema = z.map(z.string(), marketDataSchema);
 export type MarketsData = z.infer<typeof marketsDataSchema>;
 
-export async function retrieveMarketsData(
-  queryClient: QueryClient,
-  params?: MarketsDataQueryParams
-) {
-  const endpoint = restApiUrl('/api/v2/markets/data');
-  const searchParams = parametersSchema.parse(params);
-
-  const markets = queryClient.getQueryData<Markets>(marketQueryKeys.list());
-  if (!markets) {
-    throw new Error('markets not cached');
-  }
-
-  const res = await axios.get<v2ListLatestMarketDataResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
+export function marketsDataOptions(queryClient: QueryClient) {
+  return queryOptions({
+    queryKey: queryKeys.list(),
+    queryFn: () => retrieveMarketsData(queryClient),
+    staleTime: Time.MIN,
   });
+}
+
+export async function retrieveMarketsData(queryClient: QueryClient) {
+  const endpoint = restApiUrl('/api/v2/markets/data');
+
+  const [markets, res] = await Promise.all([
+    getMarkets(queryClient),
+    axios.get<v2ListLatestMarketDataResponse>(endpoint),
+  ]);
 
   const data = compact(
     res.data.marketsData?.map((d) => {
-      if (!d.market) return undefined;
+      if (!d.market) return null;
 
-      const market = markets?.get(d.market);
-      if (!market) return undefined;
+      const market = markets.get(d.market);
 
-      const asset = market.quoteAsset;
+      if (!market) return null;
 
-      const markPrice = new Decimal(d.markPrice, market.decimalPlaces);
-
-      const priceSources = compact(
-        d.markPriceState?.priceSources?.map((ps) => ({
-          priceSource: ps.priceSource,
-          price: new Decimal(ps.price, asset.decimals),
-          lastUpdated: Number(ps.lastUpdated),
-        }))
-      );
-
-      const marketData = {
-        marketId: d.market,
-        markPrice,
-        markPriceType: d.markPriceType,
-        markPriceSources: priceSources,
-        state: d.marketState,
-      };
-
-      return marketData;
+      return mapMarketData(d, market);
     })
   );
 
   const map = new Map(Object.entries(keyBy(data, 'marketId')));
   const marketsData = marketsDataSchema.parse(map);
 
-  // TODO: Consider just updating the state (if different) in the main `useMarkets` hook.
-
   return marketsData;
+}
+
+const pathParamsSchema = z.object({
+  marketId: z.string().optional(),
+});
+export type MarketsDataPathParams = z.infer<typeof pathParamsSchema>;
+
+export function marketDataOptions(queryClient: QueryClient, marketId?: string) {
+  return queryOptions({
+    queryKey: queryKeys.single(marketId),
+    queryFn: () => retrieveMarketData(queryClient, { marketId }),
+    staleTime: Time.MIN,
+    refetchInterval: Time.MIN,
+  });
+}
+
+export async function retrieveMarketData(
+  queryClient: QueryClient,
+  pathParams: MarketsDataPathParams
+) {
+  if (!pathParams.marketId) {
+    return;
+  }
+
+  const endpoint = restApiUrl('/api/v2/market/data/{marketId}/latest', {
+    marketId: pathParams.marketId,
+  });
+
+  const [market, res] = await Promise.all([
+    getMarket(queryClient, pathParams.marketId),
+    axios.get<v2GetLatestMarketDataResponse>(endpoint),
+  ]);
+
+  const data = res.data.marketData;
+
+  if (!data) return;
+
+  return marketDataSchema.parse(mapMarketData(data, market));
+}
+
+function mapMarketData(data: vegaMarketData, market: Market) {
+  const asset = market.quoteAsset;
+  const priceSources = compact(
+    data.markPriceState?.priceSources?.map((ps) => ({
+      priceSource: ps.priceSource,
+      price: new Decimal(ps.price, asset.decimals),
+      lastUpdated: Number(ps.lastUpdated),
+    }))
+  );
+  const marketData = {
+    marketId: data.market,
+    markPrice: new Decimal(data.markPrice, market.decimalPlaces),
+    markPriceType: data.markPriceType,
+    markPriceSources: priceSources,
+    state: data.marketState,
+    openInterest: new Decimal(data.openInterest, market.positionDecimalPlaces),
+  };
+
+  return marketData;
 }
 
 export const queryKeys = {

@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { LayoutPriority } from 'allotment';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
@@ -23,7 +22,6 @@ interface TradeGridProps {
 
 const MainGrid = memo(
   ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
-    const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const [rowSizes, handleRowSizes] = usePaneLayout({
       id: 'trade-row',
@@ -39,7 +37,7 @@ const MainGrid = memo(
       <ResizableGrid onChange={handleRowSizes}>
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
-            <ResizableGridPanel minSize={49} maxSize={49}>
+            <ResizableGridPanel minSize={72} maxSize={72}>
               <ResizableGridPanelChild>
                 <MarketHeader />
               </ResizableGridPanelChild>
@@ -169,20 +167,16 @@ const MainGrid = memo(
                       />
                     </ErrorBoundary>
                   </Tab>
-                  {featureFlags.STOP_ORDERS ? (
-                    <Tab
-                      id="stop-orders"
-                      name={t('Advanced orders')}
-                      settings={<TradingViews.stopOrders.settings />}
-                      menu={<TradingViews.stopOrders.menu />}
-                    >
-                      <ErrorBoundary feature="stop-orders">
-                        <TradingViews.stopOrders.component
-                          marketId={market.id}
-                        />
-                      </ErrorBoundary>
-                    </Tab>
-                  ) : null}
+                  <Tab
+                    id="stop-orders"
+                    name={t('Advanced orders')}
+                    settings={<TradingViews.stopOrders.settings />}
+                    menu={<TradingViews.stopOrders.menu />}
+                  >
+                    <ErrorBoundary feature="stop-orders">
+                      <TradingViews.stopOrders.component marketId={market.id} />
+                    </ErrorBoundary>
+                  </Tab>
                   <Tab
                     id="fills"
                     name={t('Trades')}
@@ -217,7 +211,7 @@ const MainGrid = memo(
           maxSize={600}
           preferredSize={rowSizes[1] || 340}
         >
-          <ResizableGridPanelChild>
+          <ResizableGridPanelChild className="bg-transparent">
             <Sidebar pinnedAssets={pinnedAssets} />
           </ResizableGridPanelChild>
         </ResizableGridPanel>
@@ -233,7 +227,7 @@ export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
       <div>
         <MarketBanner market={market} />
       </div>
-      <div className="min-h-0 -mx-1 my-px">
+      <div className="min-h-0 m-2">
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>

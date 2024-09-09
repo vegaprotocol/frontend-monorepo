@@ -283,7 +283,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="bg-gs-100 border-gs-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-xs text-gs-0"
+      className="bg-surface-1 border break-word z-20 max-w-sm rounded px-4 py-2 text-xs text-gs-0"
     >
       {marketState && (
         <p className="mb-1 italic">

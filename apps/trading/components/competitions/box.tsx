@@ -1,9 +1,6 @@
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-gs-300 dark:border-gs-700';
-export const GRADIENT = 'bg-gradient-to-b from-surface-1 to-transparent';
-
 export const Box = ({
   children,
   backgroundImage,
@@ -13,8 +10,8 @@ export const Box = ({
     <div
       {...props}
       className={cn(
-        BORDER_COLOR,
-        GRADIENT,
+        'border',
+        'bg-gradient-to-b from-surface-1/70 to-surface-1/50',
         'border rounded-lg',
         'relative p-6 overflow-hidden',
         props.className

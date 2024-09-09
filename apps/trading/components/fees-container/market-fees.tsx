@@ -136,7 +136,7 @@ export const MarketFees = ({
   );
 
   return (
-    <div className="border rounded-lg md:rounded-sm overflow-hidden border-gs-300 dark:border-gs-700">
+    <div className="border rounded-lg overflow-hidden bg-surface-1/70">
       <AgGrid
         columnDefs={colDef}
         rowData={rows}

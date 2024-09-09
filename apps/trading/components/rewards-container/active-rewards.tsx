@@ -1,9 +1,5 @@
 import { useT } from '../../lib/use-t';
-import {
-  VegaIcon,
-  VegaIconNames,
-  TradingInput,
-} from '@vegaprotocol/ui-toolkit';
+import { VegaIcon, VegaIconNames, Input } from '@vegaprotocol/ui-toolkit';
 import { useRewardsGrouped } from '../../lib/hooks/use-rewards';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -42,7 +38,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
         {/** CARDS FILTER */}
         {groupedCards.length > 1 && (
           <div className="w-1/2 lg:w-1/3">
-            <TradingInput
+            <Input
               onChange={(e) =>
                 setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
               }

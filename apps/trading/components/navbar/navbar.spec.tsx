@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
-import { ENV } from '@vegaprotocol/environment';
+import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
 import {
   mockConfig,
   MockedWalletProvider,
@@ -14,6 +14,11 @@ import {
   type PartyProfilesQuery,
   type PartyProfilesQueryVariables,
 } from '../vega-wallet-connect-button/__generated__/PartyProfiles';
+
+jest.mock('@vegaprotocol/environment', () => ({
+  ...jest.requireActual('@vegaprotocol/environment'),
+  useFeatureFlags: jest.fn(),
+}));
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
@@ -81,6 +86,10 @@ describe('Navbar', () => {
     useGlobalStore.setState({ marketId });
     const mockedENV = jest.mocked(ENV);
     mockedENV.VEGA_TOKEN_URL = 'governance';
+
+    (useFeatureFlags as unknown as jest.Mock).mockReturnValue({
+      ENABLE_AMM: true,
+    });
   });
 
   afterAll(() => {

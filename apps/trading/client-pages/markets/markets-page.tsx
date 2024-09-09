@@ -2,7 +2,7 @@ import {
   MultiSelect,
   MultiSelectOption,
   Sparkline,
-  TradingInput,
+  Input,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -386,7 +386,7 @@ export const MarketTable = ({
           </div>
           {/** MARKET NAME FILTER */}
           <div className="w-2/3">
-            <TradingInput
+            <Input
               prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
               placeholder={t('Search by market')}
               className="text-sm"
@@ -399,7 +399,7 @@ export const MarketTable = ({
           </div>
         </div>
       </div>
-      <div className="h-full border rounded border-gs-300 dark:border-gs-700">
+      <div className="h-full border rounded-lg overflow-hidden bg-surface-1/70">
         <ErrorBoundary feature="all-markets">
           <MarketListTable
             rowData={markets}

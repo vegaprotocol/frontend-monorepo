@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import { z } from 'zod';
 import { Decimal } from '../utils';
-import { getMarketFromCache } from './markets';
+import { getMarkets } from './markets';
 import type { QueryClient } from '@tanstack/react-query';
 
 export { v1AMMStatus as AMMStatus };
@@ -55,10 +55,14 @@ export const retrieveAMMs = async (
   params?: SearchParams
 ) => {
   const endpoint = restApiUrl('/api/v2/amms');
+
   const searchParams = searchParamsSchema.parse(params);
-  const res = await axios.get<v2ListAMMsResponse>(endpoint, {
-    params: new URLSearchParams(searchParams),
-  });
+  const [markets, res] = await Promise.all([
+    getMarkets(queryClient),
+    axios.get<v2ListAMMsResponse>(endpoint, {
+      params: new URLSearchParams(searchParams),
+    }),
+  ]);
 
   const edges = res.data.amms?.edges;
   const rawAMMs = removePaginationWrapper(edges);
@@ -68,7 +72,7 @@ export const retrieveAMMs = async (
       throw new Error('missing marketId');
     }
 
-    const market = getMarketFromCache(queryClient, a.marketId);
+    const market = markets.get(a.marketId);
 
     if (!market) {
       throw new Error('market for amm not found');

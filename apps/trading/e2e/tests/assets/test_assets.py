@@ -61,9 +61,9 @@ def tooltip(page: Page, index: int, test_id: str, tooltip: str):
     page.get_by_test_id("dialog-title").click()
 
 
-@pytest.mark.usefixtures("continuous_market", "auth", "risk_accepted")
-def test_asset_details(page: Page):
-    page.goto("/")
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_asset_details(continuous_market, page: Page):
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("asset-card").click()
     page.get_by_test_id("dropdown-menu").nth(1).click()
     page.get_by_role("menuitem", name="View asset details").click()

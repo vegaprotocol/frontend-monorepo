@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
   Intent,
   Button,
-  TradingInput,
+  Input,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -128,7 +128,7 @@ export const PriceImpactInput = ({
       </label>
       <div className="flex items-center gap-2 flex-wrap">
         <div className="flex-grow min-w-[80px]">
-          <TradingInput
+          <Input
             name="custom-price-tolerance"
             type="number"
             disabled={disabled}

@@ -1,7 +1,7 @@
 import type { ReactNode, SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
-import { defaultSelectElement } from '../../utils/trading-shared';
+import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
 export interface TradingSelectProps
@@ -40,6 +40,31 @@ export type TradingRichSelectProps = React.ComponentProps<
   id?: string;
   'data-testid'?: string;
 };
+
+export const TradingRichSelectTriggerContent = ({
+  children,
+  ...props
+}: {
+  children: ReactNode;
+  hasError?: boolean;
+  'data-testid'?: string;
+}) => (
+  <div
+    data-testid={props['data-testid']}
+    className={[
+      defaultSelectElement(props.hasError),
+      'relative rounded-md pl-2 pr-8 text-left h-10',
+      'max-w-full overflow-hidden break-all',
+      '[&_>span]:flex-1',
+    ].join(' ')}
+  >
+    {children}
+    <SelectPrimitive.Icon className="absolute right-2">
+      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+    </SelectPrimitive.Icon>
+  </div>
+);
+
 export const TradingRichSelect = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   TradingRichSelectProps
@@ -50,21 +75,14 @@ export const TradingRichSelect = forwardRef<
   ) => {
     return (
       <SelectPrimitive.Root {...props} defaultOpen={false}>
-        <SelectPrimitive.Trigger
-          data-testid={props['data-testid'] || 'rich-select-trigger'}
-          className={[
-            defaultSelectElement(hasError),
-            'relative rounded-md pl-2 pr-8 text-left h-10',
-            'max-w-full overflow-hidden break-all',
-            '[&_>span]:flex-1',
-          ].join(' ')}
-          id={id}
-          ref={forwardedRef}
-        >
-          {valueElement || <SelectPrimitive.Value placeholder={placeholder} />}
-          <SelectPrimitive.Icon className="absolute right-2">
-            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </SelectPrimitive.Icon>
+        <SelectPrimitive.Trigger className="w-full" id={id} ref={forwardedRef}>
+          <TradingRichSelectTriggerContent
+            data-testid={props['data-testid'] || 'rich-select-trigger'}
+          >
+            {valueElement || (
+              <SelectPrimitive.Value placeholder={placeholder} />
+            )}
+          </TradingRichSelectTriggerContent>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content

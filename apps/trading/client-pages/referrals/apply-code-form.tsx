@@ -1,15 +1,16 @@
 import {
-  TradingInput as Input,
+  Input,
   InputError,
   Loader,
   Dialog,
+  Intent,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useState } from 'react';
-import { RainbowButton } from '../../components/rainbow-button';
 import {
   useSimpleTransaction,
   useVegaWallet,
@@ -261,7 +262,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
               className="mb-2"
             />
           </label>
-          <RainbowButton variant="border" {...getButtonProps()} />
+          <Button intent={Intent.Primary} {...getButtonProps()} />
         </form>
         {noFunds ? (
           <InputError intent="warning" className="overflow-auto break-words">
