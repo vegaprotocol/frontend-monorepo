@@ -37,7 +37,7 @@ const getClassName = (
     {
       'bg-intent-none bg-gradient-to-tr from-intent-none-from to-intent-none-to text-intent-none-foreground border-intent-none-outline':
         intent === Intent.None,
-      'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline':
+      'bg-intent-primary bg-gradient-to-tr from-intent-primary-from to-intent-primary-to text-intent-primary-foreground border-intent-primary-outline font-mono font-semibold':
         intent === Intent.Primary,
       'bg-intent-secondary bg-gradient-to-tr from-intent-secondary-from to-intent-secondary-to text-intent-secondary-foreground':
         intent === Intent.Secondary,
