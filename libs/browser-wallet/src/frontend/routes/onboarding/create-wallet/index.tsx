@@ -1,4 +1,4 @@
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 
 import { Header } from '@/components/header';
@@ -20,17 +20,6 @@ export const CreateWallet = () => {
         <Wallet size={48} squareFill="black" />
       </div>
       <Header content="Create a wallet" />
-      <Button
-        autoFocus
-        data-testid={locators.createDerivedWalletButton}
-        onClick={() => {
-          navigate(FULL_ROUTES.createDerivedWallet);
-        }}
-        className="mt-6 mb-4"
-        intent={Intent.Primary}
-      >
-        Create a wallet from Ethereum wallet
-      </Button>
       {/* <Button
         autoFocus
         data-testid={locators.createNewWalletButton}

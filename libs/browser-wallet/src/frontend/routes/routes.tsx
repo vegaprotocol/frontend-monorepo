@@ -17,7 +17,6 @@ import { CreateWallet } from './onboarding/create-wallet';
 import { ImportWallet } from './onboarding/import-wallet';
 import { SaveMnemonic } from './onboarding/save-mnemonic';
 import { FULL_ROUTES, ROUTES } from './route-names';
-import { CreateDerivedWallet } from './onboarding/create-derived-wallet';
 
 export const Routing = () => {
   usePersistLocation();
@@ -44,10 +43,6 @@ export const Routing = () => {
           <Route path={ROUTES.createWallet} element={<CreateWallet />} />
           <Route path={ROUTES.saveMnemonic} element={<SaveMnemonic />} />
           <Route path={ROUTES.importWallet} element={<ImportWallet />} />
-          <Route
-            path={ROUTES.createDerivedWallet}
-            element={<CreateDerivedWallet />}
-          />
         </Route>
         <Route path={ROUTES.login} element={<Login />} />
       </Route>
