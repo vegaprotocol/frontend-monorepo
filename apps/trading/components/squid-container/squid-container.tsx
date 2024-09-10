@@ -7,6 +7,7 @@ import {
   useSquidRouterConfig,
 } from '../../lib/hooks/use-squid-router-config';
 import { useDialogStore } from '@vegaprotocol/wallet-react';
+import { DEPOSIT_DISABLED } from '../deposit-container/deposit-container';
 
 export const SquidContainer = () => {
   const t = useT();
@@ -46,6 +47,10 @@ export const SquidContainer = () => {
         }}
       />
     );
+  }
+
+  if (DEPOSIT_DISABLED) {
+    return DEPOSIT_DISABLED;
   }
 
   return <SquidWidget config={config} />;

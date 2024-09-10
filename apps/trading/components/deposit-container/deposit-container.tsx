@@ -17,6 +17,7 @@ import {
   Intent,
   TradingRichSelect,
   TradingRichSelectOption,
+  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
@@ -46,8 +47,16 @@ import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
 import { isAssetUSDTArb } from '../../lib/utils/is-asset-usdt-arb';
+import i18n from '../../lib/i18n';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
+
+export const DEPOSIT_DISABLED = (
+  <Notification
+    intent={Intent.Danger}
+    message={i18n.t('DEPOSIT_DISABLED', { context: 'trading' })}
+  />
+);
 
 export const DepositContainer = ({
   initialAssetId,
@@ -71,11 +80,14 @@ export const DepositContainer = ({
   }
 
   return (
-    <DepositForm
-      assets={assets}
-      initialAssetId={asset?.id || ''}
-      configs={allConfigs}
-    />
+    <div className="flex flex-col gap-2">
+      {DEPOSIT_DISABLED}
+      <DepositForm
+        assets={assets}
+        initialAssetId={asset?.id || ''}
+        configs={allConfigs}
+      />
+    </div>
   );
 };
 
@@ -347,6 +359,7 @@ const DepositForm = ({
         size="large"
         fill={true}
         intent={Intent.Secondary}
+        disabled
       >
         {t('Deposit')}
       </TradingButton>

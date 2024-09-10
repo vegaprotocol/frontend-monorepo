@@ -157,6 +157,7 @@
   "Delayed (ready in {{readyIn}})": "Delayed (ready in {{readyIn}})",
   "Depending on data node retention you may not be able see the full 30 days": "Depending on data node retention you may not be able see the full 30 days",
   "Deposit": "Deposit",
+  "DEPOSIT_DISABLED": "Deposits are currently not supported.",
   "Deposit (cross chain)": "Deposit (cross chain)",
   "Deposit cap": "Deposit cap",
   "Deposit complete": "Deposit complete",
