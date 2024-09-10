@@ -9,7 +9,7 @@ interface TradeMarketHeaderProps {
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
-    <header className="h-full flex">
+    <header className="flex bg-surface-1/70">
       <div className="flex flex-col items-start justify-center pl-2">
         {title}
       </div>

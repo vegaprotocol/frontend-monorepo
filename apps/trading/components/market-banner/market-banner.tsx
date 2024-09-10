@@ -20,14 +20,8 @@ import {
   useMarketBanners,
   useMarketBannerStore,
 } from '../../lib/hooks/use-market-banners';
-import {
-  DispatchMetricDescription,
-  DispatchMetricLabels,
-} from '@vegaprotocol/types';
-import { t } from '../../lib/use-t';
-import { Link } from 'react-router-dom';
-import { Links } from '../../lib/links';
 import compact from 'lodash/compact';
+import { MarketRewardBanner } from './market-reward-banner';
 
 export const MarketBannerIndicator = ({
   market,
@@ -89,14 +83,20 @@ export const MarketBannerIndicator = ({
   return null;
 };
 
-export const MarketBanner = ({ market }: { market: Market }) => {
-  const { banners, loading } = useMarketBanners(market);
-
-  if (loading) {
+export const MarketBanner = (props: {
+  market: Market;
+  banners: Banner[];
+  loading: boolean;
+}) => {
+  if (props.loading) {
     return null;
   }
 
-  return <BannerQueue banners={banners} market={market} />;
+  if (!props.banners.length) {
+    return null;
+  }
+
+  return <BannerQueue banners={props.banners} market={props.market} />;
 };
 
 const mapBanner = (market: Market, banner: Banner) => {
@@ -148,18 +148,7 @@ const mapBanner = (market: Market, banner: Banner) => {
       const metric = banner.game.transfer?.kind.dispatchStrategy.dispatchMetric;
       const gameId = banner.game.transfer?.gameId;
       if (!metric || !gameId) return null;
-      content = (
-        <span className="flex gap-1">
-          <span className="font-bold antialiased">{t('Active reward')}: </span>
-          <span className="font-bold antialiased">
-            {DispatchMetricLabels[metric]}
-          </span>
-          <span>{DispatchMetricDescription[metric]}</span>
-          <Link className="underline" to={Links.COMPETITIONS_GAME(gameId)}>
-            {t('Learn more')}
-          </Link>
-        </span>
-      );
+      content = <MarketRewardBanner metric={metric} gameId={gameId} />;
       intent = Intent.Info;
       break;
     }

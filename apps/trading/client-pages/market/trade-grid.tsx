@@ -14,6 +14,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
 import { MarketHeader } from '../../components/market-header';
 import { Sidebar } from '../../components/sidebar';
+import { useMarketBanners } from '../../lib/hooks/use-market-banners';
 
 interface TradeGridProps {
   market: Market;
@@ -23,6 +24,8 @@ interface TradeGridProps {
 const MainGrid = memo(
   ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
     const t = useT();
+    const { banners, loading } = useMarketBanners(market);
+
     const [rowSizes, handleRowSizes] = usePaneLayout({
       id: 'trade-row',
     });
@@ -33,13 +36,20 @@ const MainGrid = memo(
       id: 'trade-col',
     });
 
+    const headingSize = banners.length > 0 ? 112 : 72;
+
     return (
       <ResizableGrid onChange={handleRowSizes}>
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
-            <ResizableGridPanel minSize={72} maxSize={72}>
-              <ResizableGridPanelChild>
+            <ResizableGridPanel minSize={headingSize} maxSize={headingSize}>
+              <ResizableGridPanelChild className="bg-transparent flex flex-col gap-2">
                 <MarketHeader />
+                <MarketBanner
+                  market={market}
+                  banners={banners}
+                  loading={loading}
+                />
               </ResizableGridPanelChild>
             </ResizableGridPanel>
             <ResizableGridPanel
@@ -223,13 +233,8 @@ MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
   return (
-    <div className="h-full grid grid-rows-[min-content_1fr]">
-      <div>
-        <MarketBanner market={market} />
-      </div>
-      <div className="min-h-0 m-2">
-        <MainGrid market={market} pinnedAssets={pinnedAssets} />
-      </div>
+    <div className="h-full m-2">
+      <MainGrid market={market} pinnedAssets={pinnedAssets} />
     </div>
   );
 };
