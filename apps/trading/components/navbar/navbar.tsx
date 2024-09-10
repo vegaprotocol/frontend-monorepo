@@ -1,6 +1,11 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
-import { DocsLinks, DApp, useLinks } from '@vegaprotocol/environment';
+import {
+  DocsLinks,
+  DApp,
+  useLinks,
+  useFeatureFlags,
+} from '@vegaprotocol/environment';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
