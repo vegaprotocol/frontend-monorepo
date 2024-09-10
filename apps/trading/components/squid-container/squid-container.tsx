@@ -7,7 +7,7 @@ import {
   useSquidRouterConfig,
 } from '../../lib/hooks/use-squid-router-config';
 import { useDialogStore } from '@vegaprotocol/wallet-react';
-import { DEPOSIT_DISABLED } from '../deposit-container/deposit-container';
+import { DepositDisabledMessage } from '../deposit-container/deposit-container';
 
 export const SquidContainer = () => {
   const t = useT();
@@ -49,13 +49,11 @@ export const SquidContainer = () => {
     );
   }
 
-  if (DEPOSIT_DISABLED) {
-    return DEPOSIT_DISABLED;
-  }
-
-  return <SquidWidget config={config} />;
+  return <DepositDisabledMessage />;
+  // return <SquidWidget config={config} />;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SquidWidget = ({ config }: { config: AppConfig }) => {
   return <SquidStakingWidget config={config} />;
 };

@@ -47,16 +47,15 @@ import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
 import { isAssetUSDTArb } from '../../lib/utils/is-asset-usdt-arb';
-import i18n from '../../lib/i18n';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
-export const DEPOSIT_DISABLED = (
-  <Notification
-    intent={Intent.Danger}
-    message={i18n.t('DEPOSIT_DISABLED', { context: 'trading' })}
-  />
-);
+export const DepositDisabledMessage = () => {
+  const t = useT();
+  return (
+    <Notification intent={Intent.Danger} message={t('DEPOSIT_DISABLED')} />
+  );
+};
 
 export const DepositContainer = ({
   initialAssetId,
@@ -81,7 +80,7 @@ export const DepositContainer = ({
 
   return (
     <div className="flex flex-col gap-2">
-      {DEPOSIT_DISABLED}
+      {<DepositDisabledMessage />}
       <DepositForm
         assets={assets}
         initialAssetId={asset?.id || ''}
