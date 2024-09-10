@@ -8,9 +8,12 @@ export default {
     '^.+\\.[tj]sx?$': [
       'babel-jest',
       {
-        presets: ['@nx/next/babel'],
-        // required for pennant to work in jest, due to having untranspiled exports
-        plugins: [['@babel/plugin-proposal-private-methods']],
+        presets: ['@nx/react/babel'],
+        plugins: [
+          ['@babel/plugin-transform-private-methods'],
+          ['@babel/plugin-transform-class-properties'],
+          ['@babel/plugin-transform-private-property-in-object'],
+        ],
       },
     ],
   },
@@ -25,6 +28,5 @@ export default {
     '!**/node_modules/**',
     '!**/__generated__/**',
   ],
-  // dont ignore pennant from transpilation
   transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };

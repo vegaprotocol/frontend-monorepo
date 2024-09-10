@@ -17,6 +17,5 @@ export default {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/explorer',
   setupFilesAfterEnv: ['./src/app/setup-tests.ts'],
-  // dont ignore pennant from transpilation
   transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };
