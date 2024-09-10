@@ -4,7 +4,6 @@ export default {
   preset: '../../jest.preset.js',
   globals: {},
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': [
       'babel-jest',
       {
