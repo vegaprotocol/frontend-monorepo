@@ -23,7 +23,14 @@ const withdrawAsset = {
 };
 
 jest.mock('./use-withdraw-asset', () => ({
-  useWithdrawAsset: () => withdrawAsset,
+  useWithdrawAsset: () => ({
+    asset: toAssetData(asset),
+    balance: new BigNumber(1),
+    min: new BigNumber(0.0000001),
+    threshold: new BigNumber(1000),
+    delay: 10,
+    handleSelectAsset: jest.fn(),
+  }),
 }));
 
 jest.mock('@vegaprotocol/accounts', () => ({

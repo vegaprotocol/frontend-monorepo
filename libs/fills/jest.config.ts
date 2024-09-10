@@ -4,14 +4,19 @@ export default {
   preset: '../../jest.preset.js',
   globals: {},
   transform: {
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': [
-      'ts-jest',
+      'babel-jest',
       {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
+        presets: ['@nx/next/babel'],
+        // required for pennant to work in jest, due to having untranspiled exports
+        plugins: [['@babel/plugin-proposal-private-methods']],
       },
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/fills',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
+  // dont ignore pennant from transpilation
+  transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };

@@ -22,9 +22,19 @@ export default {
   displayName: 'wallet',
   preset: '../../jest.preset.js',
   transform: {
-    '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      {
+        presets: ['@nx/next/babel'],
+        // required for pennant to work in jest, due to having untranspiled exports
+        plugins: [['@babel/plugin-proposal-private-methods']],
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   testEnvironment: 'jsdom',
   coverageDirectory: '../../coverage/libs/wallet',
+  // dont ignore pennant from transpilation
+  transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };

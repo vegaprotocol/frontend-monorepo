@@ -5,7 +5,14 @@ export default {
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      {
+        presets: ['@nx/next/babel'],
+        // required for pennant to work in jest, due to having untranspiled exports
+        plugins: [['@babel/plugin-proposal-private-methods']],
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/governance',
@@ -18,4 +25,6 @@ export default {
     '!**/node_modules/**',
     '!**/__generated__/**',
   ],
+  // dont ignore pennant from transpilation
+  transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };
