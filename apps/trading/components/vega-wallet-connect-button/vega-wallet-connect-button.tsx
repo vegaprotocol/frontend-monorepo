@@ -45,6 +45,7 @@ export const VegaWalletConnectButton = ({
     disconnect,
     refreshKeys,
     isReadOnly,
+    current,
   } = useVegaWallet();
 
   const walletInstalled = isBrowserWalletInstalled();
@@ -98,6 +99,12 @@ export const VegaWalletConnectButton = ({
               isReadOnly={isReadOnly}
             />
             <DropdownMenuSeparator />
+            {/* TODO: needs to only render when we are connected to an embedded wallet */}
+            {current === 'embedded-wallet-quickstart' && (
+              <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
+                {t('Open Wallet')}
+              </DropdownMenuItem>
+            )}
             {!isReadOnly && (
               <DropdownMenuItem
                 data-testid="wallet-transfer"

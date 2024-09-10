@@ -18,7 +18,8 @@ export const VegaWalletMenu = ({
 }) => {
   const t = useT();
   const navigate = useNavigate();
-  const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
+  const { pubKey, pubKeys, selectPubKey, disconnect, current } =
+    useVegaWallet();
 
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
@@ -58,6 +59,16 @@ export const VegaWalletMenu = ({
       </div>
 
       <div className="flex flex-col gap-2 m-4">
+        {current === 'embedded-wallet-quickstart' && (
+          <Button
+            onClick={() => {
+              setMenu(null);
+              navigate(Links.TRANSFER());
+            }}
+          >
+            {t('Open wallet')}
+          </Button>
+        )}
         <Button
           onClick={() => {
             setMenu(null);
