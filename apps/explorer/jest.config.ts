@@ -9,8 +9,11 @@ export default {
       'babel-jest',
       {
         presets: ['@nx/react/babel'],
-        // required for pennant to work in jest, due to having untranspiled exports
-        plugins: [['@babel/plugin-proposal-private-methods']],
+        plugins: [
+          ['@babel/plugin-transform-private-methods'],
+          ['@babel/plugin-transform-class-properties'],
+          ['@babel/plugin-transform-private-property-in-object'],
+        ],
       },
     ],
   },

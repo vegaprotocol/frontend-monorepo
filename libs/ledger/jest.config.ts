@@ -8,8 +8,12 @@ export default {
     '^.+\\.[tj]sx?$': [
       'babel-jest',
       {
-        presets: ['@nx/next/babel'],
-        plugins: [['@babel/plugin-proposal-private-methods']],
+        presets: ['@nx/react/babel'],
+        plugins: [
+          ['@babel/plugin-transform-private-methods'],
+          ['@babel/plugin-transform-class-properties'],
+          ['@babel/plugin-transform-private-property-in-object'],
+        ],
       },
     ],
   },
