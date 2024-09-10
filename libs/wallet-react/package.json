@@ -1,5 +1,7 @@
 {
-  "name": "wallet-react",
+  "name": "@vegaprotocol/wallet-react",
   "version": "0.0.1",
-  "typings": "./src/index.d.ts"
+  "typings": "./src/index.d.ts",
+  "type": "module",
+  "module": "./index.js"
 }
