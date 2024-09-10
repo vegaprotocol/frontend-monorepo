@@ -56,7 +56,7 @@ export const QuickstartButton = ({
         onClick={() => createWallet()}
         disabled={isLoading}
       >
-        {t('Quickstart')}
+        {t('Connect with Ethereum')}
       </ConnectionOptionButton>
       {error && error.code !== USER_REJECTED_CODE && (
         <p
@@ -81,8 +81,9 @@ export const ConnectEthereumQuickstartButton = () => {
             onClick={() => {
               if (show) show();
             }}
+            className="text-sm"
           >
-            Connect Ethereum Wallet
+            Connect with Ethereum
           </Button>
         );
       }}

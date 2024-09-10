@@ -2,9 +2,9 @@ import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from 'react';
 import { type ConnectorType } from '@vegaprotocol/wallet';
 
 const CONNECTION_OPTION_CLASSES =
-  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1';
+  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1 text-sm';
 const CONNECTION_OPTION_CLASSES_DESC =
-  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-surface-1';
+  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-surface-1 text-sm';
 
 export const ConnectionOptionButton = forwardRef<
   HTMLButtonElement,
