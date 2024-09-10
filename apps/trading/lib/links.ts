@@ -32,6 +32,9 @@ export const Routes = {
   AMM_POOLS: '/amm/pools',
   AMM_POOL: '/amm/pool/:marketId',
   AMM_POOL_MANAGE: '/amm/pool/:marketId/manage',
+  INVITE: '/invite',
+  INVITE_REFERRAL_CODE: '/invite?code=:code',
+  INVITE_TEAM_CODE: '/invite?team=:code',
 } as const;
 
 type ConsoleLinks = {
@@ -75,4 +78,8 @@ export const Links: ConsoleLinks = {
   AMM_POOL: (marketId) => Routes.AMM_POOL.replace(':marketId', marketId),
   AMM_POOL_MANAGE: (marketId) =>
     Routes.AMM_POOL_MANAGE.replace(':marketId', marketId),
+  INVITE: () => Routes.INVITE,
+  INVITE_REFERRAL_CODE: (code) =>
+    Routes.INVITE_REFERRAL_CODE.replace(':code', code),
+  INVITE_TEAM_CODE: (code) => Routes.INVITE_TEAM_CODE.replace(':code', code),
 };

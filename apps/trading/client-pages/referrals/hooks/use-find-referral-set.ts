@@ -1,11 +1,18 @@
 import { useCallback } from 'react';
 import {
+  ReferralSetsDocument,
+  ReferralSetsQuery,
   type ReferralSetsQueryVariables,
   useReferralSetsQuery,
 } from './__generated__/ReferralSets';
 import { useStakeAvailable } from '../../../lib/hooks/use-stake-available';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import first from 'lodash/first';
+import { useApolloClient } from '@apollo/client';
+import {
+  StakeAvailableDocument,
+  StakeAvailableQuery,
+} from 'apps/trading/lib/hooks/__generated__/StakeAvailable';
 
 export type Role = 'referrer' | 'referee';
 type Args = (
