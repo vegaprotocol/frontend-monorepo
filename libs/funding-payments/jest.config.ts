@@ -9,7 +9,6 @@ export default {
       'babel-jest',
       {
         presets: ['@nx/next/babel'],
-        // required for pennant to work in jest, due to having untranspiled exports
         plugins: [['@babel/plugin-proposal-private-methods']],
       },
     ],
@@ -17,6 +16,5 @@ export default {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/funding-payments',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
-  // dont ignore pennant from transpilation
   transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };
