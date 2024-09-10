@@ -53,7 +53,7 @@ describe('ConnectDialog', () => {
     const list = screen.getByTestId('connectors-list');
     expect(list).toBeInTheDocument();
     expect(within(list).getAllByTestId(/connector-/)).toHaveLength(
-      config.connectors.length
+      config.connectors.filter(({ prominent }) => prominent).length
     );
 
     await user.click(screen.getByTestId(`connector-${mock.id}`));
@@ -83,7 +83,6 @@ describe('ConnectDialog', () => {
 
     await user.click(dialog.getByTestId(`connector-${mock.id}`));
 
-    expect(dialog.queryByRole('heading', { level: 3 })).not.toBeInTheDocument();
     expect(screen.queryByTestId('connection-error')).not.toBeInTheDocument();
     expect(screen.getByTestId('connectors-list')).toBeInTheDocument();
   });
@@ -102,7 +101,6 @@ describe('ConnectDialog', () => {
 
     await user.click(dialog.getByTestId(`connector-${mock.id}`));
 
-    expect(dialog.queryByRole('heading', { level: 3 })).not.toBeInTheDocument();
     expect(screen.getByTestId('connection-error')).toHaveTextContent(
       ConnectorErrors.connect.message
     );

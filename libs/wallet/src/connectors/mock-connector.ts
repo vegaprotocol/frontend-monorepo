@@ -16,7 +16,7 @@ export class MockConnector implements Connector {
   readonly id = 'mock';
   name = 'Mock';
   description = 'Connector for test purposes';
-  prominent = false;
+  prominent = true;
 
   constructor() {}
 
