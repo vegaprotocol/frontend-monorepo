@@ -8,7 +8,7 @@ export default {
     '^.+\\.[tj]sx?$': [
       'babel-jest',
       {
-        presets: ['@nx/next/babel'],
+        presets: ['@nx/react/babel'],
         // required for pennant to work in jest, due to having untranspiled exports
         plugins: [['@babel/plugin-proposal-private-methods']],
       },
