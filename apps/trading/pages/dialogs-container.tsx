@@ -10,26 +10,7 @@ import { WelcomeDialog } from '../components/welcome-dialog';
 import { VegaWalletConnectDialog } from '../components/vega-wallet-connect-dialog';
 import { ProfileDialog } from '../components/profile-dialog';
 import { useChainId } from '@vegaprotocol/wallet-react';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
-import { BrowserWallet } from '../components/browser-wallet';
-
-const BrowserWallerDialog = () => {
-  const [dialogOpen, setDialogOpen] = useState(true);
-
-  return (
-    <Dialog
-      open={dialogOpen}
-      onChange={(open) => {
-        setDialogOpen(open);
-      }}
-    >
-      <div className="h-full" style={{ minHeight: 600, height: 600 }}>
-        <BrowserWallet />
-      </div>
-    </Dialog>
-  );
-};
+import { BrowserWallerDialog } from '../components/browser-wallet-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();

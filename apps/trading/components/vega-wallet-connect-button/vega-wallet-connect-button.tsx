@@ -25,6 +25,7 @@ import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
+import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.Primary,
@@ -51,6 +52,7 @@ export const VegaWalletConnectButton = ({
   const walletInstalled = isBrowserWalletInstalled();
 
   const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
+  const set = useBrowserWalletDialogStore((store) => store.set);
 
   if (status === 'connected') {
     return (
@@ -99,9 +101,11 @@ export const VegaWalletConnectButton = ({
               isReadOnly={isReadOnly}
             />
             <DropdownMenuSeparator />
-            {/* TODO: needs to only render when we are connected to an embedded wallet */}
             {current === 'embedded-wallet-quickstart' && (
-              <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
+              <DropdownMenuItem
+                data-testid="open-wallet"
+                onClick={() => set(true)}
+              >
                 {t('Open Wallet')}
               </DropdownMenuItem>
             )}

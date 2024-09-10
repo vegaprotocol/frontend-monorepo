@@ -10,6 +10,7 @@ import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from '../vega-wallet-connect-button/__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
+import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
 
 export const VegaWalletMenu = ({
   setMenu,
@@ -20,6 +21,7 @@ export const VegaWalletMenu = ({
   const navigate = useNavigate();
   const { pubKey, pubKeys, selectPubKey, disconnect, current } =
     useVegaWallet();
+  const set = useBrowserWalletDialogStore((store) => store.set);
 
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
@@ -60,14 +62,7 @@ export const VegaWalletMenu = ({
 
       <div className="flex flex-col gap-2 m-4">
         {current === 'embedded-wallet-quickstart' && (
-          <Button
-            onClick={() => {
-              setMenu(null);
-              navigate(Links.TRANSFER());
-            }}
-          >
-            {t('Open wallet')}
-          </Button>
+          <Button onClick={() => set(true)}>{t('Open wallet')}</Button>
         )}
         <Button
           onClick={() => {
