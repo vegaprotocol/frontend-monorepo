@@ -19,27 +19,34 @@ export const useCreateDerivedWallet = (
     retry: false,
     queryKey: ['ethereum.signTypedData', chainId, address],
     queryFn: async () => {
-      state.store.setState({
-        status: 'creating',
-      });
-      const signedMessage = await signTypedDataAsync({
-        domain: { name: 'Vega', chainId: BigInt(chainId) },
-        message: { action: 'Vega Onboarding' },
-        primaryType: 'Vega',
-        types: {
-          EIP712Domain: [
-            { name: 'name', type: 'string' },
-            { name: 'chainId', type: 'uint256' },
-          ],
-          Vega: [{ name: 'action', type: 'string' }],
-        },
-      });
-      const mnemonic = (await connector.deriveMnemonic(
-        signedMessage
-      )) as unknown as string[];
-      const mnemonicString = mnemonic.join(' ');
-      await connector.importWallet(mnemonicString);
-      return { success: true };
+      try {
+        state.store.setState({
+          status: 'creating',
+        });
+        const signedMessage = await signTypedDataAsync({
+          domain: { name: 'Vega', chainId: BigInt(chainId) },
+          message: { action: 'Vega Onboarding' },
+          primaryType: 'Vega',
+          types: {
+            EIP712Domain: [
+              { name: 'name', type: 'string' },
+              { name: 'chainId', type: 'uint256' },
+            ],
+            Vega: [{ name: 'action', type: 'string' }],
+          },
+        });
+        const mnemonic = (await connector.deriveMnemonic(
+          signedMessage
+        )) as unknown as string[];
+        const mnemonicString = mnemonic.join(' ');
+        await connector.importWallet(mnemonicString);
+        return { success: true };
+      } catch (error) {
+        state.store.setState({
+          status: 'disconnected',
+        });
+        throw error;
+      }
     },
   });
 };
