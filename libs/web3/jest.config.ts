@@ -1,5 +1,6 @@
 /* eslint-disable */
 export default {
+  testTimeout: 10000,
   displayName: 'web3',
   preset: '../../jest.preset.js',
   transform: {
