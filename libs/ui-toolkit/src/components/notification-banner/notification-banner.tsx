@@ -44,7 +44,7 @@ export const NotificationBanner = ({
             maskComposite: 'exclude',
           }}
           className={cn(
-            'absolute inset-0 p-px bg-gradient-to-br rounded-lg pointer-events-none',
+            'absolute inset-0 p-px bg-gradient-to-br rounded-grid pointer-events-none',
             'from-highlight to-highlight-secondary'
           )}
         />
