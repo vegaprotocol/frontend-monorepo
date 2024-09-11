@@ -16,7 +16,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
           }
         )}
       >
-        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded dark:bg-gs-300">
+        <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded bg-gs-300 dark:bg-gs-300">
           <SliderPrimitives.Range className="absolute h-1 bg-suface-1-fg" />
           {markers.map((m) => {
             return (
@@ -26,7 +26,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
                 className={cn('relative -top-1 w-3 h-3 rounded-full', {
                   'bg-surface-0-fg':
                     props.value !== undefined && props.value[0] >= m,
-                  'dark:bg-gs-200':
+                  'bg-gs-400 dark:bg-gs-200':
                     props.value === undefined || props.value[0] < m,
                 })}
                 disabled={props.disabled}

@@ -26,7 +26,12 @@ export const createWalletBackend = ({ node }) => {
     undefined,
     isIos()
   );
-
+  // TODO: this is async and so could lead to weird race conditions if the user is fast enough. Unlikely.
+  encryptedStore.exists().then((exists) => {
+    if (!exists) {
+      encryptedStore.create(Math.floor(Math.random() * 1000000 + 1).toString());
+    }
+  });
   const publicKeyIndexStore = new ConcurrentStorage(
     new StorageLocalMap('public-key-index')
   );

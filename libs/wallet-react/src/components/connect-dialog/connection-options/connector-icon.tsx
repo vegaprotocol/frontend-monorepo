@@ -44,6 +44,30 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         </span>
       );
     }
+    case 'embedded-wallet': {
+      return (
+        <span
+          className={cn(
+            defaultWrapperClasses,
+            'bg-white text-gs-50 dark:text-gs-950'
+          )}
+        >
+          <VegaIcon name={VegaIconNames.STREAK} size={20} />
+        </span>
+      );
+    }
+    case 'embedded-wallet-quickstart': {
+      return (
+        <span
+          className={cn(
+            defaultWrapperClasses,
+            'bg-black dark:bg-white text-gs-50 dark:text-gs-950 text-xs'
+          )}
+        >
+          <span className="relative -top-0.5">{'>_'}</span>
+        </span>
+      );
+    }
     default: {
       return (
         <span

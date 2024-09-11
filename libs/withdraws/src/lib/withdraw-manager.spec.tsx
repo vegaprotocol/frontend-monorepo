@@ -4,26 +4,21 @@ import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
 import BigNumber from 'bignumber.js';
-import { toAssetData } from '@vegaprotocol/web3';
+import { toAssetData, useGetWithdrawThreshold } from '@vegaprotocol/web3';
+import { useWithdrawAsset } from './use-withdraw-asset';
 
 const asset = generateAsset();
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
 jest.mock('@web3-react/core', () => ({
-  useWeb3React: () => ({ account: ethereumAddress, chainId: 1 }),
+  useWeb3React: () => ({
+    account: '0x72c22822A19D20DE7e426fB84aa047399Ddd8853',
+    chainId: 1,
+  }),
 }));
 
-const withdrawAsset = {
-  asset: toAssetData(asset),
-  balance: new BigNumber(1),
-  min: new BigNumber(0.0000001),
-  threshold: new BigNumber(1000),
-  delay: 10,
-  handleSelectAsset: jest.fn(),
-};
-
 jest.mock('./use-withdraw-asset', () => ({
-  useWithdrawAsset: () => withdrawAsset,
+  useWithdrawAsset: jest.fn(),
 }));
 
 jest.mock('@vegaprotocol/accounts', () => ({
@@ -33,12 +28,10 @@ jest.mock('@vegaprotocol/accounts', () => ({
 
 jest.mock('@vegaprotocol/web3', () => ({
   ...jest.requireActual('@vegaprotocol/web3'),
-  useGetWithdrawThreshold: () => {
-    return () => Promise.resolve(new BigNumber(100));
-  },
   useGetWithdrawDelay: () => {
     return () => Promise.resolve(10000);
   },
+  useGetWithdrawThreshold: jest.fn(),
   useGasPrice: () => undefined,
 }));
 
@@ -46,6 +39,19 @@ describe('WithdrawManager', () => {
   let props: WithdrawManagerProps;
 
   beforeEach(() => {
+    (useWithdrawAsset as jest.Mock).mockReturnValue({
+      asset: toAssetData(asset),
+      balance: new BigNumber(1),
+      min: new BigNumber(0.0000001),
+      threshold: new BigNumber(1000),
+      delay: 10,
+      handleSelectAsset: jest.fn(),
+    });
+
+    (useGetWithdrawThreshold as jest.Mock).mockReturnValue(
+      Promise.resolve(new BigNumber(100))
+    );
+
     props = {
       assets: [asset],
       accounts: [generateAccount()],
@@ -126,7 +132,18 @@ describe('WithdrawManager', () => {
   });
 
   it('shows withdraw delay notification if threshold is 0', async () => {
-    withdrawAsset.threshold = new BigNumber(0);
+    (useGetWithdrawThreshold as jest.Mock).mockReturnValue(
+      Promise.resolve(new BigNumber(0))
+    );
+    (useWithdrawAsset as jest.Mock).mockReturnValue({
+      asset: toAssetData(asset),
+      balance: new BigNumber(1),
+      min: new BigNumber(0.0000001),
+      threshold: new BigNumber(0),
+      delay: 10,
+      handleSelectAsset: jest.fn(),
+    });
+
     render(generateJsx(props));
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     expect(

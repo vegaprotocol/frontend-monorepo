@@ -4,6 +4,9 @@ import { defaultFallbackInView } from 'react-intersection-observer';
 import { locales } from '@vegaprotocol/i18n';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { TextEncoder, TextDecoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 defaultFallbackInView(true);
 global.ResizeObserver = ResizeObserver;

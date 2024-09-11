@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom';
 import 'jest-canvas-mock';
 import ResizeObserver from 'resize-observer-polyfill';
+import { TextEncoder, TextDecoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 global.ResizeObserver = ResizeObserver;
 global.DOMRect = class DOMRect {

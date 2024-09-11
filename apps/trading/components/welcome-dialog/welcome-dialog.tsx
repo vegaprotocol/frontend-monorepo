@@ -132,6 +132,7 @@ const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
                     onConnect();
                   }
                 },
+                connector: c,
               };
 
               if (ConnectionOption) {

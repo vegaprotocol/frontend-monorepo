@@ -13,8 +13,9 @@ import { isValidVegaPublicKey } from '../utils';
 
 export class ViewPartyConnector implements Connector {
   readonly id = 'viewParty';
-  readonly name = 'View as public key';
-  readonly description = 'Provide a public key to connect in read only mode.';
+  name = 'View as public key';
+  description = 'Provide a public key to connect in read only mode.';
+  prominent = false;
 
   store: StoreApi<Store> | undefined;
 

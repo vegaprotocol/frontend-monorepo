@@ -1,19 +1,19 @@
 // eslint-disable-next-line no-undef
-const wrappedLocalStorage = {
-  get(key) {
-    const json = localStorage.getItem(key);
-    return json ? JSON.parse(json) : null;
-  },
-  set(key, val) {
-    return localStorage.setItem(key, JSON.stringify(val, null, '\t'));
-  },
-  clear() {
-    localStorage.clear();
-  },
-  delete(key) {
-    localStorage.removeItem(key);
-  },
-};
+// const wrappedLocalStorage = {
+//   get(key) {
+//     const json = localStorage.getItem(key);
+//     return json ? JSON.parse(json) : null;
+//   },
+//   set(key, val) {
+//     return localStorage.setItem(key, JSON.stringify(val, null, '\t'));
+//   },
+//   clear() {
+//     localStorage.clear();
+//   },
+//   delete(key) {
+//     localStorage.removeItem(key);
+//   },
+// };
 
 function abstractStorage(storage) {
   // Based on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea
@@ -82,5 +82,6 @@ function abstractStorage(storage) {
   };
 }
 
-export class StorageLocalMap extends abstractStorage(wrappedLocalStorage) {}
+// Used to be local storage in browser or extension storage, however as wallet is transient we just use a map for now
+export class StorageLocalMap extends abstractStorage(new Map()) {}
 export class StorageSessionMap extends abstractStorage(new Map()) {}

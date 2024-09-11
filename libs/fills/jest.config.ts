@@ -4,14 +4,21 @@ export default {
   preset: '../../jest.preset.js',
   globals: {},
   transform: {
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': [
-      'ts-jest',
+      'babel-jest',
       {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
+        presets: ['@nx/react/babel'],
+        plugins: [
+          ['@babel/plugin-transform-private-methods'],
+          ['@babel/plugin-transform-class-properties'],
+          ['@babel/plugin-transform-private-property-in-object'],
+        ],
       },
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/fills',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
+  transformIgnorePatterns: ['<rootDir>/node_modules/wagmi'],
 };

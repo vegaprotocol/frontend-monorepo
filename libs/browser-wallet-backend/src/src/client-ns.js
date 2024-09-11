@@ -88,7 +88,7 @@ export default function init({
   transactions,
   encryptedStore,
 }) {
-  return new JSONRPCServer({
+  const client = new JSONRPCServer({
     onerror,
     methods: {
       async 'client.connect_wallet'(params, context) {
@@ -118,7 +118,6 @@ export default function init({
         }
 
         context.isConnected = true;
-
         return null;
       },
       async 'client.disconnect_wallet'(params, context) {
@@ -161,6 +160,7 @@ export default function init({
           !isLocked;
         let approved = canBeAutoApproved;
         if (!canBeAutoApproved) {
+          client.notify('client.request_transaction_approval');
           approved = await interactor.reviewTransaction({
             transaction: params.transaction,
             publicKey: params.publicKey,
@@ -171,6 +171,7 @@ export default function init({
             chainId: selectedChainId,
             receivedAt,
           });
+          client.notify('client.request_transaction_decided');
         }
 
         const key = await wallets.getKeypair({ publicKey: params.publicKey });
@@ -218,6 +219,7 @@ export default function init({
           res.receivedAt = receivedAt;
           storedTx.hash = res.transactionHash;
           storedTx.state = 'Confirmed';
+          client.notify('client.transaction_sent');
           return res;
         } catch (e) {
           storedTx.error = e.message;
@@ -260,4 +262,5 @@ export default function init({
       },
     },
   });
+  return client;
 }
