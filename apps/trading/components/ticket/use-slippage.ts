@@ -33,32 +33,28 @@ export const useSlippage = (
   const lowestAsk = toBigNum(book.depth.sell[0].price, market.decimalPlaces);
   const highestBid = toBigNum(book.depth.buy[0].price, market.decimalPlaces);
   const mid = lowestAsk.plus(highestBid).dividedBy(2);
+  const args = {
+    side: order.side,
+    price: mid,
+    limitPrice: order.price
+      ? toBigNum(order.price, market.decimalPlaces)
+      : undefined,
+    size: toBigNum(order.size, market.positionDecimalPlaces),
+    marketDecimals: market.decimalPlaces,
+    positionDecimals: market.positionDecimalPlaces,
+  };
 
   if (order.side === Side.SIDE_BUY) {
     return calcSlippage({
-      side: order.side,
-      price: mid,
-      limitPrice: order.price
-        ? toBigNum(order.price, market.decimalPlaces)
-        : undefined,
-      size: toBigNum(order.size, market.positionDecimalPlaces),
+      ...args,
       priceLevels: book.depth.sell,
-      marketDecimals: market.decimalPlaces,
-      positionDecimals: market.positionDecimalPlaces,
     });
   }
 
   if (order.side === Side.SIDE_SELL) {
     return calcSlippage({
-      side: order.side,
-      price: mid,
-      limitPrice: order.price
-        ? toBigNum(order.price, market.decimalPlaces)
-        : undefined,
-      size: toBigNum(order.size, market.positionDecimalPlaces),
+      ...args,
       priceLevels: book.depth.buy,
-      marketDecimals: market.decimalPlaces,
-      positionDecimals: market.positionDecimalPlaces,
     });
   }
 
