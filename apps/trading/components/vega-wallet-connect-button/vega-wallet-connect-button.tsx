@@ -92,7 +92,11 @@ export const VegaWalletConnectButton = ({
           align="end"
           onEscapeKeyDown={() => setDropdownOpen(false)}
         >
-          <div className="min-w-[340px]" data-testid="keypair-list">
+          <div
+            className="min-w-[340px] overflow-auto"
+            data-testid="keypair-list"
+            style={{ maxHeight: 'var(--radix-popper-available-height)' }}
+          >
             <KeypairRadioGroup
               pubKey={pubKey}
               pubKeys={pubKeys}
