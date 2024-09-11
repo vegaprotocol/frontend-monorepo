@@ -9,15 +9,15 @@ import BigNumber from 'bignumber.js';
  *
  * (Uses currently connected public key if left empty)
  */
-export const useFundsAvailable = (pubKey?: string) => {
+export const useFundsAvailable = (pubKey?: string, noPolling = false) => {
   const { pubKey: currentPubKey } = useVegaWallet();
   const partyId = pubKey || currentPubKey;
-  const { data, stopPolling } = useFundsAvailableQuery({
+  const { data, loading, stopPolling } = useFundsAvailableQuery({
     variables: { partyId: partyId || '' },
     skip: !partyId,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     errorPolicy: 'ignore',
-    pollInterval: 5000,
+    pollInterval: noPolling ? 0 : 5000,
   });
 
   const fundsAvailable = data
@@ -38,6 +38,7 @@ export const useFundsAvailable = (pubKey?: string) => {
   }
 
   return {
+    loading,
     fundsAvailable,
     requiredFunds,
     isEligible:

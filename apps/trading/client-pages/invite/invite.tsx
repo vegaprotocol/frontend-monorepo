@@ -8,6 +8,7 @@ import {
   Input,
   InputError,
   Intent,
+  Loader,
   VegaIcon,
   VegaIconNames,
   VLogo,
@@ -31,32 +32,25 @@ import { useReferralProgram } from '../referrals/hooks/use-referral-program';
 import minBy from 'lodash/minBy';
 import { useForm } from 'react-hook-form';
 import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { areTeamGames, useGames } from '../../lib/hooks/use-games';
 import { JoinTeam } from '../competitions/join-team';
 import { CompetitionsActions } from 'apps/trading/components/competitions/competitions-cta';
-import { Link, matchPath, Route, Routes, useLocation } from 'react-router-dom';
-
-export const Invite = () => {
-  return (
-    <>
-      <Routes>
-        <Route path={StepPaths[Step.Connect]} element={<StepConnect />} />
-        <Route path={StepPaths[Step.Deposit]} element={<StepDeposit />} />
-        <Route path={StepPaths[Step.ApplyCode]} element={<StepApplyCode />} />
-        <Route path={StepPaths[Step.JoinTeam]} element={<StepJoinTeam />} />
-        <Route
-          path={StepPaths[Step.StartPlaying]}
-          element={<StepStartPlaying />}
-        />
-      </Routes>
-      <Traverse />
-    </>
-  );
-};
+import {
+  Link,
+  matchPath,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
+import { persist } from 'zustand/middleware';
+import { create } from 'zustand';
+import { Links } from 'apps/trading/lib/links';
 
 enum Step {
   Connect = 'Connect',
@@ -66,7 +60,40 @@ enum Step {
   StartPlaying = 'StartPlaying',
 }
 
-const defaultStepProgression = [
+const StepProgressions = {
+  /**
+   * The default onboarding progression, no special invitation given.
+   */
+  Default: [Step.Connect, Step.Deposit, Step.StartPlaying],
+
+  /**
+   * The onboarding progression when landed with a referral code.
+   */
+  Referral: [Step.Connect, Step.Deposit, Step.ApplyCode, Step.StartPlaying],
+
+  /**
+   * The onboarding progression when landed with a team invitation.
+   */
+  TeamInvitation: [
+    Step.Connect,
+    Step.Deposit,
+    Step.JoinTeam /** goes to team after joining successfully */,
+  ],
+
+  /**
+   * The onboarding progression when landed with both referral code
+   * and team invitation.
+   */
+  ReferralAndTeamInvitation: [
+    Step.Connect,
+    Step.Deposit,
+    Step.ApplyCode,
+    Step.JoinTeam,
+  ],
+};
+
+// TODO: Remove
+const allSteps = [
   Step.Connect,
   Step.Deposit,
   Step.ApplyCode,
@@ -74,75 +101,234 @@ const defaultStepProgression = [
   Step.StartPlaying,
 ];
 
-const StepPaths = {
-  [Step.Connect]: '',
+const StepRoutes = {
+  [Step.Connect]: 'connect',
   [Step.Deposit]: 'deposit',
   [Step.ApplyCode]: 'apply-code',
   [Step.JoinTeam]: 'join-team',
   [Step.StartPlaying]: 'start-playing',
 };
 
-const DEFAULT_STEPS = [Step.Connect, Step.Deposit, Step.StartPlaying];
+const StepLinks = {
+  [Step.Connect]: '/invite/connect',
+  [Step.Deposit]: '/invite/deposit',
+  [Step.ApplyCode]: '/invite/apply-code',
+  [Step.JoinTeam]: '/invite/join-team',
+  [Step.StartPlaying]: '/invite/start-playing',
+};
 
+type InviteStore = {
+  code?: string;
+  team?: string;
+  finished: number;
+  started: number;
+};
+type InviteActions = {
+  start: () => void;
+  finish: () => void;
+  setCode: (code: string) => void;
+  setTeam: (teamId: string) => void;
+};
+
+const useInviteStore = create<InviteStore & InviteActions>()(
+  persist(
+    (set) => ({
+      code: undefined,
+      team: undefined,
+      finished: 0,
+      started: 0,
+      start: () => {
+        set({ started: Date.now(), finished: 0 });
+      },
+      finish: () => {
+        set({ finished: Date.now() });
+      },
+      setCode: (code) => {
+        set({ code });
+      },
+      setTeam: (teamId) => {
+        set({ team: teamId });
+      },
+    }),
+    {
+      name: `${APP_NAME.toLowerCase()}-invite-store`,
+      version: 1,
+    }
+  )
+);
+
+type InviteParams = {
+  /**
+   * The referral code.
+   */
+  code?: string;
+  /**
+   * The team id
+   */
+  team?: string;
+};
+
+export const Invite = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="" element={<ProcessSteps />} />
+        <Route path={StepRoutes[Step.Connect]} element={<StepConnect />} />
+        <Route path={StepRoutes[Step.Deposit]} element={<StepDeposit />} />
+        <Route path={StepRoutes[Step.ApplyCode]} element={<StepApplyCode />} />
+        <Route path={StepRoutes[Step.JoinTeam]} element={<StepJoinTeam />} />
+        <Route
+          path={StepRoutes[Step.StartPlaying]}
+          element={<StepStartPlaying />}
+        />
+      </Routes>
+      <Traverse />
+    </>
+  );
+};
+
+const ProcessSteps = () => {
+  const { code, team } = useParams<InviteParams>();
+  const [storedCode, storedTeam, started, finished] = useInviteStore(
+    (state) => [state.code, state.team, state.started, state.finished]
+  );
+  const [setCode, setTeam, start] = useInviteStore((state) => [
+    state.setCode,
+    state.setTeam,
+    state.start,
+  ]);
+
+  const progression = determineStepProgression(storedCode, storedTeam);
+  const { step: desiredStep, loading } = useDetermineCurrentStep(progression);
+
+  useEffect(() => {
+    // already finished
+    if (finished > 0) return;
+    // already started, ignoring new code, team values TODO: Check this
+    if (started > 0) return;
+
+    if (code) setCode(code);
+    if (team) setTeam(team);
+    start();
+    console.log('invite', 'start', Date.now());
+  }, [
+    code,
+    finished,
+    setCode,
+    setTeam,
+    start,
+    started,
+    storedCode,
+    storedTeam,
+    team,
+  ]);
+
+  /**
+   * Already finished onboarding, no need to go through the process again.
+   */
+  if (finished > 0) {
+    return <Navigate to={Links.MARKETS()} />;
+  }
+
+  if (started <= 0 || loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+
+  if (desiredStep) {
+    return <Navigate to={StepRoutes[desiredStep]} />;
+  }
+
+  return <div className="text-red">COULD NOT DETERMINE STEP</div>;
+};
+
+// TODO: Remove
 const Traverse = () => {
   const location = useLocation();
 
-  const matching = defaultStepProgression.map((s) =>
-    matchPath(`/invite/${StepPaths[s]}`, location.pathname)
+  const matching = allSteps.map((s) =>
+    matchPath(`/invite/${StepRoutes[s]}`, location.pathname)
   );
   const currentStep = matching.findIndex((m) => m != null);
 
-  console.log('location', defaultStepProgression[currentStep]);
-
-  const next =
-    currentStep + 1 >= defaultStepProgression.length ? 0 : currentStep + 1;
-  const prev =
-    currentStep - 1 < 0 ? defaultStepProgression.length - 1 : currentStep - 1;
+  const next = currentStep + 1 >= allSteps.length ? 0 : currentStep + 1;
+  const prev = currentStep - 1 < 0 ? allSteps.length - 1 : currentStep - 1;
 
   return (
     <div className="flex gap-4 mx-auto">
-      <Link to={StepPaths[defaultStepProgression[prev]]}>PREVIOUS</Link>
-      <Link to={StepPaths[defaultStepProgression[next]]}>NEXT</Link>
+      <Link to={StepRoutes[allSteps[prev]]}>PREVIOUS</Link>
+      <Link to={StepRoutes[allSteps[next]]}>NEXT</Link>
     </div>
   );
 };
 
-const useDetermineSteps = () => {
-  // TODO: Read from store
-  return DEFAULT_STEPS;
+const determineStepProgression = (code?: string, team?: string) => {
+  if (code && !team) return StepProgressions.Referral;
+  if (!code && team) return StepProgressions.TeamInvitation;
+  if (code && team) return StepProgressions.ReferralAndTeamInvitation;
+  return StepProgressions.Default;
+};
+const useDetermineStepProgression = () => {
+  const [code, team] = useInviteStore((state) => [state.code, state.team]);
+  return determineStepProgression(code, team);
 };
 
-const useDetermineCurrentStep = (steps: Step[] = DEFAULT_STEPS) => {
+const useDetermineCurrentStep = (steps: Step[] = StepProgressions.Default) => {
   const { pubKey, status, isReadOnly } = useVegaWallet();
-  const { isEligible } = useFundsAvailable();
-  const { data: referralSet } = useFindReferralSet(pubKey);
-  const { team } = useMyTeam();
+  const {
+    requiredFunds,
+    isEligible,
+    loading: fundsLoading,
+  } = useFundsAvailable(pubKey, true);
+  const { data: referralSet, loading: referralLoading } =
+    useFindReferralSet(pubKey);
+  const { team, loading: teamLoading } = useMyTeam();
 
+  const loading = fundsLoading || referralLoading || teamLoading;
   const connected = pubKey && status === 'connected' && !isReadOnly;
 
-  if (steps.includes(Step.Connect) && !connected) {
-    return Step.Connect;
-  }
-  if (steps.includes(Step.Deposit) && !isEligible) {
-    return Step.Deposit;
-  }
-  if (steps.includes(Step.ApplyCode) && !referralSet) {
-    return Step.ApplyCode;
-  }
-  if (steps.includes(Step.JoinTeam) && !team) {
-    return Step.JoinTeam;
-  }
-  if (steps.includes(Step.StartPlaying)) {
-    return Step.StartPlaying;
+  let step = undefined;
+
+  if (!loading) {
+    if (steps.includes(Step.Connect) && !connected) {
+      step = Step.Connect;
+    } else if (steps.includes(Step.Deposit) && requiredFunds && !isEligible) {
+      step = Step.Deposit;
+    } else if (steps.includes(Step.ApplyCode) && !referralSet) {
+      step = Step.ApplyCode;
+    } else if (steps.includes(Step.JoinTeam) && !team) {
+      step = Step.JoinTeam;
+    } else if (steps.includes(Step.StartPlaying)) {
+      step = Step.StartPlaying;
+    }
   }
 
-  return undefined;
+  return {
+    step,
+    loading,
+  };
+};
+
+const linkToPrevious = (progression: Step[], currentStep: Step) => {
+  const idx = progression.indexOf(currentStep);
+  if (idx < 1) return StepLinks[progression[0]];
+  return StepLinks[progression[idx - 1]];
 };
 
 export const StepConnect = () => {
   const t = useT();
   const openWalletDialog = useDialogStore((state) => state.open);
-  const { pubKey, status } = useVegaWallet();
+
+  const progression = useDetermineStepProgression();
+  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+
+  if (loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+  if (!currentStep) return <Navigate to="" />;
+  if (currentStep !== Step.Connect) {
+    return <Navigate to={StepLinks[currentStep]} />;
+  }
+
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
@@ -167,19 +353,25 @@ export const StepConnect = () => {
 export const StepDeposit = () => {
   const t = useT();
   const { requiredFunds } = useFundsAvailable();
+
+  const progression = useDetermineStepProgression();
+  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+
+  if (loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+  if (!currentStep) return <Navigate to="" />;
+  if (currentStep !== Step.Deposit) {
+    return <Navigate to={StepLinks[currentStep]} />;
+  }
+
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-        {/** TODO: Determine step */}
         <StepsChain
-          currentStep={0}
-          steps={[
-            Step.Deposit,
-            Step.ApplyCode,
-            Step.JoinTeam,
-            Step.StartPlaying,
-          ]}
+          currentStep={progression.indexOf(currentStep)}
+          steps={progression}
         />
         <Card className="p-8 flex flex-col gap-4 ">
           <h3 className="text-2xl">
@@ -205,7 +397,6 @@ export const StepDeposit = () => {
 
 export const StepApplyCode = () => {
   const t = useT();
-
   const program = useReferralProgram();
 
   const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
@@ -242,7 +433,7 @@ export const StepApplyCode = () => {
       return t('The code is invalid');
     }
     return true;
-  }, [codeField, isPreviewEligible, previewData, previewLoading]);
+  }, [codeField, isPreviewEligible, previewData, previewLoading, t]);
 
   const [txDialogOpen, setTxDialogOpen] = useState(false);
   const { error, reset, result, send, status } = useSimpleTransaction();
@@ -256,19 +447,24 @@ export const StepApplyCode = () => {
     });
   };
 
+  const progression = useDetermineStepProgression();
+  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+
+  if (loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+  if (!currentStep) return <Navigate to="" />;
+  if (currentStep !== Step.ApplyCode) {
+    return <Navigate to={StepLinks[currentStep]} />;
+  }
+
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-        {/** TODO: Determine step */}
         <StepsChain
-          currentStep={1}
-          steps={[
-            Step.Deposit,
-            Step.ApplyCode,
-            Step.JoinTeam,
-            Step.StartPlaying,
-          ]}
+          currentStep={progression.indexOf(currentStep)}
+          steps={progression}
         />
         <Card className="p-8 flex flex-col gap-4 ">
           {firstBenefitTier ? (
@@ -288,7 +484,9 @@ export const StepApplyCode = () => {
                       }
                       values={{ minEpochs }}
                       components={[
-                        <GradientText>{minEpochs} epochs</GradientText>,
+                        <GradientText key="min-epochs">
+                          {minEpochs} epochs
+                        </GradientText>,
                       ]}
                       ns={ns}
                     />
@@ -354,19 +552,24 @@ export const StepJoinTeam = () => {
   const { team, stats, members, partyTeam, refetch } = useTeam(teamId, pubKey);
   const { data: games, loading: gamesLoading } = useGames({ teamId });
 
+  const progression = useDetermineStepProgression();
+  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+
+  if (loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+  if (!currentStep) return <Navigate to="" />;
+  if (currentStep !== Step.JoinTeam) {
+    return <Navigate to={StepLinks[currentStep]} />;
+  }
+
   if (!team) {
     return (
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-        {/** TODO: Determine step */}
         <StepsChain
-          currentStep={2}
-          steps={[
-            Step.Deposit,
-            Step.ApplyCode,
-            Step.JoinTeam,
-            Step.StartPlaying,
-          ]}
+          currentStep={progression.indexOf(currentStep)}
+          steps={progression}
         />
         <Card className="p-8 flex flex-col gap-4 ">ERROR</Card>
       </div>
@@ -376,10 +579,9 @@ export const StepJoinTeam = () => {
   return (
     <div className="md:max-w-2xl mx-auto flex flex-col gap-10">
       <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-      {/** TODO: Determine step */}
       <StepsChain
-        currentStep={2}
-        steps={[Step.Deposit, Step.ApplyCode, Step.JoinTeam, Step.StartPlaying]}
+        currentStep={progression.indexOf(currentStep)}
+        steps={progression}
       />
       <Card className="p-8 flex flex-col gap-4">
         <div className="flex flex-col gap-4 items-center">
@@ -403,13 +605,25 @@ const StepStartPlaying = () => {
   const t = useT();
   const { role: myRole, teamId: myTeamId } = useMyTeam();
 
+  const progression = useDetermineStepProgression();
+  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+
+  console.log('invite', currentStep, loading);
+
+  if (loading) {
+    return <Loader className="text-surface-0-fg" />;
+  }
+  if (!currentStep) return <Navigate to="" />;
+  if (currentStep !== Step.StartPlaying) {
+    return <Navigate to={StepLinks[currentStep]} />;
+  }
+
   return (
     <div className="mx-auto flex flex-col gap-10">
       <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-      {/** TODO: Determine step */}
       <StepsChain
-        currentStep={3}
-        steps={[Step.Deposit, Step.ApplyCode, Step.JoinTeam, Step.StartPlaying]}
+        currentStep={progression.indexOf(currentStep)}
+        steps={progression}
       />
       <CompetitionsActions myRole={myRole} myTeamId={myTeamId} />
     </div>
@@ -431,6 +645,7 @@ const StepsChain = ({
     [Step.JoinTeam]: t('ONBOARDING_STEP_JOIN_TEAM'),
     [Step.StartPlaying]: t('ONBOARDING_STEP_START_PLAYING'),
   };
+
   return (
     <ol className="list-none flex gap-0 mx-auto">
       {steps.map((step, i) => (
