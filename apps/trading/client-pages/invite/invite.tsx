@@ -38,9 +38,24 @@ import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { areTeamGames, useGames } from '../../lib/hooks/use-games';
 import { JoinTeam } from '../competitions/join-team';
 import { CompetitionsActions } from 'apps/trading/components/competitions/competitions-cta';
+import { Link, matchPath, Route, Routes, useLocation } from 'react-router-dom';
 
 export const Invite = () => {
-  return <StepStartPlaying />;
+  return (
+    <>
+      <Routes>
+        <Route path={StepPaths[Step.Connect]} element={<StepConnect />} />
+        <Route path={StepPaths[Step.Deposit]} element={<StepDeposit />} />
+        <Route path={StepPaths[Step.ApplyCode]} element={<StepApplyCode />} />
+        <Route path={StepPaths[Step.JoinTeam]} element={<StepJoinTeam />} />
+        <Route
+          path={StepPaths[Step.StartPlaying]}
+          element={<StepStartPlaying />}
+        />
+      </Routes>
+      <Traverse />
+    </>
+  );
 };
 
 enum Step {
@@ -51,7 +66,46 @@ enum Step {
   StartPlaying = 'StartPlaying',
 }
 
+const defaultStepProgression = [
+  Step.Connect,
+  Step.Deposit,
+  Step.ApplyCode,
+  Step.JoinTeam,
+  Step.StartPlaying,
+];
+
+const StepPaths = {
+  [Step.Connect]: '',
+  [Step.Deposit]: 'deposit',
+  [Step.ApplyCode]: 'apply-code',
+  [Step.JoinTeam]: 'join-team',
+  [Step.StartPlaying]: 'start-playing',
+};
+
 const DEFAULT_STEPS = [Step.Connect, Step.Deposit, Step.StartPlaying];
+
+const Traverse = () => {
+  const location = useLocation();
+
+  const matching = defaultStepProgression.map((s) =>
+    matchPath(`/invite/${StepPaths[s]}`, location.pathname)
+  );
+  const currentStep = matching.findIndex((m) => m != null);
+
+  console.log('location', defaultStepProgression[currentStep]);
+
+  const next =
+    currentStep + 1 >= defaultStepProgression.length ? 0 : currentStep + 1;
+  const prev =
+    currentStep - 1 < 0 ? defaultStepProgression.length - 1 : currentStep - 1;
+
+  return (
+    <div className="flex gap-4 mx-auto">
+      <Link to={StepPaths[defaultStepProgression[prev]]}>PREVIOUS</Link>
+      <Link to={StepPaths[defaultStepProgression[next]]}>NEXT</Link>
+    </div>
+  );
+};
 
 const useDetermineSteps = () => {
   // TODO: Read from store
