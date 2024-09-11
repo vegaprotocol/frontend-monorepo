@@ -46,23 +46,7 @@ export default function init({
   publicKeyIndexStore,
   onerror,
 }) {
-  connections.on('set', (connection) => {
-    server.notify('admin.connections_change', {
-      add: [connection],
-      update: [],
-      delete: [],
-    });
-  });
-
-  connections.on('delete', (connection) => {
-    server.notify('admin.connections_change', {
-      add: [],
-      update: [],
-      delete: [connection],
-    });
-  });
-
-  var server = new JSONRPCServer({
+  const server = new JSONRPCServer({
     onerror,
     methods: {
       async 'admin.app_globals'(params) {
@@ -313,6 +297,22 @@ export default function init({
         };
       },
     },
+  });
+
+  connections.on('set', (connection) => {
+    server.notify('admin.connections_change', {
+      add: [connection],
+      update: [],
+      delete: [],
+    });
+  });
+
+  connections.on('delete', (connection) => {
+    server.notify('admin.connections_change', {
+      add: [],
+      update: [],
+      delete: [connection],
+    });
   });
 
   return server;
