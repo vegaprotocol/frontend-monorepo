@@ -1,6 +1,6 @@
 import { Card } from '../../components/card';
 import { APP_NAME } from '../../lib/constants';
-import { ns, t } from '../../lib/use-t';
+import { ns, useT } from '../../lib/use-t';
 import {
   Button,
   cn,
@@ -86,6 +86,7 @@ const useDetermineCurrentStep = (steps: Step[] = DEFAULT_STEPS) => {
 };
 
 export const StepConnect = () => {
+  const t = useT();
   const openWalletDialog = useDialogStore((state) => state.open);
   const { pubKey, status } = useVegaWallet();
   return (
@@ -110,6 +111,7 @@ export const StepConnect = () => {
   );
 };
 export const StepDeposit = () => {
+  const t = useT();
   const { requiredFunds } = useFundsAvailable();
   return (
     <>
@@ -148,6 +150,8 @@ export const StepDeposit = () => {
 };
 
 export const StepApplyCode = () => {
+  const t = useT();
+
   const program = useReferralProgram();
 
   const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
@@ -287,6 +291,7 @@ export const StepApplyCode = () => {
   );
 };
 export const StepJoinTeam = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   // TODO: Get this from state
   const teamId =
@@ -341,6 +346,7 @@ export const StepJoinTeam = () => {
 };
 
 const StepStartPlaying = () => {
+  const t = useT();
   const { role: myRole, teamId: myTeamId } = useMyTeam();
 
   return (
@@ -363,6 +369,7 @@ const StepsChain = ({
   steps: Step[];
   currentStep?: number;
 }) => {
+  const t = useT();
   const StepLabel = {
     [Step.Connect]: t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME }),
     [Step.Deposit]: t('ONBOARDING_STEP_DEPOSIT'),
