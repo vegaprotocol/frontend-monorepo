@@ -21,7 +21,12 @@ export interface TransactionParams {
   sendingMode: 'TYPE_SYNC';
 }
 
-export type VegaWalletEvent = 'client.disconnected';
+export type QuickstartWalletEvents =
+  | 'client.transaction_sent'
+  | 'client.request_transaction_approval'
+  | 'client.request_transaction_decided';
+export type CommonEvents = 'client.disconnected' | 'client.list_keys';
+export type VegaWalletEvent = QuickstartWalletEvents | CommonEvents;
 
 export type ConnectorType =
   | 'injected'
