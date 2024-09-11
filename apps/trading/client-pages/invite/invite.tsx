@@ -37,9 +37,10 @@ import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { areTeamGames, useGames } from '../../lib/hooks/use-games';
 import { JoinTeam } from '../competitions/join-team';
+import { CompetitionsActions } from 'apps/trading/components/competitions/competitions-cta';
 
 export const Invite = () => {
-  return <StepJoinTeam />;
+  return <StepStartPlaying />;
 };
 
 enum Step {
@@ -335,6 +336,22 @@ export const StepJoinTeam = () => {
 
         <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
       </Card>
+    </div>
+  );
+};
+
+const StepStartPlaying = () => {
+  const { role: myRole, teamId: myTeamId } = useMyTeam();
+
+  return (
+    <div className="mx-auto flex flex-col gap-10">
+      <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+      {/** TODO: Determine step */}
+      <StepsChain
+        currentStep={3}
+        steps={[Step.Deposit, Step.ApplyCode, Step.JoinTeam, Step.StartPlaying]}
+      />
+      <CompetitionsActions myRole={myRole} myTeamId={myTeamId} />
     </div>
   );
 };
