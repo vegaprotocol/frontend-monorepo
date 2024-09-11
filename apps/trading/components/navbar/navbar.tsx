@@ -14,7 +14,6 @@ import {
   VegaIcon,
   LanguageSelector,
   ThemeSwitcher,
-  Icon,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
@@ -33,17 +32,14 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
-import { InBrowserWalletButton } from '../browser-wallet-button';
-import { BrowserWallet } from '../browser-wallet';
 
-type MenuState = 'wallet' | 'nav' | 'browser-wallet' | null;
+type MenuState = 'wallet' | 'nav' | null;
 
 export const Navbar = () => {
   const i18n = useI18n();
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
-  const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
   const { theme } = useThemeSwitcher();
 
   const status = useWallet((store) => store.status);
@@ -82,11 +78,6 @@ export const Navbar = () => {
         <div className="flex items-center">
           <ThemeSwitcher />
           <SettingsPopover />
-          {IN_BROWSER_WALLET && (
-            <div className="hidden lg:block">
-              <InBrowserWalletButton />
-            </div>
-          )}
           {supportedLngs.length > 1 ? (
             <LanguageSelector
               languages={supportedLngs}
@@ -94,20 +85,6 @@ export const Navbar = () => {
             />
           ) : null}
         </div>
-        {IN_BROWSER_WALLET && (
-          <NavbarMobileButton
-            onClick={() => {
-              setMenu((x) =>
-                x === 'browser-wallet' ? null : 'browser-wallet'
-              );
-            }}
-            data-testid="navbar-mobile-browser-wallet"
-          >
-            <div className="flex items-center justify-center w-6 h-6">
-              <Icon name="lab-test" />
-            </div>
-          </NavbarMobileButton>
-        )}
         <NavbarMobileButton
           onClick={() => {
             if (status === 'connected') {
@@ -158,7 +135,6 @@ export const Navbar = () => {
             </div>
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
-            {menu === 'browser-wallet' && <BrowserWallet />}
             <div className="p-2 mt-auto flex justify-end">
               <NodeHealthContainer variant="normal" />
             </div>

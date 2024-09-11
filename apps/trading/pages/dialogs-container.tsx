@@ -10,6 +10,7 @@ import { WelcomeDialog } from '../components/welcome-dialog';
 import { VegaWalletConnectDialog } from '../components/vega-wallet-connect-dialog';
 import { ProfileDialog } from '../components/profile-dialog';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { BrowserWallerDialog } from '../components/browser-wallet-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
@@ -29,6 +30,7 @@ const DialogsContainer = () => {
       <Web3ConnectUncontrolledDialog />
       <WithdrawalApprovalDialogContainer />
       <ProfileDialog />
+      <BrowserWallerDialog />
     </>
   );
 };

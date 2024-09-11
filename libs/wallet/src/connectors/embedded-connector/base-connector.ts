@@ -1,11 +1,10 @@
 import { type StoreApi } from 'zustand';
-import { type TransactionResponse } from '../transaction-types';
+import { type TransactionResponse } from '../../transaction-types';
 import {
   type Store,
   type TransactionParams,
   type VegaWalletEvent,
-  type Connector,
-} from '../types';
+} from '../../types';
 import { JSONRPCClient } from '@vegaprotocol/json-rpc';
 import {
   chainIdError,
@@ -16,8 +15,10 @@ import {
   listKeysError,
   sendTransactionError,
   userRejectedError,
-} from '../errors';
+} from '../../errors';
 import EventEmitter from 'eventemitter3';
+
+const USER_REJECTED_CODE = -4;
 
 interface InjectedError {
   message: string;
@@ -31,16 +32,10 @@ interface InjectedError {
     | string;
 }
 
-const USER_REJECTED_CODE = -4;
-
-export class InBrowserConnector implements Connector {
-  readonly id = 'in-browser-wallet';
-  readonly name = 'In browser wallet';
-  readonly description =
-    'Connect with In Browser Vega Wallet to get started quickly';
+export class BrowserConnector {
   store: StoreApi<Store> | undefined;
 
-  static client = new JSONRPCClient({
+  private static client = new JSONRPCClient({
     idPrefix: 'vega.in-page-',
     send(msg: unknown) {
       window.dispatchEvent(
@@ -50,15 +45,15 @@ export class InBrowserConnector implements Connector {
       );
     },
     onnotification: (msg) => {
-      InBrowserConnector.emitter.emit(msg.method, msg.params);
+      BrowserConnector.emitter.emit(msg.method, msg.params);
     },
   });
 
-  static emitter = new EventEmitter();
+  private static emitter = new EventEmitter();
 
   private static onMessage = (event: Event) => {
     const msg = (event as CustomEvent).detail;
-    InBrowserConnector.client.onmessage(msg);
+    BrowserConnector.client.onmessage(msg);
   };
 
   /**
@@ -68,22 +63,20 @@ export class InBrowserConnector implements Connector {
     if (typeof window !== 'undefined') {
       window.removeEventListener(
         'content-script-response',
-        InBrowserConnector.onMessage
+        BrowserConnector.onMessage
       );
       window.addEventListener(
         'content-script-response',
-        InBrowserConnector.onMessage
+        BrowserConnector.onMessage
       );
     }
   }
 
-  bindStore(store: StoreApi<Store>) {
-    this.store = store;
-  }
+  bindStore() {}
 
   async connectWallet(chainId?: string): Promise<{ success: boolean }> {
     try {
-      await InBrowserConnector.client.request('client.connect_wallet', {
+      await BrowserConnector.client.request('client.connect_wallet', {
         chainId,
       });
       return { success: true };
@@ -102,7 +95,7 @@ export class InBrowserConnector implements Connector {
 
   async disconnectWallet(): Promise<void> {
     try {
-      await InBrowserConnector.client.request('client.disconnect_wallet', null);
+      await BrowserConnector.client.request('client.disconnect_wallet', null);
     } catch (err) {
       throw disconnectError();
     }
@@ -110,7 +103,7 @@ export class InBrowserConnector implements Connector {
 
   async getChainId(): Promise<{ chainId: string }> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.get_chain_id',
         null
       )) as unknown as {
@@ -124,7 +117,7 @@ export class InBrowserConnector implements Connector {
 
   async listKeys(): Promise<Array<{ publicKey: string; name: string }>> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.list_keys',
         null
       )) as unknown as {
@@ -138,7 +131,7 @@ export class InBrowserConnector implements Connector {
 
   async isConnected(): Promise<{ connected: boolean }> {
     try {
-      const res = (await InBrowserConnector.client.request(
+      const res = (await BrowserConnector.client.request(
         'client.is_connected',
         null
       )) as unknown as {
@@ -158,7 +151,7 @@ export class InBrowserConnector implements Connector {
     params: TransactionParams
   ): Promise<TransactionResponse> {
     try {
-      const res = await InBrowserConnector.client.request(
+      const res = await BrowserConnector.client.request(
         'client.send_transaction',
         params
       );
@@ -177,11 +170,11 @@ export class InBrowserConnector implements Connector {
   }
 
   on(event: VegaWalletEvent, callback: () => void): void {
-    InBrowserConnector.emitter.on(event, callback);
+    BrowserConnector.emitter.on(event, callback);
   }
 
   off(event: VegaWalletEvent, callback?: () => void): void {
-    InBrowserConnector.emitter.off(event, callback);
+    BrowserConnector.emitter.off(event, callback);
   }
 
   private isInjectedError(obj: unknown): obj is InjectedError {
