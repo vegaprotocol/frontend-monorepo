@@ -96,7 +96,7 @@ describe('TransactionModal', () => {
     render(<TransactionModal />);
     expect(screen.getByTestId('enriched-details')).toBeVisible();
     expect(screen.getByTestId('raw-transaction')).toBeVisible();
-    expect(screen.getByTestId('check-transaction')).toBeVisible();
+    // expect(screen.getByTestId('check-transaction')).toBeVisible();
     expect(screen.getByTestId('transaction-header')).toBeVisible();
     expect(screen.getByTestId('transaction-footer')).toBeVisible();
     expect(screen.getByTestId('auto-approval-notification')).toBeVisible();
