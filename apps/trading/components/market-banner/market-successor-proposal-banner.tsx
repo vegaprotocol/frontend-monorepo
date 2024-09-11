@@ -14,12 +14,10 @@ export const MarketSuccessorProposalBanner = ({
 
   return (
     <div>
-      <div className="uppercase mb-1">
+      <p className="uppercase mb-1">
         {proposals.length === 1
           ? t('A successor to this market has been proposed')
-          : t('Successors to this market have been proposed')}
-      </div>
-      <div>
+          : t('Successors to this market have been proposed')}{' '}
         {t(
           'checkOutProposalsAndVote',
           'Check out the terms of the proposals and vote:',
@@ -45,7 +43,7 @@ export const MarketSuccessorProposalBanner = ({
             </Fragment>
           );
         })}
-      </div>
+      </p>
     </div>
   );
 };

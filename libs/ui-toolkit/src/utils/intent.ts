@@ -1,11 +1,13 @@
+import { VegaIconNames } from '../components';
+
 export enum Intent {
-  None,
-  Primary,
-  Secondary,
-  Danger,
-  Info,
-  Warning,
-  Success,
+  None = 'None',
+  Primary = 'Primary',
+  Secondary = 'Secondary',
+  Danger = 'Danger',
+  Info = 'Info',
+  Warning = 'Warning',
+  Success = 'Success',
 }
 
 export const getIntentBorder = (intent = Intent.None) => {
@@ -54,4 +56,18 @@ export const getIntentText = (intent?: Intent) => {
     'text-intent-warning': intent === Intent.Warning,
     'text-intent-success': intent === Intent.Success,
   };
+};
+
+export const getIntentIcon = (intent: Intent) => {
+  const record: Record<Intent, VegaIconNames> = {
+    [Intent.None]: VegaIconNames.INFO,
+    [Intent.Primary]: VegaIconNames.INFO,
+    [Intent.Secondary]: VegaIconNames.INFO,
+    [Intent.Info]: VegaIconNames.INFO,
+    [Intent.Success]: VegaIconNames.TICK,
+    [Intent.Warning]: VegaIconNames.EXCLAMATION_MARK,
+    [Intent.Danger]: VegaIconNames.CROSS,
+  };
+
+  return record[intent];
 };

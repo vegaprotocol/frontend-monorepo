@@ -6,6 +6,7 @@ import {
 import { useT } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
+import { GradientText } from '../gradient-text';
 
 export const MarketRewardBanner = (props: {
   metric: DispatchMetric | 'STAKING_REWARD_METRIC';
@@ -13,15 +14,18 @@ export const MarketRewardBanner = (props: {
 }) => {
   const t = useT();
   return (
-    <span className="flex gap-1">
-      <span className="font-bold antialiased">{t('Active reward')}: </span>
-      <span className="font-bold antialiased">
+    <p className="flex gap-1">
+      <span className="font-bold">{t('Active reward')}: </span>
+      <GradientText className="font-bold">
         {DispatchMetricLabels[props.metric]}
-      </span>
+      </GradientText>
       <span>{DispatchMetricDescription[props.metric]}</span>
-      <Link className="underline" to={Links.COMPETITIONS_GAME(props.gameId)}>
+      <Link
+        className="underline underline-offset-4"
+        to={Links.COMPETITIONS_GAME(props.gameId)}
+      >
         {t('Learn more')}
       </Link>
-    </span>
+    </p>
   );
 };

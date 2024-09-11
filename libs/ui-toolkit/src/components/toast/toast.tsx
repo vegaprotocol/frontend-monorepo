@@ -1,7 +1,5 @@
 import styles from './toast.module.css';
 
-import type { IconName } from '@blueprintjs/icons';
-import { IconNames } from '@blueprintjs/icons';
 import { cn } from '../../utils/cn';
 import {
   forwardRef,
@@ -15,9 +13,10 @@ import {
 import {
   getIntentBackground,
   getIntentColor,
+  getIntentIcon,
   Intent,
 } from '../../utils/intent';
-import { Icon, VegaIcon, VegaIconNames } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
 
 export type ToastContent = JSX.Element | undefined;
@@ -41,16 +40,6 @@ export type Toast = {
 
 type ToastProps = Toast & {
   state?: ToastState;
-};
-
-export const toastIconMapping: { [i in Intent]: IconName } = {
-  [Intent.None]: IconNames.HELP,
-  [Intent.Primary]: IconNames.INFO_SIGN,
-  [Intent.Secondary]: IconNames.INFO_SIGN,
-  [Intent.Info]: IconNames.INFO_SIGN,
-  [Intent.Success]: IconNames.TICK_CIRCLE,
-  [Intent.Warning]: IconNames.WARNING_SIGN,
-  [Intent.Danger]: IconNames.ERROR,
 };
 
 export const CLOSE_DELAY = 500;
@@ -246,9 +235,9 @@ export const Toast = ({
               <Loader size="small" />
             </div>
           ) : (
-            <Icon
-              name={toastIconMapping[intent]}
-              size={4}
+            <VegaIcon
+              name={getIntentIcon(intent)}
+              size={10}
               className="!block !h-[14px] !w-[14px]"
             />
           )}

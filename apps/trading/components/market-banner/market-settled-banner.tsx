@@ -55,65 +55,67 @@ export const MarketSettledBanner = ({ market }: { market: Market }) => {
   if (successorMarket) {
     return (
       <div>
-        <p>{t('This market has been succeeded')}</p>
-        {duration && (
-          <div className="mt-1">
-            <span>
-              {t('This market expires in {{duration}}.', {
-                duration: formatDuration(duration, {
-                  format: [
-                    'years',
-                    'months',
-                    'weeks',
-                    'days',
-                    'hours',
-                    'minutes',
-                  ],
-                }),
-              })}
-            </span>
+        <p>
+          {t('This market has been succeeded')}{' '}
+          {duration && (
             <>
-              {' '}
-              {successorVolume ? (
-                <Trans
-                  defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
-                  values={{
-                    successorVolume,
-                    instrumentName:
-                      successorMarket?.tradableInstrument.instrument.name,
-                  }}
-                  components={[
-                    <Link
-                      to={Links.MARKET(successorMarket.id)}
-                      key="link"
-                      target="_blank"
-                    >
-                      successor market name
-                    </Link>,
-                  ]}
-                />
-              ) : (
-                <Trans
-                  defaults="The successor market is <0>{{instrumentName}}</0>"
-                  values={{
-                    instrumentName:
-                      successorMarket?.tradableInstrument.instrument.name,
-                  }}
-                  components={[
-                    <Link
-                      to={Links.MARKET(successorMarket.id)}
-                      key="link"
-                      target="_blank"
-                    >
-                      successor market name
-                    </Link>,
-                  ]}
-                  ns={ns}
-                />
-              )}
+              <span>
+                {t('This market expires in {{duration}}.', {
+                  duration: formatDuration(duration, {
+                    format: [
+                      'years',
+                      'months',
+                      'weeks',
+                      'days',
+                      'hours',
+                      'minutes',
+                    ],
+                  }),
+                })}
+              </span>
+              <>
+                {' '}
+                {successorVolume ? (
+                  <Trans
+                    defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
+                    values={{
+                      successorVolume,
+                      instrumentName:
+                        successorMarket?.tradableInstrument.instrument.name,
+                    }}
+                    components={[
+                      <Link
+                        to={Links.MARKET(successorMarket.id)}
+                        key="link"
+                        target="_blank"
+                      >
+                        successor market name
+                      </Link>,
+                    ]}
+                  />
+                ) : (
+                  <Trans
+                    defaults="The successor market is <0>{{instrumentName}}</0>"
+                    values={{
+                      instrumentName:
+                        successorMarket?.tradableInstrument.instrument.name,
+                    }}
+                    components={[
+                      <Link
+                        to={Links.MARKET(successorMarket.id)}
+                        key="link"
+                        target="_blank"
+                      >
+                        successor market name
+                      </Link>,
+                    ]}
+                    ns={ns}
+                  />
+                )}
+              </>
             </>
-          </div>
-        )}
+          )}
+        </p>
       </div>
     );
   }

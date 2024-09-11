@@ -36,14 +36,14 @@ const MainGrid = memo(
       id: 'trade-col',
     });
 
-    const headingSize = banners.length > 0 ? 112 : 72;
+    const headingSize = banners.length > 0 ? 125 : 72;
 
     return (
       <ResizableGrid onChange={handleRowSizes}>
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
             <ResizableGridPanel minSize={headingSize} maxSize={headingSize}>
-              <ResizableGridPanelChild className="bg-transparent flex flex-col gap-2">
+              <ResizableGridPanelChild className="bg-transparent flex flex-col gap-4">
                 <MarketHeader />
                 <MarketBanner
                   market={market}
