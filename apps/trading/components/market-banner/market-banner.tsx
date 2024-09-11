@@ -222,11 +222,11 @@ const BannerQueue = ({
 
   return (
     <NotificationBanner
-      intent={currentBanner.intent}
+      intent={Intent.Primary}
       icon={currentBanner.icon}
       onClose={onClose}
       data-testid="market-banner"
-      className="rounded-grid"
+      className="rounded-grid bg-surface-1/70"
     >
       <div className="flex items-center justify-between">
         {currentBanner.content}

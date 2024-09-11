@@ -30,9 +30,9 @@ export const NotificationBanner = ({
       className={cn(
         'relative flex gap-2 items-center pl-3 pr-2 h-20',
         'text-xs leading-tight font-normal',
-        { border: isPrimary },
-        isPrimary ? getIntentBackground(intent) : undefined,
-        isPrimary ? getIntentBorder(intent) : undefined,
+        { border: !isPrimary },
+        isPrimary ? undefined : getIntentBackground(intent),
+        isPrimary ? undefined : getIntentBorder(intent),
         className
       )}
       {...props}
