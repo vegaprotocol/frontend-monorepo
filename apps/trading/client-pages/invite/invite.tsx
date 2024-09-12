@@ -420,10 +420,7 @@ export const StepDeposit = () => {
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
-        <StepsChain
-          currentStep={progression.indexOf(currentStep)}
-          steps={progression}
-        />
+        <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
           <h3 className="text-2xl">
             {t('ONBOARDING_STEP_DEPOSIT_HEADER', { requiredFunds })}
@@ -514,10 +511,7 @@ export const StepApplyCode = () => {
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
-        <StepsChain
-          currentStep={progression.indexOf(currentStep)}
-          steps={progression}
-        />
+        <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
           {firstBenefitTier ? (
             <dl className="flex flex-col gap-2 items-center border-b pb-4">
@@ -620,10 +614,7 @@ export const StepJoinTeam = () => {
     return (
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
         <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
-        <StepsChain
-          currentStep={progression.indexOf(currentStep)}
-          steps={progression}
-        />
+        <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">ERROR</Card>
       </div>
     );
@@ -632,10 +623,7 @@ export const StepJoinTeam = () => {
   return (
     <div className="md:max-w-2xl mx-auto flex flex-col gap-10">
       <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
-      <StepsChain
-        currentStep={progression.indexOf(currentStep)}
-        steps={progression}
-      />
+      <ProgressionChain currentStep={currentStep} progression={progression} />
       <Card className="p-8 flex flex-col gap-4">
         <div className="flex flex-col gap-4 items-center">
           <TeamAvatar teamId={teamId} />
@@ -674,21 +662,18 @@ const StepStartPlaying = () => {
   return (
     <div className="mx-auto flex flex-col gap-10">
       <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
-      <StepsChain
-        currentStep={progression.indexOf(currentStep)}
-        steps={progression}
-      />
+      <ProgressionChain currentStep={currentStep} progression={progression} />
       <CompetitionsActions myRole={myRole} myTeamId={myTeamId} />
     </div>
   );
 };
 
-const StepsChain = ({
-  steps,
+const ProgressionChain = ({
+  progression: steps,
   currentStep,
 }: {
-  steps: Step[];
-  currentStep?: number;
+  progression: Step[];
+  currentStep?: Step;
 }) => {
   const t = useT();
   const StepLabel = {
@@ -699,42 +684,47 @@ const StepsChain = ({
     [Step.StartPlaying]: t('ONBOARDING_STEP_START_PLAYING'),
   };
 
+  const displayable = steps.filter((s) => s !== Step.Connect); // ignore connect
+  const current = displayable.indexOf(currentStep as typeof displayable[0]);
+
   return (
     <ol className="list-none flex gap-0 mx-auto">
-      {steps.map((step, i) => (
-        <li
-          key={`onboarding-step-${i + 1}`}
-          className="relative overflow-hidden flex flex-col items-center gap-2"
-        >
-          <div
-            aria-hidden
-            className={cn('border-b w-full absolute top-4', {
-              'left-1/2': i === 0,
-              'right-1/2': i === steps.length - 1,
-            })}
-          ></div>
-          <div
-            className={cn(
-              'relative border rounded-full w-8 h-8 text-center bg-surface-0',
-              {
-                'bg-intent-primary text-intent-primary-foreground border-none':
-                  i === currentStep,
-                'bg-intent-success text-gs-950 border-none':
-                  i < (currentStep || 0),
-              }
-            )}
+      {displayable.map((step, i) => {
+        return (
+          <li
+            key={`onboarding-step-${i + 1}`}
+            className="relative overflow-hidden flex flex-col items-center gap-2"
           >
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none">
-              {i + 1 > (currentStep || 0) ? (
-                i + 1
-              ) : (
-                <VegaIcon name={VegaIconNames.TICK} />
+            <div
+              aria-hidden
+              className={cn('border-b w-full absolute top-4', {
+                'left-1/2': i === 0,
+                'right-1/2': i === displayable.length - 1,
+              })}
+            ></div>
+            <div
+              className={cn(
+                'relative border rounded-full w-8 h-8 text-center bg-surface-0',
+                {
+                  'bg-intent-primary text-intent-primary-foreground border-none':
+                    i === current,
+                  'bg-intent-success text-gs-950 border-none':
+                    i < (current || 0),
+                }
               )}
-            </span>
-          </div>
-          <div className="px-2">{StepLabel[step]}</div>
-        </li>
-      ))}
+            >
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none">
+                {i + 1 > (current || 0) ? (
+                  i + 1
+                ) : (
+                  <VegaIcon name={VegaIconNames.TICK} />
+                )}
+              </span>
+            </div>
+            <div className="px-2">{StepLabel[step]}</div>
+          </li>
+        );
+      })}
     </ol>
   );
 };
