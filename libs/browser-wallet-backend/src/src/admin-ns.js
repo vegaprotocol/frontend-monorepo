@@ -71,7 +71,7 @@ export default function init({
       },
 
       async 'admin.update_app_settings'(params) {
-        doValidate(adminValidation.updateAppSettings, params);
+        // doValidate(adminValidation.updateAppSettings, params);
         await settings.transaction(async (store) => {
           for (const [key, value] of Object.entries(params)) {
             await store.set(key, value);
