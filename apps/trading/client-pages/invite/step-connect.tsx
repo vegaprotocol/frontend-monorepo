@@ -2,12 +2,12 @@ import { Card } from '../../components/card';
 import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import { Button, Intent, Loader, VLogo } from '@vegaprotocol/ui-toolkit';
-import { useDialogStore } from '@vegaprotocol/wallet-react';
+import { useConnect, useQuickstart } from '@vegaprotocol/wallet-react';
 import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { type ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
@@ -18,10 +18,10 @@ import {
   useDetermineStepProgression,
   useInviteStore,
 } from './invite';
+import { QuickStartConnector } from '@vegaprotocol/wallet';
 
 export const StepConnect = () => {
   const t = useT();
-  const openWalletDialog = useDialogStore((state) => state.open);
 
   const progression = useDetermineStepProgression();
   const { step: currentStep, loading: stepLoading } =
@@ -77,31 +77,104 @@ export const StepConnect = () => {
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }
-  if (!currentStep) return <Navigate to="" />;
+
+  if (!currentStep) {
+    throw new Error('step not found');
+  }
+
   if (currentStep !== Step.Connect) {
     return <Navigate to={StepLinks[currentStep]} />;
   }
 
   return (
     <>
-      <div className="md:w-7/12 mx-auto flex flex-col gap-10">
+      <div className="md:w-4/6 mx-auto flex flex-col gap-10">
         <StepHeader title={header} />
-        <Card className="p-8 flex flex-col gap-4 items-center">
-          {/** TODO: Change logo */}
-          <VLogo />
-          <h3 className="text-2xl">
-            {t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME })}
-          </h3>
-          <p>
-            {t('ONBOARDING_STEP_CONNECT_DESCRIPTION', {
-              appName: APP_NAME,
-            })}
-          </p>
-          <Button intent={Intent.Primary} size="lg" onClick={openWalletDialog}>
-            {t('Connect wallet')}
-          </Button>
-        </Card>
+        <ConnectionOptions />
       </div>
     </>
+  );
+};
+
+const ConnectionOptions = () => {
+  const navigate = useNavigate();
+  const t = useT();
+  const { connect, connectors } = useConnect();
+
+  const handleConnect = () => {
+    setTimeout(() => navigate(StepLinks[Step.Deposit]), 1000);
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 row-auto gap-4">
+      {connectors
+        .filter((c) => c.prominent)
+        .map((c) => {
+          return (
+            <Card
+              key={c.id}
+              className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center"
+            >
+              <div className="flex flex-col gap-4 items-center justify-center">
+                <VLogo />
+                <h3 className="text-2xl">
+                  {t('ONBOARDING_STEP_CONNECT', { option: c.name })}
+                </h3>
+                <p>{c.description}</p>
+              </div>
+              <div className="flex justify-center">
+                {c.id === 'embedded-wallet-quickstart' &&
+                c instanceof QuickStartConnector ? (
+                  <EmbeddQuickStartButton
+                    connector={c}
+                    onSuccess={async () => {
+                      const res = await connect(c.id);
+                      if (res.status === 'connected') {
+                        handleConnect();
+                      }
+                    }}
+                  />
+                ) : (
+                  <Button
+                    intent={Intent.Primary}
+                    size="lg"
+                    onClick={async () => {
+                      const res = await connect(c.id);
+                      if (res.status === 'connected') {
+                        handleConnect();
+                      }
+                    }}
+                  >
+                    {t('Connect wallet')}
+                  </Button>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+    </div>
+  );
+};
+
+const EmbeddQuickStartButton = (props: {
+  connector: QuickStartConnector;
+  onSuccess: () => void;
+}) => {
+  const t = useT();
+  const { connect, isPending } = useQuickstart({
+    connector: props.connector,
+    onSuccess: props.onSuccess,
+  });
+
+  return (
+    <Button
+      intent={Intent.Primary}
+      size="lg"
+      onClick={() => connect()}
+      disabled={isPending}
+      className="min-w-[140px]"
+    >
+      {isPending ? <Loader /> : t('Create wallet')}
+    </Button>
   );
 };

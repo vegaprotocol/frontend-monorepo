@@ -1,24 +1,23 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
-import { useConfig } from '../../../../hooks/use-config';
+import { useConfig } from './use-config';
 import { useSignTypedData } from 'wagmi';
 
 /**
  * Derives a mnemonic from the user's connected Ethereum wallet
  */
 export const useCreateDerivedWallet = (
-  chainId: number,
   connector: QuickStartConnector,
-  address: string
+  chainId: number,
+  onSuccess: () => void,
+  address?: string
 ) => {
   const state = useConfig();
   const { signTypedDataAsync } = useSignTypedData();
-  return useQuery({
-    enabled: false,
-    retryOnMount: false,
+  const mutationResult = useMutation({
     retry: false,
-    queryKey: ['ethereum.signTypedData', chainId, address],
-    queryFn: async () => {
+    mutationKey: ['ethereum.signTypedData', chainId, address],
+    mutationFn: async () => {
       try {
         state.store.setState({
           status: 'creating',
@@ -48,5 +47,8 @@ export const useCreateDerivedWallet = (
         throw error;
       }
     },
+    onSuccess,
   });
+
+  return mutationResult;
 };
