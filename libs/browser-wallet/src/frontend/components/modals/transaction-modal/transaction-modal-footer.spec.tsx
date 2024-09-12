@@ -89,33 +89,4 @@ describe('TransactionModalFooter', () => {
     fireEvent.click(screen.getByTestId(locators.transactionModalApproveButton));
     expect(fn).toHaveBeenCalledWith(true);
   });
-  // it('renders auto consent checkbox if autoConsent is false', async () => {
-  //   renderComponent();
-  //   expect(
-  //     screen.getByTestId(locators.transactionModalFooterAutoConsentSection)
-  //   ).toBeVisible();
-  // });
-  // it('does not render auto consent checkbox if autoConsent is true', async () => {
-  //   renderComponent(true);
-  //   expect(
-  //     screen.queryByTestId(locators.transactionModalFooterAutoConsentSection)
-  //   ).toBeNull();
-  // });
-  // it('sets the auto consent value when it changes', async () => {
-  //   expect(mockedRequest).not.toHaveBeenCalled();
-  //   renderComponent();
-  //   fireEvent.click(
-  //     screen.getByLabelText(
-  //       'Allow this site to automatically approve order and vote transactions. This can be turned off in "Connections".'
-  //     )
-  //   );
-  //   fireEvent.click(screen.getByTestId(locators.transactionModalApproveButton));
-  //   expect(mockedRequest).toHaveBeenCalledWith(
-  //     RpcMethods.UpdateAutomaticConsent,
-  //     {
-  //       origin: 'https://www.google.com',
-  //       autoConsent: true,
-  //     }
-  //   );
-  // });
 });

@@ -1,13 +1,14 @@
-import {
-  Button,
-  // Checkbox,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
-// import { useState } from 'react';
+import { Button, Checkbox, Intent } from '@vegaprotocol/ui-toolkit';
+import { useState } from 'react';
 
-// import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-// import { RpcMethods } from '@/lib/client-rpc-methods';
-import { type TransactionMessage } from '@/lib/transactions';
+import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
+import { RpcMethods } from '@/lib/client-rpc-methods';
+import {
+  getTransactionType,
+  type TransactionMessage,
+} from '@/lib/transactions';
+import { useGlobalsStore } from '@/stores/globals';
+import { AUTO_CONSENT_TRANSACTION_TYPES } from '@/lib/constants';
 
 export const locators = {
   transactionModalDenyButton: 'transaction-deny-button',
@@ -22,27 +23,23 @@ export const TransactionModalFooter = ({
   handleTransactionDecision: (decision: boolean) => void;
   details: TransactionMessage;
 }) => {
-  // const { request } = useJsonRpcClient();
-  // const { connections, loadConnections } = useConnectionStore((state) => ({
-  //   connections: state.connections,
-  //   loadConnections: state.loadConnections,
-  // }));
-  // const connection = connections.find((c) => c.origin === details.origin);
-  // if (!connection) {
-  //   throw new Error(`Could not find connection with origin ${details.origin}`);
-  // }
-  // const [autoConsent, setAutoConsent] = useState(connection.autoConsent);
+  const { request } = useJsonRpcClient();
+  const { settings, loadGlobals } = useGlobalsStore((state) => ({
+    settings: state.globals?.settings,
+    loadGlobals: state.loadGlobals,
+  }));
+  const [autoConsent, setAutoConsent] = useState(!!settings?.autoConsent);
+  if (!settings) return null;
 
   const handleDecision = async (decision: boolean) => {
     handleTransactionDecision(decision);
     // TODO should be powered by a setting and not the connection
-    // if (connection && autoConsent !== connection.autoConsent) {
-    //   await request(RpcMethods.UpdateAutomaticConsent, {
-    //     origin: connection.origin,
-    //     autoConsent,
-    //   });
-    //   await loadConnections(request);
-    // }
+    if (autoConsent !== settings.autoConsent) {
+      await request(RpcMethods.UpdateSettings, {
+        autoConsent,
+      });
+      await loadGlobals(request);
+    }
   };
 
   return (
@@ -65,7 +62,7 @@ export const TransactionModalFooter = ({
           Confirm
         </Button>
       </div>
-      {/* {!connection.autoConsent &&
+      {!settings.autoConsent &&
         AUTO_CONSENT_TRANSACTION_TYPES.includes(
           getTransactionType(details.transaction)
         ) && (
@@ -77,7 +74,7 @@ export const TransactionModalFooter = ({
               label={
                 <span className="text-xs">
                   Allow this site to automatically approve order and vote
-                  transactions. This can be turned off in "Connections".
+                  transactions. This can be turned off in "Settings".
                 </span>
               }
               checked={autoConsent}
@@ -87,7 +84,7 @@ export const TransactionModalFooter = ({
               name={'autoConsent'}
             />
           </div>
-        )} */}
+        )}
     </div>
   );
 };

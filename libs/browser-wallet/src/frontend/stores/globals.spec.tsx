@@ -27,7 +27,7 @@ describe('Store', () => {
   it('loads globals from backend', async () => {
     expect(useGlobalsStore.getState().loading).toBe(true);
     expect(useGlobalsStore.getState().globals).toBeNull();
-    await useGlobalsStore.getState().loadGlobals(request as unknown as unknown);
+    await useGlobalsStore.getState().loadGlobals(request as unknown as any);
     expect(useGlobalsStore.getState().loading).toBe(false);
     expect(useGlobalsStore.getState().globals).toStrictEqual(globalsMock);
   });
