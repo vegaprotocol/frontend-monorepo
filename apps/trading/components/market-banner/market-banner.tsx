@@ -84,20 +84,17 @@ export const MarketBannerIndicator = ({
   return null;
 };
 
-export const MarketBanner = (props: {
-  market: Market;
-  banners: IBanner[];
-  loading: boolean;
-}) => {
-  if (props.loading) {
+export const MarketBanner = (props: { market: Market }) => {
+  const { banners, loading } = useMarketBanners(props.market);
+  if (loading) {
     return null;
   }
 
-  if (!props.banners.length) {
+  if (!banners.length) {
     return null;
   }
 
-  return <BannerQueue banners={props.banners} market={props.market} />;
+  return <BannerQueue banners={banners} market={props.market} />;
 };
 
 const mapBanner = (market: Market, banner: IBanner) => {
