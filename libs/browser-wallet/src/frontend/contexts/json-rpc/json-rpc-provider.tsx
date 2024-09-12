@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import { useInteractionStore } from '@/stores/interaction-store';
-
 import { useCreateClient } from './hooks/create-client';
 import { createServer } from './hooks/create-server';
 import { JsonRpcContext } from './json-rpc-context';
@@ -23,13 +21,7 @@ export interface JsonRpcNotification {
  */
 export const JsonRPCProvider = ({ children }: { children: JSX.Element }) => {
   const { client, request } = useCreateClient();
-  const { handleTransaction } = useInteractionStore((store) => ({
-    handleTransaction: store.handleTransaction,
-  }));
-  const server = useMemo(
-    () => createServer(handleTransaction),
-    [handleTransaction]
-  );
+  const server = useMemo(() => createServer(), []);
   const value = useMemo(
     () => ({
       client,
