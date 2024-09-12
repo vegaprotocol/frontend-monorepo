@@ -25,13 +25,14 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
-import { GradientText } from '../gradient-text';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 type MenuState = 'wallet' | 'nav' | null;
 
 export const Navbar = () => {
   const i18n = useI18n();
   const t = useT();
+  const { theme } = useThemeSwitcher();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
@@ -52,12 +53,11 @@ export const Navbar = () => {
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {/* <img
+          <img
             alt="Logo"
             src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
             className="block w-4"
-          /> */}
-          <GradientText className="text-2xl font-semibold">Nebula</GradientText>
+          />
         </NavLink>
       </div>
 

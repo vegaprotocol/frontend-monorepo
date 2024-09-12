@@ -105,8 +105,6 @@ export const envSchema = z
     SENTRY_DSN: z.optional(z.string()),
     TENDERMINT_URL: z.optional(z.string()),
     TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),
-    CHROME_EXTENSION_URL: z.optional(z.string()),
-    MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
     CHARTING_LIBRARY_HASH: z.optional(z.string()),
     SQUID_INTEGRATOR_ID: z.optional(z.string()),
