@@ -10,7 +10,7 @@ import { useStakeAvailableQuery } from './__generated__/StakeAvailable';
 export const useStakeAvailable = (pubKey?: string) => {
   const { pubKey: currentPubKey } = useVegaWallet();
   const partyId = pubKey || currentPubKey;
-  const { data } = useStakeAvailableQuery({
+  const { data, loading } = useStakeAvailableQuery({
     variables: { partyId: partyId || '' },
     skip: !partyId,
     errorPolicy: 'ignore',
@@ -24,6 +24,7 @@ export const useStakeAvailable = (pubKey?: string) => {
     : undefined;
 
   return {
+    loading,
     stakeAvailable,
     requiredStake,
     isEligible:

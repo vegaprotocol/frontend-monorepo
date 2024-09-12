@@ -46,11 +46,10 @@ import {
   Route,
   Routes,
   useLocation,
-  useParams,
 } from 'react-router-dom';
 import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
-import { Links } from 'apps/trading/lib/links';
+import { Links } from '../../lib/links';
 
 enum Step {
   Connect = 'Connect',
@@ -157,17 +156,6 @@ const useInviteStore = create<InviteStore & InviteActions>()(
   )
 );
 
-type InviteParams = {
-  /**
-   * The referral code.
-   */
-  code?: string;
-  /**
-   * The team id
-   */
-  team?: string;
-};
-
 export const Invite = () => {
   return (
     <>
@@ -188,7 +176,21 @@ export const Invite = () => {
 };
 
 const ProcessSteps = () => {
-  const { code, team } = useParams<InviteParams>();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code') || undefined;
+  const team = params.get('team') || undefined;
+
+  const {
+    data: referralData,
+    isEligible,
+    loading: referralLoading,
+  } = useReferralSet(code);
+  const validReferral = Boolean(referralData && isEligible);
+
+  const { team: teamData, loading: teamLoading } = useTeam(team);
+  const validTeam = Boolean(teamData);
+
   const [storedCode, storedTeam, started, finished] = useInviteStore(
     (state) => [state.code, state.team, state.started, state.finished]
   );
@@ -199,21 +201,25 @@ const ProcessSteps = () => {
   ]);
 
   const progression = determineStepProgression(storedCode, storedTeam);
-  const { step: desiredStep, loading } = useDetermineCurrentStep(progression);
+  const { step: desiredStep, loading: stepLoading } =
+    useDetermineCurrentStep(progression);
+
+  const loading = referralLoading || teamLoading || stepLoading;
 
   useEffect(() => {
+    if (loading) return;
     // already finished
     if (finished > 0) return;
     // already started, ignoring new code, team values TODO: Check this
     if (started > 0) return;
 
-    if (code) setCode(code);
-    if (team) setTeam(team);
+    if (code && validReferral) setCode(code);
+    if (team && validTeam) setTeam(team);
     start();
-    console.log('invite', 'start', Date.now());
   }, [
     code,
     finished,
+    loading,
     setCode,
     setTeam,
     start,
