@@ -42,10 +42,16 @@ export const TransactionModalFooter = ({
     }
   };
 
+  const showAutoConsent =
+    !settings.autoConsent &&
+    AUTO_CONSENT_TRANSACTION_TYPES.includes(
+      getTransactionType(details.transaction)
+    );
+
   return (
     <div
       className="relative py-4 bg-surface-1 z-[20] px-5 border-t border-surface-0-fg-muted"
-      style={{ top: -72 }}
+      style={{ top: showAutoConsent ? -112 : -72 }}
     >
       <div className="grid grid-cols-[1fr_1fr] justify-between gap-4">
         <Button
@@ -62,29 +68,26 @@ export const TransactionModalFooter = ({
           Confirm
         </Button>
       </div>
-      {!settings.autoConsent &&
-        AUTO_CONSENT_TRANSACTION_TYPES.includes(
-          getTransactionType(details.transaction)
-        ) && (
-          <div
-            className="mt-2"
-            data-testid={locators.transactionModalFooterAutoConsentSection}
-          >
-            <Checkbox
-              label={
-                <span className="text-xs">
-                  Allow this site to automatically approve order and vote
-                  transactions. This can be turned off in "Settings".
-                </span>
-              }
-              checked={autoConsent}
-              onCheckedChange={() => {
-                setAutoConsent(!autoConsent);
-              }}
-              name={'autoConsent'}
-            />
-          </div>
-        )}
+      {showAutoConsent && (
+        <div
+          className="mt-2"
+          data-testid={locators.transactionModalFooterAutoConsentSection}
+        >
+          <Checkbox
+            label={
+              <span className="text-xs">
+                Allow this site to automatically approve order and vote
+                transactions. This can be turned off in "Settings".
+              </span>
+            }
+            checked={autoConsent}
+            onCheckedChange={() => {
+              setAutoConsent(!autoConsent);
+            }}
+            name={'autoConsent'}
+          />
+        </div>
+      )}
     </div>
   );
 };
