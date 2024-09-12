@@ -249,9 +249,9 @@ export const theme = {
     },
   },
   fontFamily: {
-    mono: ['var(--font-mono)'],
-    sans: ['var(--font-sans)'],
-    alt: ['var(--font-alt)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    mono: ['var(--font-mono)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    sans: ['var(--font-sans)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],
+    alt: ['var(--font-alt)'],
   },
   keyframes: {
     rotate: {

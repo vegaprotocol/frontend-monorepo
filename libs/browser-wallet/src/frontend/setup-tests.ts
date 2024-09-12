@@ -8,6 +8,9 @@ import 'jest-canvas-mock';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import ResizeObserver from 'resize-observer-polyfill';
+import { TextEncoder, TextDecoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 TimeAgo.addDefaultLocale(en);
 

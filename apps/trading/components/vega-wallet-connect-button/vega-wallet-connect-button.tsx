@@ -25,6 +25,7 @@ import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
+import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.Primary,
@@ -45,11 +46,13 @@ export const VegaWalletConnectButton = ({
     disconnect,
     refreshKeys,
     isReadOnly,
+    current,
   } = useVegaWallet();
 
   const walletInstalled = isBrowserWalletInstalled();
 
   const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
+  const set = useBrowserWalletDialogStore((store) => store.set);
 
   if (status === 'connected') {
     return (
@@ -89,7 +92,11 @@ export const VegaWalletConnectButton = ({
           align="end"
           onEscapeKeyDown={() => setDropdownOpen(false)}
         >
-          <div className="min-w-[340px]" data-testid="keypair-list">
+          <div
+            className="min-w-[340px] overflow-auto"
+            data-testid="keypair-list"
+            style={{ maxHeight: 'var(--radix-popper-available-height)' }}
+          >
             <KeypairRadioGroup
               pubKey={pubKey}
               pubKeys={pubKeys}
@@ -98,6 +105,14 @@ export const VegaWalletConnectButton = ({
               isReadOnly={isReadOnly}
             />
             <DropdownMenuSeparator />
+            {current === 'embedded-wallet-quickstart' && (
+              <DropdownMenuItem
+                data-testid="open-wallet"
+                onClick={() => set(true)}
+              >
+                {t('Open Wallet')}
+              </DropdownMenuItem>
+            )}
             {!isReadOnly && (
               <DropdownMenuItem
                 data-testid="wallet-transfer"

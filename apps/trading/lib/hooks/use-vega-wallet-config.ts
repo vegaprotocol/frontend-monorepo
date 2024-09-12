@@ -3,7 +3,8 @@ import {
   JsonRpcConnector,
   SnapConnector,
   ViewPartyConnector,
-  InBrowserConnector,
+  // InBrowserConnector,
+  QuickStartConnector,
   createConfig,
   fairground,
   validatorsTestnet,
@@ -31,7 +32,8 @@ export const useVegaWalletConfig = () => {
     if (!url || !VEGA_WALLET_URL) return;
 
     const injected = new InjectedConnector();
-    const inBrowser = new InBrowserConnector();
+    // const inBrowser = new InBrowserConnector();
+    const quickStart = new QuickStartConnector();
 
     const jsonRpc = new JsonRpcConnector({
       url: VEGA_WALLET_URL,
@@ -49,7 +51,7 @@ export const useVegaWalletConfig = () => {
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: IN_BROWSER_WALLET
-        ? [injected, snap, jsonRpc, inBrowser, viewParty]
+        ? [quickStart, injected, snap, jsonRpc, viewParty]
         : [injected, snap, jsonRpc, viewParty],
     });
 

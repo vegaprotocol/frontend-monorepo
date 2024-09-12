@@ -3,11 +3,11 @@ import { type ReactNode } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { type ConnectorType, type Status } from '@vegaprotocol/wallet';
 
-import { useWallet } from '../../hooks/use-wallet';
-import { useConnect } from '../../hooks/use-connect';
-import { RiskAck } from '../risk-ack';
-import { ConnectionStatus } from './connection-status';
-import { ConnectionOptions } from './connection-options';
+import { useWallet } from '../../../hooks/use-wallet';
+import { useConnect } from '../../../hooks/use-connect';
+import { RiskAck } from '../../risk-ack';
+import { ConnectionStatus } from '../connection-status';
+import { ConnectionOptionsList } from '../connection-options';
 
 export const DIALOG_CLOSE_DELAY = 1000;
 
@@ -37,7 +37,14 @@ export const ConnectDialogWithRiskAck = ({
   };
 
   return (
-    <Dialog open={open} size="small" onChange={onChange}>
+    <Dialog
+      open={open}
+      size="small"
+      onChange={onChange}
+      onInteractOutside={(e) => {
+        e.preventDefault();
+      }}
+    >
       <Content
         riskAccepted={riskAccepted}
         riskAckContent={riskAckContent}
@@ -74,7 +81,7 @@ const Content = ({
   }
 
   if (status === 'disconnected') {
-    return <ConnectionOptions onConnect={onConnect} />;
+    return <ConnectionOptionsList onConnect={onConnect} />;
   }
 
   return <ConnectionStatus status={status} />;
@@ -98,9 +105,16 @@ export const ConnectDialog = ({
   };
 
   return (
-    <Dialog open={open} size="small" onChange={onChange}>
+    <Dialog
+      open={open}
+      size="small"
+      onChange={onChange}
+      onInteractOutside={(e) => {
+        e.preventDefault();
+      }}
+    >
       {status === 'disconnected' ? (
-        <ConnectionOptions onConnect={onConnect} />
+        <ConnectionOptionsList onConnect={onConnect} />
       ) : (
         <ConnectionStatus status={status} />
       )}

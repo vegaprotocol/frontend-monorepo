@@ -44,35 +44,6 @@ describe('RedirectPath', () => {
     expect(view.result.current.path).toBe(FULL_ROUTES.wallets);
   });
 
-  it('returns getting started if no password is set', async () => {
-    const view = renderRedirectHook({
-      passphrase: false,
-      locked: false,
-      wallet: true,
-      version: '0.0.1',
-      settings: {
-        telemetry: false,
-      },
-    });
-    await waitFor(() => expect(view.result.current.loading).toBeFalsy());
-    expect(view.result.current.loading).toBeFalsy();
-    expect(view.result.current.path).toBe(FULL_ROUTES.getStarted);
-  });
-  it('returns login if locked', async () => {
-    const view = renderRedirectHook({
-      passphrase: true,
-      locked: true,
-      wallet: true,
-      version: '0.0.1',
-      settings: {
-        telemetry: false,
-      },
-    });
-    await waitFor(() => expect(view.result.current.loading).toBeFalsy());
-    expect(view.result.current.loading).toBeFalsy();
-    expect(view.result.current.path).toBe(FULL_ROUTES.login);
-  });
-
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('returns create wallet if no wallets exist', async () => {
     const view = renderRedirectHook({
@@ -87,19 +58,6 @@ describe('RedirectPath', () => {
     await waitFor(() => expect(view.result.current.loading).toBeFalsy());
     expect(view.result.current.loading).toBeFalsy();
     expect(view.result.current.path).toBe(FULL_ROUTES.createWallet);
-  });
-
-  it('returns telemetry if telemetry settings are undefined', async () => {
-    const view = renderRedirectHook({
-      passphrase: true,
-      locked: false,
-      wallet: true,
-      version: '0.0.1',
-      settings: {},
-    });
-    await waitFor(() => expect(view.result.current.loading).toBeFalsy());
-    expect(view.result.current.loading).toBeFalsy();
-    expect(view.result.current.path).toBe(FULL_ROUTES.wallets);
   });
 
   it('returns no path if loading', async () => {

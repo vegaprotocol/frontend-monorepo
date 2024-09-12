@@ -15,6 +15,7 @@ jest.mock('./liquidation-price', () => ({
     <span data-testid="liquidation-price">liquidation price</span>
   ),
 }));
+jest.mock('@vegaprotocol/trades');
 
 describe('Positions', () => {
   const mockClose = jest.fn();

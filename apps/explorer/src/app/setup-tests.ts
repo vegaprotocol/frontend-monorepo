@@ -6,7 +6,9 @@ import '@testing-library/jest-dom';
 import { locales } from '@vegaprotocol/i18n';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { TextEncoder, TextDecoder } from 'util';
 
+Object.assign(global, { TextDecoder, TextEncoder });
 Object.defineProperty(window, 'ResizeObserver', {
   writable: false,
   value: jest.fn().mockImplementation(() => ({

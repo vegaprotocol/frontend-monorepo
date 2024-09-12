@@ -1,5 +1,4 @@
 import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
-import { useMarkPrice } from '@vegaprotocol/markets';
 import { useSlippage } from '../use-slippage';
 import { OrderType } from '@vegaprotocol/types';
 
@@ -13,20 +12,18 @@ export const Slippage = () => {
   const form = useForm();
   const ticket = useTicketContext();
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
-
   const type = form.watch('type');
   const side = form.watch('side');
   const size = form.watch('size');
-  const limitPrice = form.watch('price');
+  const _limitPrice = form.watch('price');
 
-  const price =
+  const limitPrice =
     type === OrderType.TYPE_LIMIT
       ? removeDecimal(
-          limitPrice?.toString() || '0',
+          _limitPrice?.toString() || '0',
           ticket.market.decimalPlaces
         )
-      : markPrice || undefined;
+      : undefined;
 
   const order = {
     type,
@@ -35,7 +32,7 @@ export const Slippage = () => {
       size?.toString() || '0',
       ticket.market.positionDecimalPlaces
     ),
-    price,
+    price: limitPrice,
   };
   const slippage = useSlippage(order, ticket.market);
 

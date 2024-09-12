@@ -9,7 +9,6 @@ const IGNORED_PATHS = new Set([
   FULL_ROUTES.home,
   FULL_ROUTES.login,
   FULL_ROUTES.onboarding,
-  FULL_ROUTES.getStarted,
   FULL_ROUTES.createPassword,
   FULL_ROUTES.saveMnemonic,
   FULL_ROUTES.createWallet,

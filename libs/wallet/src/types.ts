@@ -21,7 +21,12 @@ export interface TransactionParams {
   sendingMode: 'TYPE_SYNC';
 }
 
-export type VegaWalletEvent = 'client.disconnected';
+export type QuickstartWalletEvents =
+  | 'client.transaction_sent'
+  | 'client.request_transaction_approval'
+  | 'client.request_transaction_decided';
+export type CommonEvents = 'client.disconnected' | 'client.list_keys';
+export type VegaWalletEvent = QuickstartWalletEvents | CommonEvents;
 
 export type ConnectorType =
   | 'injected'
@@ -29,12 +34,14 @@ export type ConnectorType =
   | 'snap'
   | 'viewParty'
   | 'mock'
-  | 'in-browser-wallet';
+  | 'embedded-wallet'
+  | 'embedded-wallet-quickstart';
 
 export interface Connector {
   readonly id: ConnectorType;
-  readonly name: string;
-  readonly description: string;
+  name: string;
+  description: string;
+  prominent: boolean;
 
   bindStore(state: StoreApi<Store>): void;
   connectWallet(chainId?: string): Promise<{ success: boolean }>;
@@ -52,7 +59,7 @@ export type Key = {
   name: string;
 };
 
-export type Status = 'disconnected' | 'connecting' | 'connected';
+export type Status = 'disconnected' | 'connecting' | 'connected' | 'creating';
 
 export type CoreStore = {
   chainId: string;

@@ -10,7 +10,7 @@ export function useEagerConnect() {
   useEffect(() => {
     const attemptConnect = async () => {
       // No stored config, or config was malformed or no risk accepted
-      if (!current) {
+      if (!current || current === 'embedded-wallet-quickstart') {
         return;
       }
 

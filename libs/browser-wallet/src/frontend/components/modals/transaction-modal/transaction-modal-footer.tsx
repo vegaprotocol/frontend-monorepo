@@ -46,7 +46,10 @@ export const TransactionModalFooter = ({
   };
 
   return (
-    <div className="fixed bottom-0 py-4 bg-surface-1 z-[15] px-5 border-t border-surface-0-fg-muted w-full">
+    <div
+      className="relative py-4 bg-surface-1 z-[20] px-5 border-t border-surface-0-fg-muted"
+      style={{ top: -72 }}
+    >
       <div className="grid grid-cols-[1fr_1fr] justify-between gap-4">
         <Button
           data-testid={locators.transactionModalDenyButton}

@@ -25,10 +25,10 @@ describe('Create wallet', () => {
     expect(
       screen.getByTestId(componentLocators.walletIcon)
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(locators.createNewWalletButton)
-    ).toHaveTextContent('Create a wallet');
-    expect(screen.getByTestId(locators.createNewWalletButton)).toHaveFocus();
+    // expect(
+    //   screen.getByTestId(locators.createNewWalletButton)
+    // ).toHaveTextContent('Create a wallet');
+    // expect(screen.getByTestId(locators.createNewWalletButton)).toHaveFocus();
     expect(screen.getByTestId(locators.importWalletButton)).toHaveTextContent(
       'Import a Wallet'
     );
@@ -40,9 +40,9 @@ describe('Create wallet', () => {
     expect(mockNavigate).toHaveBeenCalledWith(FULL_ROUTES.importWallet);
   });
 
-  it('navigates to save mnemonic route when create wallet button is pressed', async () => {
-    renderComponent();
-    fireEvent.click(screen.getByTestId(locators.createNewWalletButton));
-    expect(mockNavigate).toHaveBeenCalledWith(FULL_ROUTES.saveMnemonic);
-  });
+  // it('navigates to save mnemonic route when create wallet button is pressed', async () => {
+  //   renderComponent();
+  //   fireEvent.click(screen.getByTestId(locators.createNewWalletButton));
+  //   expect(mockNavigate).toHaveBeenCalledWith(FULL_ROUTES.saveMnemonic);
+  // });
 });

@@ -1,47 +1,56 @@
-import { cn } from '../../utils/cn';
-import { toastIconMapping } from '../toast';
 import {
+  cn,
   getIntentBackground,
   getIntentBorder,
-  getIntentText,
   Intent,
-} from '../../utils/intent';
-import { Icon, VegaIcon, VegaIconNames } from '../icon';
-import type { HTMLAttributes } from 'react';
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import type { HTMLAttributes, ReactNode } from 'react';
 
-interface NotificationBannerProps {
+interface NotificationBanner {
   intent?: Intent;
-  children?: React.ReactNode;
+  children?: ReactNode;
   onClose?: () => void;
   className?: string;
+  icon?: ReactNode;
 }
 
 export const NotificationBanner = ({
   intent = Intent.None,
+  icon,
   children,
   onClose,
   className,
   ...props
-}: NotificationBannerProps & HTMLAttributes<HTMLDivElement>) => {
+}: NotificationBanner & HTMLAttributes<HTMLDivElement>) => {
+  const isPrimary = intent === Intent.Primary;
   return (
     <div
       className={cn(
-        'flex items-center border-b pl-3 pr-2',
+        'relative flex gap-2 items-center pl-3 pr-2 h-20',
         'text-xs leading-tight font-normal',
-        getIntentBackground(intent),
-        getIntentBorder(intent),
+        { border: !isPrimary },
+        isPrimary ? undefined : getIntentBackground(intent),
+        isPrimary ? undefined : getIntentBorder(intent),
         className
       )}
       {...props}
     >
-      {intent === Intent.None ? null : (
-        <Icon
-          name={toastIconMapping[intent]}
-          size={4}
-          className={cn('mr-2', getIntentText(intent))}
+      {intent === Intent.Primary && (
+        <div
+          style={{
+            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'exclude',
+          }}
+          className={cn(
+            'absolute inset-0 p-px bg-gradient-to-br rounded-grid pointer-events-none',
+            'from-highlight to-highlight-secondary'
+          )}
         />
       )}
-      <div className="grow py-2">{children}</div>
+      {icon}
+      <div className="grow">{children}</div>
       {onClose ? (
         <button
           type="button"
@@ -49,7 +58,7 @@ export const NotificationBanner = ({
           onClick={onClose}
           className="p-2 -mr-2"
         >
-          <VegaIcon name={VegaIconNames.CROSS} size={14} />
+          <VegaIcon name={VegaIconNames.CROSS} size={16} />
         </button>
       ) : null}
     </div>

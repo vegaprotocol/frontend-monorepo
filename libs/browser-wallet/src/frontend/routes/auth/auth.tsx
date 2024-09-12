@@ -46,14 +46,16 @@ export const Auth = () => {
   if (loadingWallets) return null;
 
   return (
-    <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-surface-0 text-surface-0-fg">
+    <>
       <ModalWrapper />
-      <section className="w-full h-full overflow-y-auto">
-        <div className="px-5 pt-3">
-          <Outlet />
-        </div>
-      </section>
-      <NavBar />
-    </div>
+      <div className="h-full w-full grid grid-rows-[1fr_min-content] bg-surface-0 text-surface-0-fg">
+        <section className="w-full h-full overflow-y-auto">
+          <div className="px-5 pt-3">
+            <Outlet />
+          </div>
+        </section>
+        <NavBar />
+      </div>
+    </>
   );
 };

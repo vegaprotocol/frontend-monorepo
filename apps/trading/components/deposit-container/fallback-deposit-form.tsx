@@ -3,7 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { Button, Intent } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Intent,
+  TradingRichSelectTriggerContent,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { useT } from '../../lib/use-t';
@@ -14,6 +19,8 @@ import * as Fields from './fields';
 
 import { Approval } from './approval';
 import { type FormFields, formSchema, type Configs } from './form-schema';
+import { AssetOption } from '../asset-option';
+import { formatNumber } from '@vegaprotocol/utils';
 
 export const FallbackDepositForm = ({
   assets,
@@ -103,7 +110,31 @@ export const FallbackDepositForm = ({
       >
         <Fields.FromAddress control={form.control} />
         <Fields.FromChain control={form.control} disabled={true} />
-        <Fields.FromAsset control={form.control} disabled={true} />
+        <Fields.FromAsset
+          control={form.control}
+          disabled={true}
+          disabledMessage={
+            toAsset ? (
+              <Tooltip
+                description={t('Swaps not available')}
+                align="center"
+                side="bottom"
+                sideOffset={1}
+              >
+                <span>
+                  <TradingRichSelectTriggerContent>
+                    <AssetOption
+                      asset={toAsset}
+                      balance={
+                        <span>{formatNumber(balanceData?.balanceOf || 0)}</span>
+                      }
+                    />
+                  </TradingRichSelectTriggerContent>
+                </span>
+              </Tooltip>
+            ) : undefined
+          }
+        />
         <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
         <Fields.ToAsset
           control={form.control}
