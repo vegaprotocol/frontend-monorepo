@@ -1,1 +1,1 @@
-export const TEMP_APP_NAME = 'Nebula';
+export const APP_NAME = 'Vega';

@@ -1,5 +1,5 @@
 import { Card } from '../../components/card';
-import { TEMP_APP_NAME } from '../../lib/constants';
+import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import {
   Button,
@@ -152,7 +152,7 @@ const useInviteStore = create<InviteStore & InviteActions>()(
       },
     }),
     {
-      name: `${TEMP_APP_NAME.toLowerCase()}-invite-store`,
+      name: `${APP_NAME.toLowerCase()}-invite-store`,
       version: 1,
     }
   )
@@ -327,7 +327,7 @@ export const StepConnect = () => {
   console.log('invite', profileData);
 
   let header: ReactNode = t('ONBOARDING_INVITE_HEADER', {
-    appName: TEMP_APP_NAME,
+    appName: APP_NAME,
   });
   if (invitedBy.length > 0) {
     header = (
@@ -340,7 +340,7 @@ export const StepConnect = () => {
           </span>,
         ]}
         values={{
-          appName: TEMP_APP_NAME,
+          appName: APP_NAME,
           name: invitedBy,
         }}
       />
@@ -366,11 +366,11 @@ export const StepConnect = () => {
           {/** TODO: Change logo */}
           <VLogo />
           <h3 className="text-2xl">
-            {t('ONBOARDING_STEP_CONNECT', { appName: TEMP_APP_NAME })}
+            {t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME })}
           </h3>
           <p>
             {t('ONBOARDING_STEP_CONNECT_DESCRIPTION', {
-              appName: TEMP_APP_NAME,
+              appName: APP_NAME,
             })}
           </p>
           <Button intent={Intent.Primary} size="lg" onClick={openWalletDialog}>
@@ -399,7 +399,7 @@ export const StepDeposit = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
         <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
           <h3 className="text-2xl">
@@ -425,7 +425,7 @@ export const StepDeposit = () => {
 
 export const StepApplyCode = () => {
   const t = useT();
-  const [code, team] = useInviteStore((state) => [state.code, state.team]);
+  const code = useInviteStore((state) => state.code);
   const program = useReferralProgram();
 
   const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
@@ -490,7 +490,7 @@ export const StepApplyCode = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
         <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
           {firstBenefitTier ? (
@@ -572,15 +572,23 @@ export const StepApplyCode = () => {
 export const StepJoinTeam = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  // TODO: Get this from state
-  const teamId =
-    'eaa71ff8b3fd5b2d2abc3d6d1d28616cca821216e9c7d630b8108e48138b2421';
+  const teamId = useInviteStore((state) => state.team);
 
-  const { team, stats, members, partyTeam, refetch } = useTeam(teamId, pubKey);
+  const {
+    team,
+    stats,
+    members,
+    partyTeam,
+    refetch,
+    loading: teamLoading,
+  } = useTeam(teamId, pubKey);
   const { data: games, loading: gamesLoading } = useGames({ teamId });
 
   const progression = useDetermineStepProgression();
-  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+  const { step: currentStep, loading: stepLoading } =
+    useDetermineCurrentStep(progression);
+
+  const loading = teamLoading || gamesLoading || stepLoading;
 
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
@@ -590,10 +598,10 @@ export const StepJoinTeam = () => {
     return <Navigate to={StepLinks[currentStep]} />;
   }
 
-  if (!team) {
+  if (!team || !teamId) {
     return (
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
         <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">ERROR</Card>
       </div>
@@ -602,7 +610,7 @@ export const StepJoinTeam = () => {
 
   return (
     <div className="md:max-w-2xl mx-auto flex flex-col gap-10">
-      <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
+      <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
       <ProgressionChain currentStep={currentStep} progression={progression} />
       <Card className="p-8 flex flex-col gap-4">
         <div className="flex flex-col gap-4 items-center">
@@ -629,8 +637,6 @@ const StepStartPlaying = () => {
   const progression = useDetermineStepProgression();
   const { step: currentStep, loading } = useDetermineCurrentStep(progression);
 
-  console.log('invite', currentStep, loading);
-
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }
@@ -641,7 +647,7 @@ const StepStartPlaying = () => {
 
   return (
     <div className="mx-auto flex flex-col gap-10">
-      <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
+      <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
       <ProgressionChain currentStep={currentStep} progression={progression} />
       <CompetitionsActions myRole={myRole} myTeamId={myTeamId} />
     </div>
@@ -657,7 +663,7 @@ const ProgressionChain = ({
 }) => {
   const t = useT();
   const StepLabel = {
-    [Step.Connect]: t('ONBOARDING_STEP_CONNECT', { appName: TEMP_APP_NAME }),
+    [Step.Connect]: t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME }),
     [Step.Deposit]: t('ONBOARDING_STEP_DEPOSIT'),
     [Step.ApplyCode]: t('ONBOARDING_STEP_APPLY_CODE'),
     [Step.JoinTeam]: t('ONBOARDING_STEP_JOIN_TEAM'),
