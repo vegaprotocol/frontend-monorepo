@@ -1,5 +1,5 @@
 import { Card } from '../../components/card';
-import { APP_NAME } from '../../lib/constants';
+import { TEMP_APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import {
   Button,
@@ -152,7 +152,7 @@ const useInviteStore = create<InviteStore & InviteActions>()(
       },
     }),
     {
-      name: `${APP_NAME.toLowerCase()}-invite-store`,
+      name: `${TEMP_APP_NAME.toLowerCase()}-invite-store`,
       version: 1,
     }
   )
@@ -346,7 +346,9 @@ export const StepConnect = () => {
 
   console.log('invite', profileData);
 
-  let header: ReactNode = t('ONBOARDING_INVITE_HEADER', { appName: APP_NAME });
+  let header: ReactNode = t('ONBOARDING_INVITE_HEADER', {
+    appName: TEMP_APP_NAME,
+  });
   if (invitedBy.length > 0) {
     header = (
       <Trans
@@ -358,7 +360,7 @@ export const StepConnect = () => {
           </span>,
         ]}
         values={{
-          appName: APP_NAME,
+          appName: TEMP_APP_NAME,
           name: invitedBy,
         }}
       />
@@ -384,10 +386,12 @@ export const StepConnect = () => {
           {/** TODO: Change logo */}
           <VLogo />
           <h3 className="text-2xl">
-            {t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME })}
+            {t('ONBOARDING_STEP_CONNECT', { appName: TEMP_APP_NAME })}
           </h3>
           <p>
-            {t('ONBOARDING_STEP_CONNECT_DESCRIPTION', { appName: APP_NAME })}
+            {t('ONBOARDING_STEP_CONNECT_DESCRIPTION', {
+              appName: TEMP_APP_NAME,
+            })}
           </p>
           <Button intent={Intent.Primary} size="lg" onClick={openWalletDialog}>
             {t('Connect wallet')}
@@ -415,7 +419,7 @@ export const StepDeposit = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
         <StepsChain
           currentStep={progression.indexOf(currentStep)}
           steps={progression}
@@ -444,6 +448,7 @@ export const StepDeposit = () => {
 
 export const StepApplyCode = () => {
   const t = useT();
+  const [code, team] = useInviteStore((state) => [state.code, state.team]);
   const program = useReferralProgram();
 
   const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
@@ -458,7 +463,7 @@ export const StepApplyCode = () => {
     watch,
   } = useForm<formFields>({
     defaultValues: {
-      code: undefined, // TODO: Get this from state
+      code,
     },
   });
 
@@ -508,7 +513,7 @@ export const StepApplyCode = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
         <StepsChain
           currentStep={progression.indexOf(currentStep)}
           steps={progression}
@@ -550,6 +555,7 @@ export const StepApplyCode = () => {
               <span>{t('ONBOARDING_STEP_APPLY_CODE_FIELD')}</span>
               <Input
                 {...register('code', {
+                  disabled: true,
                   required: t('ONBOARDING_STEP_APPLY_CODE_FIELD_REQUIRED'),
                   minLength: {
                     value: 64,
@@ -613,7 +619,7 @@ export const StepJoinTeam = () => {
   if (!team) {
     return (
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+        <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
         <StepsChain
           currentStep={progression.indexOf(currentStep)}
           steps={progression}
@@ -625,7 +631,7 @@ export const StepJoinTeam = () => {
 
   return (
     <div className="md:max-w-2xl mx-auto flex flex-col gap-10">
-      <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+      <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
       <StepsChain
         currentStep={progression.indexOf(currentStep)}
         steps={progression}
@@ -667,7 +673,7 @@ const StepStartPlaying = () => {
 
   return (
     <div className="mx-auto flex flex-col gap-10">
-      <Header title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+      <Header title={t('ONBOARDING_HEADER', { appName: TEMP_APP_NAME })} />
       <StepsChain
         currentStep={progression.indexOf(currentStep)}
         steps={progression}
@@ -686,7 +692,7 @@ const StepsChain = ({
 }) => {
   const t = useT();
   const StepLabel = {
-    [Step.Connect]: t('ONBOARDING_STEP_CONNECT', { appName: APP_NAME }),
+    [Step.Connect]: t('ONBOARDING_STEP_CONNECT', { appName: TEMP_APP_NAME }),
     [Step.Deposit]: t('ONBOARDING_STEP_DEPOSIT'),
     [Step.ApplyCode]: t('ONBOARDING_STEP_APPLY_CODE'),
     [Step.JoinTeam]: t('ONBOARDING_STEP_JOIN_TEAM'),
