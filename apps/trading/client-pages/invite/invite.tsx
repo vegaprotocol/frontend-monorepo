@@ -32,7 +32,7 @@ import { useReferralProgram } from '../referrals/hooks/use-referral-program';
 import minBy from 'lodash/minBy';
 import { useForm } from 'react-hook-form';
 import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
-import { useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { CompactTeamStats } from '../../components/competitions/team-stats';
@@ -50,6 +50,8 @@ import {
 import { persist } from 'zustand/middleware';
 import { create } from 'zustand';
 import { Links } from '../../lib/links';
+import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 enum Step {
   Connect = 'Connect',
@@ -314,18 +316,57 @@ const useDetermineCurrentStep = (steps: Step[] = StepProgressions.Default) => {
   };
 };
 
-const linkToPrevious = (progression: Step[], currentStep: Step) => {
-  const idx = progression.indexOf(currentStep);
-  if (idx < 1) return StepLinks[progression[0]];
-  return StepLinks[progression[idx - 1]];
-};
-
 export const StepConnect = () => {
   const t = useT();
   const openWalletDialog = useDialogStore((state) => state.open);
 
   const progression = useDetermineStepProgression();
-  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+  const { step: currentStep, loading: stepLoading } =
+    useDetermineCurrentStep(progression);
+
+  const [code, team] = useInviteStore((state) => [state.code, state.team]);
+  const { data: referralData, loading: referralLoading } = useReferralSet(code);
+
+  const { data: profileData, loading: profileLoading } = usePartyProfilesQuery({
+    variables: {
+      partyIds: referralData?.referrer ? [referralData.referrer] : [],
+    },
+    skip: !referralData?.referrer,
+  });
+  const referrerProfile = removePaginationWrapper(
+    profileData?.partiesProfilesConnection?.edges
+  ).find((p) => p.partyId === referralData?.referrer);
+
+  const { team: teamData, loading: teamLoading } = useTeam(team);
+
+  let invitedBy = referrerProfile?.alias || '';
+  if (teamData && teamData.name.length > 0) {
+    invitedBy = teamData.name;
+  }
+
+  console.log('invite', profileData);
+
+  let header: ReactNode = t('ONBOARDING_INVITE_HEADER', { appName: APP_NAME });
+  if (invitedBy.length > 0) {
+    header = (
+      <Trans
+        i18nKey={'ONBOARDING_INVITE_BY_HEADER'}
+        ns={ns}
+        components={[
+          <span key="invited-by-name" className="text-surface-0-fg">
+            {invitedBy}
+          </span>,
+        ]}
+        values={{
+          appName: APP_NAME,
+          name: invitedBy,
+        }}
+      />
+    );
+  }
+
+  const loading =
+    stepLoading || referralLoading || profileLoading || teamLoading;
 
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
@@ -338,7 +379,7 @@ export const StepConnect = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <Header title={t('ONBOARDING_INVITE_HEADER', { appName: APP_NAME })} />
+        <Header title={header} />
         <Card className="p-8 flex flex-col gap-4 items-center">
           {/** TODO: Change logo */}
           <VLogo />
@@ -692,7 +733,7 @@ const StepsChain = ({
   );
 };
 
-const Header = ({ title }: { title: string }) => (
+const Header = ({ title }: { title: ReactNode }) => (
   <h1 className="text-5xl text-center">
     <GradientText>{title}</GradientText>
   </h1>
