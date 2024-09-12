@@ -15,9 +15,11 @@ export const MarketSuccessorProposalBanner = ({
   return (
     <div>
       <p className="uppercase mb-1">
-        {proposals.length === 1
-          ? t('A successor to this market has been proposed')
-          : t('Successors to this market have been proposed')}{' '}
+        <span>
+          {proposals.length === 1
+            ? t('A successor to this market has been proposed')
+            : t('Successors to this market have been proposed')}
+        </span>{' '}
         {t(
           'checkOutProposalsAndVote',
           'Check out the terms of the proposals and vote:',

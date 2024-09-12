@@ -56,7 +56,7 @@ export const MarketSettledBanner = ({ market }: { market: Market }) => {
     return (
       <div>
         <p>
-          {t('This market has been succeeded')}{' '}
+          <span>{t('This market has been succeeded')}</span>{' '}
           {duration && (
             <>
               <span>
