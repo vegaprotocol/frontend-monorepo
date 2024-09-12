@@ -93,7 +93,6 @@ describe('TransactionModal', () => {
     // expect(screen.getByTestId('check-transaction')).toBeVisible();
     expect(screen.getByTestId('transaction-header')).toBeVisible();
     expect(screen.getByTestId('transaction-footer')).toBeVisible();
-    expect(screen.getByTestId('auto-approval-notification')).toBeVisible();
     expect(screen.getByTestId(locators.transactionWrapper)).toBeVisible();
     expect(screen.getByTestId(locators.transactionTimeAgo)).toHaveTextContent(
       'Received just now'

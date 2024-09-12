@@ -4,12 +4,15 @@ import { silenceErrors } from '@/test-helpers/silence-errors';
 
 import { testingNetwork } from '../../../../config/well-known-networks';
 import { locators, TransactionModalFooter } from './transaction-modal-footer';
+import { mockStore } from '@/test-helpers/mock-store';
+import { useGlobalsStore } from '@/stores/globals';
 
 const mockedRequest = jest.fn();
 
 jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
   useJsonRpcClient: () => ({ request: mockedRequest }),
 }));
+jest.mock('@/stores/globals');
 
 const transaction = {
   orderSubmission: {
@@ -41,6 +44,13 @@ const data = {
 };
 
 const renderComponent = (autoConsent = false) => {
+  mockStore(useGlobalsStore, {
+    globals: {
+      settings: {
+        autoConsent: false,
+      },
+    },
+  });
   const function_ = jest.fn();
   const view = render(
     <TransactionModalFooter
