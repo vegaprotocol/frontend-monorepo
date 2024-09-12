@@ -3,11 +3,11 @@ import type { ComponentProps, ReactNode } from 'react';
 import { useLayoutEffect } from 'react';
 import { useContext } from 'react';
 import { useRef } from 'react';
-import { VegaLogo } from '../vega-logo';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { Drawer } from '../drawer';
 import { NavLink } from 'react-router-dom';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import type {
   NavigationElementProps,
   NavigationProps,
@@ -21,32 +21,15 @@ import {
   NavigationDrawerContent,
 } from './navigation-drawer';
 
-const Logo = ({
-  appName,
-  homeLink,
-}: Pick<NavigationProps, 'appName' | 'homeLink'>) => {
+const Logo = ({ homeLink }: { homeLink: string }) => {
+  const { theme } = useThemeSwitcher();
+  const logoSrc =
+    theme === 'dark' ? '/assets/logo-dark.svg' : '/assets/logo-light.svg';
   return (
     <div className="flex h-full gap-4 items-center">
-      {homeLink ? (
-        <NavLink to={homeLink}>
-          <VegaLogo className="h-4 group-[.nav-size-small]:h-3" />
-        </NavLink>
-      ) : (
-        <VegaLogo className="h-4 group-[.nav-size-small]:h-3" />
-      )}
-
-      {appName && (
-        <span
-          data-testid="nav-app-name"
-          className={cn(
-            'group-[.nav-size-small]:text-sm',
-            'font-alt calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
-            'border-l border-l-gs-200 pl-4'
-          )}
-        >
-          {appName}
-        </span>
-      )}
+      <NavLink to={homeLink}>
+        <img src={logoSrc} className="h-8" alt="Application logo" />
+      </NavLink>
     </div>
   );
 };
@@ -235,7 +218,6 @@ export const NavigationLink = ({
 };
 
 export const Navigation = ({
-  appName,
   homeLink = '/',
   children,
   actions,
@@ -285,7 +267,7 @@ export const Navigation = ({
       )}
       data-testid="navigation"
     >
-      <Logo appName={appName} homeLink={homeLink} />
+      <Logo homeLink={homeLink} />
       <div
         className={cn(
           'navbar',
