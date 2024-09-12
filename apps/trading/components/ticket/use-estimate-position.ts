@@ -10,16 +10,19 @@ import { removeDecimal } from '@vegaprotocol/utils';
 
 import { useTicketContext } from './ticket-context';
 import { useForm } from './use-form';
+import { useMarkPrice } from '@vegaprotocol/markets';
 
 export function useEstimatePosition() {
-  const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('default');
-  const form = useForm();
+  const { pubKey } = useVegaWallet();
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
 
+  const form = useForm();
   const type = form.watch('type');
   const side = form.watch('side');
   const price = form.watch('price');
   const size = form.watch('size');
+  const isMarketOrder = type === OrderType.TYPE_MARKET;
 
   const { openVolume, averageEntryPrice } = useOpenVolume(
     pubKey,
@@ -40,12 +43,19 @@ export function useEstimatePosition() {
     : [];
 
   let armedTicketOrder;
+  let derivedPrice = '0';
 
-  if (price && size) {
+  if (isMarketOrder) {
+    derivedPrice = markPrice || '0';
+  } else if (price) {
+    derivedPrice = removeDecimal(price.toString(), ticket.market.decimalPlaces);
+  }
+
+  if (size && derivedPrice) {
     armedTicketOrder = {
-      isMarketOrder: type === OrderType.TYPE_MARKET,
+      isMarketOrder,
       side,
-      price: removeDecimal(price.toString(), ticket.market.decimalPlaces),
+      price: derivedPrice,
       remaining: removeDecimal(
         size?.toString(),
         ticket.market.positionDecimalPlaces

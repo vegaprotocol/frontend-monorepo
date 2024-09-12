@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
@@ -11,7 +12,7 @@ export const AssetOption = ({
   balance,
 }: {
   asset: AssetERC20;
-  balance?: string;
+  balance?: string | ReactNode;
 }) => {
   const vegaChainId = useWallet((store) => store.chainId);
 
@@ -30,7 +31,9 @@ export const AssetOption = ({
       </div>
       {balance && (
         <div className="ml-auto text-sm">
-          {addDecimalsFormatNumber(balance, asset.decimals)}
+          {typeof balance === 'string'
+            ? addDecimalsFormatNumber(balance, asset.decimals)
+            : balance}
         </div>
       )}
     </div>

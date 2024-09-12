@@ -101,8 +101,12 @@ const Web3Container = ({
     store.connectors,
     store.initialize,
   ]);
-  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
-    useEnvironment();
+  const {
+    API_NODE,
+    ETHEREUM_PROVIDER_URL,
+    ETH_LOCAL_PROVIDER_URL,
+    ETH_WALLET_MNEMONIC,
+  } = useEnvironment();
 
   useEffect(() => {
     if (chainId) {
@@ -134,7 +138,7 @@ const Web3Container = ({
   return (
     <Web3Provider connectors={connectors}>
       <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <WalletProvider config={vegaWalletConfig}>
+        <WalletProvider config={vegaWalletConfig} node={API_NODE?.restApiUrl}>
           <ContractsProvider>
             <AppLoader>
               <BalanceManager>

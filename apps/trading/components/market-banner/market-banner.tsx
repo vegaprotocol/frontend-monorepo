@@ -1,165 +1,106 @@
+import { type Market } from '@vegaprotocol/markets';
 import {
-  type Market,
-  useMaliciousOracle,
-  useMarketState,
-  useMarketTradingMode,
-} from '@vegaprotocol/markets';
-import type { ProposalFragment } from '@vegaprotocol/proposals';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
-import compact from 'lodash/compact';
-import { useState } from 'react';
-import { MarketOracleBanner, type Oracle } from './market-oracle-banner';
+  Button,
+  getIntentIcon,
+  Intent,
+  NotificationBanner,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import { MarketOracleBanner } from './market-oracle-banner';
 import { MarketSettledBanner } from './market-settled-banner';
 import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
-import {
-  useSuccessorMarketProposals,
-  useUpdateMarketProposals,
-  useUpdateMarketStateProposals,
-} from './use-market-proposals';
 import { MarketAuctionBanner } from './market-monitoring-auction';
+import {
+  type Banner as IBanner,
+  DISMISSAL_PERIOD,
+  useMarketBanners,
+  useMarketBannerStore,
+} from '../../lib/hooks/use-market-banners';
+import compact from 'lodash/compact';
+import { MarketRewardBanner } from './market-reward-banner';
 
-type UpdateMarketBanner = {
-  kind: 'UpdateMarket';
-  proposals: ProposalFragment[];
-};
-
-type UpdateMarketStateBanner = {
-  kind: 'UpdateMarketState';
-  proposals: ProposalFragment[];
-};
-
-type NewMarketBanner = {
-  kind: 'NewMarket'; // aka a proposal of NewMarket which succeeds the current market
-  proposals: ProposalFragment[];
-};
-
-type SettledBanner = {
-  kind: 'Settled';
+export const MarketBannerIndicator = ({
+  market,
+  kind,
+  className,
+}: {
   market: Market;
-};
-
-type SuspendedBanner = {
-  kind: 'Suspended';
-  market: Market;
-};
-
-type MonitoringAuctionBanner = {
-  kind: 'MonitoringAuction';
-  market: Market;
-};
-
-type OracleBanner = {
-  kind: 'Oracle';
-  oracle: Oracle;
-};
-
-type Banner =
-  | UpdateMarketBanner
-  | UpdateMarketStateBanner
-  | NewMarketBanner
-  | SettledBanner
-  | SuspendedBanner
-  | MonitoringAuctionBanner
-  | OracleBanner;
-
-export const MarketBanner = ({ market }: { market: Market }) => {
-  const { data: marketState } = useMarketState(market.id);
-  const { data: marketTradingMode } = useMarketTradingMode(market.id);
-
-  const { proposals: successorProposals, loading: successorLoading } =
-    useSuccessorMarketProposals(market.id);
-
-  const { proposals: updateMarketProposals, loading: updateMarketLoading } =
-    useUpdateMarketProposals(market.id);
-
-  const {
-    proposals: updateMarketStateProposals,
-    loading: updateMarketStateLoading,
-  } = useUpdateMarketStateProposals(market.id);
-
-  const { data: maliciousOracle, loading: oracleLoading } = useMaliciousOracle(
-    market.id
+  kind: IBanner['kind'];
+  className?: string;
+}) => {
+  const bannerInfos = useMarketBannerStore((state) => state.banners);
+  const reset = useMarketBannerStore((state) => state.reset);
+  const { banners, loading } = useMarketBanners(market);
+  const bi = bannerInfos.find(
+    (bi) => bi.marketId === market.id && bi.kind === kind
   );
 
-  const loading =
-    successorLoading ||
-    updateMarketLoading ||
-    updateMarketStateLoading ||
-    oracleLoading;
+  if (loading) return null;
 
+  const ofKind = banners.filter((b) => b.kind === kind);
+  let isDismissed = false;
+  if (bi) {
+    const age = Date.now() - bi.ts;
+    if (age <= DISMISSAL_PERIOD) {
+      isDismissed = true;
+    }
+  }
+
+  if (isDismissed && ofKind.length > 0) {
+    switch (kind) {
+      case 'ActiveReward':
+        return (
+          <button
+            onClick={() => {
+              reset(market.id, [kind]);
+            }}
+            className={className}
+          >
+            <VegaIcon name={VegaIconNames.TROPHY} size={16} />
+          </button>
+        );
+      case 'Generic':
+        return (
+          <button
+            onClick={() => {
+              reset(market.id, [kind]);
+            }}
+            className={['relative', className].join(' ')}
+          >
+            <VegaIcon name={VegaIconNames.INFO} size={16} />
+            <div className="absolute top-2 left-2 bg-gs-500 text-gs-100 dark:bg-gs-500 dark:text-gs-100 rounded-full text-2xs leading-none pt-px w-3 h-3">
+              {ofKind.length}
+            </div>
+          </button>
+        );
+    }
+  }
+
+  return null;
+};
+
+export const MarketBanner = (props: { market: Market }) => {
+  const { banners, loading } = useMarketBanners(props.market);
   if (loading) {
     return null;
   }
 
-  const banners = compact([
-    updateMarketStateProposals.length
-      ? {
-          kind: 'UpdateMarketState' as const,
-          proposals: updateMarketStateProposals,
-        }
-      : undefined,
-    updateMarketProposals.length
-      ? {
-          kind: 'UpdateMarket' as const,
-          proposals: updateMarketProposals,
-        }
-      : undefined,
-    successorProposals.length
-      ? {
-          kind: 'NewMarket' as const,
-          proposals: successorProposals,
-        }
-      : undefined,
-    marketState === MarketState.STATE_SETTLED
-      ? {
-          kind: 'Settled' as const,
-          market,
-        }
-      : undefined,
-    marketState === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
-      ? {
-          kind: 'Suspended' as const,
-          market,
-        }
-      : undefined,
-    marketState === MarketState.STATE_SUSPENDED &&
-    (marketTradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION ||
-      marketTradingMode === MarketTradingMode.TRADING_MODE_LONG_BLOCK_AUCTION)
-      ? {
-          kind: 'MonitoringAuction' as const,
-          market,
-        }
-      : undefined,
-    maliciousOracle !== undefined
-      ? {
-          kind: 'Oracle' as const,
-          oracle: maliciousOracle,
-        }
-      : undefined,
-  ]);
+  if (!banners.length) {
+    return null;
+  }
 
-  return <BannerQueue banners={banners} market={market} />;
+  return <BannerQueue banners={banners} market={props.market} />;
 };
 
-const BannerQueue = ({
-  banners,
-  market,
-}: {
-  banners: Banner[];
-  market: Market;
-}) => {
-  // for showing banner by index
-  const [index, setIndex] = useState(0);
-
-  const banner = banners[index];
-  if (!banner) return null;
-
+const mapBanner = (market: Market, banner: IBanner) => {
   let content = null;
-  let intent = Intent.Primary;
+  let intent = Intent.Info;
+  let icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
 
   switch (banner.kind) {
     case 'UpdateMarket': {
@@ -175,6 +116,7 @@ const BannerQueue = ({
     case 'NewMarket': {
       content = <MarketSuccessorProposalBanner proposals={banner.proposals} />;
       intent = Intent.Warning;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'Settled': {
@@ -184,17 +126,33 @@ const BannerQueue = ({
     case 'Suspended': {
       content = <MarketSuspendedBanner />;
       intent = Intent.Warning;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'MonitoringAuction': {
       content = <MarketAuctionBanner market={market} />;
-      intent = Intent.Primary;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'Oracle': {
       // @ts-ignore oracle cannot be undefined
       content = <MarketOracleBanner oracle={banner.oracle} />;
       intent = Intent.Danger;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
+      break;
+    }
+    case 'Generic': {
+      content = <p>{banner.message}</p>;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
+      break;
+    }
+    case 'ActiveReward': {
+      const metric = banner.game.transfer?.kind.dispatchStrategy.dispatchMetric;
+      const gameId = banner.game.transfer?.gameId;
+      if (!metric || !gameId) return null;
+      content = <MarketRewardBanner metric={metric} gameId={gameId} />;
+      intent = Intent.Primary;
+      icon = <VegaIcon name={VegaIconNames.TROPHY} size={16} />;
       break;
     }
     default: {
@@ -202,26 +160,105 @@ const BannerQueue = ({
     }
   }
 
-  const showCount = banners.length > 1;
+  return {
+    content,
+    intent,
+    icon,
+    kind: banner.kind,
+  };
+};
+
+const BannerQueue = ({
+  banners,
+  market,
+}: {
+  banners: IBanner[];
+  market: Market;
+}) => {
+  const bannerInfos = useMarketBannerStore((state) => state.banners);
+  const setBanner = useMarketBannerStore((state) => state.setBanner);
+  const current = useMarketBannerStore((state) => state.current);
+  const setCurrent = useMarketBannerStore((state) => state.setCurrent);
+
+  const dismissedKinds = bannerInfos
+    .filter((bi) => {
+      const age = Date.now() - bi.ts;
+      if (age <= DISMISSAL_PERIOD) {
+        return true;
+      }
+      return false;
+    })
+    .map((bi) => bi.kind);
+
+  const notDismissedBanners = banners.filter(
+    (b) => !dismissedKinds.includes(b.kind)
+  );
+
+  const displayableBanners = compact(
+    notDismissedBanners.map((b) => mapBanner(market, b))
+  );
+
+  const currentBanner = displayableBanners[current];
+  if (!currentBanner) return null;
+
+  const showCount = displayableBanners.length > 1;
 
   const onClose = () => {
-    setIndex((x) => x + 1);
+    setBanner(market.id, currentBanner.kind);
+    setCurrent(0);
+  };
+
+  const showNext = () => {
+    const count = displayableBanners.length;
+    let next = current + 1;
+    if (next >= count) {
+      next = 0;
+    }
+    setCurrent(next);
   };
 
   return (
     <NotificationBanner
-      intent={intent}
+      intent={Intent.Primary}
+      icon={currentBanner.icon}
       onClose={onClose}
       data-testid="market-banner"
+      className="rounded-grid bg-surface-1/70"
     >
       <div className="flex items-center justify-between">
-        {content}
+        {currentBanner.content}
         {showCount ? (
-          <p>
-            {index + 1}/{banners.length}
-          </p>
+          <NextBannerButton
+            current={current}
+            count={displayableBanners.length}
+            onClick={showNext}
+          />
         ) : null}
       </div>
     </NotificationBanner>
+  );
+};
+
+const NextBannerButton = ({
+  current,
+  count,
+  onClick,
+}: {
+  current: number;
+  count: number;
+  onClick?: () => void;
+}) => {
+  return (
+    <Tooltip description={`${current + 1}/${count}`} side="left" align="center">
+      <Button className="w-6 h-6 p-0 rounded-full relative" onClick={onClick}>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <VegaIcon
+            className="block"
+            size={16}
+            name={VegaIconNames.ARROW_RIGHT}
+          />
+        </div>
+      </Button>
+    </Tooltip>
   );
 };

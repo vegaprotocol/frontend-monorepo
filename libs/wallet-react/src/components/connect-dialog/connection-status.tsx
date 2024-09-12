@@ -16,6 +16,17 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
     );
   }
 
+  if (status === 'creating') {
+    return (
+      <>
+        <h3 className="text-lg">{t('Creating...')}</h3>
+        <p className="text-surface-0-fg-muted">
+          {t('Creating your wallet...')}
+        </p>
+      </>
+    );
+  }
+
   if (status === 'connected') {
     return (
       <div className="flex items-center gap-3">

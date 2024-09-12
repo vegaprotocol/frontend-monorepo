@@ -118,7 +118,9 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
               failure={<Failure reason={ERR_DATA_LOADER} />}
             >
               {config ? (
-                <WalletProvider config={config}>{children}</WalletProvider>
+                <WalletProvider config={config} node={API_NODE?.restApiUrl}>
+                  {children}
+                </WalletProvider>
               ) : (
                 <Failure
                   reason={t('Could not configure the wallet provider')}

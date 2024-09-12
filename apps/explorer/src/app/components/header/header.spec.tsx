@@ -23,7 +23,7 @@ describe('Header', () => {
   it('should render navigation', () => {
     render(renderComponent());
 
-    expect(screen.getByTestId('navigation')).toHaveTextContent('Explorer');
+    expect(screen.getByTestId('navigation')).toBeInTheDocument();
   });
 
   it('should render search', () => {

@@ -2,6 +2,7 @@ import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 
 import {
   ExternalLink,
+  getIntentIcon,
   Intent,
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
@@ -69,7 +70,10 @@ export const ProtocolUpgradeInProgressNotification = () => {
   if (!upgradeInProgress) return null;
 
   return (
-    <NotificationBanner intent={Intent.Danger}>
+    <NotificationBanner
+      intent={Intent.Danger}
+      icon={getIntentIcon(Intent.Danger)}
+    >
       <div className="uppercase">
         {t('The network is being upgraded to {{vegaReleaseTag}}', {
           vegaReleaseTag,
