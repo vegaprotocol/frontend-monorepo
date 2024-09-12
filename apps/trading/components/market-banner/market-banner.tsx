@@ -1,6 +1,7 @@
 import { type Market } from '@vegaprotocol/markets';
 import {
   Button,
+  getIntentIcon,
   Intent,
   NotificationBanner,
   Tooltip,
@@ -15,19 +16,13 @@ import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
 import { MarketAuctionBanner } from './market-monitoring-auction';
 import {
-  type Banner,
+  type Banner as IBanner,
   DISMISSAL_PERIOD,
   useMarketBanners,
   useMarketBannerStore,
 } from '../../lib/hooks/use-market-banners';
-import {
-  DispatchMetricDescription,
-  DispatchMetricLabels,
-} from '@vegaprotocol/types';
-import { t } from '../../lib/use-t';
-import { Link } from 'react-router-dom';
-import { Links } from '../../lib/links';
 import compact from 'lodash/compact';
+import { MarketRewardBanner } from './market-reward-banner';
 
 export const MarketBannerIndicator = ({
   market,
@@ -35,7 +30,7 @@ export const MarketBannerIndicator = ({
   className,
 }: {
   market: Market;
-  kind: Banner['kind'];
+  kind: IBanner['kind'];
   className?: string;
 }) => {
   const bannerInfos = useMarketBannerStore((state) => state.banners);
@@ -89,19 +84,23 @@ export const MarketBannerIndicator = ({
   return null;
 };
 
-export const MarketBanner = ({ market }: { market: Market }) => {
-  const { banners, loading } = useMarketBanners(market);
-
+export const MarketBanner = (props: { market: Market }) => {
+  const { banners, loading } = useMarketBanners(props.market);
   if (loading) {
     return null;
   }
 
-  return <BannerQueue banners={banners} market={market} />;
+  if (!banners.length) {
+    return null;
+  }
+
+  return <BannerQueue banners={banners} market={props.market} />;
 };
 
-const mapBanner = (market: Market, banner: Banner) => {
+const mapBanner = (market: Market, banner: IBanner) => {
   let content = null;
-  let intent = Intent.Primary;
+  let intent = Intent.Info;
+  let icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
 
   switch (banner.kind) {
     case 'UpdateMarket': {
@@ -117,6 +116,7 @@ const mapBanner = (market: Market, banner: Banner) => {
     case 'NewMarket': {
       content = <MarketSuccessorProposalBanner proposals={banner.proposals} />;
       intent = Intent.Warning;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'Settled': {
@@ -126,41 +126,33 @@ const mapBanner = (market: Market, banner: Banner) => {
     case 'Suspended': {
       content = <MarketSuspendedBanner />;
       intent = Intent.Warning;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'MonitoringAuction': {
       content = <MarketAuctionBanner market={market} />;
-      intent = Intent.Primary;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'Oracle': {
       // @ts-ignore oracle cannot be undefined
       content = <MarketOracleBanner oracle={banner.oracle} />;
       intent = Intent.Danger;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'Generic': {
-      content = <span>{banner.message}</span>;
-      intent = Intent.Info;
+      content = <p>{banner.message}</p>;
+      icon = <VegaIcon name={getIntentIcon(intent)} size={16} />;
       break;
     }
     case 'ActiveReward': {
       const metric = banner.game.transfer?.kind.dispatchStrategy.dispatchMetric;
       const gameId = banner.game.transfer?.gameId;
       if (!metric || !gameId) return null;
-      content = (
-        <span className="flex gap-1">
-          <span className="font-bold antialiased">{t('Active reward')}: </span>
-          <span className="font-bold antialiased">
-            {DispatchMetricLabels[metric]}
-          </span>
-          <span>{DispatchMetricDescription[metric]}</span>
-          <Link className="underline" to={Links.COMPETITIONS_GAME(gameId)}>
-            {t('Learn more')}
-          </Link>
-        </span>
-      );
-      intent = Intent.Info;
+      content = <MarketRewardBanner metric={metric} gameId={gameId} />;
+      intent = Intent.Primary;
+      icon = <VegaIcon name={VegaIconNames.TROPHY} size={16} />;
       break;
     }
     default: {
@@ -171,6 +163,7 @@ const mapBanner = (market: Market, banner: Banner) => {
   return {
     content,
     intent,
+    icon,
     kind: banner.kind,
   };
 };
@@ -179,7 +172,7 @@ const BannerQueue = ({
   banners,
   market,
 }: {
-  banners: Banner[];
+  banners: IBanner[];
   market: Market;
 }) => {
   const bannerInfos = useMarketBannerStore((state) => state.banners);
@@ -226,18 +219,14 @@ const BannerQueue = ({
 
   return (
     <NotificationBanner
-      intent={currentBanner.intent}
+      intent={Intent.Primary}
+      icon={currentBanner.icon}
       onClose={onClose}
       data-testid="market-banner"
-      prefixElement={
-        currentBanner.kind === 'ActiveReward' ? (
-          <VegaIcon name={VegaIconNames.TROPHY} className="mr-2" />
-        ) : undefined
-      }
+      className="rounded-grid bg-surface-1/70"
     >
       <div className="flex items-center justify-between">
         {currentBanner.content}
-
         {showCount ? (
           <NextBannerButton
             current={current}
@@ -263,7 +252,11 @@ const NextBannerButton = ({
     <Tooltip description={`${current + 1}/${count}`} side="left" align="center">
       <Button className="w-6 h-6 p-0 rounded-full relative" onClick={onClick}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <VegaIcon className="block" name={VegaIconNames.ARROW_RIGHT} />
+          <VegaIcon
+            className="block"
+            size={16}
+            name={VegaIconNames.ARROW_RIGHT}
+          />
         </div>
       </Button>
     </Tooltip>

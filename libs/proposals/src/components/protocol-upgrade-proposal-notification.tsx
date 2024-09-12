@@ -1,5 +1,6 @@
 import {
   ExternalLink,
+  getIntentIcon,
   Intent,
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
@@ -73,11 +74,12 @@ export const ProtocolUpgradeProposalNotification = ({
   return (
     <NotificationBanner
       intent={Intent.Warning}
+      icon={getIntentIcon(Intent.Warning)}
       onClose={() => {
         setVisible(false);
       }}
     >
-      <div className="uppercase ">
+      <div className="uppercase">
         <Trans
           defaults="The network will upgrade to {{vegaReleaseTag}} in <0/>"
           values={{ vegaReleaseTag: data.vegaReleaseTag }}

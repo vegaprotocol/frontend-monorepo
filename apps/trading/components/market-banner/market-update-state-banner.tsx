@@ -68,8 +68,6 @@ export const MarketUpdateStateBanner = ({
             'Trading on market {{name}} was suspended by governance. There are open proposals to resume trading on this market.',
             { name }
           )}
-        </p>
-        <p>
           <ExternalLink href={openTradingProposalsLink}>
             {t('View proposals')}
           </ExternalLink>
@@ -116,20 +114,22 @@ const OpenProposalContent = ({
         {t(
           'Trading on market {{name}} may {{action}} on {{date}}. There is an open proposal to {{action}} this market.',
           { name: market.tradableInstrument.instrument.code, action, date }
+        )}{' '}
+        {change?.updateType ===
+          MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
+          <>
+            {price &&
+              assetSymbol &&
+              t('Proposed final price is {{price}} {{assetSymbol}}.', {
+                price: addDecimalsFormatNumber(price, market.decimalPlaces),
+                assetSymbol,
+              })}{' '}
+            <ExternalLink href={proposalLink}>
+              {t('View proposal')}
+            </ExternalLink>
+          </>
         )}
       </p>
-      {change?.updateType ===
-        MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
-        <p>
-          {price &&
-            assetSymbol &&
-            t('Proposed final price is {{price}} {{assetSymbol}}.', {
-              price: addDecimalsFormatNumber(price, market.decimalPlaces),
-              assetSymbol,
-            })}{' '}
-          <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
-        </p>
-      )}
     </div>
   );
 };
@@ -158,23 +158,23 @@ const PassedProposalContent = ({
           name: market.tradableInstrument.instrument.code,
           date,
           action,
-        })}
+        })}{' '}
+        {change?.updateType ===
+          MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
+          <>
+            {t(
+              'You will no longer be able to hold a position on this market when it terminates in {{duration}}.',
+              { duration }
+            )}{' '}
+            {price &&
+              assetSymbol &&
+              t('The final price will be {{price}} {{assetSymbol}}.', {
+                price: addDecimalsFormatNumber(price, market.decimalPlaces),
+                assetSymbol,
+              })}
+          </>
+        )}
       </p>
-      {change?.updateType ===
-        MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
-        <p>
-          {t(
-            'You will no longer be able to hold a position on this market when it terminates in {{duration}}.',
-            { duration }
-          )}{' '}
-          {price &&
-            assetSymbol &&
-            t('The final price will be {{price}} {{assetSymbol}}.', {
-              price: addDecimalsFormatNumber(price, market.decimalPlaces),
-              assetSymbol,
-            })}
-        </p>
-      )}
     </div>
   );
 };

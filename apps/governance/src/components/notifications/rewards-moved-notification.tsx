@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/environment';
 import {
   ExternalLink,
+  getIntentIcon,
   Intent,
   NotificationBanner,
   VegaIcon,
@@ -34,7 +35,10 @@ export const RewardsMovedNotification = () => {
   if (!onRewardsPage) return null;
 
   return (
-    <NotificationBanner intent={Intent.Warning}>
+    <NotificationBanner
+      intent={Intent.Warning}
+      icon={getIntentIcon(Intent.Warning)}
+    >
       <Trans
         i18nKey="rewardsMovedNotification"
         components={[<ConsoleRewardsLink>Console</ConsoleRewardsLink>]}
