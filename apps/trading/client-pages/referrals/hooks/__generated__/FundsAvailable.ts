@@ -8,7 +8,7 @@ export type FundsAvailableQueryVariables = Types.Exact<{
 }>;
 
 
-export type FundsAvailableQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', balance: string, asset: { __typename?: 'Asset', decimals: number, symbol: string, id: string } } } | null> | null } | null } | null, networkParameter?: { __typename?: 'NetworkParameter', key: string, value: string } | null };
+export type FundsAvailableQuery = { __typename?: 'Query', party?: { __typename?: 'Party', accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', balance: string, asset: { __typename?: 'Asset', decimals: number, symbol: string, id: string, quantum: string } } } | null> | null } | null } | null, networkParameter?: { __typename?: 'NetworkParameter', key: string, value: string } | null };
 
 
 export const FundsAvailableDocument = gql`
@@ -22,6 +22,7 @@ export const FundsAvailableDocument = gql`
             decimals
             symbol
             id
+            quantum
           }
         }
       }

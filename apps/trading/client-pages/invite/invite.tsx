@@ -160,20 +160,17 @@ const useInviteStore = create<InviteStore & InviteActions>()(
 
 export const Invite = () => {
   return (
-    <>
-      <Routes>
-        <Route path="" element={<ProcessSteps />} />
-        <Route path={StepRoutes[Step.Connect]} element={<StepConnect />} />
-        <Route path={StepRoutes[Step.Deposit]} element={<StepDeposit />} />
-        <Route path={StepRoutes[Step.ApplyCode]} element={<StepApplyCode />} />
-        <Route path={StepRoutes[Step.JoinTeam]} element={<StepJoinTeam />} />
-        <Route
-          path={StepRoutes[Step.StartPlaying]}
-          element={<StepStartPlaying />}
-        />
-      </Routes>
-      <Traverse />
-    </>
+    <Routes>
+      <Route path="" element={<ProcessSteps />} />
+      <Route path={StepRoutes[Step.Connect]} element={<StepConnect />} />
+      <Route path={StepRoutes[Step.Deposit]} element={<StepDeposit />} />
+      <Route path={StepRoutes[Step.ApplyCode]} element={<StepApplyCode />} />
+      <Route path={StepRoutes[Step.JoinTeam]} element={<StepJoinTeam />} />
+      <Route
+        path={StepRoutes[Step.StartPlaying]}
+        element={<StepStartPlaying />}
+      />
+    </Routes>
   );
 };
 
@@ -249,26 +246,6 @@ const ProcessSteps = () => {
   return <div className="text-red">COULD NOT DETERMINE STEP</div>;
 };
 
-// TODO: Remove
-const Traverse = () => {
-  const location = useLocation();
-
-  const matching = allSteps.map((s) =>
-    matchPath(`/invite/${StepRoutes[s]}`, location.pathname)
-  );
-  const currentStep = matching.findIndex((m) => m != null);
-
-  const next = currentStep + 1 >= allSteps.length ? 0 : currentStep + 1;
-  const prev = currentStep - 1 < 0 ? allSteps.length - 1 : currentStep - 1;
-
-  return (
-    <div className="flex gap-4 mx-auto">
-      <Link to={StepRoutes[allSteps[prev]]}>PREVIOUS</Link>
-      <Link to={StepRoutes[allSteps[next]]}>NEXT</Link>
-    </div>
-  );
-};
-
 const determineStepProgression = (code?: string, team?: string) => {
   if (code && !team) return StepProgressions.Referral;
   if (!code && team) return StepProgressions.TeamInvitation;
@@ -284,6 +261,7 @@ const useDetermineCurrentStep = (steps: Step[] = StepProgressions.Default) => {
   const { pubKey, status, isReadOnly } = useVegaWallet();
   const {
     requiredFunds,
+    sumOfFunds,
     isEligible,
     loading: fundsLoading,
   } = useFundsAvailable(pubKey, true);
@@ -295,6 +273,8 @@ const useDetermineCurrentStep = (steps: Step[] = StepProgressions.Default) => {
   const connected = pubKey && status === 'connected' && !isReadOnly;
 
   let step = undefined;
+
+  console.log('invite funds', requiredFunds?.toNumber(), sumOfFunds.toNumber());
 
   if (!loading) {
     if (steps.includes(Step.Connect) && !connected) {
@@ -487,11 +467,11 @@ export const StepApplyCode = () => {
   const [txDialogOpen, setTxDialogOpen] = useState(false);
   const { error, reset, result, send, status } = useSimpleTransaction();
 
-  const onSubmit = ({ code }: formFields) => {
+  const onSubmit = ({ code: codeField }: formFields) => {
     setTxDialogOpen(true);
     send({
       applyReferralCode: {
-        id: code as string,
+        id: codeField,
       },
     });
   };
@@ -548,8 +528,8 @@ export const StepApplyCode = () => {
             <label className="flex flex-col gap-1">
               <span>{t('ONBOARDING_STEP_APPLY_CODE_FIELD')}</span>
               <Input
+                readOnly={true}
                 {...register('code', {
-                  disabled: true,
                   required: t('ONBOARDING_STEP_APPLY_CODE_FIELD_REQUIRED'),
                   minLength: {
                     value: 64,

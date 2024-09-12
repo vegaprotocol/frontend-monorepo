@@ -2,6 +2,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useFundsAvailableQuery } from './__generated__/FundsAvailable';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
+import { toQUSD } from '@vegaprotocol/utils';
 
 /**
  * Gets the funds for given public key and required min for
@@ -30,8 +31,10 @@ export const useFundsAvailable = (pubKey?: string, noPolling = false) => {
   const sumOfFunds =
     fundsAvailable
       ?.filter((fa) => fa.balance)
-      .reduce((sum, fa) => sum.plus(BigNumber(fa.balance)), BigNumber(0)) ||
-    BigNumber(0);
+      .reduce(
+        (sum, fa) => sum.plus(toQUSD(fa.balance, fa.asset.quantum)), // qUSD
+        BigNumber(0)
+      ) || BigNumber(0);
 
   if (requiredFunds && sumOfFunds.isGreaterThanOrEqualTo(requiredFunds)) {
     stopPolling();
@@ -40,6 +43,7 @@ export const useFundsAvailable = (pubKey?: string, noPolling = false) => {
   return {
     loading,
     fundsAvailable,
+    sumOfFunds,
     requiredFunds,
     isEligible:
       fundsAvailable != null &&
