@@ -42,7 +42,6 @@ There are a few different configuration options offered for this app:
 | `NX_SENTRY_DSN`                     | The sentry endpoint to report to. Should be off in dev but set in live.                                                                              |
 | `NX_API_NODE`                       | The GraphQL query and REST API endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node)                                    |
 | `NX_DEX_STAKING_DISABLED`           | Disable the dex liquidity page an show a coming soon message                                                                                         |
-| `NX_FAIRGROUND`                     | Change styling to be themed as the fairground version of the website                                                                                 |
 | `NX_INFURA_ID`                      | Infura fallback for if the user does not have a web3 compatible browser                                                                              |
 | `NX_ENV`                            | Change network to connect to.                                                                                                                        |
 | `NX_ETH_URL_CONNECT` (optional)     | If set to true the below two must also be set. This allows siging transactions in brower to allow to connect to a local ganache node through cypress |
