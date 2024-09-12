@@ -3,7 +3,6 @@ import ReactTimeAgo from 'react-time-ago';
 import { useInteractionStore } from '@/stores/interaction-store';
 
 import { Splash } from '../../splash';
-import { TransactionNotAutoApproved } from './sections/auto-approval-notification';
 // import { CheckTransaction } from './sections/check-transaction';
 import { EnrichedDetails } from './sections/enriched-details';
 import { RawTransaction } from './sections/raw-transaction';
@@ -35,7 +34,6 @@ export const TransactionModal = () => {
             name={details.name}
             transaction={details.transaction}
           />
-          <TransactionNotAutoApproved details={details} />
           {/* <CheckTransaction
             publicKey={details.publicKey}
             transaction={details.transaction}

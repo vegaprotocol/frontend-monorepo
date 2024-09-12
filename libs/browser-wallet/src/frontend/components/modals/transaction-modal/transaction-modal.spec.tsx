@@ -55,12 +55,6 @@ jest.mock('./sections/check-transaction', () => ({
   CheckTransaction: () => <div data-testid="check-transaction" />,
 }));
 
-jest.mock('./sections/auto-approval-notification', () => ({
-  TransactionNotAutoApproved: () => (
-    <div data-testid="auto-approval-notification" />
-  ),
-}));
-
 describe('TransactionModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
