@@ -16,8 +16,8 @@ import {
   StepLinks,
   useDetermineCurrentStep,
   useDetermineStepProgression,
-  useInviteStore,
-} from './invite';
+} from './step-utils';
+import { useInviteStore } from './use-invite-store';
 
 export const StepConnect = () => {
   const t = useT();
