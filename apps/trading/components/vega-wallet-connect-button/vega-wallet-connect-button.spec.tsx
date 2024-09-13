@@ -10,7 +10,7 @@ import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
 import {
   PartyProfilesDocument,
   type PartyProfilesQuery,
-} from './__generated__/PartyProfiles';
+} from '../../lib/hooks/__generated__/PartyProfiles';
 
 const key = { publicKey: '123456__123456', name: 'test' };
 const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };

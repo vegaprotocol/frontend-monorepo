@@ -19,8 +19,6 @@ import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
 import type { ConnectorType, QuickStartConnector } from '@vegaprotocol/wallet';
 import { useOnboardStore } from '../../stores/onboard';
@@ -30,6 +28,8 @@ import {
   useDetermineCurrentStep,
   useDetermineStepProgression,
 } from './step-utils';
+import { usePartyProfile } from '../../lib/hooks/use-party-profiles';
+import { GradientText } from 'apps/trading/components/gradient-text';
 
 export const StepConnect = () => {
   const t = useT();
@@ -39,44 +39,31 @@ export const StepConnect = () => {
     useDetermineCurrentStep(progression);
 
   const [code, team] = useOnboardStore((state) => [state.code, state.team]);
+
   const { data: referralData, loading: referralLoading } = useReferralSet(code);
-
-  const { data: profileData, loading: profileLoading } = usePartyProfilesQuery({
-    variables: {
-      partyIds: referralData?.referrer ? [referralData.referrer] : [],
-    },
-    skip: !referralData?.referrer,
-  });
-  const referrerProfile = removePaginationWrapper(
-    profileData?.partiesProfilesConnection?.edges
-  ).find((p) => p.partyId === referralData?.referrer);
-
   const { team: teamData, loading: teamLoading } = useTeam(team);
 
-  let invitedBy = referrerProfile?.alias || '';
-  if (teamData && teamData.name.length > 0) {
-    invitedBy = teamData.name;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('invite', profileData);
+  const partyId = teamData?.referrer || referralData?.referrer;
+  const { data: profileData, loading: profileLoading } =
+    usePartyProfile(partyId);
 
   let header: ReactNode = t('ONBOARDING_INVITE_HEADER', {
     appName: APP_NAME,
   });
-  if (invitedBy.length > 0) {
+
+  if (profileData && profileData.alias.length > 0) {
     header = (
       <Trans
         i18nKey={'ONBOARDING_INVITE_BY_HEADER'}
         ns={ns}
         components={[
           <span key="invited-by-name" className="text-surface-0-fg">
-            {invitedBy}
+            {profileData.alias}
           </span>,
         ]}
         values={{
           appName: APP_NAME,
-          name: invitedBy,
+          name: profileData.alias,
         }}
       />
     );
@@ -100,7 +87,13 @@ export const StepConnect = () => {
   return (
     <>
       <div className="md:w-4/6 mx-auto flex flex-col gap-10">
-        <StepHeader title={header} />
+        <StepHeader title={header}>
+          {teamData && (
+            <p className="bg-surface-1 text-surface-1-fg rounded-full py-4 px-6">
+              <GradientText>Team: {teamData.name}</GradientText>
+            </p>
+          )}
+        </StepHeader>
         <ConnectionOptions />
       </div>
     </>

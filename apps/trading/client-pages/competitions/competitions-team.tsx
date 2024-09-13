@@ -59,7 +59,7 @@ import {
   ActiveRewardCard,
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
-import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { usePartyProfilesQuery } from '../../lib/hooks/__generated__/PartyProfiles';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { NotFoundSplash } from '../../components/not-found-splash';
 

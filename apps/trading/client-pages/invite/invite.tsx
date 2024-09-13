@@ -39,12 +39,8 @@ const ProcessSteps = () => {
   const code = params.get('code') || undefined;
   const team = params.get('team') || undefined;
 
-  const {
-    data: referralData,
-    isEligible,
-    loading: referralLoading,
-  } = useReferralSet(code);
-  const validReferral = Boolean(referralData && isEligible);
+  const { data: referralData, loading: referralLoading } = useReferralSet(code);
+  const validReferral = Boolean(referralData);
 
   const { team: teamData, loading: teamLoading } = useTeam(team);
   const validTeam = Boolean(teamData);
@@ -71,8 +67,13 @@ const ProcessSteps = () => {
     // already started, ignoring new code, team values
     if (started > 0) return;
 
-    if (code && validReferral) setCode(code);
-    if (team && validTeam) setTeam(team);
+    if (code && validReferral) {
+      setCode(code);
+    }
+    if (team && validTeam) {
+      setTeam(team);
+    }
+
     start();
   }, [
     code,

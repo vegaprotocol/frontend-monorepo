@@ -46,7 +46,7 @@ export const Navbar = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   return (
-    <N.Root className="flex justify-between gap-3 px-1 lg:px-4 h-12 text-surface-1-fg">
+    <N.Root className="flex justify-between gap-3 px-1 lg:px-4 h-12 mt-2 text-surface-1-fg">
       {/* Left section */}
       <div className="grow basis-0 flex justify-start items-center">
         <NavLink

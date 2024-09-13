@@ -7,7 +7,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useT } from '../../lib/use-t';
-import { usePartyProfilesQuery } from '../vega-wallet-connect-button/__generated__/PartyProfiles';
+import { usePartyProfilesQuery } from '../../lib/hooks/__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
 import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';

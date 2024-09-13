@@ -7,12 +7,14 @@ type InviteStore = {
   team?: string;
   finished: number;
   started: number;
+  dismissed: boolean;
 };
 type InviteActions = {
   start: () => void;
   finish: () => void;
   setCode: (code: string) => void;
   setTeam: (teamId: string) => void;
+  dismiss: () => void;
 };
 
 export const useOnboardStore = create<InviteStore & InviteActions>()(
@@ -22,6 +24,7 @@ export const useOnboardStore = create<InviteStore & InviteActions>()(
       team: undefined,
       finished: 0,
       started: 0,
+      dismissed: false,
       start: () => {
         set({ started: Date.now(), finished: 0 });
       },
@@ -34,10 +37,18 @@ export const useOnboardStore = create<InviteStore & InviteActions>()(
       setTeam: (teamId) => {
         set({ team: teamId });
       },
+      dismiss: () => {
+        set({ dismissed: true });
+      },
     }),
     {
       name: `${APP_NAME.toLowerCase()}-invite-store`,
       version: 1,
+      partialize: ({ dismissed, ...state }) => {
+        // Dont store the dismissed state so that the user
+        // is reminded to onboard at the start of every session
+        return state;
+      },
     }
   )
 );
