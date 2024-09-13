@@ -77,7 +77,6 @@ export const useDetermineCurrentStep = (
   const { pubKey, status, isReadOnly } = useVegaWallet();
   const {
     requiredFunds,
-    sumOfFunds,
     isEligible,
     loading: fundsLoading,
   } = useFundsAvailable(pubKey, true);
@@ -89,9 +88,6 @@ export const useDetermineCurrentStep = (
   const connected = pubKey && status === 'connected' && !isReadOnly;
 
   let step = undefined;
-
-  // eslint-disable-next-line no-console
-  console.log('invite funds', requiredFunds?.toNumber(), sumOfFunds.toNumber());
 
   if (!loading) {
     if (steps.includes(Step.Connect) && !connected) {
