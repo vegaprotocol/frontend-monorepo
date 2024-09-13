@@ -82,9 +82,7 @@ export function createConfig(cfg: Config): Wallet {
       store.setState({ status: 'connecting', current: id, error: undefined });
 
       await connector.connectWallet(store.getState().chainId);
-      console.log('here');
       const keys = await connector.listKeys();
-      console.log('keys', keys);
 
       // TODO: this shouldnt be in the default config as we dont want to enforce single key usage
       // need to find a way to optin into using this slice in the store
