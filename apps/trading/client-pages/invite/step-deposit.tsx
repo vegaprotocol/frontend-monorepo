@@ -23,6 +23,13 @@ export const StepDeposit = () => {
   const progression = useDetermineStepProgression();
   const { step: currentStep, loading } = useDetermineCurrentStep(progression);
 
+  const { sumOfFunds } = useFundsAvailable();
+  // eslint-disable-next-line no-console
+  console.info(
+    'STEP_DEPOSIT: The sum of funds (qUSD) of the connected key: ',
+    sumOfFunds.toNumber()
+  );
+
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }

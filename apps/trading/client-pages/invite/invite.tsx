@@ -30,6 +30,7 @@ export const Invite = () => {
         path={StepRoutes[Step.StartPlaying]}
         element={<StepStartPlaying />}
       />
+      <Route path="*" element={<Navigate to={''} />} />
     </Routes>
   );
 };
