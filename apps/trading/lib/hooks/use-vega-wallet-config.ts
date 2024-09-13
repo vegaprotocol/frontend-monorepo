@@ -1,7 +1,6 @@
 import {
   InjectedConnector,
   JsonRpcConnector,
-  SnapConnector,
   ViewPartyConnector,
   // InBrowserConnector,
   QuickStartConnector,
@@ -35,20 +34,14 @@ export const useVegaWalletConfig = () => {
       url: VEGA_WALLET_URL,
     });
 
-    const snap = new SnapConnector({
-      node: new URL(url).origin,
-      snapId: 'npm:@vegaprotocol/snap',
-      version: '1.0.1',
-    });
-
     const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
       chains: [nebula1],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: IN_BROWSER_WALLET
-        ? [quickStart, injected, snap, jsonRpc, viewParty]
-        : [injected, snap, jsonRpc, viewParty],
+        ? [quickStart, injected, jsonRpc, viewParty]
+        : [injected, jsonRpc, viewParty],
     });
 
     return config;
