@@ -28,5 +28,9 @@ export const formSchema = z.object({
   ),
 });
 
+export const fallbackFormSchema = formSchema.partial({
+  fromAsset: true,
+});
+
 export type FormFields = z.infer<typeof formSchema>;
 export type Configs = Array<EthereumConfig | EVMBridgeConfig>;

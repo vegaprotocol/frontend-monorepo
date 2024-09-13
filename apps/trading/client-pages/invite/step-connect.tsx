@@ -11,14 +11,14 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
+import { QuickStartConnector } from '@vegaprotocol/wallet';
+import { useInviteStore } from './use-invite-store';
 import {
   Step,
   StepLinks,
   useDetermineCurrentStep,
   useDetermineStepProgression,
-  useInviteStore,
-} from './invite';
-import { QuickStartConnector } from '@vegaprotocol/wallet';
+} from './step-utils';
 
 export const StepConnect = () => {
   const t = useT();
