@@ -6,30 +6,32 @@ import { getExtensionApi } from '@/lib/extension-apis';
 import { log } from '@/lib/logging';
 import { useErrorStore } from '@/stores/error';
 
-const createClient = () => {
-  const { runtime } = getExtensionApi();
-  const backgroundPort = runtime.connect({ name: 'popup' });
-  const client = new JSONRPCClient({
-    onnotification: (...arguments_) => {
-      // NOOP
-    },
-    idPrefix: 'vega-popup-',
-    send(message: any) {
-      log('info', 'Sending message to background', message);
-      backgroundPort.postMessage(message);
-    },
-  });
+const { runtime } = getExtensionApi();
+const backgroundPort = runtime.connect({ name: 'popup' });
 
-  backgroundPort.onMessage.addListener((message: any) => {
-    log('info', 'Received message from background', message);
-    client.onmessage(message);
-  });
+const client = new JSONRPCClient({
+  onnotification: (...arguments_) => {
+    // NOOP
+  },
+  idPrefix: 'vega-popup-',
+  send(message: any) {
+    log('info', 'Sending message to background', message);
+    backgroundPort.postMessage(message);
+  },
+});
 
-  backgroundPort.onDisconnect.addListener(
-    /* istanbul ignore next */ () => {
-      console.log('Port disconnected from background');
-    }
-  );
+backgroundPort.onMessage.addListener((message: any) => {
+  log('info', 'Received message from background', message);
+  client.onmessage(message);
+});
+
+backgroundPort.onDisconnect.addListener(
+  /* istanbul ignore next */ () => {
+    console.log('Port disconnected from background');
+  }
+);
+
+export const createClient = () => {
   return client;
 };
 
