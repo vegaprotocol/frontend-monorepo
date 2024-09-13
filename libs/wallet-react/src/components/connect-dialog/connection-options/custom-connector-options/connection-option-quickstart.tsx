@@ -52,7 +52,7 @@ export const ConnectionOptionQuickstart = ({
   if (!(connector instanceof QuickStartConnector)) {
     throw new Error('Tried to render QuickStartConnector with wrong connector');
   }
-  const { connect, isPending, error } = useQuickstart({
+  const { createWallet, isPending, error } = useQuickstart({
     connector,
     onSuccess: () => onClick(),
   });
@@ -60,7 +60,7 @@ export const ConnectionOptionQuickstart = ({
   return (
     <QuickstartButton
       connector={connector}
-      onClick={connect}
+      onClick={createWallet}
       isPending={isPending}
       error={error as ConnectorError}
     />

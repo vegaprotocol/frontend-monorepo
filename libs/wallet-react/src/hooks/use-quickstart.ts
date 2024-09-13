@@ -23,7 +23,7 @@ export const useQuickstart = ({
     account.address
   );
 
-  const connect = (args: { address?: Address }) => {
+  const createWallet = (args: { address?: Address }) => {
     if (!args.address) {
       awaitingWallet.current = true;
       modal.setOpen(true);
@@ -36,13 +36,13 @@ export const useQuickstart = ({
   useAccountEffect({
     onConnect: (data) => {
       if (awaitingWallet.current) {
-        connect(data);
+        createWallet(data);
       }
     },
   });
 
   return {
     ...mutationResult,
-    connect: () => connect(account),
+    createWallet: () => createWallet(account),
   };
 };

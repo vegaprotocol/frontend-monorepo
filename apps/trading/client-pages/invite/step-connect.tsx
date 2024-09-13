@@ -9,7 +9,11 @@ import {
   VegaIconNames,
   VLogo,
 } from '@vegaprotocol/ui-toolkit';
-import { useConnect, useQuickstart } from '@vegaprotocol/wallet-react';
+import {
+  useConnect,
+  useQuickstart,
+  useWallet,
+} from '@vegaprotocol/wallet-react';
 import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import type { PropsWithChildren, ReactNode } from 'react';
@@ -18,7 +22,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
-import type { QuickStartConnector } from '@vegaprotocol/wallet';
+import type { ConnectorType, QuickStartConnector } from '@vegaprotocol/wallet';
 import { useInviteStore } from './use-invite-store';
 import {
   Step,
@@ -107,9 +111,14 @@ const ConnectionOptions = () => {
   const navigate = useNavigate();
   const t = useT();
   const { connect, connectors } = useConnect();
+  const error = useWallet((store) => store.error);
 
-  const handleConnect = () => {
-    setTimeout(() => navigate(StepLinks[Step.Deposit]), 1000);
+  const handleConnect = async (id: ConnectorType) => {
+    const res = await connect(id);
+
+    if (res.status === 'connected') {
+      setTimeout(() => navigate(StepLinks[Step.Deposit]), 1000);
+    }
   };
 
   const quickStartConnector = connectors.find(
@@ -135,15 +144,10 @@ const ConnectionOptions = () => {
             {quickStartConnector.description}
           </p>
         </div>
-        <div className="flex justify-center">
+        <div className="flex flex-col justify-center items-center gap-2">
           <EmbeddQuickStartButton
             connector={quickStartConnector as QuickStartConnector}
-            onSuccess={async () => {
-              const res = await connect(quickStartConnector.id);
-              if (res.status === 'connected') {
-                handleConnect();
-              }
-            }}
+            onSuccess={() => handleConnect(quickStartConnector.id)}
           />
         </div>
       </Card>
@@ -159,19 +163,15 @@ const ConnectionOptions = () => {
             {injectedConnector.description}
           </p>
         </div>
-        <div className="flex justify-center">
+        <div className="flex flex-col justify-center items-center gap-2">
           <Button
             intent={Intent.Primary}
             size="lg"
-            onClick={async () => {
-              const res = await connect(injectedConnector.id);
-              if (res.status === 'connected') {
-                handleConnect();
-              }
-            }}
+            onClick={() => handleConnect(injectedConnector.id)}
           >
             {t('Connect wallet')}
           </Button>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       </Card>
     </div>
@@ -183,21 +183,24 @@ const EmbeddQuickStartButton = (props: {
   onSuccess: () => void;
 }) => {
   const t = useT();
-  const { connect, isPending } = useQuickstart({
+  const { createWallet, error, isPending } = useQuickstart({
     connector: props.connector,
     onSuccess: props.onSuccess,
   });
 
   return (
-    <Button
-      intent={Intent.Primary}
-      size="lg"
-      onClick={() => connect()}
-      disabled={isPending}
-      className="min-w-[140px]"
-    >
-      {isPending ? <Loader /> : t('Create wallet')}
-    </Button>
+    <>
+      <Button
+        intent={Intent.Primary}
+        size="lg"
+        onClick={createWallet}
+        disabled={isPending}
+        className="min-w-[140px]"
+      >
+        {isPending ? <Loader /> : t('Create wallet')}
+      </Button>
+      {error && <ErrorMessage>{error.message}</ErrorMessage>}
+    </>
   );
 };
 
@@ -206,5 +209,13 @@ const LogoCircle = (props: PropsWithChildren) => {
     <div className="w-14 h-14 rounded-full border flex items-center justify-center">
       {props.children}
     </div>
+  );
+};
+
+const ErrorMessage = (props: PropsWithChildren) => {
+  return (
+    <p className="text-intent-danger text-sm first-letter:uppercase">
+      {props.children}
+    </p>
   );
 };
