@@ -62,4 +62,12 @@ export class QuickStartConnector extends BrowserConnector implements Connector {
     )) as unknown as { derivedMnemonic: string };
     return derivedMnemonic;
   }
+
+  async hasWallet() {
+    const res = (await QuickStartConnector.adminClient.request(
+      'admin.app_globals',
+      null
+    )) as unknown as { wallet: boolean };
+    return res.wallet;
+  }
 }
