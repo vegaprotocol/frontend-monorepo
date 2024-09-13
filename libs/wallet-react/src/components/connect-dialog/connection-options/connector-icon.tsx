@@ -49,10 +49,10 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={cn(
             defaultWrapperClasses,
-            'bg-white text-gs-50 dark:text-gs-950'
+            'bg-black dark:bg-white text-gs-50 dark:text-gs-950 text-xs'
           )}
         >
-          <VegaIcon name={VegaIconNames.STREAK} size={20} />
+          <VegaIcon name={VegaIconNames.ETHEREUM} size={20} />
         </span>
       );
     }
