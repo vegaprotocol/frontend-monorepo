@@ -6,11 +6,7 @@ import {
   // InBrowserConnector,
   QuickStartConnector,
   createConfig,
-  fairground,
-  validatorsTestnet,
-  mainnet,
-  mirror,
-  stagnet,
+  nebula1,
 } from '@vegaprotocol/wallet';
 import {
   CHAIN_IDS,
@@ -48,7 +44,7 @@ export const useVegaWalletConfig = () => {
     const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
-      chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
+      chains: [nebula1],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: IN_BROWSER_WALLET
         ? [quickStart, injected, snap, jsonRpc, viewParty]

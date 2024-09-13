@@ -3,15 +3,7 @@ export * from './types';
 export * from './transaction-types';
 
 // Core
-export {
-  mainnet,
-  mirror,
-  fairground,
-  validatorsTestnet,
-  stagnet,
-  mockChain,
-  type Chain,
-} from './chains';
+export { nebula1, mockChain, type Chain } from './chains';
 export { createConfig, coreStoreSlice, singleKeyStoreSlice } from './wallet';
 
 // Connectors

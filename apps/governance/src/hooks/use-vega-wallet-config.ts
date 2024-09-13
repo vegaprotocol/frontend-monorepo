@@ -5,11 +5,7 @@ import {
   SnapConnector,
   ViewPartyConnector,
   createConfig,
-  fairground,
-  validatorsTestnet,
-  stagnet,
-  mainnet,
-  mirror,
+  nebula1,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 
@@ -33,7 +29,7 @@ export const useVegaWalletConfig = () => {
     const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
-      chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
+      chains: [nebula1],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: [injected, snap, jsonRpc, viewParty],
     });

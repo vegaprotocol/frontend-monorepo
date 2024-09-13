@@ -4,34 +4,10 @@ export type Chain = {
   name: string;
 };
 
-export const mainnet = {
-  id: 'vega-mainnet-0011',
+export const nebula1 = {
+  id: 'nebula1',
   testnet: false,
-  name: 'Fairground',
-};
-
-export const mirror = {
-  id: 'vega-mainnet-mirror-202306231148',
-  testnet: true,
-  name: 'Mirror',
-};
-
-export const fairground = {
-  id: 'fairground-20240816',
-  testnet: true,
-  name: 'Fairground',
-};
-
-export const validatorsTestnet = {
-  id: 'vega-testnet-0002-v4',
-  testnet: true,
-  name: 'Validators Testnet',
-};
-
-export const stagnet = {
-  id: 'vega-stagnet1-202307191148',
-  testnet: true,
-  name: 'Stagnet',
+  name: 'Nebula',
 };
 
 export const mockChain = {
