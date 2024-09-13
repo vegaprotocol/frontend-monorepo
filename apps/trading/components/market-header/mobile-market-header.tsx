@@ -78,13 +78,7 @@ export const MobileMarketHeader = () => {
           />
         </FullScreenPopover>
         <div className="w-full flex gap-4 justify-end">
-          {data && (
-            <MarketBannerIndicator
-              market={data}
-              kind="ActiveReward"
-              className=""
-            />
-          )}
+          {data && <MarketBannerIndicator market={data} kind="ActiveReward" />}
           <FullScreenPopover
             open={openPrice}
             onOpenChange={(x) => {

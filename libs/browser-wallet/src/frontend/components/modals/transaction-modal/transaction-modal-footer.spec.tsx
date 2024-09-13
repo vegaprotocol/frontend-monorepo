@@ -4,12 +4,15 @@ import { silenceErrors } from '@/test-helpers/silence-errors';
 
 import { testingNetwork } from '../../../../config/well-known-networks';
 import { locators, TransactionModalFooter } from './transaction-modal-footer';
+import { mockStore } from '@/test-helpers/mock-store';
+import { useGlobalsStore } from '@/stores/globals';
 
 const mockedRequest = jest.fn();
 
 jest.mock('@/contexts/json-rpc/json-rpc-context', () => ({
   useJsonRpcClient: () => ({ request: mockedRequest }),
 }));
+jest.mock('@/stores/globals');
 
 const transaction = {
   orderSubmission: {
@@ -41,6 +44,13 @@ const data = {
 };
 
 const renderComponent = (autoConsent = false) => {
+  mockStore(useGlobalsStore, {
+    globals: {
+      settings: {
+        autoConsent: false,
+      },
+    },
+  });
   const function_ = jest.fn();
   const view = render(
     <TransactionModalFooter
@@ -89,33 +99,4 @@ describe('TransactionModalFooter', () => {
     fireEvent.click(screen.getByTestId(locators.transactionModalApproveButton));
     expect(fn).toHaveBeenCalledWith(true);
   });
-  // it('renders auto consent checkbox if autoConsent is false', async () => {
-  //   renderComponent();
-  //   expect(
-  //     screen.getByTestId(locators.transactionModalFooterAutoConsentSection)
-  //   ).toBeVisible();
-  // });
-  // it('does not render auto consent checkbox if autoConsent is true', async () => {
-  //   renderComponent(true);
-  //   expect(
-  //     screen.queryByTestId(locators.transactionModalFooterAutoConsentSection)
-  //   ).toBeNull();
-  // });
-  // it('sets the auto consent value when it changes', async () => {
-  //   expect(mockedRequest).not.toHaveBeenCalled();
-  //   renderComponent();
-  //   fireEvent.click(
-  //     screen.getByLabelText(
-  //       'Allow this site to automatically approve order and vote transactions. This can be turned off in "Connections".'
-  //     )
-  //   );
-  //   fireEvent.click(screen.getByTestId(locators.transactionModalApproveButton));
-  //   expect(mockedRequest).toHaveBeenCalledWith(
-  //     RpcMethods.UpdateAutomaticConsent,
-  //     {
-  //       origin: 'https://www.google.com',
-  //       autoConsent: true,
-  //     }
-  //   );
-  // });
 });

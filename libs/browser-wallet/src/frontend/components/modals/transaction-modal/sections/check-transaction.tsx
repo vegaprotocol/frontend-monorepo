@@ -1,7 +1,11 @@
-import { Intent, Notification, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  Loader,
+  Notification,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect } from 'react';
 
-import { LoaderBone } from '@/components/loader-bone';
 import { VegaSection } from '@/components/vega-section';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useAsyncAction } from '@/hooks/async-action';
@@ -59,7 +63,7 @@ const CheckTransactionResult = ({
         message={
           <div className="flex flex-row justify-between">
             <span className="mr-2">Checking transaction validity</span>
-            <LoaderBone width={10} height={2} baseSize={8} />
+            <Loader />
           </div>
         }
       />

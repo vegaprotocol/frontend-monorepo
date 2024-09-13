@@ -14,14 +14,6 @@ function doValidate(validator, params) {
   }
 }
 
-const Errors = {
-  UNKNOWN_PUBLIC_KEY: [
-    'Unknown public key',
-    -1,
-    'The public key is not known to the wallet',
-  ],
-};
-
 /**
  * Initialise the admin namespace server. The stores passed should be low-level Map-like
  * storage, as the internals of the implementation will wrap these to do encryption and
@@ -71,7 +63,7 @@ export default function init({
       },
 
       async 'admin.update_app_settings'(params) {
-        doValidate(adminValidation.updateAppSettings, params);
+        // doValidate(adminValidation.updateAppSettings, params);
         await settings.transaction(async (store) => {
           for (const [key, value] of Object.entries(params)) {
             await store.set(key, value);
@@ -275,14 +267,7 @@ export default function init({
       },
 
       async 'admin.check_transaction'(params) {
-        doValidate(adminValidation.checkTransaction, params);
-
-        const keyInfo = await wallets.getKeyInfo({
-          publicKey: params.publicKey,
-        });
-
-        if (keyInfo == null)
-          throw new JSONRPCServer.Error(...Errors.UNKNOWN_PUBLIC_KEY);
+        // doValidate(adminValidation.checkTransaction, params);
         const key = await wallets.getKeypair({ publicKey: params.publicKey });
 
         const res = await txHelpers.checkTransaction({

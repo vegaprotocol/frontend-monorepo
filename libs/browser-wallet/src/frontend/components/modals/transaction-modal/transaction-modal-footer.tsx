@@ -1,13 +1,14 @@
-import {
-  Button,
-  // Checkbox,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
-// import { useState } from 'react';
+import { Button, Checkbox, Intent } from '@vegaprotocol/ui-toolkit';
+import { useState } from 'react';
 
-// import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
-// import { RpcMethods } from '@/lib/client-rpc-methods';
-import { type TransactionMessage } from '@/lib/transactions';
+import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
+import { RpcMethods } from '@/lib/client-rpc-methods';
+import {
+  getTransactionType,
+  type TransactionMessage,
+} from '@/lib/transactions';
+import { useGlobalsStore } from '@/stores/globals';
+import { AUTO_CONSENT_TRANSACTION_TYPES } from '@/lib/constants';
 
 export const locators = {
   transactionModalDenyButton: 'transaction-deny-button',
@@ -22,33 +23,35 @@ export const TransactionModalFooter = ({
   handleTransactionDecision: (decision: boolean) => void;
   details: TransactionMessage;
 }) => {
-  // const { request } = useJsonRpcClient();
-  // const { connections, loadConnections } = useConnectionStore((state) => ({
-  //   connections: state.connections,
-  //   loadConnections: state.loadConnections,
-  // }));
-  // const connection = connections.find((c) => c.origin === details.origin);
-  // if (!connection) {
-  //   throw new Error(`Could not find connection with origin ${details.origin}`);
-  // }
-  // const [autoConsent, setAutoConsent] = useState(connection.autoConsent);
+  const { request } = useJsonRpcClient();
+  const { settings, loadGlobals } = useGlobalsStore((state) => ({
+    settings: state.globals?.settings,
+    loadGlobals: state.loadGlobals,
+  }));
+  const [autoConsent, setAutoConsent] = useState(!!settings?.autoConsent);
+  if (!settings) return null;
 
   const handleDecision = async (decision: boolean) => {
     handleTransactionDecision(decision);
     // TODO should be powered by a setting and not the connection
-    // if (connection && autoConsent !== connection.autoConsent) {
-    //   await request(RpcMethods.UpdateAutomaticConsent, {
-    //     origin: connection.origin,
-    //     autoConsent,
-    //   });
-    //   await loadConnections(request);
-    // }
+    if (autoConsent !== settings.autoConsent) {
+      await request(RpcMethods.UpdateSettings, {
+        autoConsent,
+      });
+      await loadGlobals(request);
+    }
   };
+
+  const showAutoConsent =
+    !settings.autoConsent &&
+    AUTO_CONSENT_TRANSACTION_TYPES.includes(
+      getTransactionType(details.transaction)
+    );
 
   return (
     <div
       className="relative py-4 bg-surface-1 z-[20] px-5 border-t border-surface-0-fg-muted"
-      style={{ top: -72 }}
+      style={{ top: showAutoConsent ? -112 : -72 }}
     >
       <div className="grid grid-cols-[1fr_1fr] justify-between gap-4">
         <Button
@@ -65,29 +68,26 @@ export const TransactionModalFooter = ({
           Confirm
         </Button>
       </div>
-      {/* {!connection.autoConsent &&
-        AUTO_CONSENT_TRANSACTION_TYPES.includes(
-          getTransactionType(details.transaction)
-        ) && (
-          <div
-            className="mt-2"
-            data-testid={locators.transactionModalFooterAutoConsentSection}
-          >
-            <Checkbox
-              label={
-                <span className="text-xs">
-                  Allow this site to automatically approve order and vote
-                  transactions. This can be turned off in "Connections".
-                </span>
-              }
-              checked={autoConsent}
-              onCheckedChange={() => {
-                setAutoConsent(!autoConsent);
-              }}
-              name={'autoConsent'}
-            />
-          </div>
-        )} */}
+      {showAutoConsent && (
+        <div
+          className="mt-2"
+          data-testid={locators.transactionModalFooterAutoConsentSection}
+        >
+          <Checkbox
+            label={
+              <span className="text-xs">
+                Allow this site to automatically approve order and vote
+                transactions. This can be turned off in "Settings".
+              </span>
+            }
+            checked={autoConsent}
+            onCheckedChange={() => {
+              setAutoConsent(!autoConsent);
+            }}
+            name={'autoConsent'}
+          />
+        </div>
+      )}
     </div>
   );
 };

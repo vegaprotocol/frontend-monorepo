@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense, type ReactNode } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
@@ -30,6 +30,19 @@ import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
+import dynamic from 'next/dynamic';
+
+export const BrowserWalletContainer = dynamic(
+  () =>
+    import('@vegaprotocol/browser-wallet').then(() => {
+      return ({ children }: { children: ReactNode }) => {
+        return children;
+      };
+    }),
+  {
+    ssr: false,
+  }
+);
 
 const Title = () => {
   const t = useT();
@@ -115,7 +128,9 @@ function VegaTradingApp(props: AppProps) {
     <Suspense fallback={<AppLoader />}>
       <HashRouter>
         <Bootstrapper>
-          <AppBody {...props} />
+          <BrowserWalletContainer>
+            <AppBody {...props} />
+          </BrowserWalletContainer>
         </Bootstrapper>
         <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
       </HashRouter>
