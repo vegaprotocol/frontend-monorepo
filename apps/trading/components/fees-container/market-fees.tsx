@@ -11,13 +11,11 @@ import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { useMemo } from 'react';
 import { type ColDef } from 'ag-grid-community';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 import type { ProductType } from '@vegaprotocol/types';
 
 const useFeesTableColumnDefs = (): ColDef[] => {
   const t = useT();
-  const { chainId } = useChainId();
   return useMemo(
     () =>
       [
@@ -39,7 +37,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
             const productType = data?.productType;
             return (
               <span className="flex items-center gap-2 cursor-pointer">
-                <EmblemByMarket market={data.id} vegaChain={chainId} />
+                <Emblem market={data.id} />
                 <StackedCell
                   primary={
                     <span className="flex gap-1 items-center">
@@ -82,7 +80,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
-    [chainId, t]
+    [t]
   );
 };
 

@@ -26,7 +26,7 @@ import {
   isSpot,
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
@@ -173,7 +173,7 @@ export const useMarketsColumnDefs = () => {
           return (
             <Tooltip description={t(tooltip)}>
               <span className="flex items-center gap-2 cursor-pointer">
-                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+                <Emblem market={data?.id || ''} />
                 <StackedCell
                   primary={
                     <span className="flex gap-1 items-center">

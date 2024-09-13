@@ -1,4 +1,4 @@
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import { useMarket, useMarketData, useCandleData } from '@vegaprotocol/rest';
 import {
   cn,
@@ -6,10 +6,8 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const MarketCard = ({ marketId }: { marketId: string }) => {
-  const { chainId } = useChainId();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useMarketData(marketId);
   const { sparkline, volume, priceChange, pctChange } = useCandleData(marketId);
@@ -23,11 +21,7 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
     >
       <header className="flex justify-between gap-2 w-full">
         <div className="flex gap-2 items-start min-w-0">
-          <EmblemByAsset
-            vegaChain={chainId}
-            asset={market.quoteAsset.id}
-            size={34}
-          />
+          <Emblem market={market.id} size={34} />
           <div className="min-w-0">
             <h4 className="text-2xl leading-none truncate">{market.code}</h4>
             <p className="text-sm leading-none text-surface-0-fg-muted truncate">

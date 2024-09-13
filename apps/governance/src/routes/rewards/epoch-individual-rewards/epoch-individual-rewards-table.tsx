@@ -5,8 +5,7 @@ import {
   RewardsTable,
 } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { EpochIndividualReward } from './generate-epoch-individual-rewards-list';
-import { useWallet } from '@vegaprotocol/wallet-react';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 
 interface EpochIndividualRewardsGridProps {
   data: EpochIndividualReward;
@@ -74,7 +73,6 @@ export const EpochIndividualRewardsTable = ({
   data,
   marketCreationQuantumMultiple,
 }: EpochIndividualRewardsGridProps) => {
-  const vegaChainId = useWallet((store) => store.chainId);
   return (
     <RewardsTable
       marketCreationQuantumMultiple={marketCreationQuantumMultiple}
@@ -88,7 +86,7 @@ export const EpochIndividualRewardsTable = ({
               <div className="flex items-center gap-2">
                 {assetId && (
                   <div className="w-6 h-6">
-                    <EmblemByAsset asset={assetId} vegaChain={vegaChainId} />
+                    <Emblem asset={assetId} />
                   </div>
                 )}
                 <span data-testid="individual-rewards-asset">{asset}</span>

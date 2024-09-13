@@ -17,7 +17,7 @@ import { Links } from '../../lib/links';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
-import { WalletIcon } from '../icons/wallet';
+import { WalletIcon } from './wallet-icon';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
@@ -56,7 +56,7 @@ export const Navbar = () => {
           <img
             alt="Logo"
             src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
-            className="block w-4"
+            className="block w-24"
           />
         </NavLink>
       </div>

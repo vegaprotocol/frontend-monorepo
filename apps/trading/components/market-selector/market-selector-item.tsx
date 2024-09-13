@@ -12,8 +12,7 @@ import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 import { MarketIcon } from '../../client-pages/markets/market-icon';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
 
@@ -67,7 +66,6 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     : '-';
 
   const { oneDayCandles } = useCandles({ marketId: market.id });
-  const { chainId } = useChainId();
 
   const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
   const volume =
@@ -82,7 +80,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     <>
       <div className="col-span-4 sm:col-span-5" role="gridcell">
         <h3 className="flex items-center gap-1">
-          <EmblemByMarket market={market.id} vegaChain={chainId} size={26} />
+          <Emblem market={market.id} size={26} />
           <span className="overflow-hidden text-ellipsis">
             {market.tradableInstrument.instrument.code}
           </span>

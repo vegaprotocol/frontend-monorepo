@@ -22,8 +22,7 @@ import {
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import noIcon from '../../images/token-no-icon.png';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
-import { useWallet } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 
 interface WalletCardProps {
   children: React.ReactNode;
@@ -178,7 +177,6 @@ export const WalletCardAsset = ({
         />
       ));
 
-  const vegaChainId = useWallet((store) => store.chainId);
   if (!values || values.length === 0) return;
 
   let img = (
@@ -194,7 +192,7 @@ export const WalletCardAsset = ({
   if (image === noIcon && assetId) {
     img = (
       <div className="w-6 h-6">
-        <EmblemByAsset asset={assetId} vegaChain={vegaChainId} />
+        <Emblem asset={assetId} />
       </div>
     );
   }

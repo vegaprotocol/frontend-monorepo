@@ -1,6 +1,6 @@
 import { type ChangeEvent, useRef } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,6 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { useChainId } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import { cn } from '@vegaprotocol/ui-toolkit';
 
@@ -191,7 +190,6 @@ export const DropdownAsset = ({
   testId: string;
 }) => {
   const t = useT();
-  const { chainId } = useChainId();
   const asset = assetId ? assets.find((a) => a.id === assetId) : null;
   return (
     <DropdownMenu
@@ -204,7 +202,14 @@ export const DropdownAsset = ({
             {asset ? (
               <span className="flex items-center gap-2">
                 <span className="w-8 h-8">
-                  <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+                  <Emblem
+                    asset={asset.id}
+                    chain={
+                      asset.source.__typename === 'ERC20'
+                        ? asset.source.chainId
+                        : undefined
+                    }
+                  />
                 </span>
                 <span>{asset.symbol}</span>
               </span>
@@ -230,7 +235,14 @@ export const DropdownAsset = ({
             key={asset.id}
             data-testid={`${testId}-asset-${asset.id}`}
           >
-            <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+            <Emblem
+              asset={asset.id}
+              chain={
+                asset.source.__typename === 'ERC20'
+                  ? asset.source.chainId
+                  : undefined
+              }
+            />
             {asset.symbol}
           </DropdownMenuItem>
         ))}

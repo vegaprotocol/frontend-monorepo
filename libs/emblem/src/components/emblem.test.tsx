@@ -1,123 +1,81 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import { Emblem } from './emblem';
 
 describe('Emblem', () => {
+  const assetId =
+    '2a1f29de786c49d7d4234410bf2e7196a6d173730288ffe44b1f7e282efb92b1';
+
   it('renders EmblemByAsset component when props are of type EmblemByAsset (including chain)', () => {
     const props = {
-      asset: '123',
-      vegaChain: 'mainnet',
-      alt: 'Emblem',
+      asset: assetId,
+      chain: '1',
     };
 
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-asset" {...props} />
-    );
-    const emblemByAssetComponent = getByAltText('Emblem');
+    render(<Emblem {...props} />);
+    expect(screen.getAllByTitle(/logo/)).toHaveLength(2);
+  });
 
-    expect(emblemByAssetComponent).toBeInTheDocument();
-    expect(emblemByAssetComponent.getAttribute('src')).toContain('asset');
-    expect(emblemByAssetComponent.getAttribute('src')).not.toContain('chain');
+  it('renders a fallback when no icon is found', () => {
+    const props = {
+      asset: 'nothing',
+    };
+
+    render(<Emblem {...props} />);
+    expect(screen.queryByTitle(/logo/i)).not.toBeInTheDocument();
+    expect(screen.getByTitle(/fallback/i)).toBeInTheDocument();
   });
 
   it('renders EmblemByAsset component when props are of type EmblemByAsset (excluding chain)', () => {
     const props = {
-      asset: '123',
-      alt: 'Emblem',
+      asset: assetId,
     };
 
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-asset" {...props} />
-    );
-    const emblemByAssetComponent = getByAltText('Emblem');
-
-    expect(emblemByAssetComponent).toBeInTheDocument();
-    expect(emblemByAssetComponent.getAttribute('src')).toContain('asset');
-    expect(emblemByAssetComponent.getAttribute('src')).not.toContain('chain');
-  });
-
-  it('renders EmblemByContract component when props are of type EmblemByContract (including chain)', () => {
-    const props = {
-      contract: '456',
-      chainId: '1',
-      alt: 'Emblem',
-    };
-
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-contract" {...props} />
-    );
-    const emblemByContractComponent = getByAltText('Emblem');
-
-    expect(emblemByContractComponent).toBeInTheDocument();
-    expect(emblemByContractComponent.getAttribute('src')).toContain('chain');
-    expect(emblemByContractComponent.getAttribute('src')).not.toContain(
-      '/vega/'
-    );
-  });
-
-  it('renders EmblemByContract component when props are of type EmblemByContract (excluding chain)', () => {
-    const props = {
-      contract: '456',
-      alt: 'Emblem',
-    };
-
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-contract" {...props} />
-    );
-    const emblemByContractComponent = getByAltText('Emblem');
-
-    expect(emblemByContractComponent).toBeInTheDocument();
-    expect(emblemByContractComponent.getAttribute('src')).toContain('chain');
-    expect(emblemByContractComponent.getAttribute('src')).not.toContain(
-      '/vega/'
-    );
+    render(<Emblem {...props} />);
+    const title = screen.getByTitle(/logo/i);
+    expect(title).toBeInTheDocument();
+    expect(title).toHaveTextContent('USDT logo');
   });
 
   it('sets a default width and height if not provided', () => {
     const props = {
-      contract: '456',
-      alt: 'Emblem',
+      asset: assetId,
     };
 
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-contract" {...props} />
-    );
-    const emblemByContractComponent = getByAltText('Emblem');
+    render(<Emblem {...props} />);
+    const title = screen.getByTitle(/logo/i);
+    const svg = title.closest('svg');
 
-    expect(emblemByContractComponent.getAttribute('width')).toBe('30');
-    expect(emblemByContractComponent.getAttribute('height')).toBe('30');
+    expect(svg).toHaveAttribute('width', '32');
+    expect(svg).toHaveAttribute('height', '32');
   });
 
   it('allows the default width and height to be overridden', () => {
     const props = {
-      contract: '456',
-      alt: 'Emblem',
+      asset: assetId,
       size: 100,
     };
 
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-contract" {...props} />
-    );
-    const emblemByContractComponent = getByAltText('Emblem');
+    render(<Emblem {...props} />);
 
-    expect(emblemByContractComponent.getAttribute('width')).toBe('100');
-    expect(emblemByContractComponent.getAttribute('height')).toBe('100');
+    const title = screen.getByTitle(/logo/i);
+    const svg = title.closest('svg');
+
+    expect(svg).toHaveAttribute('width', String(props.size));
+    expect(svg).toHaveAttribute('height', String(props.size));
   });
 
   it('passes through classnames', () => {
     const props = {
-      contract: '456',
-      alt: 'Emblem',
+      asset: assetId,
       className: 'test-class',
     };
 
-    const { getByAltText } = render(
-      <Emblem data-testId="emblem-by-contract" {...props} />
-    );
-    const emblemByContractComponent = getByAltText('Emblem');
+    render(<Emblem {...props} />);
 
-    expect(emblemByContractComponent.getAttribute('class')).toContain(
-      'test-class'
-    );
+    const title = screen.getByTitle(/logo/i);
+    const element = title.closest('span');
+
+    expect(element).toHaveClass('test-class');
   });
 });

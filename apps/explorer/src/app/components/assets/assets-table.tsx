@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { AssetStatus, type Asset } from '@vegaprotocol/types';
-import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
+import { Emblem } from '@vegaprotocol/emblem';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
@@ -54,7 +54,16 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         }: VegaICellRendererParams<Asset, 'symbol'>) => {
           return (
             <div>
-              {data && data.id ? <EmblemWithChain asset={data.id} /> : null}
+              {data && data.id ? (
+                <Emblem
+                  asset={data.id}
+                  chain={
+                    data.source.__typename === 'ERC20'
+                      ? data.source.chainId
+                      : undefined
+                  }
+                />
+              ) : null}
               <span className="ml-2">{value}</span>
             </div>
           );

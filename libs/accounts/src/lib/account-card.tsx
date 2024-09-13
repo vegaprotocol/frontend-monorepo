@@ -25,7 +25,6 @@ import {
   type ButtonHTMLAttributes,
 } from 'react';
 import { cn } from '@vegaprotocol/ui-toolkit';
-import { useChainId } from '@vegaprotocol/wallet-react';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
 export interface AssetActions {
@@ -97,7 +96,6 @@ export const AccountCard = ({
   const t = useT();
   const expandable = !!partyId;
   const [expanded, setExpanded] = useState(initialExpanded && expandable);
-  const { chainId } = useChainId();
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId: partyId || '', assetId: asset.id },
@@ -112,7 +110,14 @@ export const AccountCard = ({
     >
       <div className="relative p-3">
         <header className="flex items-center mb-3">
-          <Emblem asset={asset.id} vegaChain={chainId} />
+          <Emblem
+            asset={asset.id}
+            chain={
+              asset.source.__typename === 'ERC20'
+                ? asset.source.chainId
+                : undefined
+            }
+          />
           <span className="grow ml-2 text-lg min-w-0">
             <span>{asset.name}</span>
             {asset.source.__typename === 'ERC20' && (

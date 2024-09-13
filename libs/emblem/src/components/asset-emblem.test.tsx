@@ -1,55 +1,30 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { EmblemByAsset } from './asset-emblem';
 import React from 'react';
 
 describe('EmblemByAsset', () => {
+  const assetId =
+    '2a1f29de786c49d7d4234410bf2e7196a6d173730288ffe44b1f7e282efb92b1';
+
   it('should render successfully', () => {
     const props = {
-      vegaChain: 'vega-chain',
-      asset: '123',
-      alt: 'Emblem',
-      showSourceChain: false,
+      asset: assetId,
     };
 
-    const { getByAltText } = render(<EmblemByAsset {...props} />);
+    render(<EmblemByAsset {...props} />);
 
-    const emblemImage = getByAltText('Emblem');
-
-    expect(emblemImage).toHaveAttribute(
-      'src',
-      'https://icon.vega.xyz/vega/vega-chain/asset/123/logo.svg'
-    );
+    expect(screen.getByTitle('USDT logo')).toBeInTheDocument();
   });
 
-  it('should use default vega chain if vegaChain prop is not provided', () => {
+  it('renders a source chain icon if provided', () => {
     const props = {
-      asset: '123',
-      showSourceChain: false,
+      asset: assetId,
+      chain: '1',
     };
 
-    const { getByAltText } = render(<EmblemByAsset {...props} />);
+    render(<EmblemByAsset {...props} />);
 
-    const emblemImage = getByAltText('Emblem');
-
-    expect(emblemImage).toHaveAttribute(
-      'src',
-      'https://icon.vega.xyz/vega/vega-mainnet-0011/asset/123/logo.svg'
-    );
-  });
-
-  it('renders a source chain icon by default', () => {
-    const props = {
-      asset: '123',
-    };
-
-    const { getByAltText } = render(<EmblemByAsset {...props} />);
-
-    const chainImage = getByAltText('Chain logo');
-
-    expect(chainImage).toBeInTheDocument();
-    expect(chainImage).toHaveAttribute(
-      'src',
-      'https://icon.vega.xyz/vega/vega-mainnet-0011/asset/123/chain.svg'
-    );
+    expect(screen.getByTitle('USDT logo')).toBeInTheDocument();
+    expect(screen.getByTitle('Ethereum logo')).toBeInTheDocument();
   });
 });

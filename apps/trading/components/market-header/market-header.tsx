@@ -14,8 +14,7 @@ import {
 } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { MarketHeaderSwitch } from './market-header-switch';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 import {
   MarketIcon,
   getMarketStateTooltip,
@@ -28,7 +27,6 @@ export const MarketHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarketWithData(marketId);
   const [open, setOpen] = useState(false);
-  const { chainId } = useChainId();
   const t = useT();
 
   // Ensure that markets are kept cached so opening the list
@@ -52,11 +50,7 @@ export const MarketHeader = () => {
             <HeaderTitle>
               <Tooltip description={t(tooltip)}>
                 <span className="flex items-center gap-1">
-                  <EmblemByMarket
-                    market={data.id}
-                    vegaChain={chainId}
-                    size={26}
-                  />
+                  <Emblem market={data.id} size={26} />
                   {data.tradableInstrument.instrument.code}
                   <MarketProductPill productType={getProductType(data)} />
                   <MarketIcon data={data} />

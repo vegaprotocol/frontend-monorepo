@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react';
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber, isAssetNative } from '@vegaprotocol/utils';
-import { useWallet } from '@vegaprotocol/wallet-react';
 import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
@@ -14,11 +13,9 @@ export const AssetOption = ({
   asset: AssetERC20;
   balance?: string | ReactNode;
 }) => {
-  const vegaChainId = useWallet((store) => store.chainId);
-
   return (
     <div className="w-full flex items-center gap-2 h-10">
-      <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
+      <Emblem asset={asset.id} chain={asset.source.chainId} />
       <div className="text-sm text-left leading-4">
         <div>
           {asset.name} | {asset.symbol}

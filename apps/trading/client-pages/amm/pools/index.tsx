@@ -15,7 +15,7 @@ import filter from 'lodash/filter';
 import { useT } from '../../../lib/use-t';
 import { Links } from '../../../lib/links';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import { HeaderPage } from '../../../components/header-page';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
@@ -69,7 +69,7 @@ export const Pools = () => {
             data && (
               <Link to={Links.AMM_POOL(data.id)}>
                 <div className="flex gap-2 items-center">
-                  {data?.id && <EmblemByMarket market={data?.id} />}
+                  {data?.id && <Emblem market={data?.id} />}
                   <span>{value}</span>
                 </div>
               </Link>

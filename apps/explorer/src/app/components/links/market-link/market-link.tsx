@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import type { ComponentProps } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import Hash from '../hash';
-import { EmblemWithChain } from '../../emblem-with-chain/emblem-with-chain';
+import { Emblem } from '@vegaprotocol/emblem';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
@@ -54,7 +54,7 @@ const MarketLink = ({
         title={id}
       >
         <div className="mr-1">
-          <EmblemWithChain market={id} />
+          <Emblem market={id} />
         </div>
         {label}
       </Link>
@@ -67,7 +67,7 @@ const MarketLink = ({
         to={`/${Routes.MARKETS}/${id}`}
       >
         <div className="mr-1">
-          <EmblemWithChain market={id} />
+          <Emblem market={id} />
         </div>
         <Hash text={id} />
       </Link>

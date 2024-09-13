@@ -1,6 +1,5 @@
-import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import type { MarketMaybeWithCandles } from '@vegaprotocol/markets';
-import { useChainId } from '@vegaprotocol/wallet-react';
 import { Link } from 'react-router-dom';
 import {
   priceValueFormatter,
@@ -15,7 +14,6 @@ export const TopMarketList = ({
 }: {
   markets?: MarketMaybeWithCandles[];
 }) => {
-  const { chainId } = useChainId();
   return (
     <div className="flex flex-col justify-between gap-5">
       {markets?.map((market) => {
@@ -28,13 +26,7 @@ export const TopMarketList = ({
               <Tooltip description={market.tradableInstrument.instrument.name}>
                 <Link to={Links.MARKET(market.id)}>
                   <span className="flex items-center">
-                    <span>
-                      <EmblemByMarket
-                        market={market.id}
-                        vegaChain={chainId}
-                        size={26}
-                      />
-                    </span>
+                    <Emblem market={market.id} size={26} />
                     <span className="text-sm overflow-hidden text-ellipsis">
                       {market.tradableInstrument.instrument.code}
                     </span>

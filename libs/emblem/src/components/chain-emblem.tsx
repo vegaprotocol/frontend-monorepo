@@ -1,20 +1,31 @@
-import { EmblemBase } from './emblem-base';
+import { type HTMLProps } from 'react';
+import { Fallback } from './fallback';
+import { chainIcons } from './svgs/chains';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
-export type EmblemByChainProps = {
-  chainId: string | number;
+export type EmblemByChainProps = HTMLProps<HTMLSpanElement> & {
+  chain: string;
+  size?: number;
+  asset?: never;
+  market?: never;
 };
 
 /**
  * Given a chain Id, it will render an emblem for chain
  *
- * @param chainId string or number of the chain ID
+ * @param chain string or number of the chain ID
  * @returns React.Node
  */
 export function EmblemByChain(p: EmblemByChainProps) {
-  const src = `https://icon.vega.xyz/chain/${p.chainId}/logo.svg`;
+  const size = p.size || 32;
+  const ChainSvg = chainIcons[p.chain];
   return (
-    <div className="relative inline-block">
-      <EmblemBase src={src} className="border-2" {...p} />
-    </div>
+    <span {...p} className={cn('relative inline-block', p.className)}>
+      {ChainSvg ? (
+        <ChainSvg width={size} height={size} />
+      ) : (
+        <Fallback size={size} />
+      )}
+    </span>
   );
 }

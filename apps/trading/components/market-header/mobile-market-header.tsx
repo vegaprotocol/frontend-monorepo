@@ -13,8 +13,7 @@ import { cn } from '@vegaprotocol/ui-toolkit';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 import { MarketBannerIndicator } from '../market-banner/market-banner';
 /**
  * This is only rendered for the mobile navigation
@@ -25,7 +24,6 @@ export const MobileMarketHeader = () => {
   const { data } = useMarket(marketId);
   const [openMarket, setOpenMarket] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
-  const { chainId } = useChainId();
 
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
@@ -50,7 +48,7 @@ export const MobileMarketHeader = () => {
                 <span className="flex items-center">
                   {marketId && (
                     <span className="mr-2">
-                      <EmblemByMarket market={marketId} vegaChain={chainId} />
+                      <Emblem market={marketId} />
                     </span>
                   )}
                   {data

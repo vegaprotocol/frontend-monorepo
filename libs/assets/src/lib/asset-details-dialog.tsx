@@ -81,7 +81,16 @@ export const AssetDetailsDialog = ({
   return (
     <Dialog
       title={title}
-      icon={<Emblem asset={assetId} vegaChain={vegaChain} />}
+      icon={
+        <Emblem
+          asset={assetId}
+          chain={
+            asset?.source.__typename === 'ERC20'
+              ? asset.source.chainId
+              : undefined
+          }
+        />
+      }
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {

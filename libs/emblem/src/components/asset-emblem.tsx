@@ -1,41 +1,42 @@
-import { t } from '@vegaprotocol/i18n';
-import { CHAIN_FILENAME } from '../config';
-import { EmblemBase } from './emblem-base';
-import { getVegaChain } from './lib/get-chain';
-import { getVegaAssetLogoUrl } from './lib/url-builder';
+import { assetIcons } from './svgs/assets';
+import { chainIcons } from './svgs/chains';
+import { Fallback } from './fallback';
+import { type HTMLProps } from 'react';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
-export type EmblemByAssetProps = {
+export type EmblemByAssetProps = HTMLProps<HTMLSpanElement> & {
   asset: string;
-  vegaChain?: string;
-  showSourceChain?: boolean;
   size?: number;
+  chain?: string;
+  market?: never;
 };
 
 /**
  * Given a Vega asset ID, it will render an emblem for the asset
  *
  * @param asset string the asset ID
- * @param vegaChain string the vega chain ID (default: Vega Mainnet)
+ * @param chain string the chain ID to show an optional chain icon
  * @returns React.Node
  */
 export function EmblemByAsset(p: EmblemByAssetProps) {
-  const chain = getVegaChain(p.vegaChain);
+  const size = p.size || 32;
+  const AssetSvg = assetIcons[p.asset];
+  const ChainSvg = p.chain ? chainIcons[p.chain] : null;
 
   return (
-    <div className="relative inline-block">
-      <EmblemBase
-        src={getVegaAssetLogoUrl(chain, p.asset)}
-        className="border-2"
-        {...p}
-      />
-      {p.showSourceChain !== false && (
-        <EmblemBase
-          src={getVegaAssetLogoUrl(chain, p.asset, CHAIN_FILENAME)}
-          size={12}
-          alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 -right-0`}
+    <span {...p} className={cn('relative inline-block', p.className)}>
+      {AssetSvg ? (
+        <AssetSvg width={size} height={size} />
+      ) : (
+        <Fallback size={size} />
+      )}
+      {ChainSvg && (
+        <ChainSvg
+          className="absolute -bottom-px -right-px"
+          width={16}
+          height={16}
         />
       )}
-    </div>
+    </span>
   );
 }

@@ -34,7 +34,7 @@ import {
   Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { DocsLinks } from '@vegaprotocol/environment';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 import { HeaderPage } from '../../../../components/header-page';
 
 export const MarketPage = () => {
@@ -87,7 +87,7 @@ export const MarketPage = () => {
 
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <EmblemByMarket market={market.id} />
+          <Emblem market={market.id} />
           <HeaderPage>{market.code}</HeaderPage>
 
           {DocsLinks?.UPDATE_MARKET_TUTORIAL_URL && (

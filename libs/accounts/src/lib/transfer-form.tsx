@@ -30,8 +30,7 @@ import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
 import { normalizeTransfer } from './utils';
-import { useWallet } from '@vegaprotocol/wallet-react';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { Emblem } from '@vegaprotocol/emblem';
 
 interface FormFields {
   toVegaKey: string;
@@ -588,11 +587,14 @@ const AssetOption = ({
 }: {
   asset: AssetFieldsFragment & { balance: string };
 }) => {
-  const vegaChainId = useWallet((store) => store.chainId);
-
   return (
     <div className="w-full flex items-center gap-2 h-10">
-      <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
+      <Emblem
+        asset={asset.id}
+        chain={
+          asset.source.__typename === 'ERC20' ? asset.source.chainId : undefined
+        }
+      />
       <div className="text-sm text-left leading-4">
         <div>
           {asset.name} | {asset.symbol}
