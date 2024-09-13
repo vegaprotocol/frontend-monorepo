@@ -18,11 +18,16 @@ import { useTeam } from '../../lib/hooks/use-team';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { JoinTeam } from '../competitions/join-team';
+import last from 'lodash/last';
 
 export const StepJoinTeam = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const teamId = useInviteStore((state) => state.team);
+  const [teamId, finished, finish] = useInviteStore((state) => [
+    state.team,
+    state.finished,
+    state.finish,
+  ]);
 
   const {
     team,
@@ -58,6 +63,15 @@ export const StepJoinTeam = () => {
     );
   }
 
+  const onSuccess = () => {
+    refetch();
+    const lastStep = last(progression);
+    if (!currentStep || !lastStep) return;
+    if (currentStep === lastStep && finished === 0) {
+      finish();
+    }
+  };
+
   return (
     <div className="md:max-w-2xl mx-auto flex flex-col gap-10">
       <StepHeader title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
@@ -74,7 +88,7 @@ export const StepJoinTeam = () => {
           />
         </div>
 
-        <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
+        <JoinTeam team={team} partyTeam={partyTeam} onSuccess={onSuccess} />
       </Card>
     </div>
   );

@@ -68,7 +68,7 @@ const ProcessSteps = () => {
     if (loading) return;
     // already finished
     if (finished > 0) return;
-    // already started, ignoring new code, team values TODO: Check this
+    // already started, ignoring new code, team values
     if (started > 0) return;
 
     if (code && validReferral) setCode(code);
@@ -85,6 +85,8 @@ const ProcessSteps = () => {
     storedCode,
     storedTeam,
     team,
+    validReferral,
+    validTeam,
   ]);
 
   /**
