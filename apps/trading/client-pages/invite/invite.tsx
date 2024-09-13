@@ -2,7 +2,7 @@ import { Loader } from '@vegaprotocol/ui-toolkit';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useEffect } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom';
 
 import { Links } from '../../lib/links';
 import { StepConnect } from './step-connect';
@@ -35,8 +35,7 @@ export const Invite = () => {
 };
 
 const ProcessSteps = () => {
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const [params] = useSearchParams();
   const code = params.get('code') || undefined;
   const team = params.get('team') || undefined;
 
