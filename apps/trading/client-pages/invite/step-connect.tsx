@@ -1,4 +1,5 @@
 import { Card } from '../../components/card';
+import { Logo } from '../../components/logo';
 import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import {
@@ -7,7 +8,6 @@ import {
   Loader,
   VegaIcon,
   VegaIconNames,
-  VLogo,
 } from '@vegaprotocol/ui-toolkit';
 import {
   useConnect,
@@ -135,7 +135,7 @@ const ConnectionOptions = () => {
       <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
         <div className="flex flex-col gap-4 items-center justify-center">
           <LogoCircle>
-            <VegaIcon name={VegaIconNames.ETHEREUM} size={30} />
+            <VegaIcon name={VegaIconNames.ETHEREUM} size={25} />
           </LogoCircle>
           <h3 className="text-2xl">
             {t('ONBOARDING_STEP_CONNECT', { option: quickStartConnector.name })}
@@ -154,7 +154,7 @@ const ConnectionOptions = () => {
       <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
         <div className="flex flex-col gap-4 items-center justify-center">
           <LogoCircle>
-            <VLogo className="w-6 h-6" />
+            <Logo />
           </LogoCircle>
           <h3 className="text-2xl">
             {t('ONBOARDING_STEP_CONNECT', { option: injectedConnector.name })}

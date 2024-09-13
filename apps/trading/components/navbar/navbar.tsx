@@ -6,7 +6,6 @@ import {
   useLinks,
   useFeatureFlags,
 } from '@vegaprotocol/environment';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import {
@@ -32,6 +31,7 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
+import { Logo } from '../logo';
 
 type MenuState = 'wallet' | 'nav' | null;
 
@@ -40,7 +40,6 @@ export const Navbar = () => {
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
-  const { theme } = useThemeSwitcher();
 
   const status = useWallet((store) => store.status);
 
@@ -58,12 +57,7 @@ export const Navbar = () => {
             'bg-[color:var(--nav-logo-bg-light)] dark:bg-[color:var(--nav-logo-bg-dark)]'
           )}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt="Logo"
-            src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
-            className="block w-4"
-          />
+          <Logo />
         </NavLink>
       </div>
 
