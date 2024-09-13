@@ -6,7 +6,7 @@ import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom';
 
 import { Links } from '../../lib/links';
 import { StepConnect } from './step-connect';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 import {
   determineStepProgression,
   Step,
@@ -49,10 +49,10 @@ const ProcessSteps = () => {
   const { team: teamData, loading: teamLoading } = useTeam(team);
   const validTeam = Boolean(teamData);
 
-  const [storedCode, storedTeam, started, finished] = useInviteStore(
+  const [storedCode, storedTeam, started, finished] = useOnboardStore(
     (state) => [state.code, state.team, state.started, state.finished]
   );
-  const [setCode, setTeam, start] = useInviteStore((state) => [
+  const [setCode, setTeam, start] = useOnboardStore((state) => [
     state.setCode,
     state.setTeam,
     state.start,

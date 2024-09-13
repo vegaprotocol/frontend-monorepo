@@ -20,7 +20,7 @@ import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
 import { Trans } from 'react-i18next';
 import { useReferralProgram } from '../referrals/hooks/use-referral-program';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 import { useForm } from 'react-hook-form';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useCallback, useState } from 'react';
@@ -31,7 +31,7 @@ import minBy from 'lodash/minBy';
 
 export const StepApplyCode = () => {
   const t = useT();
-  const code = useInviteStore((state) => state.code);
+  const code = useOnboardStore((state) => state.code);
   const program = useReferralProgram();
 
   const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);

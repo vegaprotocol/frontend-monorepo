@@ -1,5 +1,5 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 import { useFundsAvailable } from '../referrals/hooks/use-funds-available';
 import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
@@ -67,7 +67,7 @@ export const determineStepProgression = (code?: string, team?: string) => {
   return StepProgressions.Default;
 };
 export const useDetermineStepProgression = () => {
-  const [code, team] = useInviteStore((state) => [state.code, state.team]);
+  const [code, team] = useOnboardStore((state) => [state.code, state.team]);
   return determineStepProgression(code, team);
 };
 

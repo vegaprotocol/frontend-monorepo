@@ -13,7 +13,7 @@ import { APP_NAME } from '../../lib/constants';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { CompetitionsActions } from '../../components/competitions/competitions-cta';
 import last from 'lodash/last';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 
 export const StepStartPlaying = () => {
   const t = useT();
@@ -22,7 +22,7 @@ export const StepStartPlaying = () => {
   const progression = useDetermineStepProgression();
   const { step: currentStep, loading } = useDetermineCurrentStep(progression);
 
-  const [finished, finish] = useInviteStore((state) => [
+  const [finished, finish] = useOnboardStore((state) => [
     state.finished,
     state.finish,
   ]);

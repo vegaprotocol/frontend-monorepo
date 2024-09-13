@@ -23,7 +23,7 @@ import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-conne
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
 import type { ConnectorType, QuickStartConnector } from '@vegaprotocol/wallet';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 import {
   Step,
   StepLinks,
@@ -38,7 +38,7 @@ export const StepConnect = () => {
   const { step: currentStep, loading: stepLoading } =
     useDetermineCurrentStep(progression);
 
-  const [code, team] = useInviteStore((state) => [state.code, state.team]);
+  const [code, team] = useOnboardStore((state) => [state.code, state.team]);
   const { data: referralData, loading: referralLoading } = useReferralSet(code);
 
   const { data: profileData, loading: profileLoading } = usePartyProfilesQuery({

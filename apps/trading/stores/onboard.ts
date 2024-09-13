@@ -1,4 +1,4 @@
-import { APP_NAME } from '../../lib/constants';
+import { APP_NAME } from '../lib/constants';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -15,7 +15,7 @@ type InviteActions = {
   setTeam: (teamId: string) => void;
 };
 
-export const useInviteStore = create<InviteStore & InviteActions>()(
+export const useOnboardStore = create<InviteStore & InviteActions>()(
   persist(
     (set) => ({
       code: undefined,

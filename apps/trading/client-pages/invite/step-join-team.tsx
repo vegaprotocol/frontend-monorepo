@@ -11,7 +11,7 @@ import { Navigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
-import { useInviteStore } from './use-invite-store';
+import { useOnboardStore } from '../../stores/onboard';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { areTeamGames, useGames } from '../../lib/hooks/use-games';
 import { useTeam } from '../../lib/hooks/use-team';
@@ -23,7 +23,7 @@ import last from 'lodash/last';
 export const StepJoinTeam = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const [teamId, finished, finish] = useInviteStore((state) => [
+  const [teamId, finished, finish] = useOnboardStore((state) => [
     state.team,
     state.finished,
     state.finish,
