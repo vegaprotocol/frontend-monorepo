@@ -64,7 +64,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
             'bg-black dark:bg-white text-gs-50 dark:text-gs-950 text-xs'
           )}
         >
-          <span className="relative -top-0.5">{'>_'}</span>
+          <VegaIcon name={VegaIconNames.ETHEREUM} size={20} />
         </span>
       );
     }
