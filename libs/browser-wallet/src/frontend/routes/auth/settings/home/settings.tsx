@@ -1,6 +1,6 @@
 import { BasePage } from '@/components/pages/page';
 
-import { DeleteWallet } from './sections/delete-wallet-section';
+// import { DeleteWallet } from './sections/delete-wallet-section';
 // import { ExportRecoveryPhraseSection } from './sections/export-recovery-phrase-section';
 import { SettingsRadio } from './sections/radio-section';
 // import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -20,7 +20,7 @@ export const Settings = () => {
         sectionHeader="Automatic consent"
         setting="autoConsent"
       />
-      <DeleteWallet />
+      {/* <DeleteWallet /> */}
       {/* <LockSection /> */}
     </BasePage>
   );
