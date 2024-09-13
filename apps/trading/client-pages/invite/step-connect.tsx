@@ -1,17 +1,24 @@
 import { Card } from '../../components/card';
 import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
-import { Button, Intent, Loader, VLogo } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Intent,
+  Loader,
+  VegaIcon,
+  VegaIconNames,
+  VLogo,
+} from '@vegaprotocol/ui-toolkit';
 import { useConnect, useQuickstart } from '@vegaprotocol/wallet-react';
 import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
-import { type ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { usePartyProfilesQuery } from 'apps/trading/components/vega-wallet-connect-button/__generated__/PartyProfiles';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { StepHeader } from './step-header';
-import { QuickStartConnector } from '@vegaprotocol/wallet';
+import type { QuickStartConnector } from '@vegaprotocol/wallet';
 import { useInviteStore } from './use-invite-store';
 import {
   Step,
@@ -105,53 +112,68 @@ const ConnectionOptions = () => {
     setTimeout(() => navigate(StepLinks[Step.Deposit]), 1000);
   };
 
+  const quickStartConnector = connectors.find(
+    (c) => c.id === 'embedded-wallet-quickstart'
+  );
+  const injectedConnector = connectors.find((c) => c.id === 'injected');
+
+  if (!quickStartConnector || !injectedConnector) {
+    throw new Error('must provide quickstart or injected connector');
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 row-auto gap-4">
-      {connectors
-        .filter((c) => c.prominent)
-        .map((c) => {
-          return (
-            <Card
-              key={c.id}
-              className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center"
-            >
-              <div className="flex flex-col gap-4 items-center justify-center">
-                <VLogo />
-                <h3 className="text-2xl">
-                  {t('ONBOARDING_STEP_CONNECT', { option: c.name })}
-                </h3>
-                <p>{c.description}</p>
-              </div>
-              <div className="flex justify-center">
-                {c.id === 'embedded-wallet-quickstart' &&
-                c instanceof QuickStartConnector ? (
-                  <EmbeddQuickStartButton
-                    connector={c}
-                    onSuccess={async () => {
-                      const res = await connect(c.id);
-                      if (res.status === 'connected') {
-                        handleConnect();
-                      }
-                    }}
-                  />
-                ) : (
-                  <Button
-                    intent={Intent.Primary}
-                    size="lg"
-                    onClick={async () => {
-                      const res = await connect(c.id);
-                      if (res.status === 'connected') {
-                        handleConnect();
-                      }
-                    }}
-                  >
-                    {t('Connect wallet')}
-                  </Button>
-                )}
-              </div>
-            </Card>
-          );
-        })}
+      <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
+        <div className="flex flex-col gap-4 items-center justify-center">
+          <LogoCircle>
+            <VegaIcon name={VegaIconNames.ETHEREUM} size={30} />
+          </LogoCircle>
+          <h3 className="text-2xl">
+            {t('ONBOARDING_STEP_CONNECT', { option: quickStartConnector.name })}
+          </h3>
+          <p className="text-surface-1-fg-muted">
+            {quickStartConnector.description}
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <EmbeddQuickStartButton
+            connector={quickStartConnector as QuickStartConnector}
+            onSuccess={async () => {
+              const res = await connect(quickStartConnector.id);
+              if (res.status === 'connected') {
+                handleConnect();
+              }
+            }}
+          />
+        </div>
+      </Card>
+      <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
+        <div className="flex flex-col gap-4 items-center justify-center">
+          <LogoCircle>
+            <VLogo className="w-6 h-6" />
+          </LogoCircle>
+          <h3 className="text-2xl">
+            {t('ONBOARDING_STEP_CONNECT', { option: injectedConnector.name })}
+          </h3>
+          <p className="text-surface-1-fg-muted">
+            {injectedConnector.description}
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <Button
+            intent={Intent.Primary}
+            size="lg"
+            onClick={async () => {
+              const res = await connect(injectedConnector.id);
+              if (res.status === 'connected') {
+                handleConnect();
+              }
+            }}
+          >
+            {t('Connect wallet')}
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 };
@@ -176,5 +198,13 @@ const EmbeddQuickStartButton = (props: {
     >
       {isPending ? <Loader /> : t('Create wallet')}
     </Button>
+  );
+};
+
+const LogoCircle = (props: PropsWithChildren) => {
+  return (
+    <div className="w-14 h-14 rounded-full border flex items-center justify-center">
+      {props.children}
+    </div>
   );
 };

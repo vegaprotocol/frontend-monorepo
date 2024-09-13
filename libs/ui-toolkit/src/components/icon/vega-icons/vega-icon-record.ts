@@ -58,6 +58,7 @@ import { IconClosed } from './svg-icons/icon-closed';
 import { IconLong } from './svg-icons/icon-long';
 import { IconShort } from './svg-icons/icon-short';
 import { IconTrophy } from './svg-icons/icon-trophy';
+import { IconEthereum } from './svg-icons/icon-ethereum';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -78,6 +79,7 @@ export enum VegaIconNames {
   DEPOSIT = 'deposit',
   DICE = 'dice',
   EDIT = 'edit',
+  ETHEREUM = 'ethereum',
   EXCLAMATION_MARK = 'exclamation-mark',
   EXCLAMATION_SIGN = 'exclamation-sign',
   EYE = 'eye',
@@ -135,6 +137,7 @@ export const VegaIconNameMap: Record<
   'chevron-left': IconChevronLeft,
   'chevron-right': IconChevronRight,
   'chevron-up': IconChevronUp,
+  ethereum: IconEthereum,
   'eye-off': IconEyeOff,
   'exclamation-mark': IconExclamationMark,
   'exclamation-sign': IconExclamationSign,
