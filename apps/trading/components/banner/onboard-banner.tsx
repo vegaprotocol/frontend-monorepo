@@ -1,5 +1,5 @@
 import { Links } from '../../lib/links';
-import { Link } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useOnboardStore } from 'apps/trading/stores/onboard';
 import { useT } from '../../lib/use-t';
@@ -8,6 +8,7 @@ import { useTeam } from '../../lib/hooks/use-team';
 export const OnboardBanner = () => {
   const t = useT();
   const store = useOnboardStore();
+  const match = useMatch('/invite/*');
 
   const teamResult = useTeam(store.team);
   const team = teamResult.data?.teams?.edges.find(
@@ -16,6 +17,10 @@ export const OnboardBanner = () => {
 
   // banner needs to render an empty element so that the parent grid renders correctly
   const empty = <div />;
+
+  if (match) {
+    return empty;
+  }
 
   if (store.dismissed) {
     return empty;

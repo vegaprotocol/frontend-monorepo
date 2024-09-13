@@ -4,6 +4,7 @@ import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import {
   Button,
+  ButtonLink,
   Intent,
   Loader,
   VegaIcon,
@@ -11,12 +12,13 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import {
   useConnect,
+  useConnector,
   useQuickstart,
   useWallet,
 } from '@vegaprotocol/wallet-react';
 import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
-import type { PropsWithChildren, ReactNode } from 'react';
+import { useState, type PropsWithChildren, type ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { StepHeader } from './step-header';
@@ -33,6 +35,7 @@ import { GradientText } from 'apps/trading/components/gradient-text';
 
 export const StepConnect = () => {
   const t = useT();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const progression = useDetermineStepProgression();
   const { step: currentStep, loading: stepLoading } =
@@ -94,17 +97,22 @@ export const StepConnect = () => {
             </p>
           )}
         </StepHeader>
-        <ConnectionOptions />
+        <ProminentConnectionOptions />
+        <p className="text-center">
+          <ButtonLink onClick={() => setShowAdvanced(true)}>
+            {t('Advanced connection options')}
+          </ButtonLink>
+        </p>
+        {showAdvanced && <SecondaryConnectionOptions />}
       </div>
     </>
   );
 };
 
-const ConnectionOptions = () => {
+const ProminentConnectionOptions = () => {
   const navigate = useNavigate();
   const t = useT();
   const { connect, connectors } = useConnect();
-  const error = useWallet((store) => store.error);
 
   const handleConnect = async (id: ConnectorType) => {
     const res = await connect(id);
@@ -131,10 +139,12 @@ const ConnectionOptions = () => {
             <VegaIcon name={VegaIconNames.ETHEREUM} size={25} />
           </LogoCircle>
           <h3 className="text-2xl">
-            {t('ONBOARDING_STEP_CONNECT', { option: quickStartConnector.name })}
+            {t('ONBOARDING_STEP_CONNECT', { option: 'Ethereum' })}
           </h3>
           <p className="text-surface-1-fg-muted">
-            {quickStartConnector.description}
+            {t(
+              'Select a wallet provider to sign in with your Ethereum wallet.'
+            )}
           </p>
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
@@ -153,7 +163,9 @@ const ConnectionOptions = () => {
             {t('ONBOARDING_STEP_CONNECT', { option: injectedConnector.name })}
           </h3>
           <p className="text-surface-1-fg-muted">
-            {injectedConnector.description}
+            {t('Sign in using the {{appName}} Wallet browser extension', {
+              appName: APP_NAME,
+            })}
           </p>
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
@@ -164,9 +176,27 @@ const ConnectionOptions = () => {
           >
             {t('Connect wallet')}
           </Button>
-          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+          <ErrorMessage id="injected" />
         </div>
       </Card>
+    </div>
+  );
+};
+
+const SecondaryConnectionOptions = () => {
+  const { connectors, connect } = useConnect();
+  const connector = connectors.find((c) => c.id === 'jsonRpc');
+
+  if (!connector) {
+    throw new Error('no jsonRpc connector');
+  }
+
+  return (
+    <div className="flex justify-center gap-4">
+      <p>
+        <Button onClick={() => connect(connector.id)}>{connector.name}</Button>
+        <ErrorMessage id={connector.id} />
+      </p>
     </div>
   );
 };
@@ -192,7 +222,7 @@ const EmbeddQuickStartButton = (props: {
       >
         {isPending ? <Loader /> : t('Create wallet')}
       </Button>
-      {error && <ErrorMessage>{error.message}</ErrorMessage>}
+      <ErrorMessage id="embedded-wallet-quickstart" error={error} />
     </>
   );
 };
@@ -205,10 +235,24 @@ const LogoCircle = (props: PropsWithChildren) => {
   );
 };
 
-const ErrorMessage = (props: PropsWithChildren) => {
+const ErrorMessage = (
+  props: PropsWithChildren<{ id: ConnectorType; error?: Error | null }>
+) => {
+  const { connector } = useConnector();
+  const error = useWallet((store) => store.error);
+  const derivedError = props.error || error;
+
+  if (connector?.id !== props.id) {
+    return null;
+  }
+
+  if (!derivedError) {
+    return null;
+  }
+
   return (
     <p className="text-intent-danger text-sm first-letter:uppercase">
-      {props.children}
+      {derivedError.message}
     </p>
   );
 };
