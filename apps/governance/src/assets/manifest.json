@@ -1,6 +1,6 @@
 {
-  "short_name": "Governance VEGA",
-  "name": "Vega Protocol - Governance",
+  "short_name": "APP_NAME Governance",
+  "name": "APP_NAME - Governance",
   "icons": [
     {
       "src": "favicon.ico",
