@@ -5,5 +5,5 @@ export const marketIcons: Record<
   string,
   ComponentType<SVGAttributes<SVGElement>>
 > = {
-  '431502ba62e78573e1454f3c38b6de8d75686e5ce61b18326afcb3cd761b24f4': GoldYen,
+  '27b3e25451b736261b26b30de0b3009143ff46f7404b4ee784b10c0792abe149': GoldYen,
 };

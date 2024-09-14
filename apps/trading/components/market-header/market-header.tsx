@@ -50,7 +50,7 @@ export const MarketHeader = () => {
             <HeaderTitle>
               <Tooltip description={t(tooltip)}>
                 <span className="flex items-center gap-1">
-                  <Emblem market={data.id} size={26} />
+                  <Emblem market={data.id} size={26} className="mr-1" />
                   {data.tradableInstrument.instrument.code}
                   <MarketProductPill productType={getProductType(data)} />
                   <MarketIcon data={data} />
