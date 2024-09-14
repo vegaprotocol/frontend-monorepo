@@ -72,7 +72,7 @@ export const DepositForm = ({
 
   const chain = squid.chains.find((c) => c.chainId === fields.fromChain);
   const toAsset = assets?.find((a) => a.id === fields.toAsset);
-  const fromAsset = tokens?.find((t) => t.address === fields.toAsset);
+  const fromAsset = tokens?.find((t) => t.address === fields.fromAsset);
 
   // Data relating to the selected from asset, like balance on address and allowance
   // Only relevant if the asset is not a the chains native asset
@@ -227,8 +227,8 @@ export const DepositForm = ({
           </div>
         )}
         {status === 'error' && (
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <div className="flex items-center gap-1 text-xs">
+          <div className="flex flex-col items-center gap-2 mt-2 text-xs">
+            <div className="flex items-center gap-1">
               <VegaIcon name={VegaIconNames.CROSS} />
               <p>{t('Swap and deposit failed')}</p>
             </div>
