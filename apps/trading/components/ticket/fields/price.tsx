@@ -55,14 +55,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
               }}
               data-testid={`order-${name}`}
               label={
-                <InputLabel
-                  label={t('Price')}
-                  symbol={
-                    ticket.type === 'default' && ticket.quoteName.length > 0
-                      ? ticket.quoteName
-                      : ticket.quoteAsset.symbol
-                  }
-                />
+                <InputLabel label={t('Price')} symbol={ticket.quoteSymbol} />
               }
             />
             {fieldState.error && (

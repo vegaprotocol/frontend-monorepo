@@ -46,7 +46,7 @@ export const Slippage = () => {
     return (
       <DatagridRow
         label={t('Slippage ({{symbol}})', {
-          symbol: ticket.quoteAsset.symbol,
+          symbol: ticket.quoteSymbol,
         })}
         value="-"
       />
@@ -56,7 +56,7 @@ export const Slippage = () => {
   return (
     <DatagridRow
       label={t('Slippage ({{symbol}})', {
-        symbol: ticket.quoteAsset.symbol,
+        symbol: ticket.quoteSymbol,
       })}
       value={`${slippageVal} (${slippagePct}%)`}
     />

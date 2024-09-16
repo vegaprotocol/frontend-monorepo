@@ -38,6 +38,7 @@ const mockMarket = jest.fn(
       tradableInstrument: {
         instrument: {
           code,
+          metadata: { tags: ['quote:USDT'] },
           product: {
             __typename: 'Perpetual',
             quoteName,

@@ -25,7 +25,7 @@ export const StopLoss = () => {
               label={
                 <InputLabel
                   label={t('Stop loss')}
-                  symbol={ticket.quoteAsset.symbol}
+                  symbol={ticket.quoteSymbol}
                 />
               }
               data-testid="order-price-stop-loss"

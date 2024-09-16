@@ -77,7 +77,7 @@ export const Notional = ({
 
 const NotionalLabel = () => {
   const t = useT();
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('spot');
   const label = t('Notional');
   const symbol = ticket.quoteAsset.symbol;
 
