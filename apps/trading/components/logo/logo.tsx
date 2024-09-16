@@ -8,7 +8,7 @@ export const Logo = (props: { className?: string }) => {
     <img
       alt="Logo"
       src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
-      className={cn('block w-4', props.className)}
+      className={cn('block w-24', props.className)}
     />
   );
 };
