@@ -1,6 +1,7 @@
 name: Release production apps for Nebula
-
-on:
+# 'all/v0.0.2' => 'all/v0.0.2'
+"on":
+  pull_request:
   push:
     tags:
       - trading/v*
@@ -35,21 +36,21 @@ jobs:
 
       - name: Build explorer
         shell: bash
-        if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }} &test_build_explorer
+        if: ${{ contains('all/v0.0.2', 'explorer') || contains('all/v0.0.2', 'all') }}
         run: |
           yarn env-cmd -f ./apps/explorer/.env.nebula1 yarn nx build explorer
 
 
       - name: Build console
         shell: bash
-        if: ${{ contains(github.ref_name, 'trading') || contains(github.ref_name, 'console') || contains(github.ref_name, 'all') }} &test_build_console
+        if: ${{ contains('all/v0.0.2', 'trading') || contains('all/v0.0.2', 'console') || contains('all/v0.0.2', 'all') }}
         run: |
           yarn env-cmd -f ./apps/trading/.env.nebula1 yarn nx build trading
           yarn nx export
 
       - name: Build governance
         shell: bash
-        if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }} &test_build_governance
+        if: ${{ contains('all/v0.0.2', 'explorer') || contains('all/v0.0.2', 'all') }}
         run: |
           yarn env-cmd -f ./apps/governance/.env.nebula1 yarn nx build governance
 
@@ -68,16 +69,16 @@ jobs:
         target: ${{ fromJSON( vars.JSON_FRONTEND_SERVERS) }}
     steps:
       - name: "Publish explorer"
+        if: ${{ contains('all/v0.0.2', 'explorer') || contains('all/v0.0.2', 'all') }}
         run: |
           echo "Publishing explorer for ${{ matrix.target }}"
-        if: *test_build_explorer
 
       - name: "Publish console"
         run: |
           echo "Publishing console for ${{ matrix.target }}"
-        if: *test_build_console
+        if: ${{ contains('all/v0.0.2', 'trading') || contains('all/v0.0.2', 'console') || contains('all/v0.0.2', 'all') }}
 
       - name: "Publish governance"
         run: |
           echo "Publishing governance for ${{ matrix.target }}"
-        if: *test_build_governance
+        if: ${{ contains('all/v0.0.2', 'explorer') || contains('all/v0.0.2', 'all') }}
