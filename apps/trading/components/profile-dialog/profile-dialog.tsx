@@ -18,7 +18,7 @@ import {
 import {
   usePartyProfilesQuery,
   type PartyProfilesQuery,
-} from '../vega-wallet-connect-button/__generated__/PartyProfiles';
+} from '../../lib/hooks/__generated__/PartyProfiles';
 import { TransactionSteps } from '../transaction-dialog/transaction-steps';
 
 export const ProfileDialog = () => {

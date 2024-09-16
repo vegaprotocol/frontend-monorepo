@@ -11,10 +11,6 @@ jest.mock('@vegaprotocol/accounts', () => ({
   ),
 }));
 
-jest.mock('../../components/welcome-dialog/get-started', () => ({
-  GetStarted: () => <div>GetStarted</div>,
-}));
-
 const renderJsx = (route = '/transfer') => {
   render(
     <MemoryRouter initialEntries={[route]}>

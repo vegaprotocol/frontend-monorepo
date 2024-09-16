@@ -15,9 +15,8 @@ import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
-import { AnnouncementBanner } from '../components/banner';
+import { OnboardBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
-import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeInProgressNotification,
@@ -67,10 +66,6 @@ const Title = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
-  const gridClasses = cn(
-    'grid relative h-full z-0 pt-2',
-    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
-  );
 
   return (
     <div className="h-full overflow-hidden">
@@ -79,8 +74,8 @@ function AppBody({ Component }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <div className={gridClasses}>
-        <AnnouncementBanner />
+      <div className="grid relative h-full z-0 grid-rows-[repeat(3,min-content),minmax(0,1fr)]">
+        <OnboardBanner />
         <Navbar />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification

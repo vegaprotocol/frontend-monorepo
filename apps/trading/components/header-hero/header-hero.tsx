@@ -3,7 +3,7 @@ import { GradientText } from '../gradient-text';
 
 export const HeaderHero = (props: {
   title: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   return (
     <header className="relative lg:py-10">
@@ -11,7 +11,9 @@ export const HeaderHero = (props: {
         <h1 className="text-3xl lg:text-6xl leading-[1em] mb-2 lg:mb-10 font-sans font-semibold">
           <GradientText>{props.title}</GradientText>
         </h1>
-        <div className="flex flex-col gap-3 text-lg">{props.children}</div>
+        {props.children && (
+          <div className="flex flex-col gap-3 text-lg">{props.children}</div>
+        )}
       </div>
     </header>
   );

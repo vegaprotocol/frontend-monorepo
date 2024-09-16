@@ -18,7 +18,11 @@ import { useAssetReadContracts } from './use-asset-read-contracts';
 import * as Fields from './fields';
 
 import { Approval } from './approval';
-import { type FormFields, formSchema, type Configs } from './form-schema';
+import {
+  type FormFields,
+  type Configs,
+  fallbackFormSchema,
+} from './form-schema';
 import { AssetOption } from '../asset-option';
 import { formatNumber } from '@vegaprotocol/utils';
 
@@ -40,7 +44,7 @@ export const FallbackDepositForm = ({
   const chainId = useChainId();
 
   const form = useForm<FormFields>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(fallbackFormSchema),
     defaultValues: {
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation

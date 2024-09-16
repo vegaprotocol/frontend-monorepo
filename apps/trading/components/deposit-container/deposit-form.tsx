@@ -36,7 +36,7 @@ export const DepositForm = ({
 }: {
   squid: Squid;
   assets: Array<AssetERC20>;
-  initialAsset: AssetERC20;
+  initialAsset?: AssetERC20;
   configs: Configs;
 }) => {
   const t = useT();
@@ -56,7 +56,7 @@ export const DepositForm = ({
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
       fromAddress: address,
-      toAsset: initialAsset.id,
+      toAsset: initialAsset?.id,
       toPubKey: pubKey,
       amount: '',
     },

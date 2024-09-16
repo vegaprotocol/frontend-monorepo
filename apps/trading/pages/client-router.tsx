@@ -42,6 +42,7 @@ import { Liquidity as MyLiquidity } from '../client-pages/amm/liquidity';
 import { ManageLiquidity } from '../client-pages/amm/pools/market/manage-liquidity';
 import { AmmWrapper } from '../client-pages/amm/amm-wrapper';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { Invite } from '../client-pages/invite';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -240,6 +241,11 @@ export const useRouterConfig = (): RouteObject[] => {
           element: <MyLiquidity />,
         },
       ],
+    },
+    {
+      path: `${AppRoutes.INVITE}`,
+      element: <LayoutCentered />,
+      children: [{ index: true, path: '*', element: <Invite /> }],
     },
     {
       path: '*',
