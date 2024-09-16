@@ -25,7 +25,7 @@ type ShareDialogStore = {
 };
 
 export const useShareDialogStore = create<ShareDialogStore>()((set) => ({
-  isOpen: true,
+  isOpen: false,
   withTeam: false,
   setOpen: (isOpen) => {
     set({ isOpen });
