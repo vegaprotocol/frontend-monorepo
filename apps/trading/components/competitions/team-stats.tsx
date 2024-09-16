@@ -81,6 +81,60 @@ export const TeamStats = ({
   );
 };
 
+export const CompactTeamStats = ({
+  stats,
+  members,
+  games,
+}: {
+  stats?: ITeamStats;
+  members?: Member[];
+  games?: TeamGame[];
+}) => {
+  const t = useT();
+  return (
+    <StatSection>
+      <CompactStatList>
+        <Stat
+          value={members ? members.length : 0}
+          label={t('Members')}
+          valueTestId="members-count-stat"
+        />
+        <Stat
+          value={stats ? stats.totalGamesPlayed : 0}
+          label={t('Total games')}
+          tooltip={t('Total number of games this team has participated in')}
+          valueTestId="total-games-stat"
+        />
+        <Stat
+          value={
+            stats
+              ? formatNumberRounded(
+                  new BigNumber(stats.totalQuantumVolume || 0),
+                  '1e3'
+                )
+              : 0
+          }
+          label={t('Total volume')}
+          valueTestId="total-volume-stat"
+        />
+        <Stat
+          value={
+            stats
+              ? formatNumberRounded(
+                  new BigNumber(stats.totalQuantumRewards || 0),
+                  '1e3'
+                )
+              : 0
+          }
+          label={t('Rewards paid out')}
+          tooltip={'Total amount of rewards paid out to this team in qUSD'}
+          valueTestId="rewards-paid-stat"
+        />
+      </CompactStatList>
+    </StatSection>
+  );
+};
+
 const LatestResults = ({ games }: { games: TeamGame[] }) => {
   const t = useT();
   const latestGames = games.slice(0, 5);
@@ -174,6 +228,12 @@ export const StatList = ({ children }: { children: ReactNode }) => {
     <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
       {children}
     </dl>
+  );
+};
+
+const CompactStatList = ({ children }: { children: ReactNode }) => {
+  return (
+    <dl className="grid grid-cols-2 gap-4 whitespace-nowrap">{children}</dl>
   );
 };
 

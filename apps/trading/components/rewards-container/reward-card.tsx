@@ -6,7 +6,6 @@ import {
 } from '@vegaprotocol/utils';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import {
-  type VegaIconSize,
   AnchorButton,
   Tooltip,
   VegaIcon,
@@ -862,7 +861,7 @@ const CardIcon = ({
   iconName,
   tooltip,
 }: {
-  size?: VegaIconSize;
+  size?: number;
   iconName: VegaIconNames;
   tooltip: string;
 }) => {
@@ -891,7 +890,7 @@ const EntityIcon = ({
   size = 18,
 }: {
   entityScope: EntityScope;
-  size?: VegaIconSize;
+  size?: number;
 }) => {
   return (
     <Tooltip
@@ -914,7 +913,7 @@ const DistributionStrategyIcon = ({
   size = 18,
 }: {
   strategy: DistributionStrategy;
-  size?: VegaIconSize;
+  size?: number;
 }) => {
   const t = useT();
   return (

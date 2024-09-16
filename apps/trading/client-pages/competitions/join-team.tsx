@@ -22,11 +22,11 @@ type JoinType = 'switch' | 'join';
 export const JoinTeam = ({
   team,
   partyTeam,
-  refetch,
+  onSuccess,
 }: {
   team: Team;
   partyTeam?: Team;
-  refetch: () => void;
+  onSuccess?: () => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const [confirmDialog, setConfirmDialog] = useState<JoinType>();
@@ -51,7 +51,7 @@ export const JoinTeam = ({
             team={team}
             partyTeam={partyTeam}
             onCancel={() => setConfirmDialog(undefined)}
-            refetch={refetch}
+            onSuccess={onSuccess}
           />
         )}
       </Dialog>
@@ -182,18 +182,18 @@ const DialogContent = ({
   team,
   partyTeam,
   onCancel,
-  refetch,
+  onSuccess,
 }: {
   type: JoinType;
   team: Team;
   partyTeam?: Team;
   onCancel: () => void;
-  refetch: () => void;
+  onSuccess?: () => void;
 }) => {
   const t = useT();
 
   const { send, result, status, error, reset } = useSimpleTransaction({
-    onSuccess: refetch,
+    onSuccess,
   });
 
   const closeDialog = () => {

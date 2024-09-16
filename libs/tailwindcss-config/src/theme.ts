@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 export const theme = {
   fontSize: {
     '2xs': '0.625rem',
@@ -247,6 +249,11 @@ export const theme = {
         outline: 'rgb(var(--dir-up-outline) / <alpha-value>)',
       },
     },
+  },
+  backgroundImage: {
+    ...defaultTheme.backgroundImage,
+    radial:
+      'radial-gradient(circle at 80% -70%, rgb(var(--highlight)), transparent), radial-gradient(circle at 100% 20%, rgb(var(--highlight-tertiary)), transparent), radial-gradient(circle at 80% 6%, rgb(var(--highlight-secondary)), #fff)',
   },
   fontFamily: {
     mono: ['var(--font-mono)', { fontFeatureSettings: '"calt" 0, "liga" 0' }],

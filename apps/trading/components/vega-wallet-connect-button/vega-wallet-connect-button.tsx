@@ -22,10 +22,10 @@ import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
 import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
+import { usePartyProfiles } from '../../lib/hooks/use-party-profiles';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.Primary,
@@ -165,24 +165,20 @@ const KeypairRadioGroup = ({
   onSelect: (pubKey: string) => void;
   isReadOnly: boolean;
 }) => {
-  const { data } = usePartyProfilesQuery({
-    variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
-    skip: pubKeys.length <= 0,
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data: profiles } = usePartyProfiles(
+    pubKeys.map((pk) => pk.publicKey)
+  );
 
   return (
     <DropdownMenuRadioGroup value={pubKey} onValueChange={onSelect}>
       {pubKeys.map((pk) => {
-        const profile = data?.partiesProfilesConnection?.edges.find(
-          (e) => e.node.partyId === pk.publicKey
-        );
+        const profile = profiles.find((p) => p.partyId === pk.publicKey);
         return (
           <KeypairItem
             key={pk.publicKey}
             pk={pk}
             isActive={activeKey === pk.publicKey}
-            alias={profile?.node.alias}
+            alias={profile?.alias}
             isReadOnly={isReadOnly}
           />
         );

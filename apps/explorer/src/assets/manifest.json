@@ -1,6 +1,6 @@
 {
-  "short_name": "Explorer VEGA",
-  "name": "Vega Protocol - Explorer",
+  "short_name": "APP_NAME Explorer",
+  "name": "APP_NAME - Explorer",
   "icons": [
     {
       "src": "favicon.ico",

@@ -105,18 +105,25 @@ export const useFindReferralSet = (pubKey?: string) => {
 
 export const useReferralSet = (setId?: string) => {
   const [variables, skip] = prepareVariables({ setId });
-  const { data, loading, error, refetch } = useReferralSetsQuery({
+  const {
+    data,
+    loading: referralLoading,
+    error,
+    refetch,
+  } = useReferralSetsQuery({
     variables,
     skip,
     fetchPolicy: 'cache-and-network',
   });
 
   const set = data?.referralSets.edges[0]?.node;
-  const { isEligible } = useStakeAvailable(set?.referrer);
+  const { isEligible, loading: stakeLoading } = useStakeAvailable(
+    set?.referrer
+  );
 
   return {
     data: set,
-    loading,
+    loading: referralLoading || stakeLoading,
     error,
     refetch,
     isEligible: set ? isEligible : undefined,

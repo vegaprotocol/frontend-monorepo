@@ -75,9 +75,11 @@ export const ActionButton = ({
 export const CompetitionsActions = ({
   myRole,
   myTeamId,
+  onAction,
 }: {
   myRole: Role | undefined;
   myTeamId: string | undefined;
+  onAction?: () => void;
 }) => {
   const t = useT();
   const navigate = useNavigate();
@@ -90,6 +92,7 @@ export const CompetitionsActions = ({
     disabled: false,
     onClick: (e: event) => {
       e.preventDefault();
+      onAction?.();
       navigate(Links.COMPETITIONS_CREATE_TEAM());
     },
     tooltip: undefined,
@@ -104,6 +107,7 @@ export const CompetitionsActions = ({
     disabled: false,
     onClick: (e: event) => {
       e.preventDefault();
+      onAction?.();
       navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
     },
     tooltip: undefined,
@@ -118,6 +122,7 @@ export const CompetitionsActions = ({
     disabled: false,
     onClick: (e: event) => {
       e.preventDefault();
+      onAction?.();
       navigate(Links.COMPETITIONS_TEAMS());
     },
     tooltip: undefined,

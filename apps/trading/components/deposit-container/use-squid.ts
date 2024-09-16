@@ -21,9 +21,12 @@ export const useSquid = () => {
         integratorId: SQUID_INTEGRATOR_ID,
       });
 
-      await squid.init();
-
-      return squid;
+      try {
+        await squid.init();
+        return squid;
+      } catch (err) {
+        throw new Error('squid unable to initialize');
+      }
     },
   });
 

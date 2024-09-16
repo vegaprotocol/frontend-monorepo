@@ -20,7 +20,7 @@ export const DepositContainer = ({
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
   const { data: assets, loading } = useEnabledAssets();
-  const { data: squid } = useSquid();
+  const { data: squid, error: squidError } = useSquid();
 
   if (!config) return null;
   if (!configs?.length) return null;
@@ -30,12 +30,17 @@ export const DepositContainer = ({
   // Make sure asset is an existing enabled asset
   const asset = assets?.find((a) => a.id === initialAssetId);
 
-  if (loading || !squid) {
+  if ((loading || !squid) && !squidError) {
     return <p>{t('Loading')}</p>;
   }
 
   // If we have squid initialized show the form which allows swaps
-  if (VEGA_ENV === Networks.MAINNET && squid.initialized) {
+  if (
+    squid &&
+    !squidError &&
+    VEGA_ENV === Networks.MAINNET &&
+    squid.initialized
+  ) {
     return (
       <DepositForm
         squid={squid}
@@ -46,7 +51,7 @@ export const DepositContainer = ({
     );
   }
 
-  // If for some reason squid cannto be initialized (api down for example)
+  // If for some reason squid cannot be initialized (api down for example)
   // use a form which doesn't require squid, but also doesn't allow swaps,
   // which is better than noting
   return (

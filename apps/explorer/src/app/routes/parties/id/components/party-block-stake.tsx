@@ -8,8 +8,6 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { PartyBlock } from './party-block';
-import BigNumber from 'bignumber.js';
-
 export interface PartyBlockStakeProps {
   partyId: string;
   accountLoading: boolean;
@@ -37,24 +35,6 @@ export const PartyBlockStake = ({
 
   const p = partyRes.data?.partiesConnection?.edges[0].node;
 
-  const linkedLength = p?.stakingSummary?.linkings?.edges?.length;
-  const linkedStake =
-    linkedLength && linkedLength > 0
-      ? p?.stakingSummary?.linkings?.edges
-          ?.reduce((total, e) => {
-            const accumulator = new BigNumber(total);
-            const diff = new BigNumber(e?.node.amount || 0);
-            if (e?.node.type === 'TYPE_LINK') {
-              return accumulator.plus(diff);
-            } else if (e?.node.type === 'TYPE_UNLINK') {
-              return accumulator.minus(diff);
-            } else {
-              return accumulator;
-            }
-          }, new BigNumber(0))
-          .toString()
-      : '0';
-
   return (
     <PartyBlock title={t('Staking')}>
       {p?.stakingSummary.currentStakeAvailable ? (
@@ -65,12 +45,6 @@ export const PartyBlockStake = ({
               <GovernanceAssetBalance
                 price={p.stakingSummary.currentStakeAvailable}
               />
-            </div>
-          </KeyValueTableRow>
-          <KeyValueTableRow noBorder={true}>
-            <div>{t('Staked to validator')}</div>
-            <div>
-              <GovernanceAssetBalance price={linkedStake || '0'} />
             </div>
           </KeyValueTableRow>
         </KeyValueTable>
