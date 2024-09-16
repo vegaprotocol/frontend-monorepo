@@ -2,10 +2,7 @@ import { Interval } from '@vegaprotocol/types';
 
 export const ALLOWED_TRADINGVIEW_HOSTNAMES = [
   'localhost',
-  'vegafairground.eth.limo',
-  'vegafairground.eth',
-  'vegaprotocol.eth',
-  'vegaprotocol.eth.limo',
+  'trade.neb.exchange',
 ];
 
 export const CHARTING_LIBRARY_FILE = 'charting_library.standalone.js';

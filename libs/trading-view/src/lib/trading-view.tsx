@@ -146,8 +146,8 @@ const getOverrides = (
 ): Partial<ChartPropertiesOverrides> => {
   return {
     // colors set here, trading view lets the user set a color
-    'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
-    'paneProperties.backgroundType': 'solid',
+    'paneProperties.background': theme === 'dark' ? '#1d222e' : '#fff',
+    'paneProperties.backgroundType': 'gradient',
     // hide market name within TV chart as its already above
     'paneProperties.legendProperties.showSeriesTitle': false,
   };
