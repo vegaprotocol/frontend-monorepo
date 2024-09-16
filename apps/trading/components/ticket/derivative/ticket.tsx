@@ -1,9 +1,8 @@
 import {
   getAsset,
-  getQuoteAsset,
-  getBaseQuoteUnit,
+  getBaseUnit,
   type MarketInfo,
-  getQuoteName,
+  getQuoteUnit,
 } from '@vegaprotocol/markets';
 import {
   useAccountBalance,
@@ -30,28 +29,21 @@ import { useTicketSide } from '../use-ticket-side';
  * TicketType (market, limit, stopMarket, stopLimit)
  */
 export const Ticket = ({ market }: { market: MarketInfo }) => {
+  const instrument = market.tradableInstrument.instrument;
   const settlementAsset = getAsset(market);
-  const quoteAsset = getQuoteAsset(market);
-
   const marginAccount = useMarginAccountBalance(market.id);
   const generalAccount = useAccountBalance(settlementAsset?.id);
   const marginMode = useMarginMode(market.id);
-
-  if (!settlementAsset) return null;
-  if (!quoteAsset) return null;
-
-  const instrument = market.tradableInstrument.instrument;
-  const baseSymbol = getBaseQuoteUnit(instrument.metadata.tags);
-  const quoteName = getQuoteName(market);
+  const baseSymbol = getBaseUnit(instrument.metadata.tags);
+  const quoteSymbol = getQuoteUnit(instrument.metadata.tags);
 
   return (
     <TicketContext.Provider
       value={{
         type: 'default',
         market,
-        quoteName,
-        quoteAsset,
-        baseSymbol: baseSymbol || '',
+        quoteSymbol,
+        baseSymbol,
         settlementAsset,
         accounts: {
           general: generalAccount.accountBalance || '0',

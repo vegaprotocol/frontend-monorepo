@@ -23,7 +23,7 @@ export const TakeProfit = () => {
               label={
                 <InputLabel
                   label={t('Take profit')}
-                  symbol={ticket.quoteAsset.symbol}
+                  symbol={ticket.quoteSymbol}
                 />
               }
               value={field.value || ''}

@@ -30,7 +30,8 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
   const t = useT();
   const feeEstimate = useEstimateFees(oco);
   const ticket = useTicketContext();
-  const asset = ticket.quoteAsset;
+  const asset =
+    ticket.type === 'default' ? ticket.settlementAsset : ticket.quoteAsset;
 
   const totalDiscountFactor = utils.getTotalDiscountFactor(feeEstimate);
   const totalDiscountedFeeAmount =
