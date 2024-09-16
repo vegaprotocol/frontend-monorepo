@@ -95,6 +95,7 @@ const mockEnvVars = {
   VEGA_WALLET_URL: 'https://localhost:1234',
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  CONFIGURED_WALLETS: ['injected', 'jsonRpc', 'snap', 'viewParty'],
 };
 
 describe('useEnvironment', () => {
@@ -117,6 +118,9 @@ describe('useEnvironment', () => {
 
     process.env['NX_VEGA_ENV'] = mockEnvVars.VEGA_ENV;
     process.env['NX_VEGA_NETWORKS'] = JSON.stringify(mockEnvVars.VEGA_NETWORKS);
+    process.env['NX_CONFIGURED_WALLETS'] = JSON.stringify(
+      mockEnvVars.CONFIGURED_WALLETS
+    );
     process.env['NX_ETHEREUM_PROVIDER_URL'] = mockEnvVars.ETHEREUM_PROVIDER_URL;
     process.env['NX_VEGA_WALLET_URL'] = mockEnvVars.VEGA_WALLET_URL;
     process.env['NX_ETHERSCAN_URL'] = mockEnvVars.ETHERSCAN_URL;
