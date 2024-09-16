@@ -24,7 +24,6 @@ if 'release/' in args.github_ref:
 elif 'develop' in args.github_ref:
   env_name = 'stagnet1'
   apps_deployed_from_develop_to_mainnet = {
-    'multisig-signer' :'tools.vega.xyz',
     'static': 'static.vega.xyz',
     'ui-toolkit' : 'ui.vega.rocks',
   }
