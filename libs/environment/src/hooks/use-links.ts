@@ -30,31 +30,17 @@ const EmptyLinks: DAppLinks = {
 
 const ExplorerLinks = {
   ...EmptyLinks,
-  [Networks.STAGNET1]: 'https://explorer.stagnet1.vega.rocks',
-  [Networks.TESTNET]: 'https://explorer.fairground.wtf',
-  [Networks.VALIDATORS_TESTNET]:
-    'https://explorer.validators-testnet.vega.rocks',
-  [Networks.MAINNET_MIRROR]: 'https://explorer.mainnet-mirror.vega.rocks/',
-  [Networks.MAINNET]: 'https://explorer.vega.xyz',
+  [Networks.MAINNET]: 'https://explorer.neb.exchange',
 };
 
 const ConsoleLinks = {
   ...EmptyLinks,
-  [Networks.STAGNET1]: 'https://trading.stagnet1.vega.rocks',
-  [Networks.TESTNET]: 'https://console.fairground.wtf',
-  [Networks.MAINNET]: 'https://vega.trading',
-  [Networks.MAINNET_MIRROR]: 'https://console.mainnet-mirror.vega.rocks',
+  [Networks.MAINNET]: 'https://trading.neb.exchange',
 };
 
 const GovernanceLinks = {
   ...EmptyLinks,
-  [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
-  [Networks.STAGNET1]: 'https://governance.stagnet1.vega.rocks',
-  [Networks.TESTNET]: 'https://governance.fairground.wtf',
-  [Networks.VALIDATORS_TESTNET]:
-    'https://governance.validators-testnet.vega.rocks',
-  [Networks.MAINNET_MIRROR]: 'https://governance.mainnet-mirror.vega.rocks',
-  [Networks.MAINNET]: 'https://governance.vega.xyz',
+  [Networks.MAINNET]: 'https://governance.neb.exchange',
 };
 
 const Links: { [k in DApp]: DAppLinks } = {
