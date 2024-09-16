@@ -1,0 +1,83 @@
+name: Release production apps for Nebula
+
+on:
+  push:
+    tags:
+      - trading/v*
+      - console/v*
+      - explorer/v*
+      - governance/*
+      - all/v*
+
+
+jobs:
+  build_dist:
+    name: "Build dist"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Build explorer
+        shell: bash
+        if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }} &test_build_explorer
+        run: |
+          yarn env-cmd -f ./apps/explorer/.env.nebula1 yarn nx build explorer
+
+
+      - name: Build console
+        shell: bash
+        if: ${{ contains(github.ref_name, 'trading') || contains(github.ref_name, 'console') || contains(github.ref_name, 'all') }} &test_build_console
+        run: |
+          yarn env-cmd -f ./apps/trading/.env.nebula1 yarn nx build trading
+          yarn nx export
+
+      - name: Build governance
+        shell: bash
+        if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }} &test_build_governance
+        run: |
+          yarn env-cmd -f ./apps/governance/.env.nebula1 yarn nx build governance
+
+      - name: Upload built artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend_dist
+          path: ./dist/
+
+  publish_dist:
+    name: "Publis dist"
+    needs: build_dist
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: ${{ fromJSON( vars.JSON_FRONTEND_SERVERS) }}
+    steps:
+      - name: "Publish explorer"
+        run: |
+          echo "Publishing explorer for ${{ matrix.target }}"
+        if: *test_build_explorer
+
+      - name: "Publish console"
+        run: |
+          echo "Publishing console for ${{ matrix.target }}"
+        if: *test_build_console
+
+      - name: "Publish governance"
+        run: |
+          echo "Publishing governance for ${{ matrix.target }}"
+        if: *test_build_governance
