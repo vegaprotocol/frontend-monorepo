@@ -62,6 +62,7 @@ import {
 import { usePartyProfilesQuery } from '../../lib/hooks/__generated__/PartyProfiles';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { NotFoundSplash } from '../../components/not-found-splash';
+import { useShareDialogStore } from '../../components/share-dialog';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
@@ -147,6 +148,10 @@ const TeamPage = ({
   refetch: () => void;
 }) => {
   const t = useT();
+  const [setShareDialogOpen, setWithTeam] = useShareDialogStore((state) => [
+    state.setOpen,
+    state.setWithTeam,
+  ]);
 
   const createdAt = new Date(team.createdAt);
 
@@ -190,6 +195,16 @@ const TeamPage = ({
                 </span>
               </Tooltip>
             )}
+            <Button
+              className="flex gap-1 px-2"
+              onClick={() => {
+                setWithTeam(true);
+                setShareDialogOpen(true);
+              }}
+            >
+              <span>{t('SHARE_BUTTON')}</span>
+              <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+            </Button>
             <CopyWithTooltip
               description={t('Copy this page url.')}
               text={globalThis.location.href}
