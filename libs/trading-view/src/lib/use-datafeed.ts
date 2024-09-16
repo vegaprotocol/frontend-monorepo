@@ -188,15 +188,17 @@ export const useDatafeed = (marketId: string) => {
             return;
           }
 
-          const bars = candleEdges.map((edge) => {
-            return prepareBar(
-              edge.node,
-              // @ts-ignore added in resolveSymbol
-              symbolInfo.vegaDecimalPlaces,
-              // @ts-ignore added in resolveSymbol
-              symbolInfo.vegaPositionDecimalPlaces
-            );
-          });
+          const bars = candleEdges
+            .filter((edge) => isValidBar(edge.node))
+            .map((edge) => {
+              return prepareBar(
+                edge.node,
+                // @ts-ignore added in resolveSymbol
+                symbolInfo.vegaDecimalPlaces,
+                // @ts-ignore added in resolveSymbol
+                symbolInfo.vegaPositionDecimalPlaces
+              );
+            });
 
           hasHistory.current = true;
 
@@ -234,7 +236,7 @@ export const useDatafeed = (marketId: string) => {
             },
           })
           .subscribe(({ data }) => {
-            if (data) {
+            if (data && isValidBar(data.candles)) {
               const bar = prepareBar(
                 data.candles,
                 // @ts-ignore added in resolveSymbol
@@ -285,6 +287,14 @@ const prepareBar = (
     close: toBigNum(bar.close, decimalPlaces).toNumber(),
     volume: toBigNum(bar.volume, positionDecimalPlaces).toNumber(),
   };
+};
+
+const isValidBar = (bar: BarFragment) => {
+  if (!bar.close) return false;
+  if (!bar.open) return false;
+  if (!bar.low) return false;
+  if (!bar.high) return false;
+  return true;
 };
 
 const unixTimestampToDate = (timestamp: number) => {
