@@ -55,15 +55,9 @@ export const getQuoteAsset = (market: Pick<Market, 'tradableInstrument'>) => {
     return product.quoteAsset;
   }
 
-  if (isFuture(product)) {
-    return product.settlementAsset;
-  }
-
-  if (isPerpetual(product)) {
-    return product.settlementAsset;
-  }
-
-  throw new Error(`Failed to retrieve quote asset.`);
+  throw new Error(
+    `Failed to retreive quote asset. Invalid product type ${product.__typename}`
+  );
 };
 
 export const getProductType = (market: Pick<Market, 'tradableInstrument'>) => {
@@ -89,10 +83,11 @@ export const getQuoteName = (market: Pick<Market, 'tradableInstrument'>) => {
     );
   }
 
-  const { product } = market.tradableInstrument.instrument;
+  const instrument = market.tradableInstrument.instrument;
+  const product = instrument.product;
 
   if (isPerpetual(product) || isFuture(product)) {
-    return product.quoteName;
+    return getQuoteUnit(instrument.metadata.tags);
   }
 
   if (isSpot(product)) {
@@ -290,7 +285,26 @@ export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
 /**
  * Gets the quote unit as specified in instrument tags
  */
-export const getBaseQuoteUnit = (tags?: string[] | null) =>
-  tags
+export const getBaseUnit = (tags?: string[] | null) => {
+  const value = tags
     ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
     ?.replace(/^[^:]*:/, '');
+
+  if (!value) {
+    throw new Error(`could not get base unit from tags: ${tags?.join(', ')}`);
+  }
+
+  return value;
+};
+
+export const getQuoteUnit = (tags?: string[] | null) => {
+  const value = tags
+    ?.find((tag) => tag.startsWith('quote:'))
+    ?.replace(/^[^:]*:/, '');
+
+  if (!value) {
+    throw new Error(`could not get quote unit from tags: ${tags?.join(', ')}`);
+  }
+
+  return value;
+};
