@@ -26,15 +26,15 @@ export const useCreateDerivedWallet = (
         const hasWallet = await connector.hasWallet();
         if (!hasWallet) {
           const signedMessage = await signTypedDataAsync({
-            domain: { name: 'Vega', chainId: BigInt(chainId) },
-            message: { action: 'Vega Onboarding' },
-            primaryType: 'Vega',
+            domain: { name: 'Onboarding', chainId: BigInt(chainId) },
+            message: { action: 'Onboarding' },
+            primaryType: 'Onboarding',
             types: {
               EIP712Domain: [
                 { name: 'name', type: 'string' },
                 { name: 'chainId', type: 'uint256' },
               ],
-              Vega: [{ name: 'action', type: 'string' }],
+              Onboarding: [{ name: 'action', type: 'string' }],
             },
           });
           const mnemonic = (await connector.deriveMnemonic(
