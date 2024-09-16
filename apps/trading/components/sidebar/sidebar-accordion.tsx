@@ -14,7 +14,7 @@ const SidebarAccordion = forwardRef<
   <AccordionPrimitive.Root
     ref={ref}
     {...props}
-    className={cn('flex flex-col gap-2 overflow-hidden', className)}
+    className={cn('flex flex-col gap-4 overflow-hidden', className)}
   />
 ));
 
