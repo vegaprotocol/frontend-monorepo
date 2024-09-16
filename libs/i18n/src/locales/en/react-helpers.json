@@ -7,7 +7,6 @@
   "duration_minutes_other": "{{count}} minutes",
   "duration_seconds_one": "{{count}} second",
   "duration_seconds_other": "{{count}} seconds",
-
   "duration_days_compact_one": "{{count}}d",
   "duration_days_compact_other": "{{count}}d",
   "duration_hours_compact_one": "{{count}}h",

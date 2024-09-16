@@ -47,7 +47,7 @@
   "There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.": "There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.",
   "Unrealised PNL": "Unrealised PNL",
   "Unrealised profit is the current profit on your open position. Margin is still allocated to your position.": "Unrealised profit is the current profit on your open position. Margin is still allocated to your position.",
-  "Vega key": "Vega key",
+  "Vega key": "Nebula key",
   "View settlement asset details": "View settlement asset details",
   "When the mark price rises above {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.": "When the mark price rises above {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.",
   "When the mark price falls below {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.": "When the mark price falls below {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.",

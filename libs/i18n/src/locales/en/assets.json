@@ -1,7 +1,7 @@
 {
-  "A Vega builtin asset": "A Vega builtin asset",
+  "A Vega builtin asset": "A Nebula builtin asset",
   "An asset originated from an Ethereum ERC20 Token": "An asset originated from an Ethereum ERC20 Token",
-  "Asset can be used on the Vega network": "Asset can be used on the Vega network",
+  "Asset can be used on the Vega network": "Asset can be used on the Nebula network",
   "Asset has been proposed to the network": "Asset has been proposed to the network",
   "Asset has been rejected": "Asset has been rejected",
   "Asset needs to be added to the Ethereum bridge": "Asset needs to be added to the Ethereum bridge",
@@ -43,7 +43,7 @@
   "The rewards acquired based on the fees paid to makers in this asset": "The rewards acquired based on the fees paid to makers in this asset",
   "The rewards acquired based on the liquidity provision fees in this asset": "The rewards acquired based on the liquidity provision fees in this asset",
   "The rewards acquired based on the market proposer reward in this asset": "The rewards acquired based on the market proposer reward in this asset",
-  "The status of the asset in the Vega network": "The status of the asset in the Vega network",
+  "The status of the asset in the Vega network": "The status of the asset in the Nebula network",
   "There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.": "There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.",
   "Type": "Type",
   "WITHDRAW_THRESHOLD_TOOLTIP_TEXT": "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them",

@@ -17,5 +17,5 @@
   "Target stake {{target}}": "Target stake {{target}}",
   "This is an example of a toast notification": "This is an example of a toast notification",
   "Try again": "Try again",
-  "Viewing as Vega user: {{pubKey}}": "Viewing as Vega user: {{pubKey}}"
+  "Viewing as Vega user: {{pubKey}}": "Viewing as Nebula user: {{pubKey}}"
 }

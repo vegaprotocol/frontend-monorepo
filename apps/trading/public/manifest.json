@@ -1,7 +1,7 @@
 {
-  "name": "APP_NAME - Trading",
+  "name": "Nebula - Trading",
   "short_name": "Console",
-  "description": "APP_NAME - Trading dApp",
+  "description": "Nebula - Trading dApp",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
