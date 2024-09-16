@@ -14,12 +14,19 @@ export const Notional = ({
   const form = useForm();
   const ticket = useTicketContext();
   const notional = form.watch(name);
-  const symbol = ticket.quoteAsset.symbol;
+  const symbol =
+    ticket.type === 'default' && ticket.quoteName.length > 0
+      ? ticket.quoteName
+      : ticket.quoteAsset.symbol;
 
   return (
     <DatagridRow
       label={
-        <Tooltip description={t('ticketTooltipNotional')}>
+        <Tooltip
+          description={t('ticketTooltipNotional', {
+            quoteName: symbol,
+          })}
+        >
           <span>{t('Notional ({{symbol}})', { symbol })}</span>
         </Tooltip>
       }
