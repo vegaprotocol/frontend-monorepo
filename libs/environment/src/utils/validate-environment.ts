@@ -90,6 +90,7 @@ export const envSchema = z
           Networks
         ).join(' | ')}`,
       }),
+    CONFIGURED_WALLETS: z.array(z.string()),
     ETHEREUM_PROVIDER_URL: z.string().url({
       message:
         'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
@@ -146,9 +147,7 @@ const GOVERNANCE_FLAGS = {
   GOVERNANCE_NETWORK_LIMITS: z.optional(z.boolean()),
 };
 
-const EXPERIMENTAL_FLAGS = {
-  IN_BROWSER_WALLET: z.optional(z.boolean()),
-};
+const EXPERIMENTAL_FLAGS = {};
 
 export const featureFlagsSchema = z.object({
   ...TRADING_FLAGS,

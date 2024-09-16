@@ -295,8 +295,14 @@ const compileEnvVars = () => {
       'VEGA_CONFIG_URL',
       process.env['NX_VEGA_CONFIG_URL'] as string
     ),
-    VEGA_NETWORKS: parseNetworks(
+    VEGA_NETWORKS: parseJson(
       windowOrDefault('VEGA_NETWORKS', process.env['NX_VEGA_NETWORKS'])
+    ),
+    CONFIGURED_WALLETS: parseJson(
+      windowOrDefault(
+        'CONFIGURED_WALLETS',
+        process.env['NX_CONFIGURED_WALLETS']
+      )
     ),
     VEGA_WALLET_URL: windowOrDefault(
       'VEGA_WALLET_URL',
@@ -542,14 +548,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
     ),
   };
 
-  const EXPERIMENTAL_FLAGS = {
-    IN_BROWSER_WALLET: TRUTHY.includes(
-      windowOrDefault(
-        'NX_IN_BROWSER_WALLET',
-        process.env['NX_IN_BROWSER_WALLET']
-      ) as string
-    ),
-  };
+  const EXPERIMENTAL_FLAGS = {};
 
   const flags = {
     ...TRADING_FLAGS,
@@ -561,7 +560,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   return flags;
 };
 
-const parseNetworks = (value?: string) => {
+const parseJson = (value?: string) => {
   if (value) {
     try {
       return JSON.parse(value);
