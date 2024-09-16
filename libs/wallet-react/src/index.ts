@@ -21,6 +21,7 @@ export { usePubKeys } from './hooks/use-pub-keys';
 export { useReconnect } from './hooks/use-reconnect';
 export { useSendTransaction } from './hooks/use-send-transaction';
 export { useWallet } from './hooks/use-wallet';
+export { useQuickstart } from './hooks/use-quickstart';
 
 // Constants
 export { Links } from './constants';

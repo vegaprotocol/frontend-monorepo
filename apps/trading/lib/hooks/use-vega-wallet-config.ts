@@ -7,11 +7,7 @@ import {
   createConfig,
   nebula1,
 } from '@vegaprotocol/wallet';
-import {
-  CHAIN_IDS,
-  useEnvironment,
-  useFeatureFlags,
-} from '@vegaprotocol/environment';
+import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
 
 /**
@@ -19,8 +15,8 @@ import { useMemo } from 'react';
  * node address for snap connection we need to re-new once its set or changes
  */
 export const useVegaWalletConfig = () => {
-  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL } = useEnvironment();
-  const { IN_BROWSER_WALLET } = useFeatureFlags((state) => state.flags);
+  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL, CONFIGURED_WALLETS } =
+    useEnvironment();
 
   return useMemo(() => {
     const url = API_NODE?.graphQLApiUrl || API_NODE?.restApiUrl;
@@ -35,15 +31,18 @@ export const useVegaWalletConfig = () => {
     });
 
     const viewParty = new ViewPartyConnector();
-
+    const filteredConnectors = [
+      quickStart,
+      injected,
+      jsonRpc,
+      viewParty,
+    ].filter((c) => CONFIGURED_WALLETS.includes(c.id));
     const config = createConfig({
       chains: [nebula1],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: IN_BROWSER_WALLET
-        ? [quickStart, injected, jsonRpc, viewParty]
-        : [injected, jsonRpc, viewParty],
+      connectors: filteredConnectors,
     });
 
     return config;
-  }, [IN_BROWSER_WALLET, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
+  }, [CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
 };

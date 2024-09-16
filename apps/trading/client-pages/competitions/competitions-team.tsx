@@ -59,7 +59,7 @@ import {
   ActiveRewardCard,
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
-import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { usePartyProfilesQuery } from '../../lib/hooks/__generated__/PartyProfiles';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { NotFoundSplash } from '../../components/not-found-splash';
 
@@ -174,7 +174,7 @@ const TeamPage = ({
             {team.name}
           </h1>
           <div className="flex gap-2">
-            <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
+            <JoinTeam team={team} partyTeam={partyTeam} onSuccess={refetch} />
             <UpdateTeamButton team={team} />
             {team.teamUrl && team.teamUrl.length > 0 && (
               <Tooltip description={t("Visit the team's page.")}>

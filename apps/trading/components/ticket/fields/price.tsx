@@ -57,7 +57,11 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
               label={
                 <InputLabel
                   label={t('Price')}
-                  symbol={ticket.quoteAsset.symbol}
+                  symbol={
+                    ticket.type === 'default' && ticket.quoteName.length > 0
+                      ? ticket.quoteName
+                      : ticket.quoteAsset.symbol
+                  }
                 />
               }
             />

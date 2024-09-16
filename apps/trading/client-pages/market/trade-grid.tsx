@@ -229,7 +229,7 @@ MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
   return (
-    <div className="h-full m-2">
+    <div className="h-full pt-0 pb-2 px-2">
       <MainGrid market={market} pinnedAssets={pinnedAssets} />
     </div>
   );

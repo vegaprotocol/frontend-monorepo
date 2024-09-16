@@ -36,7 +36,6 @@ jobs:
           - trading
           - governance
           - explorer
-          - multisig-signer
     name: ${{ matrix.app }}
     runs-on: ubuntu-22.04
     env:

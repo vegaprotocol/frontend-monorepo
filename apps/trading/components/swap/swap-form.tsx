@@ -35,7 +35,6 @@ import {
 } from '@vegaprotocol/markets';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { usePrevious } from '@vegaprotocol/react-helpers';
-import { GetStarted } from '../../components/welcome-dialog/get-started';
 import { SpotData } from './spot-data';
 
 const getAssetBalance = (
@@ -282,7 +281,6 @@ export const SwapForm = ({
       >
         {t('Swap')}
       </Button>
-      <GetStarted lead={t('Connect wallet')} />
       {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
         <Notification
           intent={Intent.Warning}

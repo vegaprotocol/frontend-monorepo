@@ -3,11 +3,9 @@ import { cn } from '../../../utils/cn';
 import type { VegaIconNames } from './vega-icon-record';
 import { VegaIconNameMap } from './vega-icon-record';
 
-export type VegaIconSize = 8 | 10 | 12 | 13 | 14 | 16 | 18 | 20 | 24 | 28 | 32;
-
 export interface VegaIconProps {
   name: VegaIconNames;
-  size?: VegaIconSize;
+  size?: number;
   className?: string;
 }
 

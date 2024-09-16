@@ -25,14 +25,13 @@ import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
 import { WithdrawalsIndicator } from '../withdrawals-indicator';
 import React from 'react';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { Logo } from '../logo';
 
 type MenuState = 'wallet' | 'nav' | null;
 
 export const Navbar = () => {
   const i18n = useI18n();
   const t = useT();
-  const { theme } = useThemeSwitcher();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
@@ -41,7 +40,7 @@ export const Navbar = () => {
   const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   return (
-    <N.Root className="flex justify-between gap-3 px-1 lg:px-4 h-12 text-surface-1-fg">
+    <N.Root className="flex justify-between gap-3 px-1 lg:px-4 h-12 mt-2 text-surface-1-fg">
       {/* Left section */}
       <div className="grow basis-0 flex justify-start items-center">
         <NavLink
@@ -52,12 +51,7 @@ export const Navbar = () => {
             'bg-[color:var(--nav-logo-bg-light)] dark:bg-[color:var(--nav-logo-bg-dark)]'
           )}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt="Logo"
-            src={theme === 'dark' ? './logo-dark.svg' : './logo-light.svg'}
-            className="block w-24"
-          />
+          <Logo />
         </NavLink>
       </div>
 

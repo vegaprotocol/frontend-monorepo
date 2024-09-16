@@ -1,1 +1,1 @@
-export * from './announcement-banner';
+export { OnboardBanner } from './onboard-banner';

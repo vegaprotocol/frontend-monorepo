@@ -6,7 +6,7 @@ export const GradientText = (props: HTMLAttributes<HTMLSpanElement>) => {
     <span
       {...props}
       className={cn(
-        'bg-clip-text text-transparent bg-gradient-to-tr from-highlight-fg via-highlight-secondary-fg to-highlight-tertiary-fg via-30%',
+        'bg-clip-text text-transparent bg-gradient-to-tr from-highlight-fg via-highlight-secondary-fg to-highlight-tertiary-fg via-50%',
         props.className
       )}
     >

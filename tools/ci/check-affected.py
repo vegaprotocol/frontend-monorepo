@@ -56,11 +56,6 @@ projects_e2e = [f'{app}-e2e' for app in projects]
 if "trading-e2e" in projects_e2e:
     projects_e2e.remove("trading-e2e")
 
-# check affection for multisig-signer which is deployed only from develop and pull requests
-if args.event_name == 'pull_request' or 'develop' in args.github_ref:
-    if 'multisig-signer' in affected:
-        affect_app('multisig-signer')
-
 # now parse apps that are deployed from develop but don't have previews
 if 'develop' in args.github_ref:
     for app in ['static', 'ui-toolkit']:

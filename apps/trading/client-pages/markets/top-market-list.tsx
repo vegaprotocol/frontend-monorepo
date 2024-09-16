@@ -25,7 +25,7 @@ export const TopMarketList = ({
             <span className="col-span-3 overflow-hidden">
               <Tooltip description={market.tradableInstrument.instrument.name}>
                 <Link to={Links.MARKET(market.id)}>
-                  <span className="flex items-center">
+                  <span className="flex items-center gap-2">
                     <Emblem market={market.id} size={26} />
                     <span className="text-sm overflow-hidden text-ellipsis">
                       {market.tradableInstrument.instrument.code}

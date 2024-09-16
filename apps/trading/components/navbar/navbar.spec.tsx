@@ -13,7 +13,7 @@ import {
   PartyProfilesDocument,
   type PartyProfilesQuery,
   type PartyProfilesQueryVariables,
-} from '../vega-wallet-connect-button/__generated__/PartyProfiles';
+} from '../../lib/hooks/__generated__/PartyProfiles';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
