@@ -17,7 +17,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
         )}
       >
         <SliderPrimitives.Track className="relative flex justify-between h-1 flex-1 rounded bg-gs-300 dark:bg-gs-300">
-          <SliderPrimitives.Range className="absolute h-1 bg-suface-1-fg" />
+          <SliderPrimitives.Range className="absolute h-1 bg-surface-1-fg" />
           {markers.map((m) => {
             return (
               <button
