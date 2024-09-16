@@ -1,7 +1,7 @@
 {
-  "name": "Vega Protocol - Trading",
+  "name": "APP_NAME - Trading",
   "short_name": "Console",
-  "description": "Vega Protocol - Trading dApp",
+  "description": "APP_NAME - Trading dApp",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
