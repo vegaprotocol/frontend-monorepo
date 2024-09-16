@@ -48,7 +48,7 @@ export const CompetitionsCreateTeam = () => {
   let title = t('Create a team');
   if (isUpgrade) title = t('Upgrade to team');
   if (isSolo) {
-    title = t('Create solo team');
+    title = t('Create my profile');
     if (isUpgrade) {
       title = t('Upgrade to solo team');
     }

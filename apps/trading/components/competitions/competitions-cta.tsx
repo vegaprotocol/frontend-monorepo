@@ -86,7 +86,7 @@ export const CompetitionsActions = ({
   /** Action A */
   let createTeamBtnProps: ComponentProps<typeof ActionButton> = {
     intent: Intent.Secondary,
-    children: t('Create a public team'),
+    children: t('Create a team'),
     disabled: false,
     onClick: (e: event) => {
       e.preventDefault();
@@ -100,7 +100,7 @@ export const CompetitionsActions = ({
   /** Action B */
   let createPrivateTeamBtnProps: ComponentProps<typeof ActionButton> = {
     intent: Intent.Secondary,
-    children: t('Create a private team'),
+    children: t('Create my profile'),
     disabled: false,
     onClick: (e: event) => {
       e.preventDefault();
@@ -172,20 +172,20 @@ export const CompetitionsActions = ({
   return (
     <CompetitionsActionsContainer>
       <CompetitionsAction
+        variant="create-solo-team"
+        title={t('Play as individual')}
+        description={t(
+          'Want to compete but think the best team size is one? This is the option for you.'
+        )}
+        actionElement={<ActionButton {...createPrivateTeamBtnProps} />}
+      />
+      <CompetitionsAction
         variant="create-team"
         title={t('Create a team')}
         description={t(
           'Create a new team, share your code with potential members, or set a whitelist for an exclusive group.'
         )}
         actionElement={<ActionButton {...createTeamBtnProps} />}
-      />
-      <CompetitionsAction
-        variant="create-solo-team"
-        title={t('Solo team / lone wolf')}
-        description={t(
-          'Want to compete but think the best team size is one? This is the option for you.'
-        )}
-        actionElement={<ActionButton {...createPrivateTeamBtnProps} />}
       />
       <CompetitionsAction
         variant="join-team"
