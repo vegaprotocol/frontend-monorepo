@@ -42,7 +42,6 @@ const otherFiles = [
   'apps/explorer/src/index.html',
   'apps/governance/src/assets/manifest.json',
   'apps/governance/src/index.html',
-  'apps/multisig-signer/src/index.html',
   'apps/static/src/index.html',
   'apps/trading/public/manifest.json',
 ];

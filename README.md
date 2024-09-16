@@ -26,10 +26,6 @@ The block explorer for the Vega network, showing details of raw chain states and
 
 Hosting for static content being shared across apps, for example fonts.
 
-### [Multisig-signer](./apps/multisig-signer)
-
-The utility dApp for validators wishing to add or remove themselves as a signer of the multisig contract.
-
 ## 🧱 Libraries in this repo
 
 ### [UI toolkit](./libs/ui-toolkit)
