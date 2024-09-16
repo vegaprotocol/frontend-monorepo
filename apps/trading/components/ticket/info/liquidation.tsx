@@ -23,7 +23,7 @@ export const Liquidation = () => {
   const { data } = useEstimatePosition();
 
   const label = t('Liquidation estimate ({{symbol}})', {
-    symbol: ticket.quoteName,
+    symbol: ticket.quoteSymbol,
   });
 
   const labelWithTooltip = (
