@@ -1,25 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { type ExportRecoveryPhraseFromProperties } from './export-recovery-phrase-form';
 import {
   ExportRecoveryPhraseSection,
   locators,
 } from './export-recovery-phrase-section';
 import { type ViewRecoveryPhraseProperties } from './view-recovery-phrase';
-
-jest.mock('./export-recovery-phrase-form', () => ({
-  ExportRecoveryPhraseForm: (
-    properties: ExportRecoveryPhraseFromProperties
-  ) => (
-    <div data-testid="export-recovery-phrase-form">
-      <button onClick={properties.onClose} data-testid="close" />
-      <button
-        onClick={() => properties.onSuccess('0x1')}
-        data-testid="set-private-key"
-      />
-    </div>
-  ),
-}));
 
 jest.mock('./view-recovery-phrase', () => ({
   ViewRecoveryPhrase: (properties: ViewRecoveryPhraseProperties) => (
