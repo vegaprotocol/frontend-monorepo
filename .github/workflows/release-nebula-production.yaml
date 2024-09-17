@@ -158,7 +158,7 @@ jobs:
           key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           script: |
             sudo rm -rf /var/www/explorer || echo;
-            sudo ln -s /var/www/explorer-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/explorer;
+            sudo ln -s /var/www/explorer-dist/${{ needs.publish_dist.outputs.RELEASE_VERSION }} /var/www/explorer;
 
       - name: Enable published console
         if: ${{ contains(github.ref_name, 'trading') || contains(github.ref_name, 'console') || contains(github.ref_name, 'all') }}
@@ -169,7 +169,7 @@ jobs:
           key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           script: |
             sudo rm -rf /var/www/trading || echo;
-            sudo ln -s /var/www/trading-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/trading;
+            sudo ln -s /var/www/trading-dist/${{ needs.publish_dist.outputs.RELEASE_VERSION }} /var/www/trading;
 
       - name: Enable published governance
         if: ${{ contains(github.ref_name, 'governance') || contains(github.ref_name, 'all') }}
@@ -180,4 +180,4 @@ jobs:
           key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           script: |
             sudo rm -rf /var/www/governance || echo;
-            sudo ln -s /var/www/governance-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/governance;
+            sudo ln -s /var/www/governance-dist/${{ needs.publish_dist.outputs.RELEASE_VERSION }} /var/www/governance;
