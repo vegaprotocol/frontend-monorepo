@@ -14,7 +14,17 @@ import {
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 
 export const useVegaWalletConfig = () => {
-  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL, APP_NAME } = useEnvironment();
+  const {
+    VEGA_ENV,
+    API_NODE,
+    VEGA_WALLET_URL,
+    VEGA_DOCS_URL,
+    VEGA_EXPLORER_URL,
+    VEGA_TOKEN_URL,
+    VEGA_CONSOLE_URL,
+    ETHERSCAN_URL,
+    APP_NAME,
+  } = useEnvironment();
   return useMemo(() => {
     if (!VEGA_ENV || !API_NODE || !VEGA_WALLET_URL || !APP_NAME) return;
 
@@ -36,6 +46,14 @@ export const useVegaWalletConfig = () => {
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: [injected, snap, jsonRpc, viewParty],
+      walletConfig: {
+        explorer: VEGA_EXPLORER_URL ?? '',
+        docs: VEGA_DOCS_URL ?? '',
+        governance: VEGA_TOKEN_URL ?? '',
+        console: VEGA_CONSOLE_URL ?? '',
+        chainId: CHAIN_IDS[VEGA_ENV],
+        etherscanUrl: ETHERSCAN_URL ?? '',
+      },
       appName: APP_NAME,
     });
 

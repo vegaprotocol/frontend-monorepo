@@ -2,13 +2,20 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { type Status } from '@vegaprotocol/wallet';
 import { useT } from '../../hooks/use-t';
 import { BrowserWallet } from '@vegaprotocol/browser-wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { useWallet } from '../../hooks/use-wallet';
+import { useConfig } from '../../hooks/use-config';
 
 export const ConnectionStatus = ({ status }: { status: Status }) => {
   const t = useT();
-  const state = useEnvironment();
-  const vegaChainId = useWallet((store) => store.chainId);
+  const {
+    walletConfig: {
+      explorer,
+      docs,
+      governance,
+      console,
+      chainId,
+      etherscanUrl,
+    },
+  } = useConfig();
 
   if (status === 'connecting') {
     return (
@@ -26,12 +33,12 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
       <>
         <h3 className="text-lg">{t('Importing')}</h3>
         <BrowserWallet
-          explorer={state.VEGA_EXPLORER_URL ?? ''}
-          docs={state.VEGA_DOCS_URL ?? ''}
-          governance={state.VEGA_TOKEN_URL ?? ''}
-          console={state.VEGA_CONSOLE_URL ?? ''}
-          chainId={vegaChainId}
-          etherscanUrl={state.ETHERSCAN_URL ?? ''}
+          explorer={explorer}
+          docs={docs}
+          governance={governance}
+          console={console}
+          chainId={chainId}
+          etherscanUrl={etherscanUrl}
         />
       </>
     );

@@ -89,6 +89,14 @@ export type Config = {
   defaultChainId: string;
   connectors: Connector[];
   appName: string;
+  walletConfig: {
+    explorer: string;
+    docs: string;
+    governance: string;
+    console: string;
+    chainId: string;
+    etherscanUrl: string;
+  };
 };
 
 export type Wallet = {
@@ -99,6 +107,14 @@ export type Wallet = {
   refreshKeys: () => Promise<void>;
   sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
   reset: () => void;
+  walletConfig: {
+    explorer: string;
+    docs: string;
+    governance: string;
+    console: string;
+    chainId: string;
+    etherscanUrl: string;
+  };
   appName: string;
 };
 

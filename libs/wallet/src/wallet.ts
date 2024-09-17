@@ -190,6 +190,7 @@ export function createConfig(cfg: Config): Wallet {
     refreshKeys,
     sendTransaction,
     reset,
+    walletConfig: cfg.walletConfig,
     appName: cfg.appName,
 
     get connectors() {
