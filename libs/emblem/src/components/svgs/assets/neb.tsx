@@ -3,7 +3,7 @@ import { EmblemSvg } from '../emblem-svg';
 
 export const NEB = (props: SVGAttributes<SVGElement>) => {
   return (
-    <EmblemSvg {...props} viewBox="0 0 32 32">
+    <EmblemSvg {...props} viewBox="0 0 32 32" className="p-0.5">
       <title>NEB logo</title>
       <g id="NEB_Token_Icon" clipPath="url(#clip0_9399_50281)">
         <g id="Gradient BG">
