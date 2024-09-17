@@ -2,10 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 const NEW_APP_NAME_LOWERCASE = process.argv[2]?.toLowerCase();
+const NEW_APP_SYMBOL_LOWERCASE = process.argv[3]?.toLowerCase();
 
 if (!NEW_APP_NAME_LOWERCASE) {
   throw new Error(
-    'Please pass in your app name e.g. run the command like node ./libs/i18n/src/locales/en/script.js my_app_name'
+    'Please pass in your app name e.g. run the command like node ./libs/i18n/src/locales/en/script.js my_app_name my_app_symbol'
   );
 }
 
@@ -28,8 +29,8 @@ for (const file of jsonFiles) {
           NEW_APP_NAME_LOWERCASE.charAt(0).toUpperCase() +
             NEW_APP_NAME_LOWERCASE.slice(1)
         )
-        .replace(/VEGA/g, NEW_APP_NAME_LOWERCASE.toUpperCase())
-        .replace(/\$VEGA/g, `$${NEW_APP_NAME_LOWERCASE.toLocaleUpperCase()}`),
+        .replace(/VEGA/g, NEW_APP_SYMBOL_LOWERCASE.toUpperCase())
+        .replace(/\$VEGA/g, `$${NEW_APP_SYMBOL_LOWERCASE.toLocaleUpperCase()}`),
     ])
   );
   fs.writeFileSync(filePath, JSON.stringify(newObject, null, 2), {
