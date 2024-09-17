@@ -2,7 +2,6 @@ import {
   InjectedConnector,
   JsonRpcConnector,
   ViewPartyConnector,
-  // InBrowserConnector,
   QuickStartConnector,
   createConfig,
   fairground,
@@ -10,6 +9,7 @@ import {
   mainnet,
   mirror,
   stagnet,
+  InBrowserConnector,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
@@ -27,7 +27,7 @@ export const useVegaWalletConfig = () => {
     if (!url || !VEGA_WALLET_URL || !APP_NAME) return;
 
     const injected = new InjectedConnector();
-    // const inBrowser = new InBrowserConnector();
+    const inBrowser = new InBrowserConnector();
     const quickStart = new QuickStartConnector();
 
     const jsonRpc = new JsonRpcConnector({
@@ -40,6 +40,7 @@ export const useVegaWalletConfig = () => {
       injected,
       jsonRpc,
       viewParty,
+      inBrowser,
     ].filter((c) => CONFIGURED_WALLETS.includes(c.id));
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
@@ -47,7 +48,6 @@ export const useVegaWalletConfig = () => {
       connectors: filteredConnectors,
       appName: APP_NAME,
     });
-
     return config;
   }, [APP_NAME, CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
 };

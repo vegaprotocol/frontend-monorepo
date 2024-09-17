@@ -59,7 +59,12 @@ export type Key = {
   name: string;
 };
 
-export type Status = 'disconnected' | 'connecting' | 'connected' | 'creating';
+export type Status =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'creating'
+  | 'importing';
 
 export type CoreStore = {
   chainId: string;

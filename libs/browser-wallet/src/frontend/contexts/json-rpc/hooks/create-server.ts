@@ -5,7 +5,10 @@ import { ServerRpcMethods } from '@/lib/server-rpc-methods';
 import { useInteractionStore } from '@/stores/interaction-store';
 
 const { runtime } = getExtensionApi();
-const backgroundPort = runtime.connect({ name: 'popup' });
+let backgroundPort = undefined;
+if (typeof window !== 'undefined') {
+  backgroundPort = runtime.connect({ name: 'popup' });
+}
 
 const maybeCloseWindow = () => {
   const url = new URL(window.location.href);
@@ -32,7 +35,9 @@ const portServer = new PortServer({
   server,
   onconnect: async () => {},
 });
-portServer.listen(backgroundPort);
+if (backgroundPort) {
+  portServer.listen(backgroundPort);
+}
 
 // TODO add own tests
 export const createServer = () => {

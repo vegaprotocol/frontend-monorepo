@@ -7,7 +7,11 @@ import { log } from '@/lib/logging';
 import { useErrorStore } from '@/stores/error';
 
 const { runtime } = getExtensionApi();
-const backgroundPort = runtime.connect({ name: 'popup' });
+
+let backgroundPort = undefined;
+if (typeof window !== 'undefined') {
+  backgroundPort = runtime.connect({ name: 'popup' });
+}
 
 const client = new JSONRPCClient({
   onnotification: (...arguments_) => {
@@ -16,16 +20,16 @@ const client = new JSONRPCClient({
   idPrefix: 'vega-popup-',
   send(message: any) {
     log('info', 'Sending message to background', message);
-    backgroundPort.postMessage(message);
+    backgroundPort?.postMessage(message);
   },
 });
 
-backgroundPort.onMessage.addListener((message: any) => {
+backgroundPort?.onMessage.addListener((message: any) => {
   log('info', 'Received message from background', message);
   client.onmessage(message);
 });
 
-backgroundPort.onDisconnect.addListener(
+backgroundPort?.onDisconnect.addListener(
   /* istanbul ignore next */ () => {
     console.log('Port disconnected from background');
   }
