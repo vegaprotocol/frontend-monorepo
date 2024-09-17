@@ -3,6 +3,7 @@ import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useConfig } from './use-config';
 import { useChainId, useSignTypedData, useSwitchChain } from 'wagmi';
 import { ARBITRUM_CHAIN_ID } from '@vegaprotocol/web3';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 /**
  * Derives a mnemonic from the user's connected Ethereum wallet
@@ -16,6 +17,7 @@ export const useCreateDerivedWallet = (
   const { signTypedDataAsync } = useSignTypedData();
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
+  const { APP_NAME } = useEnvironment();
 
   const mutationResult = useMutation({
     retry: false,
@@ -34,7 +36,7 @@ export const useCreateDerivedWallet = (
         if (!hasWallet) {
           const signedMessage = await signTypedDataAsync({
             domain: { name: 'Onboarding', chainId: BigInt(ARBITRUM_CHAIN_ID) },
-            message: { action: 'Onboarding' },
+            message: { action: `${APP_NAME} Onboarding` },
             primaryType: 'Onboarding',
             types: {
               EIP712Domain: [
