@@ -91,7 +91,16 @@ const NotionalLabel = () => {
   const t = useT();
   const ticket = useTicketContext();
   const label = t('Notional');
-  const symbol = ticket.quoteSymbol;
+
+  let symbol = undefined;
+  switch (ticket.type) {
+    case 'spot':
+      symbol = ticket.quoteAsset.symbol;
+      break;
+    case 'default':
+      symbol = ticket.settlementAsset.symbol;
+      break;
+  }
 
   return <InputLabel label={label} symbol={symbol} />;
 };
