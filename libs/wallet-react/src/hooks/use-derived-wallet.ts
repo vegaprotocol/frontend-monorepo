@@ -3,7 +3,7 @@ import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useConfig } from './use-config';
 import { useChainId, useSignTypedData, useSwitchChain } from 'wagmi';
 
-export const ARBITRUM_CHAIN_ID = 42161;
+export const ETHEREUM_CHAIN_ID = 1;
 
 /**
  * Derives a mnemonic from the user's connected Ethereum wallet
@@ -27,15 +27,15 @@ export const useCreateDerivedWallet = (
         state.store.setState({
           status: 'creating',
         });
-        if (chainId !== ARBITRUM_CHAIN_ID) {
+        if (chainId !== ETHEREUM_CHAIN_ID) {
           await switchChainAsync({
-            chainId: ARBITRUM_CHAIN_ID,
+            chainId: ETHEREUM_CHAIN_ID,
           });
         }
         const hasWallet = await connector.hasWallet();
         if (!hasWallet) {
           const signedMessage = await signTypedDataAsync({
-            domain: { name: 'Onboarding', chainId: BigInt(ARBITRUM_CHAIN_ID) },
+            domain: { name: 'Onboarding', chainId: BigInt(ETHEREUM_CHAIN_ID) },
             message: { action: `${appName} Onboarding` },
             primaryType: 'Onboarding',
             types: {
