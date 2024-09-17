@@ -67,5 +67,16 @@ export const useVegaWalletConfig = () => {
       appName: APP_NAME,
     });
     return config;
-  }, [APP_NAME, CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
+  }, [
+    CONFIGURED_WALLETS,
+    VEGA_ENV,
+    API_NODE,
+    VEGA_WALLET_URL,
+    VEGA_EXPLORER_URL,
+    VEGA_DOCS_URL,
+    VEGA_TOKEN_URL,
+    VEGA_CONSOLE_URL,
+    ETHERSCAN_URL,
+    APP_NAME,
+  ]);
 };
