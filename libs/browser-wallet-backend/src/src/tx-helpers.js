@@ -84,7 +84,7 @@ export async function sendTransaction({ rpc, keys, transaction, sendingMode }) {
   return {
     sentAt,
     transactionHash: res.txHash,
-    signature: txData.txJSON.signature,
+    signature: txData.txJSON.signature.value,
     transaction: txData.txJSON,
   };
 }
