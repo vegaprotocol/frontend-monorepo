@@ -273,6 +273,14 @@ export const theme = {
         transformOrigin: 'center',
       },
     },
+    fadeIn: {
+      from: { opacity: '0' },
+      to: { opacity: '1' },
+    },
+    fadeOut: {
+      from: { opacity: '1' },
+      to: { opacity: '0' },
+    },
     progress: {
       from: { width: '0' },
       to: { width: '100%' },
@@ -282,6 +290,8 @@ export const theme = {
     rotate: 'rotate 2s linear alternate infinite',
     'rotate-back': 'rotate 2s linear reverse infinite',
     progress: 'progress 5s cubic-bezier(.39,.58,.57,1) 1',
+    fadeIn: 'fadeIn 0.2s ease-in',
+    fadeOut: 'fadeOut 0.2s ease-out',
   },
   data: {
     selected: 'state~="checked"',

@@ -40,6 +40,7 @@ export const createMarketSchema = (market: MarketInfo) => {
       timeInForce: z.nativeEnum(OrderTimeInForce),
       tpSl: z.boolean(),
       reduceOnly: z.boolean(),
+      postOnly: z.literal(false),
       takeProfit: z.coerce.number().optional(),
       stopLoss: z.coerce.number().optional(),
     })
@@ -346,6 +347,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       stopExpiryStrategy,
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
+      postOnly: z.literal(false),
       oco: z.boolean(),
       ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection).optional(),
       ocoTriggerType: z.enum(['price', 'trailingPercentOffset']).optional(),

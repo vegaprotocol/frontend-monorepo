@@ -92,14 +92,16 @@ describe('totalFeesFactorsPercentage', () => {
     infrastructureFee: f[0].toString(),
     liquidityFee: f[1].toString(),
     makerFee: f[2].toString(),
+    treasuryFee: f[3].toString(),
+    buyBackFee: f[4].toString(),
   });
   it.each([
-    { i: createFee(0, 0, 1), o: '100%' },
-    { i: createFee(0, 1, 0), o: '100%' },
-    { i: createFee(1, 0, 0), o: '100%' },
-    { i: createFee(0.01, 0.02, 0.003), o: '3.3%' },
-    { i: createFee(0.01, 0.056782, 0.003), o: '6.9782%' },
-    { i: createFee(0.01, 0.056782, 0), o: '6.6782%' },
+    { i: createFee(0, 0, 1, 0, 0), o: '100%' },
+    { i: createFee(0, 1, 0, 0, 0), o: '100%' },
+    { i: createFee(1, 0, 0, 0, 0), o: '100%' },
+    { i: createFee(0.01, 0.02, 0.003, 0.01, 0.02), o: '6.3%' },
+    { i: createFee(0.01, 0.056782, 0.003, 0.01, 0.001), o: '8.0782%' },
+    { i: createFee(0.01, 0.056782, 0, 0.0001, 0.0001), o: '6.6982%' },
   ])('adds fees correctly', ({ i, o }) => {
     expect(totalFeesFactorsPercentage(i)).toEqual(o);
   });
@@ -163,8 +165,10 @@ describe('sumFeesFactors', () => {
         makerFee: '0.1',
         infrastructureFee: '0.2',
         liquidityFee: '0.3',
+        buyBackFee: '0.1',
+        treasuryFee: '0.1',
       })
-    ).toEqual(0.6);
+    ).toEqual(0.8);
   });
 });
 

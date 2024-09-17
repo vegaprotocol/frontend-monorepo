@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEthereumConfig } from '@vegaprotocol/web3';
@@ -40,7 +39,7 @@ export const useRefreshBalances = (address: string) => {
         walletAssociatedBalance,
       });
     } catch (err) {
-      Sentry.captureException(err);
+      console.error(err);
     }
   }, [config, address, token, pubKey, staking, decimals, updateBalances]);
 };

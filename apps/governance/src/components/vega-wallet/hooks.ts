@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import * as Sentry from '@sentry/react';
 import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
 import React from 'react';
@@ -222,7 +221,7 @@ export const usePollForDelegations = () => {
             setDelegatedNodes(delegatedAmounts);
           })
           .catch((err: Error) => {
-            // if party isn't found, dont log to Sentry, just clear state as, user
+            // if party isn't found, dont log, just clear state as, user
             // will not have any delagations or accounts
             if (isPartyNotFoundError(err)) {
               setDelegations([]);
@@ -231,7 +230,7 @@ export const usePollForDelegations = () => {
               setCurrentStakeAvailable(new BigNumber(0));
               return;
             }
-            Sentry.captureException(err);
+            console.error(err);
             // If query fails stop interval. Its almost certain that the query
             // will just continue to fail
             clearInterval(interval);

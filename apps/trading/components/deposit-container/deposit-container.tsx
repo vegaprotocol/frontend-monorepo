@@ -31,7 +31,9 @@ export const DepositContainer = ({
   const asset = assets?.find((a) => a.id === initialAssetId);
 
   if ((loading || !squid) && !squidError) {
-    return <p>{t('Loading')}</p>;
+    return (
+      <p className="text-sm text-surface-1-fg-muted pt-2">{t('Loading...')}</p>
+    );
   }
 
   // If we have squid initialized show the form which allows swaps

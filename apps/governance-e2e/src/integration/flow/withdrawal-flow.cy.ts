@@ -1,7 +1,6 @@
 import {
   navigateTo,
   navigation,
-  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
@@ -51,7 +50,6 @@ context.skip(
     // @ts-ignore clash between jest and cypress
     beforeEach('Navigate to withdrawal page', function () {
       cy.clearLocalStorage();
-      turnTelemetryOff();
       cy.mockChainId();
       cy.reload();
       waitForSpinner();

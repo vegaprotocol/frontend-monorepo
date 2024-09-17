@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import * as Sentry from '@sentry/react';
 import React from 'react';
 
 import { useContracts } from '../../../contexts/contracts/contracts-context';
@@ -88,7 +87,7 @@ export const usePollForStakeLinking = (
           }
         })
         .catch((err) => {
-          Sentry.captureException(err);
+          console.error(err);
           clearInterval(interval);
         });
     }, 1000);

@@ -1,5 +1,4 @@
 import { useT } from '../../lib/use-t';
-import { ErrorBoundary } from '@sentry/react';
 import { ExternalLink, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link } from 'react-router-dom';
@@ -17,6 +16,7 @@ import { Trans } from 'react-i18next';
 import { DocsLinks } from '@vegaprotocol/environment';
 
 import { HeaderHero } from '../../components/header-hero';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -43,7 +43,7 @@ export const CompetitionsHome = () => {
   } = useMyTeam();
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary feature="competitions">
       <HeaderHero title={t('Competitions')}>
         <p>
           <Trans

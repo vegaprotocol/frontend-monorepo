@@ -1,7 +1,6 @@
 import { useDataProvider, type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import { updateLevels, combineVolume } from './orderbook-data';
-import { captureException } from '@sentry/react';
 
 import {
   MarketDepthDocument,
@@ -33,7 +32,7 @@ export const update: Update<
       return data;
     }
     if (delta.previousSequenceNumber !== data.depth.sequenceNumber) {
-      captureException(
+      console.error(
         new Error(
           `Sequence number gap between delta previousSequenceNumber and stored sequence number in marketsDepthUpdate for market ${data.id}; ${delta.previousSequenceNumber} !== ${data.depth.sequenceNumber}, data provider reload`
         )

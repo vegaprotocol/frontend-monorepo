@@ -1,5 +1,4 @@
 import { Card } from '../../components/card';
-import { Logo } from '../../components/logo';
 import { APP_NAME } from '../../lib/constants';
 import { ns, useT } from '../../lib/use-t';
 import {
@@ -125,15 +124,15 @@ const ProminentConnectionOptions = () => {
   const quickStartConnector = connectors.find(
     (c) => c.id === 'embedded-wallet-quickstart'
   );
-  const injectedConnector = connectors.find((c) => c.id === 'injected');
+  // const injectedConnector = connectors.find((c) => c.id === 'injected');
 
-  if (!quickStartConnector || !injectedConnector) {
+  if (!quickStartConnector) {
     throw new Error('must provide quickstart or injected connector');
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 row-auto gap-4">
-      <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
+    <div className="flex justify-center gap-4">
+      <Card className="flex flex-col gap-4 p-8 items-center text-center border">
         <div className="flex flex-col gap-4 items-center justify-center">
           <LogoCircle>
             <VegaIcon name={VegaIconNames.ETHEREUM} size={25} />
@@ -154,7 +153,7 @@ const ProminentConnectionOptions = () => {
           />
         </div>
       </Card>
-      <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
+      {/* <Card className="grid grid-rows-[subgrid] gap-4 row-span-2 flex-1 p-8 items-center text-center border">
         <div className="flex flex-col gap-4 items-center justify-center">
           <LogoCircle>
             <Logo />
@@ -178,7 +177,7 @@ const ProminentConnectionOptions = () => {
           </Button>
           <ErrorMessage id="injected" />
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 };

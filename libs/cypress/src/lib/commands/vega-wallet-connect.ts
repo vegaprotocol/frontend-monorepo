@@ -76,8 +76,6 @@ export function addSetVegaWallet() {
         'vega_onboarding',
         JSON.stringify(onboardingViewedState)
       );
-      win.localStorage.setItem('vega_telemetry_approval', 'false');
-      win.localStorage.setItem('vega_telemetry_viewed', 'true');
       win.localStorage.setItem(
         'vega_wallet_store',
         JSON.stringify({
@@ -99,8 +97,6 @@ export function addSetOnBoardingViewed() {
         'vega_onboarding',
         JSON.stringify(onboardingViewedState)
       );
-      win.localStorage.setItem('vega_telemetry_approval', 'false');
-      win.localStorage.setItem('vega_telemetry_viewed', 'true');
     });
   });
 }

@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import * as Sentry from '@sentry/react';
 import {
   type BatchProposalSubmissionBody,
   type ProposalSubmissionBody,
@@ -46,7 +45,7 @@ export const useProposalSubmit = () => {
           }
         }
       } catch (e) {
-        Sentry.captureException(e);
+        console.error(e);
       }
     },
     [pubKey, send, setComplete, waitForProposalEvent]

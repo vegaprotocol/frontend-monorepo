@@ -45,9 +45,7 @@ import {
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { ToastsManager } from './toasts-manager';
-import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog';
 import { useTranslation } from 'react-i18next';
-import { useSentryInit } from './hooks/use-sentry-init';
 import { useVegaWalletConfig } from './hooks/use-vega-wallet-config';
 
 const cache: InMemoryCacheConfig = {
@@ -157,7 +155,6 @@ const Web3Container = ({
                   <TransactionModal />
                   <CreateWithdrawalDialog />
                   <WithdrawalApprovalDialogContainer />
-                  <TelemetryDialog />
                 </>
               </BalanceManager>
             </AppLoader>
@@ -193,8 +190,6 @@ const AppContainer = () => {
 
   // Hacky skip all the loading & web3 init for geo restricted users
   const isRestricted = document?.location?.pathname?.includes('/restricted');
-
-  useSentryInit();
 
   if (isRestricted) {
     return (

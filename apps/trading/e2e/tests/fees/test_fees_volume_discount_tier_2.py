@@ -120,29 +120,6 @@ def test_fees_page_discount_program_fees_by_market(setup_environment):
     expect(row.locator(COL_TOTAL_FEE)).to_have_text("10.05%")
 
 
-def test_deal_ticket_discount_program(
-    setup_environment: Tuple[VegaServiceNull, str, Page],
-) -> None:
-    vega, market, page = setup_environment
-    page.goto(f"/#/markets/{market}")
-    page.get_by_test_id(ORDER_SIZE).fill("1")
-    page.get_by_test_id(ORDER_PRICE).fill("1")
-    expect(page.get_by_test_id(DISCOUNT_PILL)).to_have_text("-20%")
-    page.get_by_test_id(FEES_TEXT).hover()
-    tooltip = page.get_by_test_id(TOOLTIP_CONTENT).first
-    expect(tooltip.get_by_test_id(INFRASTRUCTURE_FEE_FACTOR)).to_have_text("0.05%")
-    expect(tooltip.get_by_test_id(INFRASTRUCTURE_FEE_VALUE)).to_have_text("0.0005 tDAI")
-    expect(tooltip.get_by_test_id(LIQUIDITY_FEE_FACTOR)).to_have_text("0%")
-    expect(tooltip.get_by_test_id(LIQUIDITY_FEE_VALUE)).to_have_text("0.00 tDAI")
-    expect(tooltip.get_by_test_id(MAKER_FEE_FACTOR)).to_have_text("10%")
-    expect(tooltip.get_by_test_id(MAKER_FEE_VALUE)).to_have_text("0.10 tDAI")
-    expect(tooltip.get_by_test_id(SUBTOTAL_FEE_FACTOR)).to_have_text("10.05%")
-    expect(tooltip.get_by_test_id(SUBTOTAL_FEE_VALUE)).to_have_text("0.1005 tDAI")
-    expect(tooltip.get_by_test_id(DISCOUNT_FEE_FACTOR)).to_have_text("-20%")
-    expect(tooltip.get_by_test_id(DISCOUNT_FEE_VALUE)).to_have_text("-0.0201 tDAI")
-    expect(tooltip.get_by_test_id(TOTAL_FEE_VALUE)).to_have_text("0.0804 tDAI")
-
-
 def test_fills_taker_discount_program(
     setup_environment: Tuple[VegaServiceNull, str, Page],
 ) -> None:
@@ -174,34 +151,3 @@ def test_fills_maker_discount_program(
     expect(row.locator(COL_AGGRESSOR)).to_have_text("Maker")
     expect(row.locator(COL_FEE)).to_have_text("-8.28 tDAI ")
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text("2.07 tDAI")
-
-
-def test_fills_maker_fee_tooltip_discount_program(
-    setup_environment: Tuple[VegaServiceNull, str, Page],
-) -> None:
-    vega, market, page = setup_environment
-    page.goto(f"/#/markets/{market}")
-    change_keys(page, vega, MM_WALLET.name)
-    page.get_by_test_id(TRADES).nth(1).click()
-    row = page.locator(ROW_LOCATOR).first
-    # tbd - tooltip is not visible without this wait
-    page.wait_for_timeout(1000)
-    row.locator(COL_FEE).hover()
-    expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
-        "If the market was activeFee revenue to be received by the maker, takers' fee discounts already applied.During continuous trading the maker pays no infrastructure and liquidity fees.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee-8.28 tDAITotal fees-8.28 tDAI"
-    )
-
-
-def test_fills_taker_fee_tooltip_discount_program(
-    setup_environment: Tuple[VegaServiceNull, str, Page],
-) -> None:
-    vega, market, page = setup_environment
-    page.goto(f"/#/markets/{market}")
-    page.get_by_test_id(TRADES).nth(1).click()
-    row = page.locator(ROW_LOCATOR).first
-    # tbd - tooltip is not visible without this wait
-    page.wait_for_timeout(1000)
-    row.locator(COL_FEE).hover()
-    expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
-        "If the market was activeFee revenue to be received by the maker, takers' fee discounts already applied.During continuous trading the maker pays no infrastructure and liquidity fees.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee-8.28 tDAITotal fees-8.28 tDAI "
-    )

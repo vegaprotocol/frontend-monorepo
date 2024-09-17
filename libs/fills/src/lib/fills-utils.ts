@@ -74,6 +74,12 @@ export const getFeesBreakdown = (
 
   // If role is taker, then these are the fees to be paid
   let { makerFee, infrastructureFee, liquidityFee } = fees;
+
+  // These can be empty so default them to zero
+  let buyBackFee = fees.buyBackFee || '0';
+  let treasuryFee = fees.treasuryFee || '0';
+  let highVolumeMakerFee = fees.highVolumeMakerFee || '0';
+
   // If role is taker, then these are the fees discounts to be applied
   let {
     makerFeeVolumeDiscount,
@@ -89,6 +95,9 @@ export const getFeesBreakdown = (
       makerFee = new BigNumber(fees.makerFee).times(-1).toString();
       infrastructureFee = '0';
       liquidityFee = '0';
+      buyBackFee = '0';
+      treasuryFee = '0';
+      highVolumeMakerFee = '0';
 
       // discounts are also zero or we can leave them undefined
       infrastructureFeeReferralDiscount =
@@ -107,6 +116,12 @@ export const getFeesBreakdown = (
     liquidityFee = new BigNumber(liquidityFee).dividedBy(2).toString();
     // maker fee is already zero
     makerFee = '0';
+
+    // Different handling for auction mode
+    // https://github.com/vegaprotocol/specs/blob/suzukacastle_II/protocol/0029-FEES-fees.md#normal-auctions-including-market-protection-and-opening-auctions
+    highVolumeMakerFee = '0';
+    treasuryFee = new BigNumber(treasuryFee).dividedBy(2).toString();
+    buyBackFee = new BigNumber(buyBackFee).dividedBy(2).toString();
 
     // discounts are also halved
     infrastructureFeeReferralDiscount =
@@ -129,6 +144,9 @@ export const getFeesBreakdown = (
   const totalFee = new BigNumber(infrastructureFee)
     .plus(makerFee)
     .plus(liquidityFee)
+    .plus(treasuryFee)
+    .plus(buyBackFee)
+    .plus(highVolumeMakerFee)
     .toString();
 
   const totalFeeDiscount = new BigNumber(makerFeeVolumeDiscount || '0')
@@ -149,6 +167,9 @@ export const getFeesBreakdown = (
     makerFee,
     makerFeeReferralDiscount,
     makerFeeVolumeDiscount,
+    buyBackFee,
+    treasuryFee,
+    highVolumeMakerFee,
     totalFee,
     totalFeeDiscount,
   };

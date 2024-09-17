@@ -230,14 +230,14 @@ jobs:
   #           exit 1
   #         fi
 
-  #     - name: Check Trading E2E Tests Result
-  #       run: |
-  #         result="${{ needs.trading-e2e.result }}"
-  #         echo "Trading E2E Tests Result: $result"
-  #         if [[ $result != "success" && $result != "skipped" ]]; then
-  #           echo "Failing due to Trading E2E tests."
-  #           exit 1
-  #         fi
+  # - name: Check Trading E2E Tests Result
+  #   run: |
+  #     result="${{ needs.trading-e2e.result }}"
+  #     echo "Trading E2E Tests Result: $result"
+  #     if [[ $result != "success" && $result != "skipped" ]]; then
+  #       echo "Failing due to Trading E2E tests."
+  #       exit 1
+  #     fi
 
-  #     - name: All Tests Passed
-  #       run: echo "All specified tests have passed successfully."
+  # - name: All Tests Passed
+  #   run: echo "All specified tests have passed successfully."

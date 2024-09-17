@@ -1,5 +1,4 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import type { LoggerProps } from '@vegaprotocol/logger';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -11,12 +10,12 @@ import { isTestEnv } from '@vegaprotocol/utils';
 
 export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
 
-export const useEagerConnect = (loggerConf: LoggerProps) => {
+const logger = localLoggerFactory({ application: 'use-eager-connect' });
+
+export const useEagerConnect = () => {
   const connectors = useWeb3ConnectStore((store) => store.connectors);
   const [eagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const attemptedRef = useRef(false);
-
-  const logger = localLoggerFactory(loggerConf);
 
   useEffect(() => {
     if (attemptedRef.current || isTestEnv()) return;
@@ -37,7 +36,7 @@ export const useEagerConnect = (loggerConf: LoggerProps) => {
     tryConnectEagerly();
 
     attemptedRef.current = true;
-  }, [eagerConnector, connectors, logger]);
+  }, [eagerConnector, connectors]);
 };
 
 const getConnector = (

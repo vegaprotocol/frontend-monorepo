@@ -1,7 +1,3 @@
-import * as Sentry from '@sentry/react';
-import type { Scope } from '@sentry/browser';
-import type { Severity, Breadcrumb, Primitive } from '@sentry/types';
-
 declare global {
   // eslint-disable-next-line no-var
   var __LOGGER_SILENT_MODE__: boolean;
@@ -38,12 +34,6 @@ export interface LoggerConf {
   tags?: string[];
   logLevel?: LogLevelsType;
 }
-
-const isPrimitive = (arg: ConsoleArg | undefined | null): arg is Primitive => {
-  return ['string', 'number', 'boolean', 'bigint', 'symbol'].includes(
-    typeof arg
-  );
-};
 
 export class LocalLogger {
   static levelLogMap: Record<LogLevelsType, number> = {
@@ -107,58 +97,6 @@ export class LocalLogger {
         ...args,
       ]);
     }
-    this._transmit(level, args);
-  }
-  private _extractArgs(
-    level: LogLevelsType,
-    args: ConsoleArg[]
-  ): [string, Error, Scope] {
-    const arg = args.shift();
-    const error = arg instanceof Error ? arg : null;
-    const msg = error ? error.message : String(arg);
-    const scope = new Sentry.Scope();
-    scope.setLevel(level as Severity);
-    let logArgs: Record<string, unknown>;
-    try {
-      logArgs = { args: JSON.stringify(args) };
-    } catch (e) {
-      logArgs = { args };
-    }
-    scope.setContext('event-record', logArgs);
-    if (this.tags.length) {
-      this.tags.forEach((tag) => {
-        const found = args.reduce((aggr, arg) => {
-          if (arg && typeof arg === 'object' && tag in arg) {
-            // @ts-ignore change object to record
-            aggr = arg[tag] as unknown as Primitive | object;
-          }
-          return aggr;
-        }, null as Primitive | object);
-        if (isPrimitive(found)) {
-          scope.setTag(tag, found);
-        }
-      });
-    }
-    return [msg, error || new Error(msg), scope];
-  }
-  private _transmit(level: LogLevelsType, args: ConsoleArg[]) {
-    const [msg, error, logEvent] = this._extractArgs(level, args);
-    switch (level) {
-      case 'debug':
-      case 'info':
-      case 'log':
-      case 'warning':
-        Sentry.captureMessage(msg, logEvent);
-        return;
-      case 'error':
-      case 'critical':
-      case 'fatal':
-        Sentry.captureException(error, logEvent);
-        return;
-    }
-  }
-  public addSentryBreadcrumb(breadcrumb: Breadcrumb) {
-    Sentry.addBreadcrumb(breadcrumb);
   }
   public setLogLevel(logLevel: LogLevelsType) {
     this._logLevel = logLevel;

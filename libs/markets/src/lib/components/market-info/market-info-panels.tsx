@@ -115,6 +115,8 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => {
           makerFee: market.fees.factors.makerFee,
           infrastructureFee: market.fees.factors.infrastructureFee,
           liquidityFee: market.fees.factors.liquidityFee,
+          buyBackFee: market.fees.factors.buyBackFee,
+          treasuryFee: market.fees.factors.treasuryFee,
           totalFees: totalFeesFactorsPercentage(market.fees.factors),
         }}
         asPercentage={true}
