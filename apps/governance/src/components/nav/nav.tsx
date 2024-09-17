@@ -10,27 +10,12 @@ import {
   NavigationLink,
   NavigationList,
   NavigationTrigger,
-  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { EthWallet } from '../eth-wallet';
 import { VegaWallet } from '../vega-wallet';
 import { useLocation, useMatch } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useTelemetryDialog } from '../telemetry-dialog/telemetry-dialog';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
-
-export const SettingsLink = () => {
-  const { open, isOpen, close } = useTelemetryDialog();
-  return (
-    <button
-      type="button"
-      onClick={() => (isOpen ? close() : open())}
-      aria-label="Open Telemetry Settings"
-    >
-      <Icon name="cog" className="w-5 h-5 mr-2" />
-    </button>
-  );
-};
 
 export const Nav = () => {
   const { t } = useTranslation();
@@ -60,12 +45,7 @@ export const Nav = () => {
     <Navigation
       appName="Governance"
       breakpoints={[458, 959]}
-      actions={
-        <>
-          <SettingsLink />
-          <ProtocolUpgradeCountdown />
-        </>
-      }
+      actions={<ProtocolUpgradeCountdown />}
     >
       <NavigationList
         className="[.drawer-content_&]:border-b [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"

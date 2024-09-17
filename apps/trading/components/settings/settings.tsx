@@ -9,7 +9,6 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
@@ -33,7 +32,6 @@ export const SettingsPopover = () => {
 export const Settings = () => {
   const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
-  const [isApproved, setIsApproved] = useTelemetryApproval();
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,18 +42,6 @@ export const Settings = () => {
           name="settings-theme-switch"
           onCheckedChange={() => setTheme()}
           checked={theme === 'dark'}
-        />
-      </SettingsGroup>
-      <SettingsGroup
-        label={t('Share usage data')}
-        helpText={t(
-          'Help identify bugs and improve the service by sharing anonymous usage data.'
-        )}
-      >
-        <Switch
-          name="settings-telemetry-switch"
-          onCheckedChange={(isOn) => setIsApproved(isOn ? 'true' : 'false')}
-          checked={isApproved === 'true'}
         />
       </SettingsGroup>
       <SettingsGroup label={t('Toast location')}>

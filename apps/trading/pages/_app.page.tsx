@@ -22,7 +22,6 @@ import {
   ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
-import { Telemetry } from '../components/telemetry';
 import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
@@ -92,7 +91,6 @@ function AppBody({ Component }: AppProps) {
       <TransactionHandlers />
       <MaybeConnectEagerly />
       <PartyActiveOrdersHandler />
-      <Telemetry />
       <div className="hidden lg:block absolute bottom-1.5 pb-px right-2 z-10">
         <NodeHealthContainer />
       </div>

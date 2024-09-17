@@ -2,7 +2,6 @@
 import {
   navigateTo,
   navigation,
-  turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
@@ -39,7 +38,6 @@ context(
     // @ts-ignore clash between jest and cypress
     beforeEach('visit proposals', function () {
       cy.clearLocalStorage();
-      turnTelemetryOff();
       cy.mockChainId();
       cy.reload();
       waitForSpinner();

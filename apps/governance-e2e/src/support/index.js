@@ -9,7 +9,6 @@ import './wallet-functions.ts';
 import './proposal.functions.ts';
 import 'cypress-mochawesome-reporter/register';
 import registerCypressGrep from '@cypress/grep';
-import { turnTelemetryOff } from './common.functions.ts';
 registerCypressGrep();
 
 // Hide fetch/XHR requests - They create a lot of noise in command log
@@ -24,8 +23,6 @@ if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
 
 before(() => {
   cy.clearLocalStorage();
-  // // Ensuring the telemetry modal doesn't disrupt the tests
-  turnTelemetryOff();
   // Mock chainId fetch which happens on every page for wallet connection
   cy.mockChainId();
   // Self stake validators so they are displayed

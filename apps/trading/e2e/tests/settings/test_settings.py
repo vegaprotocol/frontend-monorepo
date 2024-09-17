@@ -10,26 +10,6 @@ def vega(request):
         yield vega_instance
 
 
-@pytest.mark.usefixtures("risk_accepted")
-def test_share_usage_data(page: Page):
-    page.goto("/")
-    page.get_by_test_id("Settings").click()
-    telemetry_switch = page.locator("#switch-settings-telemetry-switch")
-    expect(telemetry_switch).to_have_attribute("data-state", "unchecked")
-
-    telemetry_switch.click()
-    expect(telemetry_switch).to_have_attribute("data-state", "checked")
-    page.reload()
-    page.get_by_test_id("Settings").click()
-    expect(telemetry_switch).to_have_attribute("data-state", "unchecked")
-
-    telemetry_switch.click()
-    expect(telemetry_switch).to_have_attribute("data-state", "checked")
-    page.reload()
-    page.get_by_test_id("Settings").click()
-    expect(telemetry_switch).to_have_attribute("data-state", "unchecked")
-
-
 # Define a mapping of icon selectors to toast selectors
 ICON_TO_TOAST = {
     'aria-label="arrow-top-left icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',

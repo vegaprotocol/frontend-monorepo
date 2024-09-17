@@ -295,8 +295,6 @@ def risk_accepted_setup(page: Page):
     })
     storage_javascript = [
         f"localStorage.setItem('vega_onboarding', '{onboarding_config}');",
-        "localStorage.setItem('vega_telemetry_approval', 'false');",
-        "localStorage.setItem('vega_telemetry_viewed', 'true');",
     ]
     script = "".join(storage_javascript)
     page.add_init_script(script)
