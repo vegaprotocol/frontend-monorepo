@@ -32,7 +32,7 @@ export function EmblemByAsset(p: EmblemByAssetProps) {
       )}
       {ChainSvg && (
         <ChainSvg
-          className="absolute -bottom-px -right-px"
+          className="absolute -bottom-px -right-1"
           width={16}
           height={16}
         />

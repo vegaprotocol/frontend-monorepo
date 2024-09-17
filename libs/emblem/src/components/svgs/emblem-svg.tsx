@@ -6,7 +6,7 @@ export const EmblemSvg = (props: SVGAttributes<SVGElement>) => {
     <svg
       viewBox="0 0 32 32"
       {...props}
-      className={cn('inline-block', props.className)}
+      className={cn('inline-block rounded-full', props.className)}
       width={props.width || 32}
       height={props.height || 32}
     >
