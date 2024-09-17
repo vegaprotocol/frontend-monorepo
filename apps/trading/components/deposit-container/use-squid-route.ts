@@ -2,23 +2,15 @@ import debounce from 'lodash/debounce';
 import { useEffect, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 import { ChainType } from '@0xsquid/squid-types';
-import {
-  ARBITRUM_SQUID_RECEIVER_ABI,
-  BRIDGE_ABI,
-  prepend0x,
-} from '@vegaprotocol/smart-contracts';
+import { SQUID_RECEIVER_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
 import { removeDecimal } from '@vegaprotocol/utils';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { useQuery } from '@tanstack/react-query';
 import { useSquid } from './use-squid';
-import { type FormFields, type Configs, formSchema } from './form-schema';
+import { type FormFields, formSchema } from './form-schema';
 import { encodeFunctionData } from 'viem';
 import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
-import {
-  type Address,
-  ARBITRUM_CHAIN_ID,
-  ARBITRUM_SQUID_RECEIVER_ADDRESS,
-} from './constants';
+import { SQUID_RECEIVER_ADDRESS } from './constants';
 import { useT } from '../../lib/use-t';
 
 /**
@@ -28,12 +20,10 @@ import { useT } from '../../lib/use-t';
 export const useSquidRoute = ({
   form,
   toAsset,
-  configs,
   enabled = false,
 }: {
   form: UseFormReturn<FormFields>;
   toAsset?: AssetERC20;
-  configs: Configs;
   enabled?: boolean;
 }) => {
   const t = useT();
@@ -83,64 +73,29 @@ export const useSquidRoute = ({
         return null;
       }
 
-      const config = configs.find((c) => c.chain_id === toAsset.source.chainId);
-
-      if (!config) return null;
-
       const fromAmount = removeDecimal(fields.amount, fromAsset.decimals);
 
-      // The default bridgeAddress for the selected toAsset if an arbitrum
-      // to asset is selected will get changed to the squid receiver address
-      let bridgeAddress = config.collateral_bridge_contract.address as Address;
-      let approveCallData;
-      let depositCallData;
+      const approveCallData = encodeFunctionData({
+        abi: getErc20Abi({
+          address: toAsset.source.contractAddress,
+        }),
+        functionName: 'approve',
+        args: [SQUID_RECEIVER_ADDRESS, BigInt(fromAmount)],
+      });
 
-      // Squid cannot guarantee that the funds will make it to the end desitination
-      // so there is a squid reciever contarct we should use if we are making a swap
-      // into an arbitrum asset
-      //
-      // TODO: there will in future be an ethereum squid receiver contract. We will
-      // need to ensure that contracts is used if making a swap to an Ethereum token
-      if (toAsset.source.chainId === ARBITRUM_CHAIN_ID) {
-        bridgeAddress = ARBITRUM_SQUID_RECEIVER_ADDRESS;
-        approveCallData = encodeFunctionData({
-          abi: getErc20Abi({
-            address: toAsset.source.contractAddress,
-          }),
-          functionName: 'approve',
-          args: [bridgeAddress, BigInt(fromAmount)],
-        });
-
-        // NOTE that the squid receiver deposit contract takes a 4th argument which is the recovery
-        // address if squid is unable to fulfill the swap
-        depositCallData = encodeFunctionData({
-          abi: ARBITRUM_SQUID_RECEIVER_ABI,
-          functionName: 'deposit',
-          args: [
-            toAsset.source.contractAddress,
-            '0',
-            prepend0x(fields.toPubKey),
-            fields.fromAddress,
-          ],
-        });
-      } else {
-        approveCallData = encodeFunctionData({
-          abi: getErc20Abi({
-            address: toAsset.source.contractAddress,
-          }),
-          functionName: 'approve',
-          args: [bridgeAddress, BigInt(fromAmount)],
-        });
-        depositCallData = encodeFunctionData({
-          abi: BRIDGE_ABI,
-          functionName: 'deposit_asset',
-          args: [
-            toAsset.source.contractAddress,
-            '0',
-            prepend0x(fields.toPubKey),
-          ],
-        });
-      }
+      // NOTE Squid cannot guarantee that the funds will make it to the end desitination
+      // so the squid receiver contract takes a 4th argument, the recover address.
+      // If squid is unable to fulfill the swap the funds can be retrieved using that address
+      const depositCallData = encodeFunctionData({
+        abi: SQUID_RECEIVER_ABI,
+        functionName: 'deposit',
+        args: [
+          toAsset.source.contractAddress,
+          '0',
+          prepend0x(fields.toPubKey),
+          fields.fromAddress,
+        ],
+      });
 
       const result = await squid.getRoute({
         fromAddress: fields.fromAddress,
@@ -170,7 +125,7 @@ export const useSquidRoute = ({
             {
               chainType: ChainType.EVM,
               callType: 1, // SquidCallType.FULL_TOKEN_BALANCE
-              target: ARBITRUM_SQUID_RECEIVER_ADDRESS,
+              target: SQUID_RECEIVER_ADDRESS,
               value: '0',
               callData: depositCallData,
               payload: {

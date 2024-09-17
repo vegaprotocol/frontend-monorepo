@@ -104,7 +104,6 @@ export const DepositForm = ({
   } = useSquidRoute({
     form,
     toAsset,
-    configs,
     enabled: isSwap,
   });
 
@@ -121,6 +120,7 @@ export const DepositForm = ({
       <form
         data-testid="deposit-form"
         onSubmit={form.handleSubmit(async (fields) => {
+          // Get full details of the chosen assets
           const fromAsset = tokens.find(
             (t) =>
               t.address === fields.fromAsset && t.chainId === fields.fromChain
@@ -128,20 +128,8 @@ export const DepositForm = ({
           const toAsset = assets?.find((a) => a.id === fields.toAsset);
 
           if (!toAsset || toAsset.source.__typename !== 'ERC20') {
-            throw new Error('invalid asset');
+            throw new Error('no to asset');
           }
-
-          const config = configs.find(
-            (c) => c.chain_id === toAsset.source.chainId
-          );
-
-          if (!config) {
-            throw new Error(`no bridge for toAsset ${toAsset.id}`);
-          }
-
-          // The default bridgeAddress for the selected toAsset if an arbitrum
-          // to asset is selected will get changed to the squid receiver address
-          const bridgeAddress = config.collateral_bridge_contract.address;
 
           if (!fromAsset) {
             throw new Error('no from asset');
@@ -151,15 +139,26 @@ export const DepositForm = ({
             await switchChainAsync({ chainId: Number(fromAsset.chainId) });
           }
 
-          if (
+          const isSwapRequired =
             fromAsset.address.toLowerCase() ===
-            toAsset.source.contractAddress.toLowerCase()
-          ) {
+            toAsset.source.contractAddress.toLowerCase();
+
+          if (isSwapRequired) {
             // Same asset, no swap required, use normal ethereum bridge
             // or normal arbitrum bridge to swap
+
+            // Find the matching config for the selected asset
+            const config = configs.find(
+              (c) => c.chain_id === toAsset.source.chainId
+            );
+
+            if (!config) {
+              throw new Error(`no bridge for toAsset ${toAsset.id}`);
+            }
+
             submitDeposit({
               asset: toAsset,
-              bridgeAddress,
+              bridgeAddress: config.collateral_bridge_contract.address,
               amount: fields.amount,
               toPubKey: fields.toPubKey,
               requiredConfirmations: config?.confirmations || 1,
@@ -170,7 +169,11 @@ export const DepositForm = ({
         })}
       >
         <Fields.FromAddress control={form.control} />
-        <Fields.FromChain control={form.control} chains={squid.chains} />
+        <Fields.FromChain
+          control={form.control}
+          chains={squid.chains}
+          tokens={squid.tokens}
+        />
         <Fields.FromAsset
           control={form.control}
           tokens={tokens}
