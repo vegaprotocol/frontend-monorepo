@@ -132,6 +132,7 @@ export default function init({
       },
       async 'client.send_transaction'(params, context) {
         const receivedAt = new Date().toISOString();
+        // TODO the validation needs to be moved into this repo so this is consistent with current protos
         // doValidate(clientValidation.sendTransaction, params);
         if (context.isConnected !== true)
           throw new JSONRPCServer.Error(...Errors.NOT_CONNECTED);
