@@ -8,7 +8,7 @@ import { useErrorStore } from '@/stores/error';
 
 const { runtime } = getExtensionApi();
 
-let backgroundPort = undefined;
+let backgroundPort: ReturnType<typeof runtime.connect> | undefined = undefined;
 if (typeof window !== 'undefined') {
   backgroundPort = runtime.connect({ name: 'popup' });
 }
@@ -60,6 +60,7 @@ export const useCreateClient = () => {
           throw error;
         } else {
           setError(error as Error);
+          return null;
         }
       }
     },
