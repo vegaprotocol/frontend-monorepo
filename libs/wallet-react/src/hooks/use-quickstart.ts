@@ -1,4 +1,4 @@
-import { useAccount, useAccountEffect, useChainId } from 'wagmi';
+import { useAccount, useAccountEffect } from 'wagmi';
 import { useCreateDerivedWallet } from './use-derived-wallet';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useModal } from 'connectkit';
@@ -13,12 +13,10 @@ export const useQuickstart = ({
   onSuccess: () => void;
 }) => {
   const awaitingWallet = useRef(false);
-  const chainId = useChainId();
   const modal = useModal();
   const account = useAccount();
   const mutationResult = useCreateDerivedWallet(
     connector,
-    chainId,
     onSuccess,
     account.address
   );
