@@ -8,30 +8,46 @@ import { useState } from 'react';
 export const useSquidExecute = () => {
   const signer = useEthersSigner();
   const { data: squid } = useSquid();
-  const [hash, setHash] = useState<string>();
 
-  const { mutate, ...mutation } = useMutation({
+  const [transaction, setTransaction] =
+    useState<ethers.providers.TransactionResponse>();
+  const [receipt, setReceipt] = useState<ethers.providers.TransactionReceipt>();
+
+  const mutation = useMutation({
     mutationKey: ['squidExecute'],
     mutationFn: async (routeData: RouteResponse | null | undefined) => {
-      if (!signer) return null;
-      if (!squid) return null;
-      if (!routeData) return null;
+      if (!signer) {
+        throw new Error('no singer');
+      }
+
+      if (!squid) {
+        throw new Error('squid not initialized');
+      }
+
+      if (!routeData) {
+        throw new Error('no route');
+      }
 
       const tx = (await squid.executeRoute({
         signer,
         route: routeData.route,
       })) as unknown as ethers.providers.TransactionResponse;
-      setHash(tx.hash);
+      setTransaction(tx);
 
       const receipt = await tx.wait();
+      setReceipt(receipt);
       return receipt;
     },
   });
 
   return {
     ...mutation,
-    submitSquidDeposit: (routeData: RouteResponse | null | undefined) =>
-      mutate(routeData),
-    hash,
+    reset: () => {
+      setTransaction(undefined);
+      setReceipt(undefined);
+      mutation.reset();
+    },
+    transaction,
+    receipt,
   };
 };

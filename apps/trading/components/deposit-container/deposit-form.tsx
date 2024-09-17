@@ -2,31 +2,25 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { type Squid } from '@0xsquid/sdk';
+import { type Estimate } from '@0xsquid/squid-types';
 
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import {
-  Button,
-  Intent,
-  Loader,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 import { useT } from '../../lib/use-t';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
+
 import { useAssetReadContracts } from './use-asset-read-contracts';
-
-import * as Fields from './fields';
-
 import { useSquidRoute } from './use-squid-route';
 import { Approval } from './approval';
 import { SwapInfo } from './swap-info';
 import { type FormFields, formSchema, type Configs } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
 import { useSquidExecute } from './use-squid-execute';
-import { type Estimate } from '@0xsquid/squid-types';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { SwapFeedback } from './feedback';
+import * as Fields from './fields';
 
 export const DepositForm = ({
   squid,
@@ -39,7 +33,6 @@ export const DepositForm = ({
   initialAsset?: AssetERC20;
   configs: Configs;
 }) => {
-  const t = useT();
   const { pubKey, pubKeys } = useVegaWallet();
 
   const { address } = useAccount();
@@ -51,11 +44,12 @@ export const DepositForm = ({
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      fromAddress: address,
       fromChain: defaultChain && defaultChain.chainId,
+      fromAsset: '',
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
-      fromAddress: address,
       toAsset: initialAsset?.id,
       toPubKey: pubKey,
       amount: '',
@@ -107,13 +101,8 @@ export const DepositForm = ({
     enabled: isSwap,
   });
 
-  const { submitDeposit } = useEvmDeposit({ queryKey: balanceDataQueryKey });
-  const {
-    submitSquidDeposit,
-    status,
-    error: squidExecuteError,
-    hash,
-  } = useSquidExecute();
+  const deposit = useEvmDeposit({ queryKey: balanceDataQueryKey });
+  const squidExecute = useSquidExecute();
 
   return (
     <FormProvider {...form}>
@@ -156,7 +145,7 @@ export const DepositForm = ({
               throw new Error(`no bridge for toAsset ${toAsset.id}`);
             }
 
-            submitDeposit({
+            deposit.submitDeposit({
               asset: toAsset,
               bridgeAddress: config.collateral_bridge_contract.address,
               amount: fields.amount,
@@ -164,7 +153,7 @@ export const DepositForm = ({
               requiredConfirmations: config?.confirmations || 1,
             });
           } else {
-            submitSquidDeposit(routeData);
+            squidExecute.mutate(routeData);
           }
         })}
       >
@@ -202,49 +191,28 @@ export const DepositForm = ({
           />
         )}
         {isSwap && (
-          <div className="mb-2">
+          <div className="mb-4">
             <SwapInfo route={routeData?.route} error={routeError} />
           </div>
         )}
         <SubmitButton
           isSwap={isSwap}
           isFetchingRoute={isFetching}
-          isExecuting={status === 'pending'}
+          isExecuting={squidExecute.status === 'pending'}
           estimate={routeData?.route.estimate}
         />
-        {status === 'pending' && (
-          <div className="flex flex-col gap-2 items-center text-xs mt-2">
-            <p>
-              {t('Swap and deposit in progress')}{' '}
-              {hash && (
-                <a
-                  href={`https://axelarscan.io/gmp/${hash}`}
-                  className="underline underline-offset-4"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {t('View on Axelarscan')}
-                </a>
-              )}
-            </p>
-          </div>
-        )}
-        {status === 'error' && (
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <div className="flex items-center gap-1 text-xs">
-              <VegaIcon name={VegaIconNames.CROSS} />
-              <p>{t('Swap and deposit failed')}</p>
-            </div>
-            <p>{squidExecuteError.message}</p>
-          </div>
-        )}
-        {status === 'success' && (
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <div className="flex items-center gap-1 text-xs">
-              <VegaIcon name={VegaIconNames.TICK} />
-              <p>{t('Swap and deposit complete')}</p>
-            </div>
-          </div>
+        {isSwap && (
+          <SwapFeedback
+            route={routeData?.route}
+            status={squidExecute.status}
+            error={squidExecute.error}
+            transaction={squidExecute.transaction}
+            receipt={squidExecute.receipt}
+            retry={() => {
+              form.reset({ fromAsset: '', amount: '' });
+              squidExecute.reset();
+            }}
+          />
         )}
       </form>
     </FormProvider>
