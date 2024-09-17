@@ -22,13 +22,11 @@ export const NEB = (props: SVGAttributes<SVGElement>) => {
           <path
             d="M9 24.1138V7H12.2801L19.7199 18.4092V7H23V24.1138H19.7199L12.2801 12.7046V24.1138H9Z"
             fill="white"
-            style={{ 'mix-blend-mode': 'overlay' }}
             shapeRendering="crispEdges"
           />
           <path
             d="M9 24.1138V7H12.2801L19.7199 18.4092V7H23V24.1138H19.7199L12.2801 12.7046V24.1138H9Z"
             fill="url(#paint4_linear_9399_50281)"
-            style={{ 'mix-blend-mode': 'overlay' }}
             shapeRendering="crispEdges"
           />
         </g>
