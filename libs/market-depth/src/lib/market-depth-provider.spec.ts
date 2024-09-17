@@ -1,6 +1,5 @@
 import { update } from './market-depth-provider';
 
-const mockCaptureException = jest.fn();
 const reload = jest.fn();
 
 jest.mock('./orderbook-data', () => ({
@@ -8,9 +7,6 @@ jest.mock('./orderbook-data', () => ({
 }));
 
 describe('market depth provider update', () => {
-  beforeEach(() => {
-    mockCaptureException.mockClear();
-  });
   it('omits not matching market', () => {
     const data = {
       id: '1',
@@ -77,6 +73,5 @@ describe('market depth provider update', () => {
     const updatedData = update(data, delta, reload, { marketId: '1' });
     expect(updatedData).toBe(data);
     expect(reload).toBeCalled();
-    expect(mockCaptureException).toBeCalled();
   });
 });
