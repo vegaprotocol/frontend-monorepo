@@ -67,10 +67,17 @@ jobs:
     name: "Publis dist"
     needs: build_dist
     runs-on: ubuntu-latest
+    outputs:
+      RELEASE_VERSION: steps.release_version.outputs.number
     strategy:
       matrix:
         target: ${{ fromJSON( vars.JSON_FRONTEND_SERVERS) }}
     steps:
+      - name: Download built dist
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend_dist
+
       - id: release_version
         name: "Filter release version"
         shell: bash
@@ -134,3 +141,44 @@ jobs:
             whoami
             ls -al
             echo $RSYNC_STDOUT
+
+  enable_dist:
+    name: "Enable published dist"
+    needs: publish_dist
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: ${{ fromJSON( vars.JSON_FRONTEND_SERVERS) }}
+    steps:
+      - name: Enable published explorer
+        if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ matrix. target }}
+          username: fe-deployment
+          key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
+          script: |
+            sudo rm -rf /var/www/explorer || echo;
+            sudo ln -s /var/www/explorer-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/explorer;
+
+      - name: Enable published console
+        if: ${{ contains(github.ref_name, 'trading') || contains(github.ref_name, 'console') || contains(github.ref_name, 'all') }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ matrix. target }}
+          username: fe-deployment
+          key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
+          script: |
+            sudo rm -rf /var/www/trading || echo;
+            sudo ln -s /var/www/trading-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/trading;
+
+      - name: Enable published governance
+        if: ${{ contains(github.ref_name, 'governance') || contains(github.ref_name, 'all') }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ matrix. target }}
+          username: fe-deployment
+          key: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
+          script: |
+            sudo rm -rf /var/www/governance || echo;
+            sudo ln -s /var/www/governance-dist/${{ needs.publish_dist.RELEASE_VERSION }} /var/www/governance;
