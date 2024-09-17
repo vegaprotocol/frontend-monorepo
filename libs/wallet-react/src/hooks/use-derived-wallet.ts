@@ -2,8 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useConfig } from './use-config';
 import { useChainId, useSignTypedData, useSwitchChain } from 'wagmi';
-import { ARBITRUM_CHAIN_ID } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
+
+export const ARBITRUM_CHAIN_ID = 42161;
 
 /**
  * Derives a mnemonic from the user's connected Ethereum wallet
