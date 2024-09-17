@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useConfig } from './use-config';
 import { useChainId, useSignTypedData, useSwitchChain } from 'wagmi';
-import { useEnvironment } from '@vegaprotocol/environment';
 
 export const ARBITRUM_CHAIN_ID = 42161;
 
@@ -18,7 +17,7 @@ export const useCreateDerivedWallet = (
   const { signTypedDataAsync } = useSignTypedData();
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
-  const { APP_NAME } = useEnvironment();
+  const { appName } = useConfig();
 
   const mutationResult = useMutation({
     retry: false,
@@ -37,7 +36,7 @@ export const useCreateDerivedWallet = (
         if (!hasWallet) {
           const signedMessage = await signTypedDataAsync({
             domain: { name: 'Onboarding', chainId: BigInt(ARBITRUM_CHAIN_ID) },
-            message: { action: `${APP_NAME} Onboarding` },
+            message: { action: `${appName} Onboarding` },
             primaryType: 'Onboarding',
             types: {
               EIP712Domain: [

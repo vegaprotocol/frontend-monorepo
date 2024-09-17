@@ -80,6 +80,7 @@ export type Config = {
   chains: Chain[];
   defaultChainId: string;
   connectors: Connector[];
+  appName: string;
 };
 
 export type Wallet = {
@@ -90,6 +91,7 @@ export type Wallet = {
   refreshKeys: () => Promise<void>;
   sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
   reset: () => void;
+  appName: string;
 };
 
 declare global {
