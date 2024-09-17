@@ -77,14 +77,6 @@ jobs:
           name: frontend_dist
           path: ./
 
-      - run: |
-          ls -als ./
-          ls -als ./dist
-          sudo apt-get update
-          sudo apt-get install -y tree
-          tree
-
-
       - id: release_version
         name: 'Filter release version'
         shell: bash
@@ -98,7 +90,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'dist/apps/explorer'
+          SOURCE: 'apps/explorer'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/explorer-dist/${{ steps.release_version.outputs.number }}'
@@ -117,7 +109,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'dist/apps/trading/exported'
+          SOURCE: 'apps/trading/exported'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/trading-dist/${{ steps.release_version.outputs.number }}'
@@ -136,7 +128,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'dist/apps/governance'
+          SOURCE: 'apps/governance'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/governance-dist/${{ steps.release_version.outputs.number }}'
