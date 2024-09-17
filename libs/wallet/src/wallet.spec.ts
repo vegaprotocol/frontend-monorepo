@@ -15,6 +15,15 @@ describe('chainId', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
+      appName: 'Vega',
     });
 
     expect(config.store.getState().chainId).toEqual(mockChain.id);
@@ -26,6 +35,15 @@ describe('chainId', () => {
         chains: [mockChain],
         defaultChainId: 'invalid chain id',
         connectors: [mockConnector],
+        walletConfig: {
+          explorer: '',
+          docs: '',
+          governance: '',
+          console: '',
+          chainId: '',
+          etherscanUrl: '',
+        },
+        appName: 'Vega',
       });
     }).toThrow();
   });
@@ -37,6 +55,15 @@ describe('connect', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
+    appName: 'Vega',
   });
 
   it('handles invalid connector', async () => {
@@ -86,6 +113,15 @@ describe('disconnect', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
+    appName: 'Vega',
   });
 
   it('handles invalid connector', async () => {
@@ -124,6 +160,15 @@ describe('refresh keys', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
+    appName: 'Vega',
   });
 
   it('handles invalid connector', async () => {
@@ -165,6 +210,15 @@ describe('sendTransaction', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
+      appName: 'Vega',
     });
 
     await expect(config.sendTransaction(params)).rejects.toEqual(
@@ -178,6 +232,15 @@ describe('sendTransaction', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      appName: 'Vega',
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
     });
 
     jest
@@ -199,6 +262,15 @@ describe('sendTransaction', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
+      appName: 'Vega',
     });
 
     const spySendTx = jest.spyOn(mockConnector, 'sendTransaction');

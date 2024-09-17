@@ -8,9 +8,7 @@ import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { ReferralButton } from './buttons';
 import { useT } from '../../lib/use-t';
-import { Routes } from '../../lib/links';
-import { DApp, useLinks } from '@vegaprotocol/environment';
-import truncate from 'lodash/truncate';
+import { useShareDialogStore } from '../../components/share-dialog';
 
 export const Tile = ({
   className,
@@ -96,10 +94,8 @@ export const CodeTile = ({
   className?: string;
 }) => {
   const t = useT();
-  const consoleLink = useLinks(DApp.Console);
-  const applyCodeLink = consoleLink(
-    `#${Routes.REFERRALS_APPLY_CODE}?code=${code}`
-  );
+  const setShareDialogOpen = useShareDialogStore((state) => state.setOpen);
+
   return (
     <StatTile
       title={t('Your referral code')}
@@ -132,23 +128,18 @@ export const CodeTile = ({
             <VegaIcon size={20} name={VegaIconNames.COPY} />
           </ReferralButton>
         </CopyWithTooltip>
-        <CopyWithTooltip
-          text={applyCodeLink}
-          description={
-            <>
-              {t('Copy shareable apply code link')}
-              {': '}
-              <a className="text-blue-500 underline" href={applyCodeLink}>
-                {truncate(applyCodeLink, { length: 32 })}
-              </a>
-            </>
-          }
-        >
-          <ReferralButton className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
-            <span className="sr-only">{t('Copy')}</span>
+
+        <span>
+          <ReferralButton
+            className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent"
+            onClick={() => {
+              setShareDialogOpen(true);
+            }}
+          >
+            <span className="sr-only">{t('SHARE_BUTTON')}</span>
             <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
           </ReferralButton>
-        </CopyWithTooltip>
+        </span>
       </div>
     </StatTile>
   );

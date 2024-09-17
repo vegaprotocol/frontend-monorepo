@@ -27,6 +27,15 @@ describe('ConnectDialog', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mock, new InjectedConnector()],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
+      appName: 'Vega',
     });
   });
 

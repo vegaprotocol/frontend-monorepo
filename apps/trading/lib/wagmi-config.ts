@@ -8,8 +8,8 @@ import { type HttpTransport } from 'viem';
 // Create an array of all available chains with arbitrum and
 // normal ethereum mainnet first. These will be the default chains
 const allChains = [
-  chains.arbitrum,
   chains.mainnet,
+  chains.arbitrum,
   ...Object.values(chains).filter((c) => {
     if (c.id === chains.arbitrum.id) return false;
     if (c.id === chains.mainnet.id) return false;

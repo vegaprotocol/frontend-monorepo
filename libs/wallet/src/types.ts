@@ -25,7 +25,10 @@ export type QuickstartWalletEvents =
   | 'client.transaction_sent'
   | 'client.request_transaction_approval'
   | 'client.request_transaction_decided';
-export type CommonEvents = 'client.disconnected' | 'client.list_keys';
+export type CommonEvents =
+  | 'client.disconnected'
+  | 'client.list_keys'
+  | 'client.keys_changed';
 export type VegaWalletEvent = QuickstartWalletEvents | CommonEvents;
 
 export type ConnectorType =
@@ -59,7 +62,12 @@ export type Key = {
   name: string;
 };
 
-export type Status = 'disconnected' | 'connecting' | 'connected' | 'creating';
+export type Status =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'creating'
+  | 'importing';
 
 export type CoreStore = {
   chainId: string;
@@ -80,6 +88,15 @@ export type Config = {
   chains: Chain[];
   defaultChainId: string;
   connectors: Connector[];
+  appName: string;
+  walletConfig: {
+    explorer: string;
+    docs: string;
+    governance: string;
+    console: string;
+    chainId: string;
+    etherscanUrl: string;
+  };
 };
 
 export type Wallet = {
@@ -90,6 +107,15 @@ export type Wallet = {
   refreshKeys: () => Promise<void>;
   sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
   reset: () => void;
+  walletConfig: {
+    explorer: string;
+    docs: string;
+    governance: string;
+    console: string;
+    chainId: string;
+    etherscanUrl: string;
+  };
+  appName: string;
 };
 
 declare global {

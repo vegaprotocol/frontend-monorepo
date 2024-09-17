@@ -126,21 +126,17 @@ export class ConnectionsCollection {
   }
 
   async listAllowedKeys(origin) {
-    const conn = await this.store.get(origin);
-    if (conn?.allowList == null) return [];
+    // const conn = await this.store.get(origin);
+    // permissioning is not a thing on the browser wallet
+    // if (conn?.allowList == null) return [];
 
-    const { allowList } = conn;
+    // const { allowList } = conn;
 
     const keysFromIndex = await this.index.values();
     const keys = [];
-    for (const { publicKey, name, wallet } of keysFromIndex) {
-      if (allowList.wallets.includes(wallet)) {
-        keys.push({ publicKey, name });
-      }
-
-      if (allowList.publicKeys.includes(publicKey)) {
-        keys.push({ publicKey, name });
-      }
+    for (const { publicKey, name } of keysFromIndex) {
+      // permissioning is not a thing on the browser wallet
+      keys.push({ publicKey, name });
     }
     const enrichedKeys = await Promise.all(
       keys.map(async (key) => {

@@ -1,9 +1,4 @@
-import {
-  getAsset,
-  getBaseUnit,
-  type MarketInfo,
-  getQuoteUnit,
-} from '@vegaprotocol/markets';
+import { getAsset, type MarketInfo, getQuoteUnit } from '@vegaprotocol/markets';
 import {
   useAccountBalance,
   useMarginAccountBalance,
@@ -21,6 +16,7 @@ import { StopMarket } from './stop-market';
 
 import { useTicketType } from '../use-ticket-type';
 import { useTicketSide } from '../use-ticket-side';
+import { useT } from '../../../lib/use-t';
 
 /**
  * Renders a default ticket (for future or perpetual markets), within a
@@ -29,12 +25,13 @@ import { useTicketSide } from '../use-ticket-side';
  * TicketType (market, limit, stopMarket, stopLimit)
  */
 export const Ticket = ({ market }: { market: MarketInfo }) => {
+  const t = useT();
   const instrument = market.tradableInstrument.instrument;
   const settlementAsset = getAsset(market);
   const marginAccount = useMarginAccountBalance(market.id);
   const generalAccount = useAccountBalance(settlementAsset?.id);
   const marginMode = useMarginMode(market.id);
-  const baseSymbol = getBaseUnit(instrument.metadata.tags);
+  const baseSymbol = t('Contracts');
   const quoteSymbol = getQuoteUnit(instrument.metadata.tags);
 
   return (

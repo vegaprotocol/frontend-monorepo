@@ -84,7 +84,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
           name: 'UNIDAI Monthly (30 Jun 2022)',
           metadata: {
             __typename: 'InstrumentMetadata',
-            tags: ['tag-a'],
+            tags: ['tag-a', 'quote:SYM'],
           },
           product: {
             __typename: 'Future',

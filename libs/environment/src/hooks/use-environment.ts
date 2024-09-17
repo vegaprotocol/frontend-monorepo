@@ -295,6 +295,7 @@ const compileEnvVars = () => {
       'VEGA_CONFIG_URL',
       process.env['NX_VEGA_CONFIG_URL'] as string
     ),
+    APP_NAME: windowOrDefault('NX_APP_NAME', process.env['NX_APP_NAME']),
     VEGA_NETWORKS: parseJson(
       windowOrDefault('VEGA_NETWORKS', process.env['NX_VEGA_NETWORKS'])
     ),

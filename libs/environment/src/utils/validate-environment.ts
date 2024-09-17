@@ -64,6 +64,7 @@ export type ApiNode = z.infer<typeof apiNodeSchema>;
 export const envSchema = z
   .object({
     API_NODE: z.optional(apiNodeSchema),
+    APP_NAME: z.optional(z.string()),
     VEGA_WALLET_URL: z.optional(z.string()),
     VEGA_CONFIG_URL: z.optional(z.string()),
     GIT_BRANCH: z.optional(z.string()),

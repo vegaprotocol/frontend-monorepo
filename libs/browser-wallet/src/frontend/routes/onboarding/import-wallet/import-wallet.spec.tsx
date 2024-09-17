@@ -1,7 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { locators as pageLocators } from '@/components/pages/page';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { mockClient } from '@/test-helpers/mock-client';
 import { mockStorage } from '@/test-helpers/mock-storage';
@@ -33,7 +32,7 @@ describe('ImportWallet', () => {
   beforeEach(() => {
     mockStorage();
   });
-  it('renders back button, description, input and submit button', () => {
+  it('renders description, input and submit button', () => {
     // 1101-ONBD-026 I can see an explanation of what I am being asked to do
     mockClient();
     renderComponent();
@@ -49,10 +48,6 @@ describe('ImportWallet', () => {
     expect(screen.getByTestId(locators.importMnemonic)).toHaveFocus();
     expect(screen.getByTestId(locators.importMnemonicSubmit)).toHaveTextContent(
       'Import wallet'
-    );
-    expect(screen.getByTestId(pageLocators.basePageBack)).toHaveAttribute(
-      'href',
-      FULL_ROUTES.createWallet
     );
   });
 

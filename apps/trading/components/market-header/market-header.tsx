@@ -1,4 +1,5 @@
 import {
+  Button,
   Popover,
   Tooltip,
   VegaIcon,
@@ -22,6 +23,7 @@ import {
 import { useT } from '../../lib/use-t';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
 import { MarketBannerIndicator } from '../market-banner/market-banner';
+import { useShareDialogStore } from '../share-dialog';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -32,6 +34,8 @@ export const MarketHeader = () => {
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
   useMarketList();
+
+  const setShareDialogOpen = useShareDialogStore((state) => state.setOpen);
 
   if (!data) return null;
 
@@ -74,6 +78,15 @@ export const MarketHeader = () => {
       <div className="flex w-full justify-end">
         <MarketBannerIndicator market={data} kind={'ActiveReward'} />
       </div>
+      <Button
+        className="flex gap-1 h-8 px-2"
+        onClick={() => {
+          setShareDialogOpen(true);
+        }}
+      >
+        <span>{t('SHARE_BUTTON')}</span>
+        <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+      </Button>
     </Header>
   );
 };

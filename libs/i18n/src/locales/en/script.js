@@ -45,6 +45,7 @@ const otherFiles = [
   'apps/governance/src/index.html',
   'apps/static/src/index.html',
   'apps/trading/public/manifest.json',
+  'apps/trading/lib/constants.ts',
 ];
 
 // Replace all instances of the word "vega" with the new app name in static assets such as manifests and index.html

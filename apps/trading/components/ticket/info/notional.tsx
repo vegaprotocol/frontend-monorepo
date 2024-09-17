@@ -14,7 +14,11 @@ export const Notional = ({
   const form = useForm();
   const ticket = useTicketContext();
   const notional = form.watch(name);
-  const symbol = ticket.quoteSymbol;
+  const symbol =
+    ticket.type === 'spot'
+      ? ticket.quoteAsset.symbol
+      : ticket.settlementAsset.symbol;
+
   return (
     <DatagridRow
       label={

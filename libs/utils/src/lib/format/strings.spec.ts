@@ -38,24 +38,25 @@ describe('shorten', () => {
 });
 
 describe('titlefy', () => {
+  const appName = 'app';
   it.each([
-    { words: [], o: 'Vega' },
-    { words: ['one'], o: 'one - Vega' },
-    { words: ['one'], o: 'one - Vega' },
+    { words: [], o: appName },
+    { words: ['one'], o: `one - ${appName}` },
+    { words: ['one'], o: `one - ${appName}` },
     {
       words: ['one', 'two', 'three'],
-      o: 'one - two - three - Vega',
+      o: `one - two - three - ${appName}`,
     },
     {
       words: ['one', null, undefined, 'two'],
-      o: 'one - two - Vega',
+      o: `one - two - ${appName}`,
     },
     {
       words: ['VEGAUSD', '123.22'],
-      o: 'VEGAUSD - 123.22 - Vega',
+      o: `VEGAUSD - 123.22 - ${appName}`,
     },
   ])('should convert to title-like string: %s', ({ words, o }) => {
-    expect(titlefy(words)).toEqual(o);
+    expect(titlefy(appName, words)).toEqual(o);
   });
 });
 

@@ -784,7 +784,11 @@ export const getPayouts = (
 ) => {
   const passedIntervals = (currentEpoch - startEpoch) / interval;
   const lastPayout = startEpoch + passedIntervals * interval;
-  const nextPayout = startEpoch + (passedIntervals + 1) * interval;
+
+  // Previously this was passedIntervals + 1, meaning 'next payout occurs at the
+  // start of epoch [current +1]', but this was deemed confusing so now it means
+  // 'next payout occurs at the END of epoch [current]'
+  const nextPayout = startEpoch + passedIntervals * interval;
 
   return {
     lastPayout,

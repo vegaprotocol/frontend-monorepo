@@ -19,7 +19,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
             {children}
           </div>
         </TinyScroll>
-        <span className="absolute top-0 right-0 h-full w-14 bg-gradient-to-r from-transparent to-surface-1/70" />
+        <span className="absolute top-0 right-0 h-full w-14 bg-gradient-to-r from-transparent to-surface-1/70 pointer-events-none" />
       </div>
     </header>
   );
