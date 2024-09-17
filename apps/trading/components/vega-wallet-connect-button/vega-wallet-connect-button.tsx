@@ -26,6 +26,7 @@ import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { Links } from '../../lib/links';
 import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
 import { usePartyProfiles } from '../../lib/hooks/use-party-profiles';
+import { useShareDialogStore } from '../share-dialog';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.Primary,
@@ -53,6 +54,8 @@ export const VegaWalletConnectButton = ({
 
   const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
   const set = useBrowserWalletDialogStore((store) => store.set);
+
+  const setShareDialogOpen = useShareDialogStore((state) => state.setOpen);
 
   if (status === 'connected') {
     return (
@@ -125,6 +128,13 @@ export const VegaWalletConnectButton = ({
                 {t('Transfer')}
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem
+              onClick={() => {
+                setShareDialogOpen(true);
+              }}
+            >
+              {t('SHARE_INVITE_FRIENDS')}
+            </DropdownMenuItem>
             <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
               {t('Disconnect')}
             </DropdownMenuItem>

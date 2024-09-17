@@ -35,6 +35,7 @@ export const Routes = {
   INVITE: '/invite',
   INVITE_REFERRAL_CODE: '/invite?code=:code',
   INVITE_TEAM_CODE: '/invite?team=:code',
+  INVITE_REFERRAL_CODE_AND_TEAM: '/invite?code=:code&team=:team',
 } as const;
 
 type ConsoleLinks = {
@@ -82,4 +83,9 @@ export const Links: ConsoleLinks = {
   INVITE_REFERRAL_CODE: (code) =>
     Routes.INVITE_REFERRAL_CODE.replace(':code', code),
   INVITE_TEAM_CODE: (code) => Routes.INVITE_TEAM_CODE.replace(':code', code),
+  INVITE_REFERRAL_CODE_AND_TEAM: (code, team) =>
+    Routes.INVITE_REFERRAL_CODE_AND_TEAM.replace(':code', code).replace(
+      ':team',
+      code
+    ),
 };
