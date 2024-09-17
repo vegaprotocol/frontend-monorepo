@@ -16,6 +16,8 @@ export function Amount(props: {
 }) {
   const t = useT();
   const form = useFormContext<FormFields>();
+  const fromAsset = form.watch('fromAsset');
+
   return (
     <Controller
       control={props.control}
@@ -27,23 +29,27 @@ export function Amount(props: {
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}
-            <FormSecondaryActionWrapper>
-              <FormSecondaryActionButton
-                onClick={() => {
-                  const fromAsset = form.getValues('fromAsset');
+            {fromAsset && (
+              <FormSecondaryActionWrapper>
+                <FormSecondaryActionButton
+                  onClick={() => {
+                    const fromAsset = form.getValues('fromAsset');
 
-                  const value = isAssetNative(fromAsset)
-                    ? props.nativeBalanceOf?.toString() || '0'
-                    : props.balanceOf?.toString() || '0';
+                    if (!fromAsset) return;
 
-                  form.setValue('amount', value, {
-                    shouldValidate: true,
-                  });
-                }}
-              >
-                {t('Use maximum')}
-              </FormSecondaryActionButton>
-            </FormSecondaryActionWrapper>
+                    const value = isAssetNative(fromAsset)
+                      ? props.nativeBalanceOf?.toString() || '0'
+                      : props.balanceOf?.toString() || '0';
+
+                    form.setValue('amount', value, {
+                      shouldValidate: true,
+                    });
+                  }}
+                >
+                  {t('Use maximum')}
+                </FormSecondaryActionButton>
+              </FormSecondaryActionWrapper>
+            )}
           </FormGroup>
         );
       }}

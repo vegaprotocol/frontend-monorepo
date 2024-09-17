@@ -4,11 +4,12 @@ import {
   TradingRichSelect,
   TradingRichSelectOption,
 } from '@vegaprotocol/ui-toolkit';
-import { type Control, Controller } from 'react-hook-form';
+import { type Control, Controller, useFormContext } from 'react-hook-form';
 import { type FormFields } from '../form-schema';
 import { useT } from '../../../lib/use-t';
-import { type ChainData } from '@0xsquid/squid-types';
+import { type Token, type ChainData } from '@0xsquid/squid-types';
 import { useChainId, useSwitchChain } from 'wagmi';
+import { isAssetNative } from '@vegaprotocol/utils';
 
 export function FromChain({
   disabled = false,
@@ -16,11 +17,13 @@ export function FromChain({
 }: {
   control: Control<FormFields>;
   chains?: ChainData[];
+  tokens?: Token[];
   disabled?: boolean;
 }) {
   const t = useT();
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
+  const form = useFormContext<FormFields>();
 
   return (
     <Controller
@@ -39,7 +42,14 @@ export function FromChain({
                   placeholder={t('Select chain')}
                   value={field.value}
                   onValueChange={async (value) => {
+                    // Set the from asset immediately to the native asset for the
+                    // selected chain
+                    const defaultToken = props.tokens?.find((t) => {
+                      return t.chainId === value && isAssetNative(t.address);
+                    });
+
                     field.onChange(value);
+                    form.setValue('fromAsset', defaultToken?.address || '');
 
                     if (value !== String(chainId)) {
                       await switchChainAsync({ chainId: Number(value) });

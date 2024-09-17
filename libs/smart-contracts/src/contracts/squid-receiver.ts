@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import abi from '../abis/arbitrum_squid_receiver_abi.json';
+import abi from '../abis/squid_receiver_abi.json';
 
-export class ArbitrumSquidReceiver {
+export class SquidReceiver {
   public contract: ethers.Contract;
 
   constructor(address: string) {
