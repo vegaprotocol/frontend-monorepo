@@ -66,7 +66,7 @@ jobs:
     needs: build_dist
     runs-on: ubuntu-latest
     outputs:
-      RELEASE_VERSION: steps.release_version.outputs.number
+      RELEASE_VERSION: ${{ steps.release_version.outputs.number }}
     strategy:
       matrix:
         target: ${{ fromJSON( vars.JSON_FRONTEND_SERVERS) }}
@@ -90,7 +90,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'apps/explorer'
+          SOURCE: 'apps/explorer/'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/explorer-dist/${{ steps.release_version.outputs.number }}'
@@ -109,7 +109,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'apps/trading/exported'
+          SOURCE: 'apps/trading/exported/'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/trading-dist/${{ steps.release_version.outputs.number }}'
@@ -128,7 +128,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: 'apps/governance'
+          SOURCE: 'apps/governance/'
           REMOTE_HOST: '${{ matrix.target }}'
           REMOTE_USER: 'fe-deployment'
           TARGET: '/var/www/governance-dist/${{ steps.release_version.outputs.number }}'
