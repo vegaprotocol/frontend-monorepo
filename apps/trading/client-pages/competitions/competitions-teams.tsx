@@ -1,4 +1,3 @@
-import { ErrorBoundary } from '@sentry/react';
 import { useRef, useState } from 'react';
 import { useT } from '../../lib/use-t';
 import { useTeams } from '../../lib/hooks/use-teams';
@@ -11,6 +10,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { HeaderHero } from '../../components/header-hero';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 export const CompetitionsTeams = () => {
   const t = useT();
@@ -23,7 +23,7 @@ export const CompetitionsTeams = () => {
   const [filter, setFilter] = useState<string | null | undefined>(undefined);
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary feature="competitions-teams">
       <HeaderHero title={t('Join a team')}>
         <p>{t('Choose a team to get involved')}</p>
       </HeaderHero>

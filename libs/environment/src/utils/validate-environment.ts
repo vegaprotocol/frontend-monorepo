@@ -104,7 +104,6 @@ export const envSchema = z
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
     VEGA_INCIDENT_URL: z.optional(z.string()),
     APP_VERSION: z.optional(z.string()),
-    SENTRY_DSN: z.optional(z.string()),
     TENDERMINT_URL: z.optional(z.string()),
     TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),
     CHROME_EXTENSION_URL: z.optional(z.string()),

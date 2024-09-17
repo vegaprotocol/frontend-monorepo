@@ -20,7 +20,6 @@ import {
   navigateTo,
   navigation,
   closeDialog,
-  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -81,7 +80,6 @@ context(
     // @ts-ignore clash between jest and cypress
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
-      turnTelemetryOff();
       cy.reload();
       cy.mockChainId();
       waitForSpinner();

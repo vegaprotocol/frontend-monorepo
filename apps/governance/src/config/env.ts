@@ -55,7 +55,6 @@ const envName = windowOrDefault('NX_VEGA_ENV') ?? 'local';
 export const ENV = {
   // Environment
   tranchesServiceUrl: windowOrDefault('NX_TRANCHES_SERVICE_URL'),
-  dsn: windowOrDefault('NX_SENTRY_DSN'),
   urlConnect: TRUTHY.includes(windowOrDefault('NX_ETH_URL_CONNECT')),
   explorerUrl: windowOrDefault('NX_VEGA_EXPLORER'),
   docsUrl: windowOrDefault('NX_VEGA_DOCS_URL'),

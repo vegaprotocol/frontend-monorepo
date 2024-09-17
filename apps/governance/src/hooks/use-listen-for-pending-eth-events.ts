@@ -1,6 +1,5 @@
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect } from 'react';
-import * as Sentry from '@sentry/react';
 import type { Contract, Event, EventFilter } from 'ethers';
 
 export const useListenForPendingEthEvents = (
@@ -31,7 +30,7 @@ export const useListenForPendingEthEvents = (
         await tx.wait(numberOfConfirmations);
         removePendingTx(event);
       } catch (e) {
-        Sentry.captureException(`Error listening for pending eth events ${e}`);
+        console.error(`Error listening for pending eth events ${e}`);
       }
     };
 
@@ -56,7 +55,7 @@ export const useListenForPendingEthEvents = (
         blockNumber - numberOfConfirmations
       );
     } catch (e) {
-      Sentry.captureException(`Error getting existing transactions ${e}`);
+      console.error(`Error getting existing transactions ${e}`);
       return [];
     }
   }, [contract, filter, numberOfConfirmations, provider]);
@@ -71,9 +70,7 @@ export const useListenForPendingEthEvents = (
 
           removePendingTx(event);
         } catch (e) {
-          Sentry.captureException(
-            `Error waiting for existing transactions ${e}`
-          );
+          console.error(`Error waiting for existing transactions ${e}`);
         }
       });
     },

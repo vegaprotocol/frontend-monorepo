@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useContracts } from '../contexts/contracts/contracts-context';
 import { useAppState } from '../contexts/app-state/app-state-context';
@@ -27,7 +26,7 @@ export const useGetUserBalances = (account: string | undefined) => {
         allowance,
       };
     } catch (err) {
-      Sentry.captureException(err);
+      console.error(err);
       return null;
     }
   }, [account, config, decimals, token]);

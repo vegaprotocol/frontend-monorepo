@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet-react';
@@ -48,7 +47,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           totalAssociated: totalWallet,
         });
       } catch (err) {
-        Sentry.captureException(err);
+        console.error(err);
       }
     };
 
@@ -107,7 +106,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           }
         }
       } catch (err) {
-        Sentry.captureException(err);
+        console.error(err);
       }
     };
 

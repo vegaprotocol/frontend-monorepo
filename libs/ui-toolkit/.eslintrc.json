@@ -8,8 +8,7 @@
         "no-restricted-imports": [
           "error",
           {
-            "paths": [],
-            "patterns": ["@sentry/*"]
+            "paths": []
           }
         ]
       }

@@ -6,7 +6,6 @@ import {
   verifyEthWalletAssociatedBalance,
   navigateTo,
   navigation,
-  turnTelemetryOff,
   setRiskAccepted,
 } from '../../support/common.functions';
 import {
@@ -70,7 +69,6 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.clearLocalStorage();
-          turnTelemetryOff();
           cy.mockChainId();
           // Go to homepage to allow wallet teardown without epoch timer refreshing page
           navigateTo(navigation.home);

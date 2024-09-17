@@ -2,7 +2,6 @@ import {
   navigateTo,
   waitForSpinner,
   navigation,
-  turnTelemetryOff,
 } from '../../support/common.functions';
 import {
   createRawProposal,
@@ -82,7 +81,6 @@ describe(
     // @ts-ignore clash between jest and cypress
     beforeEach('visit proposals tab', function () {
       cy.clearLocalStorage();
-      turnTelemetryOff();
       cy.mockChainId();
       cy.reload();
       waitForSpinner();

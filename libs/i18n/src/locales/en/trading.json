@@ -752,7 +752,6 @@
   "Team switch successful. You will switch team at the end of the epoch.": "Team switch successful. You will switch team at the end of the epoch.",
   "Team": "Team",
   "Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.": "Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.",
-  "TelemetryModalIntro": "Help us identify bugs and improve Vega Console by sharing anonymous usage data.",
   "The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.": "The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.",
   "The average position requirement is {{averagePositionRequirements}}": "The average position requirement is {{averagePositionRequirements}}",
   "The below features are experimental and it is not guaranteed that they will work correctly. Use at your own risk.": "The below features are experimental and it is not guaranteed that they will work correctly. Use at your own risk.",

@@ -9,7 +9,6 @@ export const ENV = {
   // Data sources
   // Environment
   env: windowOrDefault('NX_VEGA_ENV'),
-  dsn: windowOrDefault('NX_EXPLORER_SENTRY_DSN'),
   dataSources: {
     blockExplorerUrl: windowOrDefault('NX_BLOCK_EXPLORER'),
     oracleProofsUrl: windowOrDefault('NX_ORACLE_PROOFS_URL'),

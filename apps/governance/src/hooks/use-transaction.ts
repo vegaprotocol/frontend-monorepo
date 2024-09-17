@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Sentry from '@sentry/react';
 import { useTranslation } from 'react-i18next';
 import type { ethers } from 'ethers';
 import { isUnexpectedError, isUserRejection } from '../lib/web3-utils';
@@ -24,14 +23,14 @@ export const useTransaction = (
   const handleError = React.useCallback(
     (err: Error) => {
       if (isUnexpectedError(err)) {
-        Sentry.captureException(err);
+        console.error(err);
       }
 
       if (isUserRejection(err)) {
         dispatch({ type: TransactionActionType.TX_RESET });
         return;
       } else {
-        Sentry.captureException(err);
+        console.error(err);
       }
 
       const defaultMessage = t('Something went wrong');
@@ -53,13 +52,6 @@ export const useTransaction = (
       type: TransactionActionType.TX_REQUESTED,
     });
 
-    Sentry.addBreadcrumb({
-      type: 'Transaction',
-      level: Sentry.Severity.Log,
-      message: 'Transaction requested',
-      timestamp: Date.now(),
-    });
-
     try {
       const tx = await performTransaction();
 
@@ -67,19 +59,6 @@ export const useTransaction = (
       dispatch({
         type: TransactionActionType.TX_SUBMITTED,
         txHash: tx.hash,
-      });
-
-      Sentry.addBreadcrumb({
-        type: 'Transaction',
-        level: Sentry.Severity.Log,
-        message: 'Transaction submitted',
-        data: {
-          hash: tx.hash,
-          from: tx.from,
-          gasLimit: tx.gasLimit.toString(),
-          nonce: tx.nonce,
-        },
-        timestamp: Date.now(),
       });
 
       let receipt: ethers.ContractReceipt | null = null;
@@ -102,20 +81,6 @@ export const useTransaction = (
         type: TransactionActionType.TX_COMPLETE,
         receipt,
         confirmations: receipt.confirmations,
-      });
-
-      Sentry.addBreadcrumb({
-        type: 'Transaction',
-        level: Sentry.Severity.Log,
-        message: 'Transaction complete',
-        data: {
-          blockNumber: receipt.blockNumber,
-          confirmations: receipt.confirmations,
-          from: receipt.from,
-          to: receipt.to,
-          transactionHash: receipt.transactionHash,
-        },
-        timestamp: Date.now(),
       });
     } catch (err) {
       handleError(err as Error);
