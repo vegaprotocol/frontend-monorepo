@@ -17,6 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+import { APP_NAME } from '../../lib/constants';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -46,7 +47,7 @@ const TitleUpdater = ({
   useEffect(() => {
     const marketPrice = calculatePrice(marketData?.markPrice, decimalPlaces);
     if (marketName) {
-      const newPageTitle = titlefy([marketName, marketPrice]);
+      const newPageTitle = titlefy(APP_NAME, [marketName, marketPrice]);
       if (pageTitle !== newPageTitle) {
         updateTitle(newPageTitle);
       }
