@@ -1,5 +1,4 @@
 import { useApolloClient } from '@apollo/client';
-import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -143,7 +142,7 @@ export const StakingForm = ({
         setError(err);
       }
       setFormState(FormState.Failure);
-      Sentry.captureException(err);
+      console.error(err);
     }
   }
 

@@ -368,7 +368,6 @@ const compileEnvVars = () => {
       process.env['NX_VEGA_INCIDENT_URL']
     ),
     APP_VERSION: windowOrDefault('APP_VERSION', process.env['NX_APP_VERSION']),
-    SENTRY_DSN: windowOrDefault('SENTRY_DSN', process.env['NX_SENTRY_DSN']),
     TENDERMINT_URL: windowOrDefault(
       'NX_TENDERMINT_URL',
       process.env['NX_TENDERMINT_URL']

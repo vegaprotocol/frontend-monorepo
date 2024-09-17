@@ -5,7 +5,7 @@ export interface TxError {
 }
 
 /**
- * Error codes returned from Metamask that we can safely not capture in Sentry
+ * Error codes returned from Metamask that we can safely ignore
  */
 const IgnoreCodes = {
   ALREADY_PROCESSING: -32002,
@@ -14,7 +14,7 @@ const IgnoreCodes = {
 
 /**
  * Check if the error from web3/metamask is something expected we can handle
- * and thus not capture in Sentry
+ * and thus ignore
  */
 export const isUnexpectedError = (error: Error | TxError) => {
   return !('code' in error && Object.values(IgnoreCodes).includes(error.code));

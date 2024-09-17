@@ -7,7 +7,6 @@ import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import * as web3 from '@vegaprotocol/web3';
-import * as sentry from '@sentry/react';
 
 jest.mock('@vegaprotocol/web3', () => {
   const orig = jest.requireActual('@vegaprotocol/web3');
@@ -86,7 +85,6 @@ it('Captures an error if the erc20Withdrawal is not found', async () => {
     },
   };
   const mockPerform = jest.fn();
-  const spyOnCaptureException = jest.spyOn(sentry, 'captureException');
   jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
     // @ts-ignore allow null transaction as its not used in hook logic
     transaction: { txHash: 'tx-hash' },
@@ -98,7 +96,6 @@ it('Captures an error if the erc20Withdrawal is not found', async () => {
   });
   await waitFor(() => {
     expect(mockPerform).not.toHaveBeenCalled();
-    expect(spyOnCaptureException).toHaveBeenCalled();
     expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });
@@ -113,7 +110,6 @@ it('Captures an error if erc20 approval query fails', async () => {
     error: new Error('query failed'),
   };
   const mockPerform = jest.fn();
-  const spyOnCaptureException = jest.spyOn(sentry, 'captureException');
   jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
     // @ts-ignore allow null transaction as its not used in hook logic
     transaction: { txHash: 'tx-hash' },
@@ -125,7 +121,6 @@ it('Captures an error if erc20 approval query fails', async () => {
   });
   await waitFor(() => {
     expect(mockPerform).not.toHaveBeenCalled();
-    expect(spyOnCaptureException).toHaveBeenCalled();
     expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });

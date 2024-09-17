@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/react';
 import { Splash, Loader } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import type { WithTranslation } from 'react-i18next';
@@ -29,7 +28,7 @@ class RouteErrorBoundary extends React.Component<
   }
 
   override componentDidCatch(error: Error) {
-    Sentry.captureException(error);
+    console.error(error);
   }
 
   override render() {

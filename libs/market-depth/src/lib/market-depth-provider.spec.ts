@@ -3,14 +3,6 @@ import { update } from './market-depth-provider';
 const mockCaptureException = jest.fn();
 const reload = jest.fn();
 
-jest.mock('@sentry/react', () => {
-  const original = jest.requireActual('@sentry/react'); // Step 2.
-  return {
-    ...original,
-    captureException: () => mockCaptureException(),
-  };
-});
-
 jest.mock('./orderbook-data', () => ({
   updateLevels: jest.fn((arg) => arg),
 }));

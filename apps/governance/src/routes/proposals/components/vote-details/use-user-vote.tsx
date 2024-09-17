@@ -1,4 +1,3 @@
-import { captureMessage } from '@sentry/minimal';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
@@ -82,7 +81,8 @@ export function useUserVote(
     if (voteState === VoteState.Pending && !timeout) {
       const timeout = setTimeout(() => {
         setVoteState(VoteState.Failed);
-        captureMessage('Vote not seen after 30s');
+        // eslint-disable-next-line no-console
+        console.log('Vote not seen after 30s');
       }, 1000 * 30);
       setTimeoutValue(timeout);
     } else if (voteState !== VoteState.Pending) {

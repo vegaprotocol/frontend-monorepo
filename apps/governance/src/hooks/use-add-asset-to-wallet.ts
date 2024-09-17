@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Sentry from '@sentry/react';
 import { Networks } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
@@ -47,7 +46,7 @@ export const useAddAssetToWallet = (
         },
       });
     } catch (error) {
-      Sentry.captureException(error);
+      console.error(error);
     }
   }, [address, decimals, image, provider, symbol, VEGA_ENV]);
 

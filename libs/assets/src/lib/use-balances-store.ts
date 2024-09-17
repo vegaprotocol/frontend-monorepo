@@ -1,6 +1,5 @@
 import type BigNumber from 'bignumber.js';
 import { create } from 'zustand';
-import * as Sentry from '@sentry/react';
 import { immer } from 'zustand/middleware/immer';
 import { toBigNum } from '@vegaprotocol/utils';
 
@@ -48,7 +47,7 @@ export const useBalancesStore = create(
                   }
                 })
                 .catch((err) => {
-                  Sentry.captureException(err);
+                  console.error(err);
                 });
             }
           : undefined;

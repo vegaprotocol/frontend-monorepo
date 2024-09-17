@@ -1,6 +1,5 @@
 import React from 'react';
 import type { ethers } from 'ethers';
-import * as Sentry from '@sentry/react';
 import { addDecimal } from '@vegaprotocol/utils';
 import type { StakingBridge } from '@vegaprotocol/smart-contracts';
 
@@ -32,7 +31,7 @@ export function useGetAssociationBreakdown(
         stakingAssociations,
       });
     } catch (err) {
-      Sentry.captureException(err);
+      console.error(err);
     }
   }, [ethAddress, staking, decimals, setAssociationBreakdown]);
 
