@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
 import { usePageTitleStore } from '../../stores';
+import { APP_NAME } from '../constants';
 
 export const usePageTitle = (title: string | string[]) => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -8,7 +9,7 @@ export const usePageTitle = (title: string | string[]) => {
   }));
 
   const memotitle = useMemo(
-    () => titlefy(Array.isArray(title) ? title : [title]),
+    () => titlefy(APP_NAME, Array.isArray(title) ? title : [title]),
     [title]
   );
 

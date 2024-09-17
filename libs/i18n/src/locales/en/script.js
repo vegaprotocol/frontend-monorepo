@@ -2,10 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 const NEW_APP_NAME_LOWERCASE = process.argv[2]?.toLowerCase();
+const NEW_APP_SYMBOL_LOWERCASE = process.argv[3]?.toLowerCase();
 
 if (!NEW_APP_NAME_LOWERCASE) {
   throw new Error(
-    'Please pass in your app name e.g. run the command like node ./libs/i18n/src/locales/en/script.js my_app_name'
+    'Please pass in your app name e.g. run the command like node ./libs/i18n/src/locales/en/script.js my_app_name my_app_symbol'
   );
 }
 
@@ -28,8 +29,8 @@ for (const file of jsonFiles) {
           NEW_APP_NAME_LOWERCASE.charAt(0).toUpperCase() +
             NEW_APP_NAME_LOWERCASE.slice(1)
         )
-        .replace(/VEGA/g, NEW_APP_NAME_LOWERCASE.toUpperCase())
-        .replace(/\$VEGA/g, `$${NEW_APP_NAME_LOWERCASE.toLocaleUpperCase()}`),
+        .replace(/VEGA/g, NEW_APP_SYMBOL_LOWERCASE.toUpperCase())
+        .replace(/\$VEGA/g, `$${NEW_APP_SYMBOL_LOWERCASE.toLocaleUpperCase()}`),
     ])
   );
   fs.writeFileSync(filePath, JSON.stringify(newObject, null, 2), {
@@ -44,6 +45,7 @@ const otherFiles = [
   'apps/governance/src/index.html',
   'apps/static/src/index.html',
   'apps/trading/public/manifest.json',
+  'apps/trading/lib/constants.ts',
 ];
 
 // Replace all instances of the word "vega" with the new app name in static assets such as manifests and index.html
