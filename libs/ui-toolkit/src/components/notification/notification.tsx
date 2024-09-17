@@ -69,7 +69,7 @@ export const Notification = ({
             {title}
           </h4>
         )}
-        <div key="message" className="break-words">
+        <div key="message" className="break-words w-full">
           {message}
         </div>
         {buttonProps && (
