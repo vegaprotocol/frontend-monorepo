@@ -36,6 +36,7 @@ export const ConnectDialogWithRiskAck = ({
         status: 'disconnected',
       });
     }
+    onChange(val);
   };
 
   const onConnect = async (id: ConnectorType) => {
@@ -120,6 +121,7 @@ export const ConnectDialog = ({
         status: 'disconnected',
       });
     }
+    onChange(val);
   };
 
   return (
