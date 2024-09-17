@@ -25,7 +25,10 @@ export type QuickstartWalletEvents =
   | 'client.transaction_sent'
   | 'client.request_transaction_approval'
   | 'client.request_transaction_decided';
-export type CommonEvents = 'client.disconnected' | 'client.list_keys';
+export type CommonEvents =
+  | 'client.disconnected'
+  | 'client.list_keys'
+  | 'client.keys_changed';
 export type VegaWalletEvent = QuickstartWalletEvents | CommonEvents;
 
 export type ConnectorType =
