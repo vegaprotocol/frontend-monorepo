@@ -222,6 +222,17 @@ Note: The script is only needed if capsule was built for first time or fresh. To
 vega wallet service run -n DV --load-tokens --tokens-passphrase-file passphrase --no-version-check --automatic-consent --home ~/.vegacapsule/testnet/wallet
 ```
 
+## Release Nebula version
+
+To release changes into the Nebula servers We will be using [the following github workflow](.github/workflows/release-nebula-production.yaml). It is triggered when specific tag is created. Depending on the tag, you can release single application or all the applications at the same time. Tags may be the following:
+
+- `trading/v*` or `console/v*` - Triggers release for the console
+- `explorer/v*` - Triggers the release for the explorer application
+- `governance/*` - Triggers the release for the governance
+- `all/v*` - Triggers release for all of the applications
+
+Example valid tags are: `trading/v0.0.1`, `console/v1.2.3` `trading/v1.0.0-pre.1`, `all/v0.1.2`
+
 ## 📑 License
 
 [MIT](./LICENSE)
