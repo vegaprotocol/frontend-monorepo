@@ -1,11 +1,12 @@
 import { ButtonLink, Dialog } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { VegaSection } from '@/components/vega-section';
 import { WALLET_NAME } from '@/lib/create-wallet';
 
-import { ExportRecoveryPhraseForm } from './export-recovery-phrase-form';
 import { ViewRecoveryPhrase } from './view-recovery-phrase';
+import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
+import { RpcMethods } from '@/lib/client-rpc-methods';
 
 export const locators = {
   exportRecoveryPhraseTrigger: 'export-recovery-phrase-trigger',
@@ -15,11 +16,24 @@ export const locators = {
 export const ExportRecoveryPhraseSection = () => {
   const [open, setOpen] = useState(false);
   const [recoveryPhrase, setRecoveryPhrase] = useState<string | null>(null);
+  const { request } = useJsonRpcClient();
+  useEffect(() => {
+    const run = async () => {
+      const { recoveryPhrase } = await request(
+        RpcMethods.ExportRecoveryPhrase,
+        { walletName: WALLET_NAME },
+        true
+      );
+      setRecoveryPhrase(recoveryPhrase);
+    };
+    run();
+  }, [request]);
 
   const resetDialog = () => {
     setRecoveryPhrase(null);
     setOpen(false);
   };
+
   return (
     <>
       <VegaSection>
@@ -42,18 +56,10 @@ export const ExportRecoveryPhraseSection = () => {
           >
             Export Recovery Phrase
           </h1>
-          {recoveryPhrase ? (
+          {recoveryPhrase && (
             <ViewRecoveryPhrase
               recoveryPhrase={recoveryPhrase}
               onClose={resetDialog}
-            />
-          ) : (
-            <ExportRecoveryPhraseForm
-              walletName={WALLET_NAME}
-              onSuccess={(recoveryPhrase: string) =>
-                setRecoveryPhrase(recoveryPhrase)
-              }
-              onClose={() => setOpen(false)}
             />
           )}
         </div>

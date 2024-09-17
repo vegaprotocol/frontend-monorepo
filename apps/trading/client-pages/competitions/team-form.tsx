@@ -117,7 +117,10 @@ export const TeamForm = ({
   return (
     <form onSubmit={handleSubmit(sendTransaction)}>
       <input type="hidden" {...register('id')} />
-      <FormGroup label={t('Team name')} labelFor="name">
+      <FormGroup
+        label={isCreatingSoloTeam ? t('Trading alias') : t('Team name')}
+        labelFor="name"
+      >
         <Input
           {...register('name', {
             required: t('Required'),
@@ -141,9 +144,11 @@ export const TeamForm = ({
       <FormGroup
         label={t('URL')}
         labelFor="url"
-        labelDescription={t(
-          'Provide a link so users can learn more about your team'
-        )}
+        labelDescription={
+          isCreatingSoloTeam
+            ? t('Provide a link so users can learn more about you')
+            : t('Provide a link so users can learn more about your team')
+        }
       >
         <Input
           {...register('url', {

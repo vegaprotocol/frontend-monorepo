@@ -2,7 +2,6 @@ import {
   InjectedConnector,
   JsonRpcConnector,
   ViewPartyConnector,
-  // InBrowserConnector,
   QuickStartConnector,
   createConfig,
   fairground,
@@ -10,6 +9,7 @@ import {
   mainnet,
   mirror,
   stagnet,
+  InBrowserConnector,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
@@ -19,15 +19,25 @@ import { useMemo } from 'react';
  * node address for snap connection we need to re-new once its set or changes
  */
 export const useVegaWalletConfig = () => {
-  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL, CONFIGURED_WALLETS } =
-    useEnvironment();
+  const {
+    VEGA_ENV,
+    API_NODE,
+    VEGA_WALLET_URL,
+    VEGA_DOCS_URL,
+    VEGA_EXPLORER_URL,
+    VEGA_TOKEN_URL,
+    VEGA_CONSOLE_URL,
+    ETHERSCAN_URL,
+    CONFIGURED_WALLETS,
+    APP_NAME,
+  } = useEnvironment();
 
   return useMemo(() => {
     const url = API_NODE?.graphQLApiUrl || API_NODE?.restApiUrl;
-    if (!url || !VEGA_WALLET_URL) return;
+    if (!url || !VEGA_WALLET_URL || !APP_NAME) return;
 
     const injected = new InjectedConnector();
-    // const inBrowser = new InBrowserConnector();
+    const inBrowser = new InBrowserConnector();
     const quickStart = new QuickStartConnector();
 
     const jsonRpc = new JsonRpcConnector({
@@ -40,13 +50,33 @@ export const useVegaWalletConfig = () => {
       injected,
       jsonRpc,
       viewParty,
+      inBrowser,
     ].filter((c) => CONFIGURED_WALLETS.includes(c.id));
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: filteredConnectors,
+      walletConfig: {
+        explorer: VEGA_EXPLORER_URL ?? '',
+        docs: VEGA_DOCS_URL ?? '',
+        governance: VEGA_TOKEN_URL ?? '',
+        console: VEGA_CONSOLE_URL ?? '',
+        chainId: CHAIN_IDS[VEGA_ENV],
+        etherscanUrl: ETHERSCAN_URL ?? '',
+      },
+      appName: APP_NAME,
     });
-
     return config;
-  }, [CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
+  }, [
+    CONFIGURED_WALLETS,
+    VEGA_ENV,
+    API_NODE,
+    VEGA_WALLET_URL,
+    VEGA_EXPLORER_URL,
+    VEGA_DOCS_URL,
+    VEGA_TOKEN_URL,
+    VEGA_CONSOLE_URL,
+    ETHERSCAN_URL,
+    APP_NAME,
+  ]);
 };

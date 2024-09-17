@@ -19,7 +19,7 @@ export const StopTriggerPrice = ({
   const typeFieldName =
     name === 'triggerPrice' ? 'triggerType' : 'ocoTriggerType';
   const triggerType = form.watch(typeFieldName);
-  const symbol = triggerType === 'price' ? ticket.quoteAsset.symbol : '%';
+  const symbol = triggerType === 'price' ? ticket.quoteSymbol : '%';
 
   return (
     <FormField

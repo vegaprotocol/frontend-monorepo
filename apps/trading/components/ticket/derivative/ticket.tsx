@@ -1,10 +1,4 @@
-import {
-  getAsset,
-  getQuoteAsset,
-  getBaseQuoteUnit,
-  type MarketInfo,
-  getQuoteName,
-} from '@vegaprotocol/markets';
+import { getAsset, type MarketInfo, getQuoteUnit } from '@vegaprotocol/markets';
 import {
   useAccountBalance,
   useMarginAccountBalance,
@@ -22,6 +16,7 @@ import { StopMarket } from './stop-market';
 
 import { useTicketType } from '../use-ticket-type';
 import { useTicketSide } from '../use-ticket-side';
+import { useT } from '../../../lib/use-t';
 
 /**
  * Renders a default ticket (for future or perpetual markets), within a
@@ -30,28 +25,22 @@ import { useTicketSide } from '../use-ticket-side';
  * TicketType (market, limit, stopMarket, stopLimit)
  */
 export const Ticket = ({ market }: { market: MarketInfo }) => {
+  const t = useT();
+  const instrument = market.tradableInstrument.instrument;
   const settlementAsset = getAsset(market);
-  const quoteAsset = getQuoteAsset(market);
-
   const marginAccount = useMarginAccountBalance(market.id);
   const generalAccount = useAccountBalance(settlementAsset?.id);
   const marginMode = useMarginMode(market.id);
-
-  if (!settlementAsset) return null;
-  if (!quoteAsset) return null;
-
-  const instrument = market.tradableInstrument.instrument;
-  const baseSymbol = getBaseQuoteUnit(instrument.metadata.tags);
-  const quoteName = getQuoteName(market);
+  const baseSymbol = t('Contracts');
+  const quoteSymbol = getQuoteUnit(instrument.metadata.tags);
 
   return (
     <TicketContext.Provider
       value={{
         type: 'default',
         market,
-        quoteName,
-        quoteAsset,
-        baseSymbol: baseSymbol || '',
+        quoteSymbol,
+        baseSymbol,
         settlementAsset,
         accounts: {
           general: generalAccount.accountBalance || '0',

@@ -29,7 +29,7 @@ import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import { type Trade } from './fills-data-provider';
 import { FillActionsDropdown } from './fill-actions-dropdown';
-import { getAsset } from '@vegaprotocol/markets';
+import { getAsset, getQuoteUnit } from '@vegaprotocol/markets';
 import { useT } from './use-t';
 import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills-utils';
 
@@ -156,12 +156,14 @@ const formatPrice = ({
   if (!data?.market || !isNumeric(value)) {
     return '-';
   }
-  const asset = getAsset(data.market);
+  const unit = getQuoteUnit(
+    data.market.tradableInstrument.instrument.metadata.tags
+  );
   const valueFormatted = addDecimalsFormatNumber(
     value,
     data?.market.decimalPlaces
   );
-  return `${valueFormatted} ${asset.symbol}`;
+  return `${valueFormatted} ${unit}`;
 };
 
 const formatSize = (partyId: string) => {

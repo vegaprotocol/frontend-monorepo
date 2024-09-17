@@ -29,9 +29,6 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
 
   const marginMode = useMarginMode(market.id);
 
-  if (!baseAsset) return null;
-  if (!quoteAsset) return null;
-
   return (
     <TicketContext.Provider
       value={{
@@ -40,6 +37,7 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
         baseAsset,
         baseSymbol: baseAsset.symbol,
         quoteAsset,
+        quoteSymbol: quoteAsset.symbol,
         accounts: {
           base: baseAccount.accountBalance || '0',
           quote: quoteAccount.accountBalance || '0',

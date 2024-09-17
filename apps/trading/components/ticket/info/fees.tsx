@@ -15,9 +15,11 @@ import { useMarketTradingMode, useMarkPrice } from '@vegaprotocol/markets';
 
 export const Fees = ({ oco = false }: { oco?: boolean }) => {
   const t = useT();
+  const ticket = useTicketContext();
+  const asset =
+    ticket.type === 'default' ? ticket.settlementAsset : ticket.quoteAsset;
 
   const form = useForm();
-  const ticket = useTicketContext();
 
   const { pubKey } = useVegaWallet();
   const { data: markPrice } = useMarkPrice(ticket.market.id);
@@ -31,7 +33,6 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
     values: form.watch(),
     market: ticket.market,
   });
-  const asset = ticket.quoteAsset;
 
   return (
     <DatagridRow

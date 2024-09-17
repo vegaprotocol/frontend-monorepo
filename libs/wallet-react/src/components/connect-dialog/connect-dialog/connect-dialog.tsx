@@ -8,6 +8,7 @@ import { useConnect } from '../../../hooks/use-connect';
 import { RiskAck } from '../../risk-ack';
 import { ConnectionStatus } from '../connection-status';
 import { ConnectionOptionsList } from '../connection-options';
+import { useConfig } from '../../../hooks/use-config';
 
 export const DIALOG_CLOSE_DELAY = 1000;
 
@@ -27,7 +28,16 @@ export const ConnectDialogWithRiskAck = ({
   onRiskRejected: () => void;
 }) => {
   const { connect } = useConnect();
+  const state = useConfig();
   const status = useWallet((store) => store.status);
+  const wrappedOnChange = (val: boolean) => {
+    if (!val && status === 'importing') {
+      state.store.setState({
+        status: 'disconnected',
+      });
+    }
+    onChange(val);
+  };
 
   const onConnect = async (id: ConnectorType) => {
     const res = await connect(id);
@@ -40,7 +50,7 @@ export const ConnectDialogWithRiskAck = ({
     <Dialog
       open={open}
       size="small"
-      onChange={onChange}
+      onChange={wrappedOnChange}
       onInteractOutside={(e) => {
         e.preventDefault();
       }}
@@ -96,6 +106,7 @@ export const ConnectDialog = ({
 }) => {
   const { connect } = useConnect();
   const status = useWallet((store) => store.status);
+  const state = useConfig();
 
   const onConnect = async (id: ConnectorType) => {
     const res = await connect(id);
@@ -104,11 +115,20 @@ export const ConnectDialog = ({
     }
   };
 
+  const wrappedOnChange = (val: boolean) => {
+    if (!val && status === 'importing') {
+      state.store.setState({
+        status: 'disconnected',
+      });
+    }
+    onChange(val);
+  };
+
   return (
     <Dialog
       open={open}
       size="small"
-      onChange={onChange}
+      onChange={wrappedOnChange}
       onInteractOutside={(e) => {
         e.preventDefault();
       }}

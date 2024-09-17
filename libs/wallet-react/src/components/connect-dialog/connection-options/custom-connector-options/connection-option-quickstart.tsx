@@ -8,12 +8,10 @@ import { useQuickstart } from 'libs/wallet-react/src/hooks/use-quickstart';
 const USER_REJECTED_CODE = 4001;
 
 export const QuickstartButton = ({
-  connector,
   onClick,
   isPending,
   error,
 }: {
-  connector: QuickStartConnector;
   onClick: () => void;
   isPending: boolean;
   error: ConnectorError | null;
@@ -59,7 +57,6 @@ export const ConnectionOptionQuickstart = ({
 
   return (
     <QuickstartButton
-      connector={connector}
       onClick={createWallet}
       isPending={isPending}
       error={error as ConnectorError}

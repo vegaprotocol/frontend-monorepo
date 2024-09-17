@@ -17,6 +17,9 @@ const defaultFill: PartialDeep<Trade> = {
     tradableInstrument: {
       instrument: {
         code: 'test market',
+        metadata: {
+          tags: ['quote:BTC'],
+        },
         product: {
           __typename: 'Future',
           settlementAsset: {

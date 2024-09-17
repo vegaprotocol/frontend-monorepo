@@ -92,9 +92,9 @@ const NotionalLabel = () => {
   const ticket = useTicketContext();
   const label = t('Notional');
   const symbol =
-    ticket.type === 'default' && ticket.quoteName.length > 0
-      ? ticket.quoteName
-      : ticket.quoteAsset.symbol;
+    ticket.type === 'spot'
+      ? ticket.quoteAsset.symbol
+      : ticket.settlementAsset.symbol;
 
   return <InputLabel label={label} symbol={symbol} />;
 };
