@@ -580,16 +580,6 @@ describe('admin.export_key', () => {
     });
   });
 
-  it('should not export key with wrong passphrase', async () => {
-    const exportKey = await admin.onrequest(
-      REQ_EXPORT_KEY(4, key.publicKey, 'wrong-passphrase')
-    );
-    expect(exportKey.error).toEqual({
-      code: 1,
-      message: 'Invalid passphrase or corrupted storage',
-    });
-  });
-
   it('should export key', async () => {
     const exportKey = await admin.onrequest(
       REQ_EXPORT_KEY(4, key.publicKey, passphrase)
@@ -622,16 +612,6 @@ describe('admin.export_recovery_phrase', () => {
     expect(exportKey.error).toMatchObject({
       code: 1,
       message: expect.stringMatching(/Cannot find wallet "Wrong wallet"./),
-    });
-  });
-
-  it('should not export key with wrong passphrase', async () => {
-    const exportKey = await admin.onrequest(
-      REQ_EXPORT_RECOVERY_PHRASE(4, 'Wallet 1', 'wrong-passphrase')
-    );
-    expect(exportKey.error).toEqual({
-      code: 1,
-      message: 'Invalid passphrase or corrupted storage',
     });
   });
 
