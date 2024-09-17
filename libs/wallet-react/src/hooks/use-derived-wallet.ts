@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useConfig } from './use-config';
-import { useSignTypedData, useSwitchChain } from 'wagmi';
+import { useChainId, useSignTypedData, useSwitchChain } from 'wagmi';
+import { ARBITRUM_CHAIN_ID } from '@vegaprotocol/web3';
 
 /**
  * Derives a mnemonic from the user's connected Ethereum wallet
@@ -14,6 +15,7 @@ export const useCreateDerivedWallet = (
   const state = useConfig();
   const { signTypedDataAsync } = useSignTypedData();
   const { switchChainAsync } = useSwitchChain();
+  const chainId = useChainId();
 
   const mutationResult = useMutation({
     retry: false,
@@ -23,13 +25,15 @@ export const useCreateDerivedWallet = (
         state.store.setState({
           status: 'creating',
         });
-        await switchChainAsync({
-          chainId: 1,
-        });
+        if (chainId !== ARBITRUM_CHAIN_ID) {
+          await switchChainAsync({
+            chainId: ARBITRUM_CHAIN_ID,
+          });
+        }
         const hasWallet = await connector.hasWallet();
         if (!hasWallet) {
           const signedMessage = await signTypedDataAsync({
-            domain: { name: 'Onboarding', chainId: BigInt(1) },
+            domain: { name: 'Onboarding', chainId: BigInt(ARBITRUM_CHAIN_ID) },
             message: { action: 'Onboarding' },
             primaryType: 'Onboarding',
             types: {
