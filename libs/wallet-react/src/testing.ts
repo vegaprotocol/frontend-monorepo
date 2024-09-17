@@ -13,6 +13,7 @@ export const mockConfig = createConfig({
   chains: [mockChain],
   defaultChainId: mockChain.id,
   connectors: [mockConnector],
+  appName: 'test',
 });
 
 export function MockedWalletProvider({
