@@ -1,6 +1,6 @@
 name: Release production apps for Nebula
 
-"on":
+'on':
   push:
     tags:
       - trading/v*
@@ -9,10 +9,9 @@ name: Release production apps for Nebula
       - governance/*
       - all/v*
 
-
 jobs:
   build_dist:
-    name: "Build dist"
+    name: 'Build dist'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,17 +31,16 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-      
+
       - name: Install deps
         shell: bash
         run: yarn install
-      
+
       - name: Build explorer
         shell: bash
         if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }}
         run: |
           yarn env-cmd -f ./apps/explorer/.env.nebula1 yarn nx build explorer
-
 
       - name: Build console
         shell: bash
@@ -64,7 +62,7 @@ jobs:
           path: ./dist/
 
   publish_dist:
-    name: "Publis dist"
+    name: 'Publis dist'
     needs: build_dist
     runs-on: ubuntu-latest
     outputs:
@@ -77,24 +75,25 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend_dist
+          path: /tmp
 
       - id: release_version
-        name: "Filter release version"
+        name: 'Filter release version'
         shell: bash
         run: |
           RELEASE_VERSION=$(echo '${{ github.ref_name }}' | awk '{ sub(/([a-z]+\/)/, 'a'); print $0 }');
           echo "NUMBER=$RELEASE_VERSION" >> $GITHUB_OUTPUT;
-  
-      - name: "Publish explorer"
+
+      - name: 'Publish explorer'
         if: ${{ contains(github.ref_name, 'explorer') || contains(github.ref_name, 'all') }}
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: "dist/apps/explorer"
-          REMOTE_HOST: "${{ matrix.target }}"
-          REMOTE_USER: "fe-deployment"
-          TARGET: "/var/www/explorer-dist/${{ steps.release_version.outputs.number }}"
+          SOURCE: '/tmp/dist/apps/explorer'
+          REMOTE_HOST: '${{ matrix.target }}'
+          REMOTE_USER: 'fe-deployment'
+          TARGET: '/var/www/explorer-dist/${{ steps.release_version.outputs.number }}'
           # EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_BEFORE: |
             whoami
@@ -104,16 +103,16 @@ jobs:
             ls -al
             echo $RSYNC_STDOUT
 
-      - name: "Publish console"
+      - name: 'Publish console'
         if: ${{ contains(github.ref_name, 'trading') || contains(github.ref_name, 'console') || contains(github.ref_name, 'all') }}
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: "dist/apps/trading/exported"
-          REMOTE_HOST: "${{ matrix.target }}"
-          REMOTE_USER: "fe-deployment"
-          TARGET: "/var/www/trading-dist/${{ steps.release_version.outputs.number }}"
+          SOURCE: '/tmp/dist/apps/trading/exported'
+          REMOTE_HOST: '${{ matrix.target }}'
+          REMOTE_USER: 'fe-deployment'
+          TARGET: '/var/www/trading-dist/${{ steps.release_version.outputs.number }}'
           # EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_BEFORE: |
             whoami
@@ -123,16 +122,16 @@ jobs:
             ls -al
             echo $RSYNC_STDOUT
 
-      - name: "Publish governance"
+      - name: 'Publish governance'
         if: ${{ contains(github.ref_name, 'governance') || contains(github.ref_name, 'all') }}
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_DEPLOYMENT_SSH_KEY }}
           ARGS: "--archive --compress --verbose --checksum --delete -i --rsync-path='sudo rsync'"
-          SOURCE: "dist/apps/governance"
-          REMOTE_HOST: "${{ matrix.target }}"
-          REMOTE_USER: "fe-deployment"
-          TARGET: "/var/www/governance-dist/${{ steps.release_version.outputs.number }}"
+          SOURCE: '/tmp/dist/apps/governance'
+          REMOTE_HOST: '${{ matrix.target }}'
+          REMOTE_USER: 'fe-deployment'
+          TARGET: '/var/www/governance-dist/${{ steps.release_version.outputs.number }}'
           # EXCLUDE: "/dist/, /node_modules/"
           SCRIPT_BEFORE: |
             whoami
@@ -143,7 +142,7 @@ jobs:
             echo $RSYNC_STDOUT
 
   enable_dist:
-    name: "Enable published dist"
+    name: 'Enable published dist'
     needs: publish_dist
     runs-on: ubuntu-latest
     strategy:
