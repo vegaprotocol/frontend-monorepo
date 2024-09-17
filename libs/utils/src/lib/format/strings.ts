@@ -25,7 +25,7 @@ export function shorten(input: string, limit?: number) {
 }
 
 const TITLE_SEPARATOR = ' - ';
-const TITLE_SUFFIX = 'Vega';
+const TITLE_SUFFIX = 'APP_NAME';
 export function titlefy(words: (string | null | undefined)[]) {
   const title = [...words, TITLE_SUFFIX]
     .filter((w) => w && w.length > 0)
