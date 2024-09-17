@@ -9,8 +9,9 @@ export const ConnectionOptionEmbeddedWallet = (
 ) => {
   const state = useConfig();
   const onClick = async () => {
-    if (!(props.connector instanceof InBrowserConnector))
-      {throw new Error('Connector invalid for this type of connection');}
+    if (!(props.connector instanceof InBrowserConnector)) {
+      throw new Error('Connector invalid for this type of connection');
+    }
     if (!(await props.connector.hasWallet())) {
       state.store.setState({
         status: 'importing',
