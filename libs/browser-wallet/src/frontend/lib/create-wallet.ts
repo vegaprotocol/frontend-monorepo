@@ -21,13 +21,6 @@ export const importWallet = async (
     },
     propagateError
   );
-  await request(
-    RpcMethods.GenerateKey,
-    {
-      wallet: WALLET_NAME,
-    },
-    propagateError
-  );
 };
 
 export const createWallet = async (mnemonic: string, request: SendMessage) => {

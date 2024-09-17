@@ -15,6 +15,14 @@ describe('chainId', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
       appName: 'Vega',
     });
 
@@ -27,6 +35,14 @@ describe('chainId', () => {
         chains: [mockChain],
         defaultChainId: 'invalid chain id',
         connectors: [mockConnector],
+        walletConfig: {
+          explorer: '',
+          docs: '',
+          governance: '',
+          console: '',
+          chainId: '',
+          etherscanUrl: '',
+        },
         appName: 'Vega',
       });
     }).toThrow();
@@ -39,6 +55,14 @@ describe('connect', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
     appName: 'Vega',
   });
 
@@ -89,6 +113,14 @@ describe('disconnect', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
     appName: 'Vega',
   });
 
@@ -128,6 +160,14 @@ describe('refresh keys', () => {
     chains: [mockChain],
     defaultChainId: mockChain.id,
     connectors: [mockConnector],
+    walletConfig: {
+      explorer: '',
+      docs: '',
+      governance: '',
+      console: '',
+      chainId: '',
+      etherscanUrl: '',
+    },
     appName: 'Vega',
   });
 
@@ -170,6 +210,14 @@ describe('sendTransaction', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
       appName: 'Vega',
     });
 
@@ -185,6 +233,14 @@ describe('sendTransaction', () => {
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
       appName: 'Vega',
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
     });
 
     jest
@@ -206,6 +262,14 @@ describe('sendTransaction', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mockConnector],
+      walletConfig: {
+        explorer: '',
+        docs: '',
+        governance: '',
+        console: '',
+        chainId: '',
+        etherscanUrl: '',
+      },
       appName: 'Vega',
     });
 

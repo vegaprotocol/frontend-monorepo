@@ -13,6 +13,14 @@ export const mockConfig = createConfig({
   chains: [mockChain],
   defaultChainId: mockChain.id,
   connectors: [mockConnector],
+  walletConfig: {
+    explorer: 'explorer',
+    docs: 'docs',
+    governance: 'governance',
+    console: 'console',
+    chainId: 'chainId',
+    etherscanUrl: 'etherscanUrl',
+  },
   appName: 'Vega',
 });
 

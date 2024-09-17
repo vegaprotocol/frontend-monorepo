@@ -65,10 +65,7 @@ export const ImportWallet = () => {
     );
   }
   return (
-    <OnboardingPage
-      name="Import wallet"
-      backLocation={FULL_ROUTES.createWallet}
-    >
+    <OnboardingPage name="Import wallet">
       <div>
         <p data-testid={locators.importMnemonicDescription} className="mb-6">
           Enter or paste in your Vega wallet's recovery phrase.
