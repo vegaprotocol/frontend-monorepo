@@ -114,6 +114,7 @@ describe('createMarketOrder', () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       tpSl: false,
       reduceOnly: false,
+      postOnly: false,
     };
     expect(createMarketOrder(fields, market, reference)).toEqual({
       reference,
@@ -314,6 +315,7 @@ describe('createStopMarketOrder', () => {
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: true,
+      postOnly: false,
       stopExpiryStrategy: 'none',
       oco: false,
     };

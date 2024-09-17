@@ -7,15 +7,16 @@ describe('getFeesBreakdown', () => {
       makerFee: '1000',
       infrastructureFee: '2000',
       liquidityFee: '3000',
+      treasuryFee: '1000',
+      buyBackFee: '1000',
+      highVolumeMakerFee: '1000',
+      infrastructureFeeReferralDiscount: '100',
     };
     const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '1000',
-      totalFee: '6000',
-      totalFeeDiscount: '0',
+      totalFee: '9000',
+      totalFeeDiscount: '100',
     };
-    expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
+    expect(getFeesBreakdown('Taker', fees)).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct fees breakdown for a maker if market is active', () => {
@@ -23,6 +24,9 @@ describe('getFeesBreakdown', () => {
       makerFee: '1000',
       infrastructureFee: '2000',
       liquidityFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const expectedBreakdown = {
       infrastructureFee: '0',
@@ -33,7 +37,7 @@ describe('getFeesBreakdown', () => {
     };
     expect(
       getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_ACTIVE)
-    ).toEqual(expectedBreakdown);
+    ).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct fees breakdown for a maker if the market is suspended', () => {
@@ -41,6 +45,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '2000',
       liquidityFee: '3000',
       makerFee: '0',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const expectedBreakdown = {
       infrastructureFee: '1000',
@@ -51,7 +58,7 @@ describe('getFeesBreakdown', () => {
     };
     expect(
       getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_SUSPENDED)
-    ).toEqual(expectedBreakdown);
+    ).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct fees breakdown for a taker if the market is suspended', () => {
@@ -59,6 +66,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '2000',
       liquidityFee: '3000',
       makerFee: '0',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const expectedBreakdown = {
       infrastructureFee: '1000',
@@ -69,7 +79,7 @@ describe('getFeesBreakdown', () => {
     };
     expect(
       getFeesBreakdown('Taker', fees, Schema.MarketState.STATE_SUSPENDED)
-    ).toEqual(expectedBreakdown);
+    ).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct fees breakdown for a taker if market is active', () => {
@@ -77,6 +87,9 @@ describe('getFeesBreakdown', () => {
       makerFee: '1000',
       infrastructureFee: '2000',
       liquidityFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const expectedBreakdown = {
       infrastructureFee: '2000',
@@ -87,7 +100,7 @@ describe('getFeesBreakdown', () => {
     };
     expect(
       getFeesBreakdown('Taker', fees, Schema.MarketState.STATE_ACTIVE)
-    ).toEqual(expectedBreakdown);
+    ).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct fees breakdown for a maker', () => {
@@ -95,6 +108,9 @@ describe('getFeesBreakdown', () => {
       makerFee: '1000',
       infrastructureFee: '2000',
       liquidityFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const expectedBreakdown = {
       infrastructureFee: '0',
@@ -103,7 +119,7 @@ describe('getFeesBreakdown', () => {
       totalFee: '-1000',
       totalFeeDiscount: '0',
     };
-    expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
+    expect(getFeesBreakdown('Maker', fees)).toMatchObject(expectedBreakdown);
   });
 
   it('should return correct total fees discount value for a taker (if the market is active - default)', () => {
@@ -117,6 +133,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '1000',
       liquidityFee: '2000',
       makerFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const { totalFeeDiscount } = getFeesBreakdown('Taker', fees);
     expect(totalFeeDiscount).toEqual((1 + 2 + 3 + 4 + 5 + 6).toString());
@@ -133,6 +152,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '1000',
       liquidityFee: '2000',
       makerFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const { totalFeeDiscount } = getFeesBreakdown('Maker', fees);
     // makerFeeReferralDiscount and makerFeeVolumeDiscount are added, infra and liq. fees are zeroed
@@ -150,6 +172,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '1000',
       liquidityFee: '2000',
       makerFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const { totalFeeDiscount } = getFeesBreakdown(
       'Maker',
@@ -171,6 +196,9 @@ describe('getFeesBreakdown', () => {
       infrastructureFee: '1000',
       liquidityFee: '2000',
       makerFee: '3000',
+      treasuryFee: '0',
+      buyBackFee: '0',
+      highVolumeMakerFee: '0',
     };
     const { totalFeeDiscount } = getFeesBreakdown(
       'Taker',

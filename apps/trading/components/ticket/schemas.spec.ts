@@ -44,6 +44,7 @@ describe('ticket market schema', () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       tpSl: false,
       reduceOnly: false,
+      postOnly: false,
     };
     return merge(fields, override);
   };
@@ -141,6 +142,7 @@ describe('ticket stop market schema', () => {
       notional: 0,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       reduceOnly: true,
+      postOnly: false,
       oco: false,
       stopExpiryStrategy: 'none',
     };

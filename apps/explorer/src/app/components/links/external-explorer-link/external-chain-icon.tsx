@@ -8,6 +8,7 @@ export const SUPPORTED_CHAIN_ICON_URLS: ChainIdMapping = {
   '1': '/assets/chain-eth-logo.svg',
   '100': '/assets/chain-gno-logo.svg',
   '42161': '/assets/chain-arb-logo.svg',
+  '421614': '/assets/chain-arb-logo.svg',
   '11155111': '/assets/chain-eth-logo.svg',
 };
 
