@@ -182,12 +182,6 @@ export default function init({
       },
 
       async 'admin.export_recovery_phrase'(params) {
-        doValidate(adminValidation.exportRecoveryPhrase, params);
-        if ((await encryptedStore.verifyPassphrase(params.passphrase)) !== true)
-          throw new JSONRPCServer.Error(
-            'Invalid passphrase or corrupted storage',
-            1
-          );
         try {
           return await wallets.exportRecoveryPhrase({
             walletName: params.walletName,

@@ -19,12 +19,12 @@ import { useMemo } from 'react';
  * node address for snap connection we need to re-new once its set or changes
  */
 export const useVegaWalletConfig = () => {
-  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL, CONFIGURED_WALLETS } =
+  const { VEGA_ENV, API_NODE, VEGA_WALLET_URL, CONFIGURED_WALLETS, APP_NAME } =
     useEnvironment();
 
   return useMemo(() => {
     const url = API_NODE?.graphQLApiUrl || API_NODE?.restApiUrl;
-    if (!url || !VEGA_WALLET_URL) return;
+    if (!url || !VEGA_WALLET_URL || !APP_NAME) return;
 
     const injected = new InjectedConnector();
     // const inBrowser = new InBrowserConnector();
@@ -45,8 +45,9 @@ export const useVegaWalletConfig = () => {
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: filteredConnectors,
+      appName: APP_NAME,
     });
 
     return config;
-  }, [CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
+  }, [APP_NAME, CONFIGURED_WALLETS, VEGA_ENV, API_NODE, VEGA_WALLET_URL]);
 };

@@ -27,6 +27,7 @@ describe('ConnectDialog', () => {
       chains: [mockChain],
       defaultChainId: mockChain.id,
       connectors: [mock, new InjectedConnector()],
+      appName: 'Vega',
     });
   });
 
