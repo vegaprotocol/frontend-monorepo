@@ -59,7 +59,7 @@ export const StepStartPlaying = () => {
         myTeamId={myTeamId}
         onAction={onAction}
       />
-      <div className="text-center text-surface-0-fg-muted flex flex-col gap-1">
+      <div className="text-center text-surface-0-fg-muted flex flex-col gap-4">
         <span>{t('ONBOARDING_STEP_START_PLAYING_DISMISS_MESSAGE')}</span>
         <DismissButton />
       </div>
