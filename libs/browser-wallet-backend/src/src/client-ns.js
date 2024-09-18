@@ -125,9 +125,8 @@ export default function init({
       async 'client.disconnect_wallet'(params, context) {
         doValidate(clientValidation.disconnectWallet, params);
         settings.clear();
-        wallets.store.cear();
+        wallets.store.clear();
         connections.store.clear();
-        encryptedStore._storage.clear();
         transactions.transactionStore.clear();
         publicKeyIndexStore._storage.clear();
         fetchCache._cache.clear();
