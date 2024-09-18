@@ -87,7 +87,7 @@ export const CompetitionsHome = () => {
       )}
 
       {/** List of available games */}
-      <section>
+      <section className="mb-12">
         <h2 className="text-2xl mb-1">{t('Games')}</h2>
         <p className="mb-6 text-sm">
           <Trans
@@ -107,9 +107,7 @@ export const CompetitionsHome = () => {
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
 
-        <div className="mb-12 flex flex-col gap-4">
-          <SimpleRewardCardsContainer />
-        </div>
+        <SimpleRewardCardsContainer />
       </section>
 
       {/** The teams ranking */}

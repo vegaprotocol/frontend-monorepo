@@ -21,22 +21,21 @@ export const SimpleRewardCard = ({
 }: RewardCard) => {
   const t = useT();
   return (
-    <div className="rounded relative p-px">
-      <ColourfulBorder className="!rounded" />
+    <div className="grid grid-rows-[subgrid] row-span-4 px-4 pt-28 pb-4 rounded-grid relative overflow-hidden">
+      <ColourfulBorder />
       <RewardImage />
-      <div className="p-4 flex flex-col gap-4">
-        {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tags?.map((t, i) => (
-              <Pill key={`pill-${i}-${t}`} size="sm">
-                {t}
-              </Pill>
-            ))}
-          </div>
-        )}
+      {tags && tags.length > 0 && (
+        <div className="flex flex-wrap items-start gap-2">
+          {tags.map((t, i) => (
+            <Pill key={`pill-${i}-${t}`} size="sm">
+              {t}
+            </Pill>
+          ))}
+        </div>
+      )}
 
-        <h3 className="text-2xl leading-none">{title}</h3>
-
+      <h3 className="text-2xl leading-none">{title}</h3>
+      <div className="flex flex-col gap-4">
         <ReactMarkdown
           components={{
             p: ({ children }) => {
@@ -63,20 +62,20 @@ export const SimpleRewardCard = ({
         >
           {description}
         </ReactMarkdown>
-
-        <Link to={Links.COMPETITIONS_GAME(rewardId)}>
-          <Button className="w-full" intent={Intent.Primary}>
-            {t('View more')}
-          </Button>
-        </Link>
       </div>
+
+      <Link to={Links.COMPETITIONS_GAME(rewardId)}>
+        <Button className="w-full" intent={Intent.Primary}>
+          {t('View more')}
+        </Button>
+      </Link>
     </div>
   );
 };
 
 const RewardImage = () => (
   // PLACEHOLDER TODO: Change this to an image
-  <div className="bg-surface-1 relative h-24 rounded overflow-hidden">
+  <div className="absolute top-px left-px right-px h-24 bg-surface-1 overflow-hidden rounded-t-grid">
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <VegaIcon name={VegaIconNames.DICE} size={24} className="animate-pulse" />
     </div>
