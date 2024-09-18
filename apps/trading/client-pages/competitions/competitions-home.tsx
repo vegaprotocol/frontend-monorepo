@@ -119,6 +119,7 @@ export const CompetitionsHome = () => {
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
 
+        {/** TODO: Use one or another */}
         <div className="mb-12 flex flex-col gap-4">
           {gamesLoading ? (
             <div className="flex">
