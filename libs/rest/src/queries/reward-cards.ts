@@ -3,10 +3,10 @@ import axios from 'axios';
 import { z } from 'zod';
 
 const rewardCardSchema = z.object({
+  rewardId: z.string(),
   title: z.string(),
   description: z.string(),
   tags: z.array(z.string()),
-  link: z.string(),
 });
 
 const rewardCardsSchema = z.array(rewardCardSchema);

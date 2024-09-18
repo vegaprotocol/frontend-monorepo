@@ -1,17 +1,14 @@
 import { useT } from '../../lib/use-t';
 import { ExternalLink, Loader } from '@vegaprotocol/ui-toolkit';
-import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { CompetitionsActions } from '../../components/competitions/competitions-cta';
-import { GamesContainer } from '../../components/competitions/games-container';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import { useTeams } from '../../lib/hooks/use-teams';
 import take from 'lodash/take';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { TeamCard } from '../../components/competitions/team-card';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
-import { useRewards } from '../../lib/hooks/use-rewards';
 import { Trans } from 'react-i18next';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { HeaderHero } from '../../components/header-hero';
@@ -20,16 +17,7 @@ import { SimpleRewardCardsContainer } from '../../components/rewards-container/s
 
 export const CompetitionsHome = () => {
   const t = useT();
-
   usePageTitle(t('Competitions'));
-
-  const { data: epochData } = useEpochInfoQuery();
-  const currentEpoch = Number(epochData?.epoch.id);
-
-  const { data: gamesData, loading: gamesLoading } = useRewards({
-    onlyActive: true,
-    scopeToTeams: true,
-  });
 
   const { data: teamsData, loading: teamsLoading } = useTeams();
 
@@ -119,18 +107,8 @@ export const CompetitionsHome = () => {
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
 
-        {/** TODO: Use one or another */}
         <div className="mb-12 flex flex-col gap-4">
-          {gamesLoading ? (
-            <div className="flex">
-              <Loader size="small" />
-            </div>
-          ) : (
-            <>
-              <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
-              <SimpleRewardCardsContainer />
-            </>
-          )}
+          <SimpleRewardCardsContainer />
         </div>
       </section>
 

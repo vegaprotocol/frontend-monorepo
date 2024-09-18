@@ -1,20 +1,30 @@
 [
   {
+    "rewardId": "82456b68780b36dcdfcda3fb70dbfd81dc1a81f20175ff5d9de13e56f8478b51",
     "title": "Reward A",
+    "img": "",
     "description": "AAA This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
-    "tags": ["super reward", "money", "gold"],
-    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+    "tags": ["super reward", "money", "gold"]
   },
   {
+    "rewardId": "a067c9f3f0d0e8e032050e84893c909fb6140e00fb7145d81fe6786d3efe7854",
     "title": "Reward B",
+    "img": "",
     "description": "BBB This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
-    "tags": ["best reward ever", "beautiful"],
-    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+    "tags": [
+      "best reward ever",
+      "beautiful",
+      "another",
+      "again",
+      "more",
+      "even more"
+    ]
   },
   {
+    "rewardId": "9584bc79fd8b6db70df612c957a495fa0ca30a49c9be2d09c045ae5a4653d892",
     "title": "Reward C",
+    "img": "",
     "description": "CCC This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
-    "tags": ["small but mighty", "lorem ipsum"],
-    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+    "tags": ["small but mighty", "lorem ipsum"]
   }
 ]

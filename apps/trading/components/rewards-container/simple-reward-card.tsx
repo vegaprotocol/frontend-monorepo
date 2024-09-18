@@ -10,18 +10,19 @@ import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import { GradientText } from '../gradient-text';
 import { ColourfulBorder } from 'libs/ui-toolkit/src/utils/border';
+import { Links } from 'apps/trading/lib/links';
 
 type SimpleRewardCardProps = {
+  rewardId: string;
   title: string;
   description: string;
   tags?: string[];
-  link?: string;
 };
 export const SimpleRewardCard = ({
+  rewardId,
   title,
   description,
   tags,
-  link,
 }: SimpleRewardCardProps) => {
   const t = useT();
   return (
@@ -30,7 +31,7 @@ export const SimpleRewardCard = ({
       <RewardImage />
       <div className="p-4 flex flex-col gap-4">
         {tags && tags.length > 0 && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {tags?.map((t, i) => (
               <Pill key={`pill-${i}-${t}`} size="sm">
                 {t}
@@ -68,13 +69,11 @@ export const SimpleRewardCard = ({
           {description}
         </ReactMarkdown>
 
-        {link && (
-          <Link to={link}>
-            <Button className="w-full" intent={Intent.Primary}>
-              {t('View more')}
-            </Button>
-          </Link>
-        )}
+        <Link to={Links.COMPETITIONS_GAME(rewardId)}>
+          <Button className="w-full" intent={Intent.Primary}>
+            {t('View more')}
+          </Button>
+        </Link>
       </div>
     </div>
   );
