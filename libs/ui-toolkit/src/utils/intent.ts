@@ -58,6 +58,18 @@ export const getIntentText = (intent?: Intent) => {
   };
 };
 
+export const getIntentForeground = (intent?: Intent) => {
+  return {
+    'text-surface-0-fg': intent === Intent.None,
+    'text-intent-primary-foreground': intent === Intent.Primary,
+    'text-intent-secondary-foreground': intent === Intent.Secondary,
+    'text-intent-info-foreground': intent === Intent.Info,
+    'text-intent-danger-foreground': intent === Intent.Danger,
+    'text-intent-warning-foreground': intent === Intent.Warning,
+    'text-intent-success-foreground': intent === Intent.Success,
+  };
+};
+
 export const getIntentIcon = (intent: Intent) => {
   const record: Record<Intent, VegaIconNames> = {
     [Intent.None]: VegaIconNames.INFO,

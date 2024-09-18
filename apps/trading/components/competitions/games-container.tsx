@@ -109,6 +109,12 @@ export const GamesContainer = ({
     );
   }
 
+  const displayable = data
+    .filter((n) => applyFilter(n, filter))
+    // filter out the cards (rewards) for which all of the markets
+    // are settled
+    .filter((n) => !areAllMarketsSettled(n));
+
   return (
     <div>
       {/** CARDS FILTER */}
@@ -129,26 +135,21 @@ export const GamesContainer = ({
       )}
       {/** CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data
-          .filter((n) => applyFilter(n, filter))
-          // filter out the cards (rewards) for which all of the markets
-          // are settled
-          .filter((n) => !areAllMarketsSettled(n))
-          .map((game, i) => {
-            const { transfer } = game;
-            if (!transfer.kind.dispatchStrategy?.dispatchMetric) {
-              return null;
-            }
-            return (
-              <LinkToGame key={i} reward={game}>
-                <ActiveRewardCard
-                  transferNode={game}
-                  currentEpoch={currentEpoch}
-                  requirements={requirements}
-                />
-              </LinkToGame>
-            );
-          })}
+        {displayable.map((game, i) => {
+          const { transfer } = game;
+          if (!transfer.kind.dispatchStrategy?.dispatchMetric) {
+            return null;
+          }
+          return (
+            <LinkToGame key={i} reward={game}>
+              <ActiveRewardCard
+                transferNode={game}
+                currentEpoch={currentEpoch}
+                requirements={requirements}
+              />
+            </LinkToGame>
+          );
+        })}
       </div>
     </div>
   );

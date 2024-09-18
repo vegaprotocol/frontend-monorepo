@@ -17,12 +17,11 @@ import { DocsLinks } from '@vegaprotocol/environment';
 
 import { HeaderHero } from '../../components/header-hero';
 import { ErrorBoundary } from '../../components/error-boundary';
+// import { SimpleRewardCardsContainer } from '../../components/rewards-container/simple-reward-cards-container';
 
 export const CompetitionsHome = () => {
   const t = useT();
-
   usePageTitle(t('Competitions'));
-
   const { data: epochData } = useEpochInfoQuery();
   const currentEpoch = Number(epochData?.epoch.id);
 
@@ -30,7 +29,6 @@ export const CompetitionsHome = () => {
     onlyActive: true,
     scopeToTeams: true,
   });
-
   const { data: teamsData, loading: teamsLoading } = useTeams();
 
   const {
@@ -99,7 +97,7 @@ export const CompetitionsHome = () => {
       )}
 
       {/** List of available games */}
-      <section>
+      <section className="mb-12">
         <h2 className="text-2xl mb-1">{t('Games')}</h2>
         <p className="mb-6 text-sm">
           <Trans
@@ -126,6 +124,8 @@ export const CompetitionsHome = () => {
             <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
           )}
         </div>
+        {/* TODO: replace GamesContainer when public/rewards-cards.json has good data */}
+        {/* <SimpleRewardCardsContainer /> */}
       </section>
 
       {/** The teams ranking */}

@@ -7,6 +7,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { HTMLAttributes, ReactNode } from 'react';
+import { ColourfulBorder } from '../../utils/border';
 
 interface NotificationBanner {
   intent?: Intent;
@@ -37,18 +38,7 @@ export const NotificationBanner = ({
       )}
       {...props}
     >
-      {intent === Intent.Primary && (
-        <div
-          style={{
-            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            maskComposite: 'exclude',
-          }}
-          className={cn(
-            'absolute inset-0 p-px bg-gradient-to-br rounded-grid pointer-events-none',
-            'from-highlight to-highlight-secondary'
-          )}
-        />
-      )}
+      {intent === Intent.Primary && <ColourfulBorder />}
       {icon}
       <div className="grow">{children}</div>
       {onClose ? (
