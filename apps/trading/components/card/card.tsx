@@ -1,4 +1,4 @@
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { ColourfulBorder, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import type { HTMLProps, ReactNode } from 'react';
 import { GradientText } from '../gradient-text';
@@ -37,19 +37,11 @@ export const Card = ({
       )}
     >
       {variant !== 'normal' && (
-        <div
-          style={{
-            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            maskComposite: 'exclude',
-          }}
-          className={cn(
-            'absolute inset-0 p-px bg-gradient-to-br rounded-lg pointer-events-none',
-            {
-              'from-highlight to-highlight-secondary': variant === 'cool',
-              'from-highlight-secondary to-highlight-tertiary':
-                variant == 'hot',
-            }
-          )}
+        <ColourfulBorder
+          className={cn({
+            'from-highlight to-highlight-secondary': variant === 'cool',
+            'from-highlight-secondary to-highlight-tertiary': variant == 'hot',
+          })}
         />
       )}
       {title && <h2 className="mb-3">{title}</h2>}

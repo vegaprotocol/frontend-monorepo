@@ -3,7 +3,7 @@ import { useT } from '../../lib/use-t';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import { GradientText } from '../gradient-text';
-import { ColourfulBorder } from 'libs/ui-toolkit/src/utils/border';
+import { ColourfulBorder } from '@vegaprotocol/ui-toolkit';
 import { Links } from 'apps/trading/lib/links';
 import { type RewardCard } from '@vegaprotocol/rest';
 

@@ -7,7 +7,7 @@ export const ColourfulBorder = ({ className }: { className?: string }) => (
       maskComposite: 'exclude',
     }}
     className={cn(
-      'absolute inset-0 p-px bg-gradient-to-br rounded-grid pointer-events-none',
+      'absolute inset-0 rounded-[inherit] p-px bg-gradient-to-br pointer-events-none',
       'from-highlight to-highlight-secondary',
       className
     )}
