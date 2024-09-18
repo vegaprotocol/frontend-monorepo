@@ -14,10 +14,9 @@ import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useRewards } from '../../lib/hooks/use-rewards';
 import { Trans } from 'react-i18next';
 import { DocsLinks } from '@vegaprotocol/environment';
-
 import { HeaderHero } from '../../components/header-hero';
 import { ErrorBoundary } from '../../components/error-boundary';
-import { SimpleRewardCard } from 'apps/trading/components/rewards-container/simple-reward-card';
+import { SimpleRewardCardsContainer } from '../../components/rewards-container/simple-reward-cards-container';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -120,31 +119,17 @@ export const CompetitionsHome = () => {
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
 
-        <div className="mb-12 flex">
+        <div className="mb-12 flex flex-col gap-4">
           {gamesLoading ? (
-            <Loader size="small" />
+            <div className="flex">
+              <Loader size="small" />
+            </div>
           ) : (
-            <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
+            <>
+              <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
+              <SimpleRewardCardsContainer />
+            </>
           )}
-        </div>
-
-        <div>
-          <SimpleRewardCard
-            title="Reward A"
-            description={`
-
-This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.
-
-* **1,666.58 NEB**
-* Distribution strategy: Pro rata 
-* Reward pool amount and asset
-* Another bullet point
-* Another bullet point
-
-`}
-            tags={['letters', 'a', 'alphabet', 'first']}
-            link="/dupa"
-          />
         </div>
       </section>
 

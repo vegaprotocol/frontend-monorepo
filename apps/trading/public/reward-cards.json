@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Reward A",
+    "description": "AAA This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
+    "tags": ["super reward", "money", "gold"],
+    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+  },
+  {
+    "title": "Reward B",
+    "description": "BBB This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
+    "tags": ["best reward ever", "beautiful"],
+    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+  },
+  {
+    "title": "Reward C",
+    "description": "CCC This is a description that returns onto a maximum number of lines to be defined. It may also be truncated at 3 or 4 lines.\n\n* **1,666.58 NEB**\n* Distribution strategy: Pro rata \n* Reward pool amount and asset\n* Another bullet point\n* Another bullet point",
+    "tags": ["small but mighty", "lorem ipsum"],
+    "link": "/competitions/games/1e61f3435725d235c6c2fd932afd710f54a5f592e8c6790246b5ef7416c11f97"
+  }
+]
