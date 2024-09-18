@@ -13,6 +13,7 @@ import {
 import { ConnectorError, noConnectorError, unknownError } from './errors';
 
 export const STORE_KEY = 'vega_wallet_store';
+const STORE_VERSION = 1;
 
 // get/set functions are not used in the slices so these
 // can be plain objects
@@ -50,6 +51,7 @@ export function createConfig(cfg: Config): Wallet {
   const store = createStore<Store>()(
     persist(getInitialState, {
       name: STORE_KEY,
+      version: STORE_VERSION,
       partialize(state) {
         return {
           chainId: state.chainId,
