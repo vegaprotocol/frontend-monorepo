@@ -38,6 +38,10 @@ export const OnboardBanner = () => {
 
   let text = t('Connect and start trading to earn rewards.');
 
+  if (store.started > 0) {
+    text = t('Sign up for games to earn rewards as you trade.');
+  }
+
   if (store.team && team) {
     text = t('You have been invited to join team {{team}}.', {
       team: team.name,
