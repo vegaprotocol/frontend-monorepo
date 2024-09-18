@@ -98,7 +98,8 @@ export const useDetermineCurrentStep = (
       step = Step.ApplyCode;
     } else if (steps.includes(Step.JoinTeam) && !team) {
       step = Step.JoinTeam;
-    } else if (steps.includes(Step.StartPlaying)) {
+    } else if (steps.includes(Step.StartPlaying) && !team) {
+      // this step is only available if you're not in a team
       step = Step.StartPlaying;
     }
   }

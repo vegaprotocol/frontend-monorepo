@@ -15,6 +15,7 @@ import { Card } from '../../components/card';
 import { Trans } from 'react-i18next';
 import { QUSDTooltip } from '../referrals/qusd-tooltip';
 import { DepositContainer } from '../../components/deposit-container';
+import { ExitInvite } from './exit-invite';
 
 export const StepDeposit = () => {
   const t = useT();
@@ -33,7 +34,7 @@ export const StepDeposit = () => {
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }
-  if (!currentStep) return <Navigate to="" />;
+  if (!currentStep) return <ExitInvite />;
   if (currentStep !== Step.Deposit) {
     return <Navigate to={StepLinks[currentStep]} />;
   }

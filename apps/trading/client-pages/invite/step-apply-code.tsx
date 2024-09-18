@@ -28,6 +28,7 @@ import { useSimpleTransaction } from '@vegaprotocol/wallet-react';
 import { GradientText } from '../../components/gradient-text';
 import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 import minBy from 'lodash/minBy';
+import { ExitInvite } from './exit-invite';
 
 export const StepApplyCode = () => {
   const t = useT();
@@ -88,7 +89,7 @@ export const StepApplyCode = () => {
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }
-  if (!currentStep) return <Navigate to="" />;
+  if (!currentStep) return <ExitInvite />;
   if (currentStep !== Step.ApplyCode) {
     return <Navigate to={StepLinks[currentStep]} />;
   }

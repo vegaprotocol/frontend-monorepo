@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
 import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom';
 
-import { Links } from '../../lib/links';
 import { StepConnect } from './step-connect';
 import { useOnboardStore } from '../../stores/onboard';
 import {
@@ -17,6 +16,7 @@ import { StepDeposit } from './step-deposit';
 import { StepApplyCode } from './step-apply-code';
 import { StepJoinTeam } from './step-join-team';
 import { StepStartPlaying } from './step-start-playing';
+import { ExitInvite } from './exit-invite';
 
 export const Invite = () => {
   return (
@@ -63,19 +63,21 @@ const ProcessSteps = () => {
 
   useEffect(() => {
     if (loading) return;
-    // already finished
-    if (finished > 0) return;
-    // already started, ignoring new code, team values
-    if (started > 0) return;
 
-    if (code && validReferral) {
+    const hasNewCode = code && validReferral && code !== storedCode;
+    const hasNewTeam = team && validTeam && team !== storedTeam;
+
+    // if finished but landed here with a new code then start onboarding again
+    if (finished > 0 && !hasNewCode && !hasNewTeam) return;
+
+    if (hasNewCode) {
       setCode(code);
     }
-    if (team && validTeam) {
+    if (hasNewTeam) {
       setTeam(team);
     }
 
-    start();
+    if (started === 0) start();
   }, [
     code,
     finished,
@@ -95,7 +97,7 @@ const ProcessSteps = () => {
    * Already finished onboarding, no need to go through the process again.
    */
   if (finished > 0) {
-    return <Navigate to={Links.MARKETS()} />;
+    return <ExitInvite />;
   }
 
   if (started <= 0 || loading) {
@@ -106,5 +108,5 @@ const ProcessSteps = () => {
     return <Navigate to={StepRoutes[desiredStep]} />;
   }
 
-  return <div className="text-red">COULD NOT DETERMINE STEP</div>;
+  return <ExitInvite />;
 };
