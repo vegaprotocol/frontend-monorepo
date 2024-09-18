@@ -4,7 +4,7 @@ import { BrowserConnector } from './base-connector';
 
 export class InBrowserConnector extends BrowserConnector implements Connector {
   readonly id = 'embedded-wallet';
-  name = 'Use an existing mnemonic';
+  name = 'Import wallet to Console';
   description = 'Connect with the Embedded Wallet';
   prominent = false;
 
