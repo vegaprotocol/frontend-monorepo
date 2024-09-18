@@ -2,7 +2,7 @@ import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
 
 import { RpcMethods } from './client-rpc-methods';
 
-export const WALLET_NAME = 'Wallet 1';
+export const WALLET_NAME = 'Wallet';
 
 export const importWallet = async (
   mnemonic: string,
