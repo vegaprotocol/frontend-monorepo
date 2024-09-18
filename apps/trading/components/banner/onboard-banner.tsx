@@ -4,37 +4,47 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useOnboardStore } from 'apps/trading/stores/onboard';
 import { useT } from '../../lib/use-t';
 import { useTeam } from '../../lib/hooks/use-team';
+import { useMyTeam } from 'apps/trading/lib/hooks/use-my-team';
+import { useFindReferralSet } from 'apps/trading/client-pages/referrals/hooks/use-find-referral-set';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const OnboardBanner = () => {
   const t = useT();
+  const { pubKey } = useVegaWallet();
+
   const store = useOnboardStore();
   const match = useMatch('/invite/*');
 
-  const teamResult = useTeam(store.team);
-  const team = teamResult.data?.teams?.edges.find(
-    (t) => t.node.teamId === store.team
-  );
+  const { team, loading: teamLoading } = useTeam(store.team);
+  const { team: myTeam, loading: myTeamLoading } = useMyTeam();
+  const { data: referralSet, loading: referralSetLoading } =
+    useFindReferralSet(pubKey);
 
   // banner needs to render an empty element so that the parent grid renders correctly
   const empty = <div />;
 
-  if (match) {
-    return empty;
-  }
-
-  if (store.dismissed) {
-    return empty;
-  }
-
-  if (store.finished) {
+  if (
+    match ||
+    store.dismissed ||
+    store.finished ||
+    teamLoading ||
+    myTeamLoading ||
+    referralSetLoading ||
+    (myTeam && myTeam.teamId !== team?.teamId) ||
+    (store.code && store.code === referralSet?.id)
+  ) {
     return empty;
   }
 
   let text = t('Connect and start trading to earn rewards.');
 
+  if (store.started > 0) {
+    text = t('Sign up for games to earn rewards as you trade.');
+  }
+
   if (store.team && team) {
     text = t('You have been invited to join team {{team}}.', {
-      team: team.node.name,
+      team: team.name,
     });
   }
 

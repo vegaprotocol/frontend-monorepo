@@ -14,6 +14,7 @@ import {
   type IChartingLibraryWidget,
   type ChartPropertiesOverrides,
   type ResolutionString as TVResolutionString,
+  type Timezone,
 } from '../charting-library';
 
 const noop = () => {};
@@ -104,6 +105,7 @@ export const TradingView = ({
         backgroundColor: overrides['paneProperties.background'],
       },
       auto_save_delay: 1,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone as Timezone,
     };
 
     widgetRef.current = new window.TradingView.widget(widgetOptions);

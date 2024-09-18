@@ -40,11 +40,6 @@ jobs:
         run: |
           echo IS_TESTNET_RELEASE=true >> $GITHUB_ENV
 
-      - name: Is validators testnet release
-        if: contains(github.ref, 'release/validators-testnet')
-        run: |
-          echo IS_VALIDATORS_TESTNET_RELEASE=true >> $GITHUB_ENV
-
       - name: Is IPFS Release
         if: matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' )
         run: |

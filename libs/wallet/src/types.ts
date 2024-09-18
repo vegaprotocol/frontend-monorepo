@@ -80,6 +80,7 @@ export type CoreStore = {
 
 export type SingleKeyStore = {
   pubKey: string | undefined;
+  previousKey: string | undefined;
 };
 
 export type Store = CoreStore & SingleKeyStore;

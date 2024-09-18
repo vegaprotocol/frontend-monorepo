@@ -111,7 +111,10 @@ describe('VegaWalletConnectButton', () => {
     expect(refreshKeys).toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId(`key-${key2.publicKey}`));
-    expect(setPubKey).toHaveBeenCalledWith({ pubKey: key2.publicKey });
+    expect(setPubKey).toHaveBeenCalledWith({
+      pubKey: key2.publicKey,
+      previousKey: key2.publicKey,
+    });
 
     fireEvent.click(screen.getByTestId('disconnect'));
     expect(disconnect).toHaveBeenCalled();

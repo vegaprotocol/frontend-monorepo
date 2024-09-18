@@ -44,11 +44,11 @@ export const useOnboardStore = create<InviteStore & InviteActions>()(
     {
       name: `${APP_NAME.toLowerCase()}-invite-store`,
       version: 1,
-      partialize: ({ dismissed, ...state }) => {
-        // Dont store the dismissed state so that the user
-        // is reminded to onboard at the start of every session
-        return state;
-      },
+      // partialize: ({ dismissed, ...state }) => {
+      //   // Dont store the dismissed state so that the user
+      //   // is reminded to onboard at the start of every session
+      //   return state;
+      // },
     }
   )
 );

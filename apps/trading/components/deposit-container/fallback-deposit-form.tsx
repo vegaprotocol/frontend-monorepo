@@ -36,7 +36,7 @@ export const FallbackDepositForm = ({
   configs: Configs;
 }) => {
   const t = useT();
-  const { pubKeys } = useVegaWallet();
+  const { pubKey, pubKeys } = useVegaWallet();
 
   const { address } = useAccount();
   const { switchChainAsync } = useSwitchChain();
@@ -53,7 +53,7 @@ export const FallbackDepositForm = ({
       fromChain: String(chainId),
       fromAsset: initialAsset?.source.contractAddress,
       toAsset: initialAsset?.id,
-      toPubKey: '',
+      toPubKey: pubKey,
       amount: '',
     },
   });

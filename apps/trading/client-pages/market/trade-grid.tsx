@@ -24,7 +24,7 @@ interface TradeGridProps {
 const MainGrid = memo(
   ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
     const t = useT();
-    const { banners } = useMarketBanners(market);
+    const { notDismissedBanners } = useMarketBanners(market);
 
     const [rowSizes, handleRowSizes] = usePaneLayout({
       id: 'trade-row',
@@ -36,7 +36,7 @@ const MainGrid = memo(
       id: 'trade-col',
     });
 
-    const headingSize = banners.length > 0 ? 125 : 72;
+    const headingSize = notDismissedBanners.length > 0 ? 125 : 72;
 
     return (
       <ResizableGrid onChange={handleRowSizes}>
