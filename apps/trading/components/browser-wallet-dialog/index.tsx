@@ -2,7 +2,7 @@ import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { BrowserWallet } from '../browser-wallet';
 import { create } from 'zustand';
 import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export const useBrowserWalletDialogStore = create<{
   isOpen: boolean;
@@ -18,25 +18,22 @@ export const BrowserWalletDialog = () => {
     state.set,
   ]);
   const config = useVegaWalletConfig();
-  const quickStartConnector = useMemo(
-    () =>
-      config?.connectors.find(({ id }) => id === 'embedded-wallet-quickstart'),
-    [config?.connectors]
-  );
-  const embeddedConnector = useMemo(
-    () => config?.connectors.find(({ id }) => id === 'embedded-wallet'),
-    [config?.connectors]
-  );
 
   const setOpen = useCallback(() => set(true), [set]);
   const setClose = useCallback(() => set(false), [set]);
 
   useEffect(() => {
+    const quickStartConnector = config?.connectors.find(
+      ({ id }) => id === 'embedded-wallet-quickstart'
+    );
+    const embeddedConnector = config?.connectors.find(
+      ({ id }) => id === 'embedded-wallet'
+    );
     quickStartConnector?.on('client.request_transaction_approval', setOpen);
     quickStartConnector?.on('client.request_transaction_decided', setClose);
     embeddedConnector?.on('client.request_transaction_approval', setOpen);
     embeddedConnector?.on('client.request_transaction_decided', setClose);
-  }, [setOpen, setClose, quickStartConnector, embeddedConnector]);
+  }, [config?.connectors, setOpen, setClose]);
 
   return (
     <Dialog
