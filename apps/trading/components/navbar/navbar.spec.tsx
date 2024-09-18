@@ -181,6 +181,7 @@ describe('Navbar', () => {
     await userEvent.click(inactiveKey.getByText(mockKeys[1].name));
     expect(mockSelectPubKey).toHaveBeenCalledWith({
       pubKey: mockKeys[1].publicKey,
+      previousKey: mockKeys[1].publicKey,
     });
   });
 
