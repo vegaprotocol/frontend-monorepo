@@ -26,6 +26,7 @@ export const createWalletBackend = ({ node }) => {
     undefined,
     isIos()
   );
+
   // TODO: this is async and so could lead to weird race conditions if the user is fast enough. Unlikely.
   encryptedStore.exists().then((exists) => {
     if (!exists) {
@@ -73,6 +74,7 @@ export const createWalletBackend = ({ node }) => {
     encryptedStore,
     transactions,
     publicKeyIndexStore,
+    fetchCache,
     onerror,
   });
 

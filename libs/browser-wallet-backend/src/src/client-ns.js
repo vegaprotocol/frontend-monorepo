@@ -79,14 +79,16 @@ function doValidate(validator, params) {
 }
 
 export default function init({
-  onerror,
   settings,
   wallets,
   rpc,
   connections,
   interactor,
-  transactions,
   encryptedStore,
+  transactions,
+  publicKeyIndexStore,
+  fetchCache,
+  onerror,
 }) {
   const client = new JSONRPCServer({
     onerror,
@@ -122,6 +124,13 @@ export default function init({
       },
       async 'client.disconnect_wallet'(params, context) {
         doValidate(clientValidation.disconnectWallet, params);
+        settings.clear();
+        wallets.store.cear();
+        connections.store.clear();
+        encryptedStore._storage.clear();
+        transactions.transactionStore.clear();
+        publicKeyIndexStore._storage.clear();
+        fetchCache._cache.clear();
         context.isConnected = false;
         return null;
       },
