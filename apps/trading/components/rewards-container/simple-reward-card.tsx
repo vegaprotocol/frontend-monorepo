@@ -53,7 +53,11 @@ export const SimpleRewardCard = ({
               );
             },
             strong: ({ children }) => {
-              return <GradientText>{children}</GradientText>;
+              return (
+                <GradientText>
+                  <strong>{children}</strong>
+                </GradientText>
+              );
             },
           }}
         >
