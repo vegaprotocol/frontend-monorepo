@@ -1,5 +1,5 @@
 import { ns, useT } from '../../lib/use-t';
-import { useFundsAvailable } from '../referrals/hooks/use-funds-available';
+import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import {
   Step,
   StepLinks,

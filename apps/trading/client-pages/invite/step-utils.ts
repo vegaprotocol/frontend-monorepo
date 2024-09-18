@@ -1,6 +1,6 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOnboardStore } from '../../stores/onboard';
-import { useFundsAvailable } from '../referrals/hooks/use-funds-available';
+import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 

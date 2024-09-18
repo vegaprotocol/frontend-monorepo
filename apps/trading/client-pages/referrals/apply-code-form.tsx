@@ -20,7 +20,7 @@ import {
 import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { ns, useT } from '../../lib/use-t';
-import { useFundsAvailable } from './hooks/use-funds-available';
+import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import { QUSDTooltip } from './qusd-tooltip';
 import { Trans } from 'react-i18next';
 import { PreviewRefereeStatistics } from './referee-statistics';
