@@ -8,7 +8,12 @@ const rewardCardSchema = z.object({
   title: z.string(),
   img: z.string(),
   description: z.string(),
-  tags: z.array(z.string()),
+  tags: z.array(
+    z.object({
+      text: z.string(),
+      variant: z.enum(['primary', 'secondary', 'tertiary']),
+    })
+  ),
 });
 
 const rewardCardsSchema = z.array(rewardCardSchema);

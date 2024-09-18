@@ -1,5 +1,9 @@
 import type { ReactNode, HTMLProps } from 'react';
-import { getIntentColor, Intent } from '../../utils/intent';
+import {
+  getIntentColor,
+  getIntentForeground,
+  Intent,
+} from '../../utils/intent';
 import { cn } from '../../utils/cn';
 
 type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
@@ -14,6 +18,7 @@ const getClasses = (size: Size, intent: Intent, className?: string) => {
   return cn(
     'rounded-full leading-none flex-inline items-center',
     getIntentColor(intent),
+    getIntentForeground(intent),
     {
       'text-lg py-1 px-2': size === 'lg',
       'text-base py-1 px-2': size === 'md',

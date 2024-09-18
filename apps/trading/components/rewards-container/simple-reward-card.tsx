@@ -1,4 +1,4 @@
-import { Button, Intent, Pill } from '@vegaprotocol/ui-toolkit';
+import { Button, cn, Intent } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
@@ -23,9 +23,16 @@ export const SimpleRewardCard = ({
       {tags && tags.length > 0 && (
         <div className="flex flex-wrap items-start gap-2">
           {tags.map((t, i) => (
-            <Pill key={`pill-${i}-${t}`} size="sm">
-              {t}
-            </Pill>
+            <span
+              key={i}
+              className={cn('text-sm py-1 px-2 rounded-full text-white', {
+                'bg-highlight': t.variant === 'primary',
+                'bg-highlight-secondary': t.variant === 'secondary',
+                'bg-highlight-tertiary': t.variant === 'tertiary',
+              })}
+            >
+              {t.text}
+            </span>
           ))}
         </div>
       )}
