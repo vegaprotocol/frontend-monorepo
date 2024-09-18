@@ -30,7 +30,6 @@ export const ExportRecoveryPhraseSection = () => {
   }, [request]);
 
   const resetDialog = () => {
-    setRecoveryPhrase(null);
     setOpen(false);
   };
 
