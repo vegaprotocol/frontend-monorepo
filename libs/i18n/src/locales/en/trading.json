@@ -274,6 +274,7 @@
   "Deposit funds": "Deposit funds",
   "Deposited": "Deposited",
   "Deposits": "Deposits",
+  "DEPOSIT_FIELD_TO_PUBKEY": "To ({{appName}} key)",
   "Depth": "Depth",
   "Description": "Description",
   "DISCLAIMER_P1": "Vega is a decentralised peer-to-peer protocol that can be used to trade derivatives with cryptoassets. The Vega Protocol is an implementation layer (layer one) protocol made of free, public, open-source or source-available software. Use of the Vega Protocol involves various risks, including but not limited to, losses while digital assets are supplied to the Vega Protocol and losses due to the fluctuation of prices of assets.",

@@ -11,6 +11,7 @@ import { VegaKeySelect } from '../vega-key-select';
 import { type FormFields } from '../form-schema';
 import { type Key } from '@vegaprotocol/wallet';
 import { useT } from '../../../lib/use-t';
+import { APP_NAME } from '../../../lib/constants';
 
 export function ToPubKey(props: {
   control: Control<FormFields>;
@@ -24,7 +25,10 @@ export function ToPubKey(props: {
       control={props.control}
       render={({ field, fieldState }) => {
         return (
-          <FormGroup label={t('To (Vega key)')} labelFor="toPubKey">
+          <FormGroup
+            label={t('DEPOSIT_FIELD_TO_PUBKEY', { appName: APP_NAME })}
+            labelFor="toPubKey"
+          >
             <VegaKeySelect
               onChange={() => form.setValue('toPubKey', '')}
               input={<Input {...field} />}
