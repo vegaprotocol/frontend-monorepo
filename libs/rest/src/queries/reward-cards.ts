@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import axios from 'axios';
 import { z } from 'zod';
+import { Time } from '../utils';
 
 const rewardCardSchema = z.object({
   rewardId: z.string(),
@@ -30,7 +31,6 @@ export function rewardCardsOptions() {
   return queryOptions({
     queryKey: queryKeys.all,
     queryFn: () => retrieveRewardCards(),
-    staleTime: 1,
-    // staleTime: Time.DAY,
+    staleTime: Time.HOUR,
   });
 }
