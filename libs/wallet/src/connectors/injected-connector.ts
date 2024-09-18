@@ -161,6 +161,4 @@ export class InjectedConnector implements Connector {
     }
     return false;
   }
-
-  async disconnect() {}
 }

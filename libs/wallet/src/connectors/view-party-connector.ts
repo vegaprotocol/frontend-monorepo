@@ -107,6 +107,4 @@ export class ViewPartyConnector implements Connector {
   set pubKey(value: string | undefined) {
     this.store?.setState({ pubKey: value });
   }
-
-  async disconnect() {}
 }

@@ -55,7 +55,6 @@ export interface Connector {
   sendTransaction(params: TransactionParams): Promise<TransactionResponse>;
   on(event: VegaWalletEvent, callback: () => void): void;
   off(event: VegaWalletEvent, callback?: () => void): void;
-  disconnect: () => Promise<void>;
 }
 
 export type Key = {
