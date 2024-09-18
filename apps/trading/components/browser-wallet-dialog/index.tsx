@@ -23,6 +23,10 @@ export const BrowserWalletDialog = () => {
       config?.connectors.find(({ id }) => id === 'embedded-wallet-quickstart'),
     [config?.connectors]
   );
+  const embeddedConnector = useMemo(
+    () => config?.connectors.find(({ id }) => id === 'embedded-wallet'),
+    [config?.connectors]
+  );
 
   const setOpen = useCallback(() => set(true), [set]);
   const setClose = useCallback(() => set(false), [set]);
@@ -30,7 +34,9 @@ export const BrowserWalletDialog = () => {
   useEffect(() => {
     quickStartConnector?.on('client.request_transaction_approval', setOpen);
     quickStartConnector?.on('client.request_transaction_decided', setClose);
-  }, [setOpen, setClose, quickStartConnector]);
+    embeddedConnector?.on('client.request_transaction_approval', setOpen);
+    embeddedConnector?.on('client.request_transaction_decided', setClose);
+  }, [setOpen, setClose, quickStartConnector, embeddedConnector]);
 
   return (
     <Dialog
