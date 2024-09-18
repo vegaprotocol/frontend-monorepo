@@ -9,14 +9,38 @@ import { useT } from '../../../lib/use-t';
 import { useOnboardStore } from '../../../stores/onboard';
 import { Link } from 'react-router-dom';
 import { Links } from 'apps/trading/lib/links';
+import { useFundsAvailable } from '../../../lib/hooks/use-funds-available';
+import { useTicketContext } from '../ticket-context';
+import {
+  SidebarAccountsViewType,
+  useSidebar,
+  useSidebarAccountsInnerView,
+  ViewType,
+} from 'apps/trading/lib/hooks/use-sidebar';
+import { toBigNum } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 
 export const SubmitButton = ({ text }: { text: string }) => {
   const t = useT();
+
   const finishedOnboard = useOnboardStore((store) => store.finished);
   const connected = useWallet(
     (store) => store.status === 'connected' && store.current !== 'viewParty'
   );
   const openDialog = useDialogStore((store) => store.open);
+
+  const setSidebarView = useSidebar((store) => store.setView);
+  const setSidebarInnerView = useSidebarAccountsInnerView(
+    (store) => store.setView
+  );
+
+  const openDeposit = (assetId: string) => {
+    setSidebarView(ViewType.Assets);
+    setSidebarInnerView([SidebarAccountsViewType.Deposit, assetId]);
+  };
+
+  const { isEligible, fundsAvailable } = useFundsAvailable();
+  const ticket = useTicketContext();
 
   const form = useForm();
   const side = form.watch('side');
@@ -27,7 +51,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
     intent: Intent.Secondary,
   } as const;
 
-  if (!finishedOnboard) {
+  if (!finishedOnboard && !isEligible) {
     return (
       <Link to={Links.INVITE()}>
         <Button {...buttonProps}>{t('Get started')}</Button>
@@ -39,6 +63,29 @@ export const SubmitButton = ({ text }: { text: string }) => {
     return (
       <Button {...buttonProps} onClick={openDialog}>
         {t('Connect')}
+      </Button>
+    );
+  }
+
+  const asset =
+    ticket.type === 'default'
+      ? ticket.settlementAsset
+      : side === Side.SIDE_BUY
+      ? ticket.quoteAsset // buying with quote
+      : ticket.baseAsset; // selling with base
+
+  const funds = fundsAvailable?.find((f) => f.asset.id === asset.id);
+  const amount = funds ? toBigNum(funds.balance, asset.decimals) : BigNumber(0);
+
+  if (amount.isZero()) {
+    return (
+      <Button
+        {...buttonProps}
+        onClick={() => {
+          openDeposit(asset.id);
+        }}
+      >
+        {t('Deposit')}
       </Button>
     );
   }

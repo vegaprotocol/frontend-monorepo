@@ -1,6 +1,6 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOnboardStore } from '../../stores/onboard';
-import { useFundsAvailable } from '../referrals/hooks/use-funds-available';
+import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 
@@ -98,7 +98,8 @@ export const useDetermineCurrentStep = (
       step = Step.ApplyCode;
     } else if (steps.includes(Step.JoinTeam) && !team) {
       step = Step.JoinTeam;
-    } else if (steps.includes(Step.StartPlaying)) {
+    } else if (steps.includes(Step.StartPlaying) && !team) {
+      // this step is only available if you're not in a team
       step = Step.StartPlaying;
     }
   }

@@ -14,7 +14,7 @@ export type FundsAvailableQuery = { __typename?: 'Query', party?: { __typename?:
 export const FundsAvailableDocument = gql`
     query FundsAvailable($partyId: ID!) {
   party(id: $partyId) {
-    accountsConnection {
+    accountsConnection(type: ACCOUNT_TYPE_GENERAL) {
       edges {
         node {
           balance

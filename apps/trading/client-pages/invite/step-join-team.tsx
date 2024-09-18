@@ -19,6 +19,7 @@ import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { JoinTeam } from '../competitions/join-team';
 import last from 'lodash/last';
+import { ExitInvite } from './exit-invite';
 
 export const StepJoinTeam = () => {
   const t = useT();
@@ -48,7 +49,7 @@ export const StepJoinTeam = () => {
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
   }
-  if (!currentStep) return <Navigate to="" />;
+  if (!currentStep) return <ExitInvite />;
   if (currentStep !== Step.JoinTeam) {
     return <Navigate to={StepLinks[currentStep]} />;
   }
