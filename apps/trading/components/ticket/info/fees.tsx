@@ -63,7 +63,7 @@ export const Fees = ({ oco = false }: { oco?: boolean }) => {
                 className="ml-1"
                 data-testid="discount-pill"
               >
-                {formatNumberPercentage(BigNumber(estimate.discountPct))}
+                {formatNumberPercentage(BigNumber(estimate.discountPct), 2)}
               </Pill>
             )}
           </span>

@@ -44,7 +44,7 @@ export const FeesBreakdown = ({
         value={`${addDecimalsFormatNumber(
           estimate.discount.toString(),
           decimals
-        )} (${formatNumberPercentage(estimate.discountPct)})`}
+        )} (${formatNumberPercentage(estimate.discountPct, 2)})`}
         testId="fee-discount"
       />
       <FeesBreakdownItem
@@ -54,14 +54,6 @@ export const FeesBreakdown = ({
           decimals
         )}
         testId="discounted-fee"
-      />
-      <FeesBreakdownItem
-        label={t('Maker rebate')}
-        value={`${addDecimalsFormatNumber(
-          estimate.makerRebate.toString(),
-          decimals
-        )} (${formatNumberPercentage(estimate.makerRebatePct)})`}
-        testId="maker-rebate"
       />
     </dl>
   );
