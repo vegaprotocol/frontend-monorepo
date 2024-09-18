@@ -1,4 +1,10 @@
-import { Button, cn, Intent } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  cn,
+  Intent,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
@@ -83,10 +89,15 @@ export const SimpleRewardCard = ({
 
 const RewardImage = (props: { img: string }) => (
   <div className="aspect-[389/160] bg-surface-1 overflow-hidden rounded-grid -mx-4 -mt-4">
-    {/* eslint-disable-next-line */}
-    <img
-      src={props.img ? props.img : '/game-default.png'}
-      className="object-cover"
-    />
+    {props.img ? (
+      <>
+        {/* eslint-disable-next-line */}
+        <img src={props.img} className="object-cover" />
+      </>
+    ) : (
+      <div className="flex justify-center items-center h-full w-full">
+        <VegaIcon name={VegaIconNames.DICE} size={50} />
+      </div>
+    )}
   </div>
 );
