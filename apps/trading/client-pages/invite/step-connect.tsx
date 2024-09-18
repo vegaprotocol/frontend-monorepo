@@ -31,6 +31,7 @@ import {
 } from './step-utils';
 import { usePartyProfile } from '../../lib/hooks/use-party-profiles';
 import { GradientText } from 'apps/trading/components/gradient-text';
+import { ExitInvite } from './exit-invite';
 
 export const StepConnect = () => {
   const t = useT();
@@ -79,7 +80,7 @@ export const StepConnect = () => {
   }
 
   if (!currentStep) {
-    throw new Error('step not found');
+    return <ExitInvite />;
   }
 
   if (currentStep !== Step.Connect) {
