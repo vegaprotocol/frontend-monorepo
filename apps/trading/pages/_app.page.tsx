@@ -24,7 +24,6 @@ import {
 } from '@vegaprotocol/proposals';
 import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
-import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
@@ -89,7 +88,6 @@ function AppBody({ Component }: AppProps) {
       <DialogsContainer />
       <ToastsManager />
       <TransactionHandlers />
-      <MaybeConnectEagerly />
       <PartyActiveOrdersHandler />
       <div className="hidden lg:block absolute bottom-1.5 pb-px right-2 z-10">
         <NodeHealthContainer />
