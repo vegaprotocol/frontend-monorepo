@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { truncateByChars } from '@vegaprotocol/utils';
 import {
@@ -23,7 +22,6 @@ import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
-import { Links } from '../../lib/links';
 import { useBrowserWalletDialogStore } from '../browser-wallet-dialog';
 import { usePartyProfiles } from '../../lib/hooks/use-party-profiles';
 import { useShareDialogStore } from '../share-dialog';
@@ -36,7 +34,6 @@ export const VegaWalletConnectButton = ({
   onClick?: () => void;
 }) => {
   const t = useT();
-  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const openVegaWalletDialog = useDialogStore((store) => store.open);
   const {
@@ -114,18 +111,6 @@ export const VegaWalletConnectButton = ({
                 onClick={() => set(true)}
               >
                 {t('Open Wallet')}
-              </DropdownMenuItem>
-            )}
-            {!isReadOnly && (
-              <DropdownMenuItem
-                data-testid="wallet-transfer"
-                role="link"
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate(Links.TRANSFER());
-                }}
-              >
-                {t('Transfer')}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
