@@ -46,6 +46,7 @@ export const Market = (props: FormProps) => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
       tpSl: false,
+      postOnly: false,
     },
   });
 
