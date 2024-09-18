@@ -1,10 +1,4 @@
-import {
-  Button,
-  Intent,
-  Pill,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Intent, Pill } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
@@ -16,14 +10,16 @@ import { type RewardCard } from '@vegaprotocol/rest';
 export const SimpleRewardCard = ({
   rewardId,
   title,
+  img,
   description,
   tags,
 }: RewardCard) => {
   const t = useT();
   return (
-    <div className="grid grid-rows-[subgrid] row-span-4 px-4 pt-28 pb-4 rounded-grid relative overflow-hidden">
+    <div className="grid grid-rows-[subgrid] row-span-5 p-4 rounded-grid relative overflow-hidden">
       <ColourfulBorder />
-      <RewardImage />
+      <RewardImage img={img} />
+
       {tags && tags.length > 0 && (
         <div className="flex flex-wrap items-start gap-2">
           {tags.map((t, i) => (
@@ -34,7 +30,8 @@ export const SimpleRewardCard = ({
         </div>
       )}
 
-      <h3 className="text-2xl leading-none">{title}</h3>
+      <h3 className="text-3xl leading-none">{title}</h3>
+
       <div className="flex flex-col gap-4">
         <ReactMarkdown
           components={{
@@ -73,11 +70,12 @@ export const SimpleRewardCard = ({
   );
 };
 
-const RewardImage = () => (
-  // PLACEHOLDER TODO: Change this to an image
-  <div className="absolute top-px left-px right-px h-24 bg-surface-1 overflow-hidden rounded-t-grid">
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      <VegaIcon name={VegaIconNames.DICE} size={24} className="animate-pulse" />
-    </div>
+const RewardImage = (props: { img: string }) => (
+  <div className="aspect-[389/160] bg-surface-1 overflow-hidden rounded-grid -mx-4 -mt-4">
+    {/* eslint-disable-next-line */}
+    <img
+      src={props.img ? props.img : '/game-default.png'}
+      className="object-cover"
+    />
   </div>
 );
