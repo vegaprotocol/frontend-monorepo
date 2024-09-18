@@ -18,6 +18,7 @@ export const STORE_KEY = 'vega_wallet_store';
 // can be plain objects
 export const singleKeyStoreSlice: SingleKeyStore = {
   pubKey: undefined,
+  previousKey: undefined,
 };
 
 // get/set functions are not used in the slices so these
@@ -53,7 +54,7 @@ export function createConfig(cfg: Config): Wallet {
         return {
           chainId: state.chainId,
           current: state.current,
-          pubKey: state.pubKey,
+          previousKey: state.pubKey,
           jsonRpcToken: state.jsonRpcToken,
         };
       },
@@ -86,7 +87,7 @@ export function createConfig(cfg: Config): Wallet {
 
       // TODO: this shouldnt be in the default config as we dont want to enforce single key usage
       // need to find a way to optin into using this slice in the store
-      const storedPubKey = store.getState().pubKey;
+      const storedPubKey = store.getState().previousKey;
       let defaultKey;
       if (keys.find((k) => k.publicKey === storedPubKey)) {
         defaultKey = storedPubKey;
@@ -98,6 +99,7 @@ export function createConfig(cfg: Config): Wallet {
         keys,
         status: 'connected',
         pubKey: defaultKey,
+        previousKey: defaultKey,
       });
 
       connector.off('client.disconnected', disconnect);

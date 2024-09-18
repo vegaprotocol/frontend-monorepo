@@ -12,7 +12,8 @@ export const useVegaWallet = () => {
     status: store.status,
     pubKeys: store.keys,
     pubKey: store.pubKey,
-    selectPubKey: (pubKey: string) => config.store.setState({ pubKey }),
+    selectPubKey: (pubKey: string) =>
+      config.store.setState({ pubKey, previousKey: pubKey }),
     isReadOnly: store.current === 'viewParty',
     disconnect: () => {
       config.store.setState({
