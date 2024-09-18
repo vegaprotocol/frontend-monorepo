@@ -20,8 +20,6 @@ on:
         options:
           - mainnet
           - testnet
-          - validators-testnet
-          - mainnet-mirror
 
 env:
   E2E_TEST_WORKFLOW: ./.github/workflows/trading-e2e-test-run.yml
