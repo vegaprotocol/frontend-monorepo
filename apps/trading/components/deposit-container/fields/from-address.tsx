@@ -48,7 +48,7 @@ export function FromAddress(props: { control: Control<FormFields> }) {
                   <input
                     value={address}
                     readOnly
-                    className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
+                    className="appearance-none bg-transparent text-sm text-surface-0-fg-muted w-full focus:outline-none"
                     tabIndex={-1}
                   />
                   <FormSecondaryActionWrapper>
