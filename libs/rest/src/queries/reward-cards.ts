@@ -11,6 +11,7 @@ const rewardCardSchema = z.object({
 
 const rewardCardsSchema = z.array(rewardCardSchema);
 
+export type RewardCard = z.infer<typeof rewardCardSchema>;
 type RewardCardsResponse = z.infer<typeof rewardCardsSchema>;
 
 export const retrieveRewardCards = async () => {

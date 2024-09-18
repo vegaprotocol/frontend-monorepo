@@ -11,19 +11,14 @@ import { Link } from 'react-router-dom';
 import { GradientText } from '../gradient-text';
 import { ColourfulBorder } from 'libs/ui-toolkit/src/utils/border';
 import { Links } from 'apps/trading/lib/links';
+import { type RewardCard } from '@vegaprotocol/rest';
 
-type SimpleRewardCardProps = {
-  rewardId: string;
-  title: string;
-  description: string;
-  tags?: string[];
-};
 export const SimpleRewardCard = ({
   rewardId,
   title,
   description,
   tags,
-}: SimpleRewardCardProps) => {
+}: RewardCard) => {
   const t = useT();
   return (
     <div className="rounded relative p-px">

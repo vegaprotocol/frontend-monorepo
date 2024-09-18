@@ -16,15 +16,7 @@ export const SimpleRewardCardsContainer = () => {
   return (
     <div className="grid grid-cols-3 gap-4">
       {data?.map((card) => {
-        return (
-          <SimpleRewardCard
-            rewardId={card.rewardId}
-            key={card.rewardId}
-            title={card.title}
-            description={card.description}
-            tags={card.tags}
-          />
-        );
+        return <SimpleRewardCard key={card.rewardId} {...card} />;
       })}
     </div>
   );
