@@ -85,16 +85,16 @@ export const MarketBannerIndicator = ({
 };
 
 export const MarketBanner = (props: { market: Market }) => {
-  const { banners, loading } = useMarketBanners(props.market);
+  const { notDismissedBanners, loading } = useMarketBanners(props.market);
   if (loading) {
     return null;
   }
 
-  if (!banners.length) {
+  if (!notDismissedBanners.length) {
     return null;
   }
 
-  return <BannerQueue banners={banners} market={props.market} />;
+  return <BannerQueue banners={notDismissedBanners} market={props.market} />;
 };
 
 const mapBanner = (market: Market, banner: IBanner) => {
@@ -175,28 +175,11 @@ const BannerQueue = ({
   banners: IBanner[];
   market: Market;
 }) => {
-  const bannerInfos = useMarketBannerStore((state) => state.banners);
   const setBanner = useMarketBannerStore((state) => state.setBanner);
   const current = useMarketBannerStore((state) => state.current);
   const setCurrent = useMarketBannerStore((state) => state.setCurrent);
 
-  const dismissedKinds = bannerInfos
-    .filter((bi) => {
-      const age = Date.now() - bi.ts;
-      if (age <= DISMISSAL_PERIOD) {
-        return true;
-      }
-      return false;
-    })
-    .map((bi) => bi.kind);
-
-  const notDismissedBanners = banners.filter(
-    (b) => !dismissedKinds.includes(b.kind)
-  );
-
-  const displayableBanners = compact(
-    notDismissedBanners.map((b) => mapBanner(market, b))
-  );
+  const displayableBanners = compact(banners.map((b) => mapBanner(market, b)));
 
   const currentBanner = displayableBanners[current];
   if (!currentBanner) return null;
