@@ -53,7 +53,6 @@ export function createConfig(cfg: Config): Wallet {
         return {
           chainId: state.chainId,
           current: state.current,
-          pubKey: state.pubKey,
           jsonRpcToken: state.jsonRpcToken,
         };
       },
