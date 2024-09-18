@@ -277,4 +277,6 @@ export class SnapConnector implements Connector {
     }
     return false;
   }
+
+  async disconnect() {}
 }

@@ -190,4 +190,13 @@ export class BrowserConnector {
     }
     return false;
   }
+
+  async disconnect() {
+    (await BrowserConnector.client.request(
+      'client.get_chain_id',
+      null
+    )) as unknown as {
+      chainId: string;
+    };
+  }
 }

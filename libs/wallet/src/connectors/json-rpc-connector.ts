@@ -230,4 +230,6 @@ export class JsonRpcConnector implements Connector {
   set token(value: string | undefined) {
     this.store?.setState({ jsonRpcToken: value });
   }
+
+  async disconnect() {}
 }

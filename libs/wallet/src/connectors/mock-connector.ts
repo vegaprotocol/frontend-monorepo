@@ -55,4 +55,6 @@ export class MockConnector implements Connector {
   on() {}
 
   off() {}
+
+  async disconnect() {}
 }
