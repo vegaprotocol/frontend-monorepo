@@ -83,7 +83,8 @@ export type Banner =
 
 export const useMarketBanners = (
   market: Market
-): { banners: Banner[]; loading: boolean } => {
+): { banners: Banner[]; notDismissedBanners: Banner[]; loading: boolean } => {
+  const bannerInfos = useMarketBannerStore((state) => state.banners);
   const { data: marketState } = useMarketState(market.id);
   const { data: marketTradingMode } = useMarketTradingMode(market.id);
 
@@ -169,9 +170,22 @@ export const useMarketBanners = (
       game: g,
     })),
   ]);
+  const dismissedKinds = bannerInfos
+    .filter((bi) => {
+      const age = Date.now() - bi.ts;
+      if (age <= DISMISSAL_PERIOD) {
+        return true;
+      }
+      return false;
+    })
+    .map((bi) => bi.kind);
+  const notDismissedBanners = banners.filter(
+    (b) => !dismissedKinds.includes(b.kind)
+  );
 
   return {
     banners,
+    notDismissedBanners,
     loading,
   };
 };
