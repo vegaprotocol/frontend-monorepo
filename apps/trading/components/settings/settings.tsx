@@ -8,7 +8,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useState, type ReactNode } from 'react';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
@@ -31,19 +30,11 @@ export const SettingsPopover = () => {
 
 export const Settings = () => {
   const t = useT();
-  const { theme, setTheme } = useThemeSwitcher();
   const [open, setOpen] = useState(false);
 
   return (
     <section className="flex flex-col gap-3 p-4 w-96">
       <h2 className="font-alt calt uppercase">{t('Settings')}</h2>
-      <SettingsGroup label={t('Dark mode')}>
-        <Switch
-          name="settings-theme-switch"
-          onCheckedChange={() => setTheme()}
-          checked={theme === 'dark'}
-        />
-      </SettingsGroup>
       <SettingsGroup label={t('Toast location')}>
         <ToastPositionSetter />
       </SettingsGroup>
