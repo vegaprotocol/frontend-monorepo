@@ -61,9 +61,9 @@ export const VegaWalletMenu = ({
       </div>
 
       <div className="flex flex-col gap-2 m-4">
-        {current === 'embedded-wallet-quickstart' && (
-          <Button onClick={() => set(true)}>{t('Open wallet')}</Button>
-        )}
+        {['embedded-wallet-quickstart', 'embedded-wallet'].includes(
+          current ?? ''
+        ) && <Button onClick={() => set(true)}>{t('Open wallet')}</Button>}
         <Button
           onClick={() => {
             setMenu(null);
