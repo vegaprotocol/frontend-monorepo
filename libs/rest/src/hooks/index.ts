@@ -18,3 +18,4 @@ export {
 
 export { useTotalVolume } from './use-total-volume';
 export { useCandleData } from './use-candle-data';
+export { useRewardCards } from './use-reward-cards';

@@ -1,5 +1,5 @@
 import type { Market } from '@vegaprotocol/markets';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
 
@@ -15,7 +15,6 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
   const t = useT();
 
   const asset = getAsset(market);
-  const quoteUnit = getQuoteName(market);
 
   return (
     <>
@@ -31,7 +30,7 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         marketId={market.id}
         marketDecimalPlaces={market.decimalPlaces}
         positionDecimalPlaces={market.positionDecimalPlaces}
-        quoteUnit={quoteUnit}
+        quoteUnit={asset.symbol}
       />
       <Stats.MarketTradingModeStat marketId={market.id} />
       <Stats.MarketStateStat marketId={market.id} />

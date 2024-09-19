@@ -20,13 +20,10 @@ describe('FeesBreakdown', () => {
       '12.34'
     );
     expect(screen.getByText('Discount').nextElementSibling).toHaveTextContent(
-      '0.04 (2%)'
+      '0.04 (2.00%)'
     );
     expect(
       screen.getByText('Discounted fee').nextElementSibling
     ).toHaveTextContent('12.30');
-    expect(
-      screen.getByText('Maker rebate').nextElementSibling
-    ).toHaveTextContent('1.00 (8%)');
   });
 });

@@ -520,7 +520,7 @@ export type UpdateReferralSet = {
       name: string;
       teamUrl?: string;
       avatarUrl?: string;
-      closed: boolean;
+      closed: boolean | 'ptr-to-false';
       allowList: string[];
     };
   };

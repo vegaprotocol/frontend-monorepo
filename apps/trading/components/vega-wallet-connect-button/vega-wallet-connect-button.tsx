@@ -105,7 +105,9 @@ export const VegaWalletConnectButton = ({
               isReadOnly={isReadOnly}
             />
             <DropdownMenuSeparator />
-            {current === 'embedded-wallet-quickstart' && (
+            {['embedded-wallet-quickstart', 'embedded-wallet'].includes(
+              current ?? ''
+            ) && (
               <DropdownMenuItem
                 data-testid="open-wallet"
                 onClick={() => set(true)}

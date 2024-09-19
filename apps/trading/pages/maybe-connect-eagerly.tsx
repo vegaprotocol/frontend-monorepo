@@ -1,9 +1,7 @@
-import { useEagerConnect as useVegaEagerConnect } from '@vegaprotocol/wallet-react';
-import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
+import { useEagerConnect } from '@vegaprotocol/wallet-react';
 
 export const MaybeConnectEagerly = () => {
-  useEthereumEagerConnect();
-  useVegaEagerConnect();
+  useEagerConnect();
 
   return null;
 };

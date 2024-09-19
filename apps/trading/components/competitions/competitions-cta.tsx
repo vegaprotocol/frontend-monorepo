@@ -5,7 +5,6 @@ import {
   Button,
   type ButtonProps,
   Intent,
-  cn,
 } from '@vegaprotocol/ui-toolkit';
 import { Role } from '../../lib/hooks/use-my-team';
 import { Links } from '../../lib/links';
@@ -36,23 +35,12 @@ export const CompetitionsAction = ({
   return (
     <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
       <div className="flex justify-center">
-        <div
-          className={cn(
-            'rounded-full flex items-center justify-center w-24 h-24',
-            {
-              'bg-blue': variant === 'create-team',
-              'bg-green': variant === 'create-solo-team',
-              'bg-pink': variant === 'join-team',
-            }
-          )}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`/${variant}.svg`}
-            className="w-18 h-18"
-            alt={`Icon for ${title}`}
-          />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`/${variant}.svg`}
+          className="block rounded-full w-24 h-24"
+          alt={`Icon for ${title}`}
+        />
       </div>
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-surface-1-fg-muted">{description}</p>}
@@ -87,7 +75,7 @@ export const CompetitionsActions = ({
 
   /** Action A */
   let createTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Secondary,
+    intent: Intent.Primary,
     children: t('Create a team'),
     disabled: false,
     onClick: (e: event) => {
@@ -102,7 +90,7 @@ export const CompetitionsActions = ({
 
   /** Action B */
   let createPrivateTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Secondary,
+    intent: Intent.Primary,
     children: t('Create my profile'),
     disabled: false,
     onClick: (e: event) => {
@@ -117,7 +105,7 @@ export const CompetitionsActions = ({
 
   /** Action C */
   let chooseTeamBtnProps: ComponentProps<typeof ActionButton> = {
-    intent: Intent.Secondary,
+    intent: Intent.Primary,
     children: t('Choose a team'),
     disabled: false,
     onClick: (e: event) => {

@@ -4,11 +4,7 @@ import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
 import { Intent, Button } from '@vegaprotocol/ui-toolkit';
-
 import { useT } from '../../../lib/use-t';
-import { useOnboardStore } from '../../../stores/onboard';
-import { Link } from 'react-router-dom';
-import { Links } from 'apps/trading/lib/links';
 import { useFundsAvailable } from '../../../lib/hooks/use-funds-available';
 import { useTicketContext } from '../ticket-context';
 import {
@@ -23,7 +19,6 @@ import BigNumber from 'bignumber.js';
 export const SubmitButton = ({ text }: { text: string }) => {
   const t = useT();
 
-  const finishedOnboard = useOnboardStore((store) => store.finished);
   const connected = useWallet(
     (store) => store.status === 'connected' && store.current !== 'viewParty'
   );
@@ -39,7 +34,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
     setSidebarInnerView([SidebarAccountsViewType.Deposit, assetId]);
   };
 
-  const { isEligible, fundsAvailable } = useFundsAvailable();
+  const { fundsAvailable } = useFundsAvailable();
   const ticket = useTicketContext();
 
   const form = useForm();
@@ -50,14 +45,6 @@ export const SubmitButton = ({ text }: { text: string }) => {
     className: 'w-full',
     intent: Intent.Secondary,
   } as const;
-
-  if (!finishedOnboard && !isEligible) {
-    return (
-      <Link to={Links.INVITE()}>
-        <Button {...buttonProps}>{t('Get started')}</Button>
-      </Link>
-    );
-  }
 
   if (!connected) {
     return (
