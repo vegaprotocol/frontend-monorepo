@@ -68,7 +68,7 @@ const prepareTransaction = (
             name: fields.name.trim(),
             teamUrl: fields.url,
             avatarUrl: fields.avatarUrl,
-            closed: fields.private,
+            closed: fields.private || 'ptr-to-false',
             allowList: fields.private
               ? parseAllowListText(fields.allowList)
               : [],
