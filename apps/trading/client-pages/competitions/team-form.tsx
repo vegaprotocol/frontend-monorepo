@@ -2,12 +2,12 @@ import {
   FormGroup,
   Input,
   TradingInputError,
-  TradingCheckbox,
   TextArea,
   Button,
   Intent,
   VegaIcon,
   VegaIconNames,
+  Switch,
 } from '@vegaprotocol/ui-toolkit';
 import { URL_REGEX, isValidVegaPublicKey } from '@vegaprotocol/utils';
 
@@ -199,14 +199,16 @@ export const TeamForm = ({
                 control={control}
                 render={({ field }) => {
                   return (
-                    <TradingCheckbox
-                      label={t('Make team private')}
-                      checked={field.value}
-                      onCheckedChange={(value) => {
-                        field.onChange(value);
-                      }}
-                      data-testid="team-private-checkbox"
-                    />
+                    <div className="text-xs">
+                      <Switch
+                        checked={field.value}
+                        labelText={t('Make team private')}
+                        onCheckedChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        data-testid="team-private-checkbox"
+                      />
+                    </div>
                   );
                 }}
               />
