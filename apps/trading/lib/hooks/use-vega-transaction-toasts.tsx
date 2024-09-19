@@ -717,7 +717,7 @@ const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
-  const { submitWithdraw } = useEvmWithdraw();
+  const withdraw = useEvmWithdraw();
   const explorerLink = useLinks(DApp.Explorer);
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
@@ -752,10 +752,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       throw new Error(`could not find evm config for asset ${asset.id}`);
     }
 
-    submitWithdraw({
-      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
-      approval: tx.withdrawalApproval,
+    withdraw.write({
       asset,
+      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
+      chainId: Number(asset.source.chainId),
+      approval: tx.withdrawalApproval,
     });
   };
 

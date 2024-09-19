@@ -1,7 +1,7 @@
 import { Panel, ToastHeading, ProgressBar } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../lib/use-t';
-import { type Tx } from '../../lib/hooks/use-evm-tx';
+import { type TxDeposit, type Tx } from '../../lib/hooks/use-evm-tx';
 import {
   BlockExplorerLink,
   getExternalChainLabel,
@@ -29,8 +29,18 @@ export const Pending = ({ tx }: Props) => {
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
-      <Link tx={tx} />
+      {/* <Link tx={tx} /> */}
       <Confirmations tx={tx} />
+    </>
+  );
+};
+
+export const Approve = ({ tx }: Props) => {
+  const t = useT();
+  return (
+    <>
+      <ToastHeading>{t('Awaiting approval')}</ToastHeading>
+      <p>{t('Go to your wallet and approve use of funds.')}</p>
     </>
   );
 };
@@ -49,7 +59,7 @@ export const Error = ({ message }: { message?: string }) => {
   );
 };
 
-export const ConfirmingDeposit = ({ tx }: Props) => {
+export const ConfirmingDeposit = ({ tx }: { tx: TxDeposit }) => {
   const t = useT();
 
   return (
@@ -59,7 +69,9 @@ export const ConfirmingDeposit = ({ tx }: Props) => {
         {t('Your transaction has been completed.')}{' '}
         {t('Waiting for deposit confirmation.')}
       </p>
-      <Link tx={tx} />
+      {tx.depositHash && (
+        <Link tx={{ chainId: tx.chainId, hash: tx.depositHash }} />
+      )}
     </>
   );
 };
@@ -70,19 +82,21 @@ export const FinalizedGeneric = ({ tx }: Props) => {
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
-      <Link tx={tx} />
+      {/* <Link tx={tx} /> */}
     </>
   );
 };
 
-export const FinalizedDeposit = ({ tx }: Props) => {
+export const FinalizedDeposit = ({ tx }: { tx: TxDeposit }) => {
   const t = useT();
 
   return (
     <>
       <ToastHeading>{t('Deposit complete')}</ToastHeading>
       <p>{t('Your transaction has been completed.')} </p>
-      <Link tx={tx} />
+      {tx.depositHash && (
+        <Link tx={{ chainId: tx.chainId, hash: tx.depositHash }} />
+      )}
     </>
   );
 };
@@ -95,24 +109,24 @@ const Confirmations = ({ tx }: { tx?: Tx }) => {
   if (tx.confirmations > 1) {
     return (
       <Panel>
-        {tx.meta && (
+        {/* {tx.meta && (
           <strong>
             {tx.meta.functionName} {tx.meta.amount} {tx.meta.asset.symbol}
           </strong>
-        )}
-        {tx.status === 'pending' && tx.meta?.requiredConfirmations && (
+        )} */}
+        {tx.status === 'pending' && tx.requiredConfirmations && (
           <>
             <p className="mt-[2px]">
               {t(
                 'Awaiting confirmations {{confirmations}}/{{requiredConfirmations}}',
                 {
                   confirmations: tx.confirmations,
-                  requiredConfirmations: tx.meta.requiredConfirmations,
+                  requiredConfirmations: tx.requiredConfirmations,
                 }
               )}
             </p>
             <ProgressBar
-              value={(tx.confirmations / tx.meta.requiredConfirmations) * 100}
+              value={(tx.confirmations / tx.requiredConfirmations) * 100}
             />
           </>
         )}
@@ -123,7 +137,7 @@ const Confirmations = ({ tx }: { tx?: Tx }) => {
   return null;
 };
 
-const Link = ({ tx }: { tx?: Tx }) => {
+const Link = ({ tx }: { tx?: { chainId: number; hash: string } }) => {
   const t = useT();
 
   if (!tx) return null;

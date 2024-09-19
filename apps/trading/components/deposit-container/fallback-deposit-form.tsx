@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import {
@@ -17,7 +17,8 @@ import { useAssetReadContracts } from './use-asset-read-contracts';
 
 import * as Fields from './fields';
 
-import { Approval } from './approval';
+// TODO: change this to show lifetime depositl limit only
+// import { Approval } from './approval';
 import {
   type FormFields,
   type Configs,
@@ -25,6 +26,7 @@ import {
 } from './form-schema';
 import { AssetOption } from '../asset-option';
 import { formatNumber } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 
 export const FallbackDepositForm = ({
   assets,
@@ -39,7 +41,6 @@ export const FallbackDepositForm = ({
   const { pubKey, pubKeys } = useVegaWallet();
 
   const { address } = useAccount();
-  const { switchChainAsync } = useSwitchChain();
 
   const chainId = useChainId();
 
@@ -74,7 +75,7 @@ export const FallbackDepositForm = ({
     configs,
   });
 
-  const { submitDeposit } = useEvmDeposit({ queryKey });
+  const deposit = useEvmDeposit();
 
   return (
     <FormProvider {...form}>
@@ -99,16 +100,14 @@ export const FallbackDepositForm = ({
           // to asset is selected will get changed to the squid receiver address
           const bridgeAddress = config.collateral_bridge_contract.address;
 
-          if (Number(toAsset.source.chainId) !== chainId) {
-            await switchChainAsync({ chainId: Number(toAsset.source.chainId) });
-          }
-
-          submitDeposit({
+          deposit.write({
             asset: toAsset,
-            bridgeAddress,
+            bridgeAddress: bridgeAddress as `0x${string}`,
             amount: fields.amount,
+            allowance: (balanceData?.allowance || BigNumber(0)).toString(),
             toPubKey: fields.toPubKey,
-            requiredConfirmations: config?.confirmations || 1,
+            chainId: Number(config.chain_id),
+            requiredConfirmations: config.confirmations,
           });
         })}
       >
@@ -151,15 +150,6 @@ export const FallbackDepositForm = ({
           balanceOf={balanceData?.balanceOf}
           nativeBalanceOf={undefined}
         />
-        {toAsset && balanceData && (
-          <Approval
-            asset={toAsset}
-            amount={fields.amount}
-            data={balanceData}
-            configs={configs}
-            queryKey={queryKey}
-          />
-        )}
         <Button type="submit" size="lg" fill={true} intent={Intent.Secondary}>
           {t('Deposit')}
         </Button>

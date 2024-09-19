@@ -10,17 +10,17 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 import { useT } from '../../lib/use-t';
-import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { useSquidRoute } from './use-squid-route';
-import { Approval } from './approval';
 import { SwapInfo } from './swap-info';
 import { type FormFields, formSchema, type Configs } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
 import { useSquidExecute } from './use-squid-execute';
 import { SwapFeedback } from './feedback';
 import * as Fields from './fields';
+import BigNumber from 'bignumber.js';
+import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 
 export const DepositForm = ({
   squid,
@@ -101,7 +101,7 @@ export const DepositForm = ({
     enabled: isSwap,
   });
 
-  const deposit = useEvmDeposit({ queryKey: balanceDataQueryKey });
+  const deposit = useEvmDeposit();
   const squidExecute = useSquidExecute();
 
   return (
@@ -132,7 +132,7 @@ export const DepositForm = ({
             fromAsset.address.toLowerCase() ===
             toAsset.source.contractAddress.toLowerCase();
 
-          if (isSwapRequired) {
+          if (!isSwapRequired) {
             // Same asset, no swap required, use normal ethereum bridge
             // or normal arbitrum bridge to swap
 
@@ -145,12 +145,15 @@ export const DepositForm = ({
               throw new Error(`no bridge for toAsset ${toAsset.id}`);
             }
 
-            deposit.submitDeposit({
+            deposit.write({
               asset: toAsset,
-              bridgeAddress: config.collateral_bridge_contract.address,
+              bridgeAddress: config.collateral_bridge_contract
+                .address as `0x${string}`,
               amount: fields.amount,
+              allowance: (balanceData?.allowance || BigNumber(0)).toString(),
               toPubKey: fields.toPubKey,
-              requiredConfirmations: config?.confirmations || 1,
+              chainId: Number(config.chain_id),
+              requiredConfirmations: config.confirmations,
             });
           } else {
             squidExecute.mutate(routeData);
@@ -181,15 +184,6 @@ export const DepositForm = ({
           queryKey={balanceDataQueryKey}
           route={routeData?.route}
         />
-        {!isSwap && toAsset && balanceData && (
-          <Approval
-            asset={toAsset}
-            amount={fields.amount}
-            data={balanceData}
-            configs={configs}
-            queryKey={balanceDataQueryKey}
-          />
-        )}
         {isSwap && (
           <div className="mb-4">
             <SwapInfo route={routeData?.route} error={routeError} />
