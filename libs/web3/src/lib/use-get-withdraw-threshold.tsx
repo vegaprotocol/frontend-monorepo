@@ -41,7 +41,7 @@ const setCachedThreshold = (asset: AssetData, value: BigNumber) => {
  * Returns a function to get the threshold amount for a withdrawal.
  * If a withdrawal amount is greater than this value it will incur a delay
  * before being able to be completed. The delay is set on the smart contract and
- * can be retrieved using contract.default_withdraw_delay
+ * can be retrieved using contract.defaultWithdrawDelay
  */
 export const useGetWithdrawThreshold = () => {
   const logger = localLoggerFactory({ application: 'web3' });
