@@ -21,17 +21,20 @@ import BigNumber from 'bignumber.js';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
+import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
 
 export const DepositForm = ({
   squid,
   assets,
   initialAsset,
   configs,
+  onDeposit,
 }: {
   squid: Squid;
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
   configs: Configs;
+  onDeposit?: (tx: TxDeposit) => void;
 }) => {
   const { pubKey, pubKeys } = useVegaWallet();
 
@@ -128,13 +131,14 @@ export const DepositForm = ({
             toAsset.source.contractAddress.toLowerCase();
 
           if (isSwapRequired) {
-            squidDeposit.write({
+            const res = await squidDeposit.write({
               asset: toAsset,
               amount: fields.amount,
               toPubKey: fields.toPubKey,
               routeData,
               chainId: Number(fields.fromChain),
             });
+            onDeposit && onDeposit(res);
           } else {
             // Same asset, no swap required, use normal ethereum bridge
             // or normal arbitrum bridge to swap
@@ -148,7 +152,7 @@ export const DepositForm = ({
               throw new Error(`no bridge for toAsset ${toAsset.id}`);
             }
 
-            deposit.write({
+            const res = await deposit.write({
               asset: toAsset,
               bridgeAddress: config.collateral_bridge_contract
                 .address as `0x${string}`,
@@ -158,6 +162,7 @@ export const DepositForm = ({
               chainId: Number(config.chain_id),
               requiredConfirmations: config.confirmations,
             });
+            onDeposit && onDeposit(res);
           }
         })}
       >

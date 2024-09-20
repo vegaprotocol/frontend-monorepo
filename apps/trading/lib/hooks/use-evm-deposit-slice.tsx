@@ -54,7 +54,7 @@ export type TxDeposit = {
 };
 
 export type DepositSlice = {
-  deposit: (id: string, config: DepositConfig) => Promise<Tx | undefined>;
+  deposit: (id: string, config: DepositConfig) => Promise<Tx>;
 };
 
 export const createEvmDepositSlice = (
@@ -249,7 +249,7 @@ export const createEvmDepositSlice = (
       });
     }
 
-    return get().txs.get(id);
+    return get().txs.get(id) as TxDeposit;
   },
 });
 

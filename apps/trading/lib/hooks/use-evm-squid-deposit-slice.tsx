@@ -45,10 +45,7 @@ export type TxSquidDeposit = {
 };
 
 export type SquidDepositSlice = {
-  squidDeposit: (
-    id: string,
-    config: SquidDepositConfig
-  ) => Promise<Tx | undefined>;
+  squidDeposit: (id: string, config: SquidDepositConfig) => Promise<Tx>;
 };
 
 export const createEvmSquidDepositSlice = (
@@ -194,6 +191,6 @@ export const createEvmSquidDepositSlice = (
       });
     }
 
-    return get().txs.get(id);
+    return get().txs.get(id) as TxSquidDeposit;
   },
 });

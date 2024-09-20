@@ -8,7 +8,7 @@ import {
 } from './step-utils';
 import { StepHeader } from './step-header';
 import { Loader } from '@vegaprotocol/ui-toolkit';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
@@ -18,6 +18,7 @@ import { DepositContainer } from '../../components/deposit-container';
 import { ExitInvite } from './exit-invite';
 
 export const StepDeposit = () => {
+  const navigate = useNavigate();
   const t = useT();
   const { requiredFunds } = useFundsAvailable();
 
@@ -59,7 +60,11 @@ export const StepDeposit = () => {
             />
           </p>
 
-          <DepositContainer />
+          <DepositContainer
+            onDeposit={() => {
+              navigate(StepLinks[Step.JoinTeam]);
+            }}
+          />
         </Card>
       </div>
     </>
