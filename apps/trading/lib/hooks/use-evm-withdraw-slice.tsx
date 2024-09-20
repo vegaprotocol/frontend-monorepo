@@ -1,5 +1,5 @@
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { type DefaultSlice, type Status, type Tx } from './use-evm-tx';
+import { type TxCommon, type DefaultSlice } from './use-evm-tx';
 import { type Address, type TransactionReceipt } from 'viem';
 import { type StoreApi } from 'zustand';
 import {
@@ -29,13 +29,8 @@ type WithdrawConfig = {
   approval: Approval;
 };
 
-export type TxWithdraw = {
+export type TxWithdraw = TxCommon & {
   kind: 'withdrawAsset';
-  id: string;
-  status: Status;
-  chainId: number;
-  confirmations: number;
-  requiredConfirmations: number;
   asset: AssetERC20;
   approval: Approval;
   error?: Error;
@@ -44,7 +39,10 @@ export type TxWithdraw = {
 };
 
 export type WithdrawSlice = {
-  withdraw: (id: string, config: WithdrawConfig) => Promise<Tx | undefined>;
+  withdraw: (
+    id: string,
+    config: WithdrawConfig
+  ) => Promise<TxWithdraw | undefined>;
 };
 
 export const createEvmWithdrawSlice = (
@@ -131,13 +129,12 @@ export const createEvmWithdrawSlice = (
         content: <p>Withdraw complete</p>,
       });
     } catch (err) {
-      console.error(err);
       get().setTx(id, {
         status: 'error',
         error: err instanceof Error ? err : new Error('withdraw failed'),
       });
     }
 
-    return get().txs.get(id);
+    return get().txs.get(id) as TxWithdraw;
   },
 });

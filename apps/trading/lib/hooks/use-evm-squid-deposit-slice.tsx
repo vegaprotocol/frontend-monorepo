@@ -5,7 +5,7 @@ import { switchChain, getChainId, getConnectorClient } from '@wagmi/core';
 import * as Toasts from '../../components/toasts';
 import { getApolloClient } from '../apollo-client';
 import { wagmiConfig } from '../wagmi-config';
-import { type DefaultSlice, type Tx, type Status } from './use-evm-tx';
+import { type DefaultSlice, type TxCommon } from './use-evm-tx';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import {
   DepositBusEventDocument,
@@ -28,13 +28,9 @@ type SquidDepositConfig = {
   chainId: number;
 };
 
-export type TxSquidDeposit = {
+export type TxSquidDeposit = Omit<TxCommon, 'status'> & {
   kind: 'squidDepositAsset';
-  id: string;
-  status: Status | 'complete';
-  chainId: number;
-  confirmations: number;
-  requiredConfirmations: number;
+  status: TxCommon['status'] | 'complete';
   asset: AssetERC20;
   amount: string;
   toPubKey: string;
@@ -45,7 +41,10 @@ export type TxSquidDeposit = {
 };
 
 export type SquidDepositSlice = {
-  squidDeposit: (id: string, config: SquidDepositConfig) => Promise<Tx>;
+  squidDeposit: (
+    id: string,
+    config: SquidDepositConfig
+  ) => Promise<TxSquidDeposit>;
 };
 
 export const createEvmSquidDepositSlice = (
@@ -72,6 +71,7 @@ export const createEvmSquidDepositSlice = (
 
       const route = config.routeData.route;
       const requiredConfirmations = config.requiredConfirmations || 1;
+
       const tx: TxSquidDeposit = {
         kind: 'squidDepositAsset',
         id,
@@ -89,9 +89,7 @@ export const createEvmSquidDepositSlice = (
       const chainId = getChainId(wagmiConfig);
 
       if (route.params.fromChain !== String(chainId)) {
-        get().setTx(id, {
-          status: 'switch',
-        });
+        get().setTx(id, { status: 'switch' });
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
@@ -103,9 +101,7 @@ export const createEvmSquidDepositSlice = (
         });
       }
 
-      get().setTx(id, {
-        status: 'requested',
-      });
+      get().setTx(id, { status: 'requested' });
       useToasts.getState().setToast({
         id,
         intent: Intent.Warning,
@@ -117,10 +113,7 @@ export const createEvmSquidDepositSlice = (
         route,
       })) as unknown as ethers.providers.TransactionResponse;
 
-      get().setTx(id, {
-        hash: routeTx.hash,
-        status: 'pending',
-      });
+      get().setTx(id, { hash: routeTx.hash, status: 'pending' });
       useToasts.getState().update(id, {
         intent: Intent.Warning,
         content: <p>Pending deposit</p>,
@@ -128,64 +121,32 @@ export const createEvmSquidDepositSlice = (
 
       const receipt = await routeTx.wait();
 
-      get().setTx(id, {
-        receipt,
-        status: 'complete',
-      });
+      get().setTx(id, { receipt, status: 'complete' });
 
       useToasts.getState().update(id, {
         intent: Intent.Warning,
         content: <p>Processing deposit</p>,
       });
 
-      const apolloClient = getApolloClient();
-      const sub = apolloClient
-        .subscribe<
-          DepositBusEventSubscription,
-          DepositBusEventSubscriptionVariables
-        >({
-          query: DepositBusEventDocument,
-          variables: {
-            partyId: config.toPubKey,
-          },
-        })
-        .subscribe(({ data }) => {
-          if (!data?.busEvents?.length) return;
+      await waitForDepositEvent(config);
 
-          const event = data.busEvents.find((e) => {
-            if (
-              e.event.__typename === 'Deposit' &&
-              e.event.party.id === config.toPubKey &&
-              e.event.asset.id === config.asset.id
-            ) {
-              return true;
-            }
-            return false;
-          });
+      get().setTx(id, { status: 'finalized' });
+      useToasts.getState().update(id, {
+        intent: Intent.Success,
+        content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
+        loader: false,
+      });
 
-          if (event && event.event.__typename === 'Deposit') {
-            if (event.event.status === DepositStatus.STATUS_FINALIZED) {
-              get().setTx(id, {
-                status: 'finalized',
-              });
-              useToasts.getState().update(id, {
-                intent: Intent.Success,
-                // content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
-                content: <p>complete</p>,
-                loader: false,
-              });
-              sub.unsubscribe();
-            }
-          }
-        });
+      return get().txs.get(id) as TxSquidDeposit;
     } catch (err) {
+      const error = err instanceof Error ? err : new Error('deposit failed');
       get().setTx(id, {
         status: 'error',
-        error: err instanceof Error ? err : new Error('deposit failed'),
+        error,
       });
 
       useToasts.getState().update(id, {
-        content: <Toasts.Error />,
+        content: <Toasts.Error message={error.message} />,
         intent: Intent.Danger,
         loader: false,
       });
@@ -194,3 +155,48 @@ export const createEvmSquidDepositSlice = (
     return get().txs.get(id) as TxSquidDeposit;
   },
 });
+
+/**
+ * Start a subscription and find the next deposit for the current pubkey and asset
+ * We can't check Deposit.txHash because the initial tx hash from the initial squid
+ * transaction is not the same as the final tx hash on the destination chain
+ */
+const waitForDepositEvent = async (config: SquidDepositConfig) => {
+  const apolloClient = getApolloClient();
+
+  return new Promise((resolve) => {
+    const sub = apolloClient
+      .subscribe<
+        DepositBusEventSubscription,
+        DepositBusEventSubscriptionVariables
+      >({
+        query: DepositBusEventDocument,
+        variables: {
+          partyId: config.toPubKey,
+        },
+      })
+      .subscribe(({ data }) => {
+        if (!data?.busEvents?.length) return;
+
+        const event = data.busEvents.find((e) => {
+          if (
+            e.event.__typename === 'Deposit' &&
+            e.event.party.id === config.toPubKey &&
+            e.event.asset.id === config.asset.id
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        if (
+          event &&
+          event.event.__typename === 'Deposit' &&
+          event.event.status === DepositStatus.STATUS_FINALIZED
+        ) {
+          sub.unsubscribe();
+          resolve(true);
+        }
+      });
+  });
+};

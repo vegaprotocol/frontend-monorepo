@@ -22,6 +22,7 @@ import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
 import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
+import { type TxSquidDeposit } from '../../lib/hooks/use-evm-squid-deposit-slice';
 
 export const DepositForm = ({
   squid,
@@ -34,10 +35,9 @@ export const DepositForm = ({
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
   configs: Configs;
-  onDeposit?: (tx: TxDeposit) => void;
+  onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
 }) => {
   const { pubKey, pubKeys } = useVegaWallet();
-
   const { address } = useAccount();
 
   const chainId = useChainId();

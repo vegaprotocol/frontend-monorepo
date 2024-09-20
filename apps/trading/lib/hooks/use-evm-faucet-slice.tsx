@@ -1,5 +1,5 @@
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { type DefaultSlice, type Status, type Tx } from './use-evm-tx';
+import { type DefaultSlice, type TxCommon } from './use-evm-tx';
 import { type Address, type TransactionReceipt } from 'viem';
 import { type StoreApi } from 'zustand';
 import {
@@ -17,13 +17,8 @@ type FaucetConfig = {
   chainId: number;
 };
 
-export type TxFaucet = {
+export type TxFaucet = TxCommon & {
   kind: 'faucet';
-  id: string;
-  status: Status;
-  chainId: number;
-  confirmations: number;
-  requiredConfirmations: number;
   asset: AssetERC20;
   error?: Error;
   hash?: string;
@@ -31,7 +26,7 @@ export type TxFaucet = {
 };
 
 export type FaucetSlice = {
-  faucet: (id: string, config: FaucetConfig) => Promise<Tx | undefined>;
+  faucet: (id: string, config: FaucetConfig) => Promise<TxFaucet>;
 };
 
 export const createEvmFaucetSlice = (
@@ -117,6 +112,6 @@ export const createEvmFaucetSlice = (
       });
     }
 
-    return get().txs.get(id);
+    return get().txs.get(id) as TxFaucet;
   },
 });

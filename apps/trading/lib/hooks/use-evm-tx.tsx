@@ -25,8 +25,16 @@ export type Status =
   | 'switch'
   | 'requested'
   | 'pending'
-  | 'finalized' // finalized on vega
+  | 'finalized' // finalized on chain
   | 'error';
+
+export type TxCommon = {
+  id: string;
+  status: Status;
+  chainId: number;
+  confirmations: number;
+  requiredConfirmations: number;
+};
 
 export type Tx = TxDeposit | TxSquidDeposit | TxWithdraw | TxFaucet;
 

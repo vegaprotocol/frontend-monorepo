@@ -13,7 +13,7 @@ import {
 import * as Toasts from '../../components/toasts';
 import { getApolloClient } from '../apollo-client';
 import { wagmiConfig } from '../wagmi-config';
-import { type DefaultSlice, type Tx, type Status } from './use-evm-tx';
+import { type DefaultSlice, type TxCommon } from './use-evm-tx';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
 import {
@@ -34,13 +34,9 @@ type DepositConfig = {
   requiredConfirmations?: number;
 };
 
-export type TxDeposit = {
+export type TxDeposit = Omit<TxCommon, 'status'> & {
   kind: 'depositAsset';
-  id: string;
-  status: Status | 'complete';
-  chainId: number;
-  confirmations: number;
-  requiredConfirmations: number;
+  status: TxCommon['status'] | 'complete';
   amount: string;
   allowance: string;
   pubKey: string;
@@ -54,7 +50,7 @@ export type TxDeposit = {
 };
 
 export type DepositSlice = {
-  deposit: (id: string, config: DepositConfig) => Promise<Tx>;
+  deposit: (id: string, config: DepositConfig) => Promise<TxDeposit>;
 };
 
 export const createEvmDepositSlice = (
@@ -198,52 +194,27 @@ export const createEvmDepositSlice = (
         content: <p>Processing deposit</p>,
       });
 
-      const client = getApolloClient();
-      const sub = client
-        .subscribe<
-          DepositBusEventSubscription,
-          DepositBusEventSubscriptionVariables
-        >({
-          query: DepositBusEventDocument,
-          variables: { partyId: config.toPubKey },
-        })
-        .subscribe(({ data }) => {
-          if (!data?.busEvents?.length) return;
+      await waitForDepositEvent({ pubKey: config.toPubKey, hash: depositHash });
 
-          const event = data.busEvents.find((e) => {
-            if (
-              e.event.__typename === 'Deposit' &&
-              e.event.txHash === depositHash
-            ) {
-              return true;
-            }
-            return false;
-          });
+      get().setTx(id, {
+        status: 'finalized',
+      });
+      useToasts.getState().update(id, {
+        intent: Intent.Success,
+        content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
+        loader: false,
+      });
 
-          if (event && event.event.__typename === 'Deposit') {
-            if (event.event.status === DepositStatus.STATUS_FINALIZED) {
-              get().setTx(id, {
-                status: 'finalized',
-              });
-              useToasts.getState().update(id, {
-                intent: Intent.Success,
-                // content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
-                content: <p>complete</p>,
-                loader: false,
-              });
-              sub.unsubscribe();
-            }
-          }
-        });
+      return get().txs.get(id) as TxDeposit;
     } catch (err) {
-      console.error(err);
+      const error = err instanceof Error ? err : new Error('deposit failed');
       get().setTx(id, {
         status: 'error',
-        error: err instanceof Error ? err : new Error('deposit failed'),
+        error,
       });
 
       useToasts.getState().update(id, {
-        content: <Toasts.Error />,
+        content: <Toasts.Error message={error.message} />,
         intent: Intent.Danger,
         loader: false,
       });
@@ -276,4 +247,45 @@ const waitForConfirmations = async (
   await new Promise((resolve) => setTimeout(resolve, 1000 * 5));
 
   await waitForConfirmations(hash, requiredConfirmations);
+};
+
+/**
+ * Start a subscription and wait for the deposit event with the same txHash
+ * so we can finalize the deposit
+ */
+const waitForDepositEvent = async (args: { pubKey: string; hash: string }) => {
+  const apolloClient = getApolloClient();
+
+  return new Promise((resolve) => {
+    const sub = apolloClient
+      .subscribe<
+        DepositBusEventSubscription,
+        DepositBusEventSubscriptionVariables
+      >({
+        query: DepositBusEventDocument,
+        variables: { partyId: args.pubKey },
+      })
+      .subscribe(({ data }) => {
+        if (!data?.busEvents?.length) return;
+
+        const event = data.busEvents.find((e) => {
+          if (
+            e.event.__typename === 'Deposit' &&
+            e.event.txHash === args.hash
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        if (
+          event &&
+          event.event.__typename === 'Deposit' &&
+          event.event.status === DepositStatus.STATUS_FINALIZED
+        ) {
+          sub.unsubscribe();
+          resolve(true);
+        }
+      });
+  });
 };

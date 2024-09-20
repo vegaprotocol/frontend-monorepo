@@ -7,15 +7,17 @@ import { FallbackDepositForm } from './fallback-deposit-form';
 import { useT } from '../../lib/use-t';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
+import { type TxSquidDeposit } from '../../lib/hooks/use-evm-squid-deposit-slice';
 
 /**
  * Gets env vars, assets, and configs required for the deposit form
  */
 export const DepositContainer = ({
   initialAssetId,
+  onDeposit,
 }: {
   initialAssetId?: string;
-  onDeposit?: (tx: TxDeposit) => void;
+  onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
 }) => {
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
