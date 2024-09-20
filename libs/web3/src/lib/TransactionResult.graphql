@@ -82,6 +82,9 @@ fragment DepositBusEventFields on Deposit {
   createdTimestamp
   creditedTimestamp
   txHash
+  party {
+    id
+  }
 }
 
 subscription DepositBusEvent($partyId: ID) {

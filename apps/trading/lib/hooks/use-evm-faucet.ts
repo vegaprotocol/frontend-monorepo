@@ -4,15 +4,16 @@ import { useSimulateContract } from 'wagmi';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { ERC20_ABI } from '@vegaprotocol/smart-contracts';
 
-import { useEvmTxStore, type TxFaucet } from './use-evm-tx';
+import { type TxFaucet } from './use-evm-faucet-slice';
+import { useEvmTxStore } from './use-evm-tx';
 import { useRef } from 'react';
 
 export const useEvmFaucet = ({ asset }: { asset: AssetERC20 }) => {
   const idRef = useRef<string>(uniqueId());
   const faucet = useEvmTxStore((store) => store.faucet);
-  const transaction = useEvmTxStore((store) => {
-    return store.txs.get(idRef.current);
-  });
+  const reset = useEvmTxStore((store) => store.resetTx);
+  const txs = useEvmTxStore((store) => store.txs);
+  const data = idRef.current ? txs.get(idRef.current) : undefined;
 
   const contractParamters = {
     abi: ERC20_ABI,
@@ -32,6 +33,9 @@ export const useEvmFaucet = ({ asset }: { asset: AssetERC20 }) => {
 
   return {
     write: contractRequestData ? write : undefined,
-    data: transaction as TxFaucet,
+    reset: () => {
+      reset(idRef.current);
+    },
+    data: data as TxFaucet,
   };
 };

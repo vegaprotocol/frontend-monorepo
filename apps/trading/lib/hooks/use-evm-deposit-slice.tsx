@@ -205,6 +205,7 @@ export const createEvmDepositSlice = (
           DepositBusEventSubscriptionVariables
         >({
           query: DepositBusEventDocument,
+          variables: { partyId: config.toPubKey },
         })
         .subscribe(({ data }) => {
           if (!data?.busEvents?.length) return;

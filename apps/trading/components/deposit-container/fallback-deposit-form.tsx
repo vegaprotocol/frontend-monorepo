@@ -27,6 +27,7 @@ import {
 import { AssetOption } from '../asset-option';
 import { formatNumber } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
+import { FeedbackDialog } from './feedback-dialog';
 
 export const FallbackDepositForm = ({
   assets,
@@ -154,6 +155,8 @@ export const FallbackDepositForm = ({
           {t('Deposit')}
         </Button>
       </form>
+
+      <FeedbackDialog data={deposit.data} onChange={deposit.reset} />
     </FormProvider>
   );
 };

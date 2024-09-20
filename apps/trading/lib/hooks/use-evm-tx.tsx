@@ -5,6 +5,11 @@ import {
   type TxDeposit,
 } from './use-evm-deposit-slice';
 import {
+  createEvmSquidDepositSlice,
+  type SquidDepositSlice,
+  type TxSquidDeposit,
+} from './use-evm-squid-deposit-slice';
+import {
   createEvmWithdrawSlice,
   type TxWithdraw,
   type WithdrawSlice,
@@ -23,21 +28,19 @@ export type Status =
   | 'finalized' // finalized on vega
   | 'error';
 
-export type Tx = TxDeposit | TxWithdraw | TxFaucet;
-
-// eslint-disable-next-line
-type SquidDepositConfig = {};
+export type Tx = TxDeposit | TxSquidDeposit | TxWithdraw | TxFaucet;
 
 export type DefaultSlice = {
   txs: Map<string, Tx>;
   setTx: (id: string, tx: Partial<Tx>) => void;
-  // squidDeposit: (
-  //   id: string,
-  //   config: SquidDepositConfig
-  // ) => Promise<Tx | undefined>;
+  resetTx: (id: string) => void;
 };
 
-export type Store = DefaultSlice & DepositSlice & WithdrawSlice & FaucetSlice;
+export type Store = DefaultSlice &
+  DepositSlice &
+  SquidDepositSlice &
+  WithdrawSlice &
+  FaucetSlice;
 
 const createDefaultSlice = (
   set: StoreApi<DefaultSlice>['setState'],
@@ -56,15 +59,19 @@ const createDefaultSlice = (
       };
     });
   },
+  resetTx: (id: string) => {
+    get().setTx(id, {
+      status: 'idle',
+      error: undefined,
+      confirmations: 0,
+    });
+  },
 });
 
-// TODO: we may want to actually update a store of the tx
 export const useEvmTxStore = create<Store>()((set, get) => ({
   ...createDefaultSlice(set, get),
   ...createEvmDepositSlice(set, get),
+  ...createEvmSquidDepositSlice(set, get),
   ...createEvmWithdrawSlice(set, get),
   ...createEvmFaucetSlice(set, get),
-  // squidDeposit: async (id: string, config) => {
-  //   return get().txs.get(id);
-  // },
 }));

@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { type Squid } from '@0xsquid/sdk';
 import { type Estimate } from '@0xsquid/squid-types';
 
@@ -16,11 +16,11 @@ import { useSquidRoute } from './use-squid-route';
 import { SwapInfo } from './swap-info';
 import { type FormFields, formSchema, type Configs } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
-import { useSquidExecute } from './use-squid-execute';
-import { SwapFeedback } from './feedback';
 import * as Fields from './fields';
 import BigNumber from 'bignumber.js';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
+import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
+import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
 
 export const DepositForm = ({
   squid,
@@ -36,7 +36,6 @@ export const DepositForm = ({
   const { pubKey, pubKeys } = useVegaWallet();
 
   const { address } = useAccount();
-  const { switchChainAsync } = useSwitchChain();
 
   const chainId = useChainId();
   const defaultChain = squid.chains.find((c) => c.chainId === String(chainId));
@@ -102,7 +101,7 @@ export const DepositForm = ({
   });
 
   const deposit = useEvmDeposit();
-  const squidExecute = useSquidExecute();
+  const squidDeposit = useEvmSquidDeposit();
 
   return (
     <FormProvider {...form}>
@@ -124,15 +123,19 @@ export const DepositForm = ({
             throw new Error('no from asset');
           }
 
-          if (Number(fromAsset.chainId) !== chainId) {
-            await switchChainAsync({ chainId: Number(fromAsset.chainId) });
-          }
-
           const isSwapRequired =
-            fromAsset.address.toLowerCase() ===
+            fromAsset.address.toLowerCase() !==
             toAsset.source.contractAddress.toLowerCase();
 
-          if (!isSwapRequired) {
+          if (isSwapRequired) {
+            squidDeposit.write({
+              asset: toAsset,
+              amount: fields.amount,
+              toPubKey: fields.toPubKey,
+              routeData,
+              chainId: Number(fields.fromChain),
+            });
+          } else {
             // Same asset, no swap required, use normal ethereum bridge
             // or normal arbitrum bridge to swap
 
@@ -155,8 +158,6 @@ export const DepositForm = ({
               chainId: Number(config.chain_id),
               requiredConfirmations: config.confirmations,
             });
-          } else {
-            squidExecute.mutate(routeData);
           }
         })}
       >
@@ -192,20 +193,16 @@ export const DepositForm = ({
         <SubmitButton
           isSwap={isSwap}
           isFetchingRoute={isFetching}
-          isExecuting={squidExecute.status === 'pending'}
+          // isExecuting={squidDeposit.data.status !== 'idle'}
           estimate={routeData?.route.estimate}
         />
+        {!isSwap && (
+          <FeedbackDialog data={deposit.data} onChange={deposit.reset} />
+        )}
         {isSwap && (
-          <SwapFeedback
-            route={routeData?.route}
-            status={squidExecute.status}
-            error={squidExecute.error}
-            transaction={squidExecute.transaction}
-            receipt={squidExecute.receipt}
-            retry={() => {
-              form.reset({ fromAsset: '', amount: '' });
-              squidExecute.reset();
-            }}
+          <SquidFeedbackDialog
+            data={squidDeposit.data}
+            onChange={squidDeposit.reset}
           />
         )}
       </form>
