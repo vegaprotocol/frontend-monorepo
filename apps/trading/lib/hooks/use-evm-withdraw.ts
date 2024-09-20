@@ -3,16 +3,16 @@ import { useRef } from 'react';
 import { useEvmTxStore, type TxWithdraw } from './use-evm-tx';
 
 export const useEvmWithdraw = () => {
-  const idRef = useRef<string>(uniqueId());
+  const idRef = useRef<string>();
   const withdraw = useEvmTxStore((store) => store.withdraw);
-  const transaction = useEvmTxStore((store) => {
-    return store.txs.get(idRef.current);
-  });
+  const txs = useEvmTxStore((store) => store.txs);
+  const data = idRef.current ? txs.get(idRef.current) : undefined;
 
   return {
     write: (config: Parameters<typeof withdraw>[1]) => {
+      idRef.current = uniqueId();
       return withdraw(idRef.current, config);
     },
-    data: transaction as TxWithdraw,
+    data: data as TxWithdraw,
   };
 };
