@@ -51,9 +51,7 @@ describe('Wallets', () => {
     renderComponent();
     // Wait for list to load
     await screen.findByTestId(locators.listItem);
-    expect(screen.getByTestId(headerLocators.header)).toHaveTextContent(
-      'wallet 1'
-    );
+    expect(screen.getByTestId(headerLocators.header)).toHaveTextContent('Keys');
     expect(screen.getByTestId(vegaKeyLocators.explorerLink)).toBeVisible();
     expect(screen.getByTestId(vegaKeyLocators.explorerLink)).toHaveTextContent(
       '07248a…3673'

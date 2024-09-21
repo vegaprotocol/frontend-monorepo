@@ -23,7 +23,7 @@ export const Wallets = () => {
   return (
     <AsyncRenderer
       render={() => (
-        <BasePage dataTestId={locators.walletsPage} title={wallet.name}>
+        <BasePage dataTestId={locators.walletsPage} title={'Keys'}>
           <WalletsPageKeyList
             onSignMessage={setSelectedPubkey}
             wallet={wallet}
