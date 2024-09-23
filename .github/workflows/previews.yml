@@ -50,16 +50,13 @@ jobs:
 
       - name: Build trading app
         if: ${{ matrix.app == 'trading' }} # Trading app requires a call to `nx export`
-        run: yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx export trading --skip-nx-cache
+        run: |
+          yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx build trading --skip-nx-cache
+          yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx export trading
 
       - name: Build ${{ matrix.app }} app
         if: ${{ matrix.app != 'trading' }} # Trading app requires a call to `nx export`
-        run: |
-          if [[ "${{ matrix.app }}" == "trading" ]]; then
-            yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx export trading
-          else
-            yarn env-cmd -f ./apps/${{ matrix.app }}/$APP_ENV_FILE yarn nx build ${{ matrix.app }}
-          fi
+        run: yarn env-cmd -f ./apps/${{ matrix.app }}/$APP_ENV_FILE yarn nx build ${{ matrix.app }}
 
       - name: Deploy ${{ matrix.app }} preview
         run: |
