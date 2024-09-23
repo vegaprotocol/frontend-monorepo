@@ -163,7 +163,7 @@ export default function init({
         );
         const isLocked = encryptedStore.locked === true;
         const canBeAutoApproved =
-          settings.autoConsent &&
+          (await settings.get('autoConsent')) &&
           AUTO_CONSENT_TRANSACTION_TYPES.includes(transactionType) &&
           !isLocked;
         let approved = canBeAutoApproved;
