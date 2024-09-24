@@ -8,6 +8,7 @@ export class QuickStartConnector extends BrowserConnector implements Connector {
   description =
     'Generate credentials using an Ethereum wallet and start using the network';
   prominent = true;
+  ethAddress: string | undefined;
 
   static adminClient = new JSONRPCClient({
     idPrefix: 'vega.popup-',
@@ -43,7 +44,8 @@ export class QuickStartConnector extends BrowserConnector implements Connector {
     }
   }
 
-  async importWallet(mnemonic: string) {
+  async importWallet(mnemonic: string, account: string) {
+    this.ethAddress = account;
     await QuickStartConnector.adminClient.request('admin.import_wallet', {
       recoveryPhrase: mnemonic,
       name: 'Wallet',

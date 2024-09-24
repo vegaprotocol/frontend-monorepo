@@ -7,6 +7,7 @@ export function useDisconnect() {
     disconnect: () => {
       config.store.setState({
         current: undefined,
+        currentConnector: undefined,
         keys: [],
         pubKey: undefined,
       });
