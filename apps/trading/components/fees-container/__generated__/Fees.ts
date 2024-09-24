@@ -3,65 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type DiscountProgramsQueryVariables = Types.Exact<{ [key: string]: never; }>;
-
-
-export type DiscountProgramsQuery = { __typename?: 'Query', currentReferralProgram?: { __typename?: 'CurrentReferralProgram', windowLength: number, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null };
-
 export type FeesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referrer: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referee: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
+export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, runningVolume: string, discountFactors: { __typename?: 'DiscountFactors', infrastructureFactor: string, makerFactor: string, liquidityFactor: string } } } | null> }, referrer: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referee: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, referralSetRunningNotionalTakerVolume: string, discountFactors: { __typename?: 'DiscountFactors', infrastructureFactor: string, makerFactor: string, liquidityFactor: string } } } | null> } };
 
 
-export const DiscountProgramsDocument = gql`
-    query DiscountPrograms {
-  currentReferralProgram {
-    benefitTiers {
-      minimumEpochs
-      minimumRunningNotionalTakerVolume
-      referralDiscountFactor
-    }
-    windowLength
-  }
-  currentVolumeDiscountProgram {
-    benefitTiers {
-      minimumRunningNotionalTakerVolume
-      volumeDiscountFactor
-    }
-    windowLength
-  }
-}
-    `;
-
-/**
- * __useDiscountProgramsQuery__
- *
- * To run a query within a React component, call `useDiscountProgramsQuery` and pass it any options that fit your needs.
- * When your component renders, `useDiscountProgramsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDiscountProgramsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useDiscountProgramsQuery(baseOptions?: Apollo.QueryHookOptions<DiscountProgramsQuery, DiscountProgramsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DiscountProgramsQuery, DiscountProgramsQueryVariables>(DiscountProgramsDocument, options);
-      }
-export function useDiscountProgramsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DiscountProgramsQuery, DiscountProgramsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DiscountProgramsQuery, DiscountProgramsQueryVariables>(DiscountProgramsDocument, options);
-        }
-export type DiscountProgramsQueryHookResult = ReturnType<typeof useDiscountProgramsQuery>;
-export type DiscountProgramsLazyQueryHookResult = ReturnType<typeof useDiscountProgramsLazyQuery>;
-export type DiscountProgramsQueryResult = Apollo.QueryResult<DiscountProgramsQuery, DiscountProgramsQueryVariables>;
 export const FeesDocument = gql`
     query Fees($partyId: ID!) {
   epoch {
@@ -71,7 +20,11 @@ export const FeesDocument = gql`
     edges {
       node {
         atEpoch
-        discountFactor
+        discountFactors {
+          infrastructureFactor
+          makerFactor
+          liquidityFactor
+        }
         runningVolume
       }
     }
@@ -103,7 +56,11 @@ export const FeesDocument = gql`
     edges {
       node {
         atEpoch
-        discountFactor
+        discountFactors {
+          infrastructureFactor
+          makerFactor
+          liquidityFactor
+        }
         referralSetRunningNotionalTakerVolume
       }
     }

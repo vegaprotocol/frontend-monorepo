@@ -15,7 +15,7 @@ import { CodeTile } from './tile';
 import { useT } from '../../lib/use-t';
 import { ApplyCodeForm } from './apply-code-form';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { DEFAULT_AGGREGATION_DAYS } from './constants';
 import { useReferralSet } from './hooks/use-find-referral-set';
 import { Loader } from '@vegaprotocol/ui-toolkit';
@@ -50,7 +50,8 @@ export const RefereeStatistics = ({
 
   const { isEligible } = useStakeAvailable(referrerPubKey);
 
-  const { details } = useReferralProgram();
+  const { referralProgram } = useCurrentPrograms();
+  const details = referralProgram?.details;
   const isProgramRunning = Boolean(details);
 
   return (
@@ -142,9 +143,9 @@ export const PreviewRefereeStatistics = ({
   withTeamTile?: boolean;
   className?: string;
 }) => {
-  const program = useReferralProgram();
+  const program = useCurrentPrograms();
   const aggregationEpochs =
-    program.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
+    program.referralProgram?.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
 
   const { pubKey } = useVegaWallet();
 
@@ -181,10 +182,12 @@ export const PreviewRefereeStatistics = ({
     error: undefined,
   });
 
-  const firstBenefitTier = stat(minBy(program.benefitTiers, (bt) => bt.epochs));
+  const firstBenefitTier = stat(
+    minBy(program.referralProgram?.benefitTiers, (bt) => bt.epochs)
+  );
 
   const secondBenefitTier = stat(
-    program.benefitTiers.find(
+    program.referralProgram?.benefitTiers.find(
       (bt) =>
         bt.tier ===
         (firstBenefitTier.value?.tier

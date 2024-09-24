@@ -2,7 +2,10 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useReferralSetStatsQuery } from './__generated__/ReferralSetStats';
 import { findReferee, useReferees } from './use-referees';
 import BigNumber from 'bignumber.js';
-import { type BenefitTier, useReferralProgram } from './use-referral-program';
+import {
+  type ReferralBenefitTier,
+  useCurrentPrograms,
+} from '../../../lib/hooks/use-current-programs';
 import { type StatValue } from '../constants';
 import last from 'lodash/last';
 import minBy from 'lodash/minBy';
@@ -13,9 +16,9 @@ export type RefereeStats = {
   /** the discount factor -> `discountFactor` ~ `referralDiscountFactor` */
   discountFactor: StatValue<BigNumber>;
   /** the benefit tier matching the referee's discount factor */
-  benefitTier: StatValue<BenefitTier | undefined>;
+  benefitTier: StatValue<ReferralBenefitTier | undefined>;
   /** the next benefit tier after the current referee's tier */
-  nextBenefitTier: StatValue<BenefitTier | undefined>;
+  nextBenefitTier: StatValue<ReferralBenefitTier | undefined>;
   /** the running volume */
   runningVolume: StatValue<BigNumber>;
   /** the number of epochs in set */
@@ -38,10 +41,12 @@ export const useRefereeStats = (
   });
 
   const {
-    benefitTiers,
+    referralProgram,
     loading: programLoading,
     error: programError,
-  } = useReferralProgram();
+  } = useCurrentPrograms();
+
+  const benefitTiers = referralProgram?.benefitTiers || [];
 
   const {
     data: epochData,
@@ -93,17 +98,19 @@ export const useRefereeStats = (
   const tierByAllRequirements = last(
     benefitTiers.filter(
       (t) =>
-        t.discountFactor === discountFactor.value.toNumber() &&
-        runningVolume.value.isGreaterThanOrEqualTo(t.minimumVolume) &&
+        t.discountFactor.isEqualTo(discountFactor.value) &&
+        runningVolume.value.isGreaterThanOrEqualTo(
+          t.minimumRunningNotionalTakerVolume
+        ) &&
         epochs.value.isGreaterThanOrEqualTo(t.epochs)
     )
   );
   const tierByDiscount = benefitTiers.find(
     (t) =>
       !discountFactor.value.isNaN() &&
-      !isNaN(t.discountFactor) &&
-      t.discountFactor === discountFactor.value.toNumber() &&
-      runningVolume.value.isGreaterThan(t.minimumVolume)
+      !t.discountFactor.isNaN() &&
+      t.discountFactor.isEqualTo(discountFactor.value) &&
+      runningVolume.value.isGreaterThan(t.minimumRunningNotionalTakerVolume)
   );
 
   const benefitTier = {
