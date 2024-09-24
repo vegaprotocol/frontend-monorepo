@@ -21,6 +21,7 @@ import {
   Last24hPriceChange,
   calcCandleVolume,
   calcCandleVolumePrice,
+  getAsset,
   getQuoteAsset,
   getQuoteName,
   isSpot,
@@ -269,7 +270,7 @@ export const useMarketsColumnDefs = () => {
           const vol = candles ? calcCandleVolume(candles) : '0';
           let quoteName: string | undefined = undefined;
           try {
-            quoteName = getQuoteName(data);
+            quoteName = getAsset(data).symbol;
           } catch {
             quoteName = '';
           }
