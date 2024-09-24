@@ -88,7 +88,7 @@ export const getRewards = (
       validatorRanking: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
       ),
-      elibleEntities: totals.get(
+      eligibleEntities: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES
       ),
       total: total.toNumber(),
