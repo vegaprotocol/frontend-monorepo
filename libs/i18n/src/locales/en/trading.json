@@ -658,6 +658,7 @@
   "Reward asset": "Reward asset",
   "Reward bonus": "Reward bonus",
   "Reward earned": "Reward earned",
+  "Reward scaling is active so rewards may vary": "Reward scaling is active so rewards may vary",
   "Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch": "Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch",
   "Rewards earned": "Rewards earned",
   "Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has": " Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has",
