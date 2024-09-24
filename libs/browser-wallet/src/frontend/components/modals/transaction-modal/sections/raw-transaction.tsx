@@ -13,7 +13,7 @@ export const RawTransaction = ({
     <VegaSection>
       <CollapsiblePanel
         title="View raw transaction"
-        initiallyOpen={true}
+        initiallyOpen={false}
         panelContent={
           <CodeWindow
             text={JSON.stringify(transaction, null, '  ')}
