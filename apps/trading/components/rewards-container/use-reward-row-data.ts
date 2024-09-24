@@ -18,6 +18,7 @@ const REWARD_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
   AccountType.ACCOUNT_TYPE_REWARD_REALISED_RETURN,
   AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+  AccountType.ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES,
 ];
 
 export const getRewards = (
@@ -86,6 +87,9 @@ export const getRewards = (
       ),
       validatorRanking: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
+      ),
+      elibleEntities: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_ELIGIBLE_ENTITIES
       ),
       total: total.toNumber(),
     };
