@@ -34,19 +34,22 @@ type DepositConfig = {
   requiredConfirmations?: number;
 };
 
-export type TxDeposit = Omit<TxCommon, 'status'> & {
-  kind: 'depositAsset';
-  status: TxCommon['status'] | 'complete';
+type DepositData = {
   amount: string;
   allowance: string;
   pubKey: string;
   asset: AssetERC20;
   approvalRequired: boolean;
-  error?: Error;
   approveHash?: string;
   approveReceipt?: TransactionReceipt;
   depositHash?: string;
   depositReceipt?: TransactionReceipt;
+};
+
+export type TxDeposit = Omit<TxCommon, 'status'> & {
+  kind: 'depositAsset';
+  status: TxCommon['status'] | 'complete';
+  data?: DepositData;
 };
 
 export type DepositSlice = {
@@ -68,14 +71,16 @@ export const createEvmDepositSlice = (
         kind: 'depositAsset',
         id,
         status: 'idle',
-        asset: config.asset,
-        amount,
-        allowance,
-        approvalRequired,
-        pubKey: config.toPubKey,
         confirmations: 0,
         requiredConfirmations,
         chainId: config.chainId,
+        data: {
+          asset: config.asset,
+          amount,
+          allowance,
+          approvalRequired,
+          pubKey: config.toPubKey,
+        },
       } as const;
 
       get().setTx(id, tx);
@@ -89,7 +94,7 @@ export const createEvmDepositSlice = (
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
-          content: <p>Switch chain</p>,
+          content: <Toasts.SwitchChain />,
         });
 
         await switchChain(wagmiConfig, {
@@ -104,7 +109,7 @@ export const createEvmDepositSlice = (
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
-          content: <p>Approve spending on bridge</p>,
+          content: <Toasts.Approve />,
         });
 
         const approveHash = await writeContract(wagmiConfig, {
@@ -116,12 +121,15 @@ export const createEvmDepositSlice = (
         });
 
         get().setTx(id, {
-          approveHash,
           status: 'pending',
+          data: {
+            approveHash,
+          },
         });
         useToasts.getState().update(id, {
           intent: Intent.Warning,
-          content: <p>Waiting for approval confirmation</p>,
+          content: <Toasts.Pending tx={get().txs.get(id)} />,
+          loader: true,
         });
 
         const approveReceipt = await waitForTransactionReceipt(wagmiConfig, {
@@ -131,7 +139,7 @@ export const createEvmDepositSlice = (
         });
 
         get().setTx(id, {
-          approveReceipt,
+          data: { approveReceipt },
         });
       }
 
@@ -141,7 +149,8 @@ export const createEvmDepositSlice = (
       useToasts.getState().setToast({
         id,
         intent: Intent.Warning,
-        content: <p>Confirm deposit</p>,
+        content: <Toasts.Requested />,
+        loader: false,
       });
 
       const depositHash = await writeContract(wagmiConfig, {
@@ -157,12 +166,13 @@ export const createEvmDepositSlice = (
       });
 
       get().setTx(id, {
-        depositHash,
         status: 'pending',
+        data: { depositHash },
       });
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Pending deposit</p>,
+        content: <Toasts.Pending tx={get().txs.get(id)} />,
+        loader: true,
       });
 
       const depositReceipt = await waitForTransactionReceipt(wagmiConfig, {
@@ -172,26 +182,24 @@ export const createEvmDepositSlice = (
       });
 
       get().setTx(id, {
-        depositReceipt,
         status: 'complete',
+        data: { depositReceipt },
       });
 
       if (requiredConfirmations > 1) {
         await waitForConfirmations(depositHash, requiredConfirmations, (x) => {
           useToasts.getState().update(id, {
             intent: Intent.Warning,
-            content: (
-              <p>
-                Confirmation {x}/{requiredConfirmations}
-              </p>
-            ),
+            content: <Toasts.Pending tx={get().txs.get(id)} />,
           });
         });
       }
 
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Processing deposit</p>,
+        content: (
+          <Toasts.ConfirmingDeposit tx={get().txs.get(id) as TxDeposit} />
+        ),
       });
 
       await waitForDepositEvent({ pubKey: config.toPubKey, hash: depositHash });

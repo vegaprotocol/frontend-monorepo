@@ -28,16 +28,19 @@ type SquidDepositConfig = {
   chainId: number;
 };
 
-export type TxSquidDeposit = Omit<TxCommon, 'status'> & {
-  kind: 'squidDepositAsset';
-  status: TxCommon['status'] | 'complete';
+type SquidDepositData = {
   asset: AssetERC20;
   amount: string;
   toPubKey: string;
   routeData: RouteResponse;
-  error?: Error;
   hash?: string;
   receipt?: ethers.providers.TransactionReceipt;
+};
+
+export type TxSquidDeposit = Omit<TxCommon, 'status'> & {
+  kind: 'squidDepositAsset';
+  status: TxCommon['status'] | 'complete';
+  data?: SquidDepositData;
 };
 
 export type SquidDepositSlice = {
@@ -76,13 +79,15 @@ export const createEvmSquidDepositSlice = (
         kind: 'squidDepositAsset',
         id,
         status: 'idle',
-        asset: config.asset,
-        amount: config.amount,
-        toPubKey: config.toPubKey,
-        routeData: config.routeData,
         confirmations: 0,
         requiredConfirmations,
         chainId: config.chainId,
+        data: {
+          asset: config.asset,
+          amount: config.amount,
+          toPubKey: config.toPubKey,
+          routeData: config.routeData,
+        },
       };
 
       get().setTx(id, tx);
@@ -93,7 +98,7 @@ export const createEvmSquidDepositSlice = (
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
-          content: <p>Switch chain</p>,
+          content: <Toasts.SwitchChain />,
         });
 
         await switchChain(wagmiConfig, {
@@ -105,7 +110,7 @@ export const createEvmSquidDepositSlice = (
       useToasts.getState().setToast({
         id,
         intent: Intent.Warning,
-        content: <p>Confirm deposit</p>,
+        content: <Toasts.Requested />,
       });
 
       const routeTx = (await squid?.executeRoute({
@@ -113,19 +118,27 @@ export const createEvmSquidDepositSlice = (
         route,
       })) as unknown as ethers.providers.TransactionResponse;
 
-      get().setTx(id, { hash: routeTx.hash, status: 'pending' });
+      get().setTx(id, {
+        status: 'pending',
+        data: { hash: routeTx.hash },
+      });
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Pending deposit</p>,
+        content: <Toasts.Pending tx={get().txs.get(id)} />,
       });
 
       const receipt = await routeTx.wait();
 
-      get().setTx(id, { receipt, status: 'complete' });
+      get().setTx(id, {
+        status: 'complete',
+        data: { receipt },
+      });
 
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Processing deposit</p>,
+        content: (
+          <Toasts.ConfirmingDeposit tx={get().txs.get(id) as TxSquidDeposit} />
+        ),
       });
 
       await waitForDepositEvent(config);

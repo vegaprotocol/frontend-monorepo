@@ -237,7 +237,7 @@ export const Toast = ({
           ) : (
             <VegaIcon
               name={getIntentIcon(intent)}
-              size={10}
+              size={14}
               className="!block !h-[14px] !w-[14px]"
             />
           )}

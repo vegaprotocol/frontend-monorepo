@@ -1,4 +1,5 @@
 import { create, type StoreApi } from 'zustand';
+import { type PartialDeep } from 'type-fest';
 import {
   createEvmDepositSlice,
   type DepositSlice,
@@ -34,13 +35,14 @@ export type TxCommon = {
   chainId: number;
   confirmations: number;
   requiredConfirmations: number;
+  error?: Error;
 };
 
 export type Tx = TxDeposit | TxSquidDeposit | TxWithdraw | TxFaucet;
 
 export type DefaultSlice = {
   txs: Map<string, Tx>;
-  setTx: (id: string, tx: Partial<Tx>) => void;
+  setTx: (id: string, tx: PartialDeep<Tx>, isReset?: boolean) => void;
   resetTx: (id: string) => void;
 };
 
@@ -55,12 +57,18 @@ const createDefaultSlice = (
   get: StoreApi<DefaultSlice>['getState']
 ) => ({
   txs: new Map(),
-  setTx: (id: string, tx: Partial<Tx>) => {
+  setTx: (id: string, tx: PartialDeep<Tx>, isReset = false) => {
     set((prev) => {
       const curr = prev.txs.get(id);
       const newTx = {
         ...curr,
         ...tx,
+        data: isReset
+          ? undefined
+          : {
+              ...curr?.data,
+              ...tx.data,
+            },
       };
       return {
         txs: new Map(prev.txs).set(id, newTx as Tx),
@@ -68,11 +76,16 @@ const createDefaultSlice = (
     });
   },
   resetTx: (id: string) => {
-    get().setTx(id, {
-      status: 'idle',
-      error: undefined,
-      confirmations: 0,
-    });
+    get().setTx(
+      id,
+      {
+        status: 'idle',
+        confirmations: 0,
+        data: undefined,
+        error: undefined,
+      },
+      true
+    );
   },
 });
 

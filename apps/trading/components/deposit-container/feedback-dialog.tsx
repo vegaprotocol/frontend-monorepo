@@ -5,6 +5,12 @@ import { useT } from '../../lib/use-t';
 import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 
+import {
+  ConfirmedBadge,
+  DefaultBadge,
+  PendingBadge,
+} from '../transaction-dialog/transaction-badge';
+
 type FeedbackDialogProps = {
   data?: TxDeposit;
   onChange: (open: boolean) => void;
@@ -21,71 +27,78 @@ export const FeedbackDialog = (props: FeedbackDialogProps) => {
 
 const Content = (props: { tx: TxDeposit }) => {
   const t = useT();
-  const data = props.tx;
+  const data = props.tx.data;
 
-  const showSteps = data.status !== 'error';
+  const showSteps = data && props.tx.status !== 'error';
 
   return (
     <div className="flex flex-col items-start gap-4">
       <div>
         <p className="text-surface-1-fg-muted">
           {t('Deposit')} <br />
-          <span className="text-surface-1-fg text-2xl">
-            {addDecimalsFormatNumber(data.amount, data.asset.decimals)}{' '}
-            {data.asset.symbol}
-          </span>
+          {data && (
+            <span className="text-surface-1-fg text-2xl">
+              {addDecimalsFormatNumber(data.amount, data.asset.decimals)}{' '}
+              {data.asset.symbol}
+            </span>
+          )}
         </p>
       </div>
       <hr className="w-full" />
       {showSteps ? (
-        <div className="flex flex-col gap-1 w-full">
-          {data.approvalRequired && (
-            <FeedbackStep
-              pending={Boolean(data.approveHash && !data.approveReceipt)}
-              complete={Boolean(data.approveReceipt)}
-            >
-              <span>{t('Approve deposit')}</span>
-              {data.approveHash && (
-                <BlockExplorerLink
-                  sourceChainId={data.chainId}
-                  tx={data.approveHash}
-                >
-                  {t('View on explorer')}
-                </BlockExplorerLink>
-              )}
-            </FeedbackStep>
-          )}
+        <div className="flex flex-col gap-4 w-full">
           <FeedbackStep
-            pending={Boolean(data.depositHash && !data.depositReceipt)}
-            complete={Boolean(data.depositReceipt)}
+            pending={
+              data.approvalRequired
+                ? Boolean(data.approveHash && !data.approveReceipt)
+                : false
+            }
+            complete={
+              data.approvalRequired ? Boolean(data.approveReceipt) : true
+            }
           >
-            <span>
-              <p>{t('Deposit')}</p>
-              {data.status === 'finalized' && data.depositReceipt && (
-                <p className="text-surface-0-fg-muted">
-                  {t('Deposit complete')}
-                </p>
-              )}
-            </span>
+            <span>{t('Approve spending')}</span>
             {data.approveHash && (
               <BlockExplorerLink
-                sourceChainId={data.chainId}
+                sourceChainId={props.tx.chainId}
                 tx={data.approveHash}
+                className="text-sm"
               >
                 {t('View on explorer')}
               </BlockExplorerLink>
             )}
           </FeedbackStep>
+          <FeedbackStep
+            pending={Boolean(data.depositHash && !data.depositReceipt)}
+            complete={Boolean(data.depositReceipt)}
+          >
+            <p>{t('Send deposit')}</p>
+            {data.depositHash && (
+              <BlockExplorerLink
+                sourceChainId={props.tx.chainId}
+                tx={data.depositHash}
+                className="text-sm"
+              >
+                {t('View on explorer')}
+              </BlockExplorerLink>
+            )}
+          </FeedbackStep>
+          <FeedbackStep
+            pending={Boolean(data.depositHash && data.depositReceipt)}
+            complete={Boolean(props.tx.status === 'finalized')}
+          >
+            <p>{t('Confirm deposit')}</p>
+          </FeedbackStep>
         </div>
       ) : (
         <div className="flex flex-col gap-1">
           <p className="text-intent-danger">{t('Deposit failed:')}</p>
-          {data.error && (
+          {props.tx.error && (
             <>
-              {isUserRejected(data.error) ? (
+              {isUserRejected(props.tx.error) ? (
                 <p>{t('User rejected the transaction')}</p>
               ) : (
-                <p className="break-all">{data.error.message}</p>
+                <p className="break-all">{props.tx.error.message}</p>
               )}
             </>
           )}
@@ -111,43 +124,47 @@ export const SquidFeedbackDialog = (props: SquidFeedbackDialogProps) => {
 
 const SquidContent = (props: { tx: TxSquidDeposit }) => {
   const t = useT();
-  const data = props.tx;
+  const data = props.tx.data;
 
-  const showSteps = data.status !== 'error';
-  const estimate = data.routeData.route.estimate;
+  const showSteps = data && props.tx.status !== 'error';
+  const estimate = data?.routeData.route.estimate;
 
   return (
     <div className="flex flex-col items-start gap-4">
       <div>
         <p className="text-surface-1-fg-muted">
           {t('Deposit')} <br />
-          <span className="text-surface-1-fg text-2xl">
-            {addDecimalsFormatNumber(
-              estimate.fromAmount,
-              estimate.fromToken.decimals
-            )}{' '}
-            {estimate.fromToken.symbol}
-          </span>
+          {estimate && (
+            <span className="text-surface-1-fg text-2xl">
+              {addDecimalsFormatNumber(
+                estimate.fromAmount,
+                estimate.fromToken.decimals
+              )}{' '}
+              {estimate.fromToken.symbol}
+            </span>
+          )}
         </p>
         <p className="text-surface-1-fg-muted">
           {t('Receive')} <br />
-          <span className="text-surface-1-fg text-2xl">
-            {addDecimalsFormatNumber(
-              estimate.toAmount,
-              estimate.toToken.decimals
-            )}{' '}
-            {estimate.toToken.symbol}
-          </span>
+          {estimate && (
+            <span className="text-surface-1-fg text-2xl">
+              {addDecimalsFormatNumber(
+                estimate.toAmount,
+                estimate.toToken.decimals
+              )}{' '}
+              {estimate.toToken.symbol}
+            </span>
+          )}
         </p>
       </div>
       <hr className="w-full" />
       {showSteps ? (
-        <div className="flex flex-col gap-1 w-full">
+        <div className="flex flex-col gap-4 w-full">
           <FeedbackStep
             pending={Boolean(!data.hash)}
             complete={Boolean(data.hash)}
           >
-            <span>{t('Confirm in wallet...')}</span>
+            <span>{t('Send swap and deposit')}</span>
             {data.hash && (
               <a
                 href={`https://axelarscan.io/gmp/${data.hash}`}
@@ -164,27 +181,25 @@ const SquidContent = (props: { tx: TxSquidDeposit }) => {
             pending={Boolean(data.hash && !data.receipt)}
             complete={Boolean(data.receipt)}
           >
-            <span>
-              <p>{t('Confirm swap and deposit')}</p>
-              {data.status === 'finalized' && data.receipt && (
-                <p className="text-surface-0-fg-muted">
-                  {t(
-                    'Your tokens have been swapped and deposited to the network. It may take a few minutes for your funds to appear under your public key.'
-                  )}
-                </p>
-              )}
-            </span>
+            <p>{t('Confirm deposit')}</p>
+            {props.tx.status === 'finalized' && data.receipt && (
+              <p className="text-surface-0-fg-muted">
+                {t(
+                  'Your tokens have been swapped and deposited to the network. It may take a few minutes for your funds to appear under your public key.'
+                )}
+              </p>
+            )}
           </FeedbackStep>
         </div>
       ) : (
         <div className="flex flex-col gap-1">
           <p className="text-intent-danger">{t('Deposit failed:')}</p>
-          {data.error && (
+          {props.tx.error && (
             <>
-              {isUserRejected(data.error) ? (
+              {isUserRejected(props.tx.error) ? (
                 <p>{t('User rejected the transaction')}</p>
               ) : (
-                <p className="break-all">{data.error.message}</p>
+                <p className="break-all">{props.tx.error.message}</p>
               )}
             </>
           )}
@@ -200,25 +215,17 @@ const FeedbackStep = (props: {
   children: ReactNode;
 }) => {
   return (
-    <div className="flex items-start gap-2">
-      <div className="w-4 pt-0.5 flex justify-center items-center">
+    <div className="flex items-center gap-4">
+      <div className="w-8 flex justify-center items-center">
         {props.complete ? (
-          <VegaIcon
-            name={VegaIconNames.TICK}
-            className="text-intent-success"
-            size={14}
-          />
+          <ConfirmedBadge />
         ) : props.pending ? (
-          <VegaIcon
-            name={VegaIconNames.LOADING}
-            size={16}
-            className="animate-spin"
-          />
+          <PendingBadge />
         ) : (
-          <span className="inline-block w-3 h-3 rounded-full border" />
+          <DefaultBadge />
         )}
       </div>
-      <div className="grow flex justify-between gap-2">{props.children}</div>
+      <div className="grow flex flex-col gap-0.5">{props.children}</div>
     </div>
   );
 };

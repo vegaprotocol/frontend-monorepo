@@ -57,7 +57,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     // The onConnect handler from useModal is called twice
     // so this is to make sure if a tx is already created we
     // dont immediately create another one
-    if (withdraw.data.hash) return;
+    if (withdraw.data.data?.hash) return;
 
     const asset = data.asset;
 

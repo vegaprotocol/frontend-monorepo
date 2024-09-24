@@ -2,6 +2,7 @@ import { type AssetERC20 } from '@vegaprotocol/assets';
 import { type DefaultSlice, type TxCommon } from './evm';
 import { type Address, type TransactionReceipt } from 'viem';
 import { type StoreApi } from 'zustand';
+import * as Toasts from '../../components/toasts';
 import {
   writeContract,
   waitForTransactionReceipt,
@@ -17,12 +18,15 @@ type FaucetConfig = {
   chainId: number;
 };
 
-export type TxFaucet = TxCommon & {
-  kind: 'faucet';
+type FaucetData = {
   asset: AssetERC20;
-  error?: Error;
   hash?: string;
   receipt?: TransactionReceipt;
+};
+
+export type TxFaucet = TxCommon & {
+  kind: 'faucet';
+  data?: FaucetData;
 };
 
 export type FaucetSlice = {
@@ -39,10 +43,12 @@ export const createEvmFaucetSlice = (
         kind: 'faucet',
         id,
         status: 'idle',
-        asset: config.asset,
         confirmations: 0,
         requiredConfirmations: 1,
         chainId: config.chainId,
+        data: {
+          asset: config.asset,
+        },
       });
 
       const asset = config.asset;
@@ -56,7 +62,7 @@ export const createEvmFaucetSlice = (
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
-          content: <p>Switch chain</p>,
+          content: <Toasts.SwitchChain />,
         });
 
         await switchChain(wagmiConfig, {
@@ -70,7 +76,7 @@ export const createEvmFaucetSlice = (
       useToasts.getState().setToast({
         id,
         intent: Intent.Warning,
-        content: <p>Approve faucet</p>,
+        content: <Toasts.Requested />,
       });
 
       const faucetHash = await writeContract(wagmiConfig, {
@@ -82,11 +88,11 @@ export const createEvmFaucetSlice = (
 
       get().setTx(id, {
         status: 'pending',
-        hash: faucetHash,
+        data: { hash: faucetHash },
       });
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Waiting for faucet</p>,
+        content: <Toasts.Pending tx={get().txs.get(id)} />,
         loader: true,
       });
 
@@ -98,17 +104,24 @@ export const createEvmFaucetSlice = (
 
       get().setTx(id, {
         status: 'finalized',
-        receipt: faucetReceipt,
+        data: { receipt: faucetReceipt },
       });
       useToasts.getState().update(id, {
         intent: Intent.Success,
-        content: <p>Faucet complete</p>,
+        content: <Toasts.FinalizedGeneric tx={get().txs.get(id)} />,
+        loader: false,
       });
     } catch (err) {
-      console.error(err);
+      const error = err instanceof Error ? err : new Error('faucet failed');
       get().setTx(id, {
         status: 'error',
-        error: err instanceof Error ? err : new Error('faucet failed'),
+        error,
+      });
+
+      useToasts.getState().update(id, {
+        content: <Toasts.Error message={error.message} />,
+        intent: Intent.Danger,
+        loader: false,
       });
     }
 

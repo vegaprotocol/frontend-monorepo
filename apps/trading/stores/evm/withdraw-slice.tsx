@@ -8,6 +8,7 @@ import {
   switchChain,
   getChainId,
 } from '@wagmi/core';
+import * as Toasts from '../../components/toasts';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { wagmiConfig } from '../../lib/wagmi-config';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
@@ -29,13 +30,16 @@ type WithdrawConfig = {
   approval: Approval;
 };
 
-export type TxWithdraw = TxCommon & {
-  kind: 'withdrawAsset';
+type WithdrawData = {
   asset: AssetERC20;
   approval: Approval;
-  error?: Error;
   hash?: string;
   receipt?: TransactionReceipt;
+};
+
+export type TxWithdraw = TxCommon & {
+  kind: 'withdrawAsset';
+  data?: WithdrawData;
 };
 
 export type WithdrawSlice = {
@@ -60,9 +64,11 @@ export const createEvmWithdrawSlice = (
         id,
         status: 'idle',
         confirmations: 0,
-        asset: config.asset,
         requiredConfirmations: 1,
         chainId: config.chainId,
+        data: {
+          asset: config.asset,
+        },
       });
 
       if (assetChainId !== chainId) {
@@ -72,7 +78,7 @@ export const createEvmWithdrawSlice = (
         useToasts.getState().setToast({
           id,
           intent: Intent.Warning,
-          content: <p>Switch chain</p>,
+          content: <Toasts.SwitchChain />,
         });
 
         await switchChain(wagmiConfig, {
@@ -86,7 +92,7 @@ export const createEvmWithdrawSlice = (
       useToasts.getState().setToast({
         id,
         intent: Intent.Warning,
-        content: <p>Approve withdraw</p>,
+        content: <Toasts.Requested />,
       });
 
       const withdrawHash = await writeContract(wagmiConfig, {
@@ -105,12 +111,12 @@ export const createEvmWithdrawSlice = (
       });
 
       get().setTx(id, {
-        hash: withdrawHash,
         status: 'pending',
+        data: { hash: withdrawHash },
       });
       useToasts.getState().update(id, {
         intent: Intent.Warning,
-        content: <p>Waiting for withdraw</p>,
+        content: <Toasts.Pending tx={get().txs.get(id)} />,
         loader: true,
       });
 
@@ -121,17 +127,25 @@ export const createEvmWithdrawSlice = (
       });
 
       get().setTx(id, {
-        receipt: withdrawReceipt,
         status: 'finalized',
+        data: { receipt: withdrawReceipt },
       });
       useToasts.getState().update(id, {
         intent: Intent.Success,
-        content: <p>Withdraw complete</p>,
+        content: <Toasts.FinalizedGeneric tx={get().txs.get(id)} />,
+        loader: false,
       });
     } catch (err) {
+      const error = err instanceof Error ? err : new Error('withdraw failed');
       get().setTx(id, {
         status: 'error',
-        error: err instanceof Error ? err : new Error('withdraw failed'),
+        error,
+      });
+
+      useToasts.getState().update(id, {
+        content: <Toasts.Error message={error.message} />,
+        intent: Intent.Danger,
+        loader: false,
       });
     }
 

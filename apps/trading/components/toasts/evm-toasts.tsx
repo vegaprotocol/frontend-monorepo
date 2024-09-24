@@ -23,13 +23,25 @@ export const Requested = () => {
   );
 };
 
+export const SwitchChain = () => {
+  const t = useT();
+  return (
+    <>
+      <ToastHeading>{t('Switch chain')}</ToastHeading>
+      <p>
+        {t('Please go to your wallet and approve the switch chain request.')}
+      </p>
+    </>
+  );
+};
+
 export const Pending = ({ tx }: Props) => {
   const t = useT();
   return (
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
-      {/* <Link tx={tx} /> */}
+      {/* {tx && <Link tx={tx} />} */}
       <Confirmations tx={tx} />
     </>
   );
@@ -51,7 +63,7 @@ export const Error = ({ message }: { message?: string }) => {
     <>
       <ToastHeading>{t('Error occurred')}</ToastHeading>
       {message ? (
-        <p className="first-letter:uppercase">{message}</p>
+        <p className="first-letter:uppercase break-all">{message}</p>
       ) : (
         <p className="first-letter:uppercase">{t('Something went wrong')}</p>
       )}
@@ -59,7 +71,11 @@ export const Error = ({ message }: { message?: string }) => {
   );
 };
 
-export const ConfirmingDeposit = ({ tx }: { tx: TxDeposit }) => {
+export const ConfirmingDeposit = ({
+  tx,
+}: {
+  tx?: TxDeposit | TxSquidDeposit;
+}) => {
   const t = useT();
 
   return (
@@ -69,20 +85,27 @@ export const ConfirmingDeposit = ({ tx }: { tx: TxDeposit }) => {
         {t('Your transaction has been completed.')}{' '}
         {t('Waiting for deposit confirmation.')}
       </p>
-      {tx.depositHash && (
-        <Link tx={{ chainId: tx.chainId, hash: tx.depositHash }} />
+      {tx && tx.data && (
+        <>
+          {tx.kind === 'depositAsset' ? (
+            <Link tx={{ chainId: tx.chainId, hash: tx.data.depositHash }} />
+          ) : (
+            <Link tx={{ chainId: tx.chainId, hash: tx.data.hash }} />
+          )}
+        </>
       )}
     </>
   );
 };
 
-export const FinalizedGeneric = ({ tx }: Props) => {
+export const FinalizedGeneric = ({ tx }: { tx?: Tx }) => {
   const t = useT();
+
   return (
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
-      {/* <Link tx={tx} /> */}
+      {tx && <Link tx={tx} />}
     </>
   );
 };
@@ -90,26 +113,22 @@ export const FinalizedGeneric = ({ tx }: Props) => {
 export const FinalizedDeposit = ({
   tx,
 }: {
-  tx: TxDeposit | TxSquidDeposit;
+  tx?: TxDeposit | TxSquidDeposit;
 }) => {
   const t = useT();
-
-  if (tx.kind === 'squidDepositAsset') {
-    return (
-      <>
-        <ToastHeading>{t('Deposit complete')}</ToastHeading>
-        <p>{t('Your transaction has been completed.')} </p>
-        {tx.hash && <Link tx={{ chainId: tx.chainId, hash: tx.hash }} />}
-      </>
-    );
-  }
 
   return (
     <>
       <ToastHeading>{t('Deposit complete')}</ToastHeading>
       <p>{t('Your transaction has been completed.')} </p>
-      {tx.depositHash && (
-        <Link tx={{ chainId: tx.chainId, hash: tx.depositHash }} />
+      {tx && tx.data && (
+        <>
+          {tx.kind === 'depositAsset' ? (
+            <Link tx={{ chainId: tx.chainId, hash: tx.data.depositHash }} />
+          ) : (
+            <Link tx={{ chainId: tx.chainId, hash: tx.data.hash }} />
+          )}
+        </>
       )}
     </>
   );
@@ -123,11 +142,6 @@ const Confirmations = ({ tx }: { tx?: Tx }) => {
   if (tx.confirmations > 1) {
     return (
       <Panel>
-        {/* {tx.meta && (
-          <strong>
-            {tx.meta.functionName} {tx.meta.amount} {tx.meta.asset.symbol}
-          </strong>
-        )} */}
         {tx.status === 'pending' && tx.requiredConfirmations && (
           <>
             <p className="mt-[2px]">
@@ -151,10 +165,10 @@ const Confirmations = ({ tx }: { tx?: Tx }) => {
   return null;
 };
 
-const Link = ({ tx }: { tx?: { chainId: number; hash: string } }) => {
+const Link = ({ tx }: { tx?: { chainId: number; hash?: string } }) => {
   const t = useT();
 
-  if (!tx) return null;
+  if (!tx || !tx.hash) return null;
 
   return (
     <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
