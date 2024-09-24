@@ -24,6 +24,10 @@ export const useCreateDerivedWallet = (
     mutationKey: ['ethereum.signTypedData', address],
     mutationFn: async () => {
       try {
+        if (!address)
+          {throw new Error(
+            'Attempted to create a dervided wallet while not connected'
+          );}
         state.store.setState({
           status: 'creating',
         });
@@ -50,7 +54,7 @@ export const useCreateDerivedWallet = (
             signedMessage
           )) as unknown as string[];
           const mnemonicString = mnemonic.join(' ');
-          await connector.importWallet(mnemonicString);
+          await connector.importWallet(mnemonicString, address);
         }
         return { success: true };
       } catch (error) {
