@@ -28,6 +28,7 @@ export const coreStoreSlice: CoreStore = {
   chainId: '',
   status: 'disconnected',
   current: undefined,
+  currentConnector: undefined,
   keys: [],
   error: undefined,
   jsonRpcToken: undefined,
@@ -82,7 +83,12 @@ export function createConfig(cfg: Config): Wallet {
         throw noConnectorError();
       }
 
-      store.setState({ status: 'connecting', current: id, error: undefined });
+      store.setState({
+        status: 'connecting',
+        current: id,
+        currentConnector: connector,
+        error: undefined,
+      });
 
       await connector.connectWallet(store.getState().chainId);
       const keys = await connector.listKeys();
@@ -112,6 +118,7 @@ export function createConfig(cfg: Config): Wallet {
       store.setState({
         status: 'disconnected',
         current: undefined,
+        currentConnector: undefined,
         keys: [],
         error: err instanceof ConnectorError ? err : unknownError(),
       });

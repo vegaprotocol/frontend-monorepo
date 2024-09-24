@@ -9,6 +9,7 @@ export const useVegaWallet = () => {
 
   return {
     current: store.current,
+    currentConnector: store.currentConnector,
     status: store.status,
     pubKeys: store.keys,
     pubKey: store.pubKey,

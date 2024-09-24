@@ -15,8 +15,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuItemIndicator,
   Tooltip,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
-import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
+import {
+  isBrowserWalletInstalled,
+  QuickStartConnector,
+  type Key,
+} from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { cn } from '@vegaprotocol/ui-toolkit';
@@ -45,6 +50,7 @@ export const VegaWalletConnectButton = ({
     refreshKeys,
     isReadOnly,
     current,
+    currentConnector,
   } = useVegaWallet();
 
   const walletInstalled = isBrowserWalletInstalled();
@@ -97,6 +103,23 @@ export const VegaWalletConnectButton = ({
             data-testid="keypair-list"
             style={{ maxHeight: 'var(--radix-popper-available-height)' }}
           >
+            {currentConnector instanceof QuickStartConnector &&
+            currentConnector.ethAddress ? (
+              <div className="px-2">
+                {
+                  <Tooltip
+                    description={t(
+                      'The Etherum key used to create the connected wallet'
+                    )}
+                  >
+                    <span className="text-xs text-surface-0-fg-muted">
+                      Derived from:{' '}
+                      {truncateMiddle(currentConnector.ethAddress)}
+                    </span>
+                  </Tooltip>
+                }
+              </div>
+            ) : null}
             <KeypairRadioGroup
               pubKey={pubKey}
               pubKeys={pubKeys}
