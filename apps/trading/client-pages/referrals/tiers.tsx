@@ -4,7 +4,7 @@ import {
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
 import {
-  ReferralStakingTier,
+  type ReferralStakingTier,
   useCurrentPrograms,
 } from '../../lib/hooks/use-current-programs';
 import { Table } from '../../components/table';

@@ -14,7 +14,7 @@ import { type ColDef } from 'ag-grid-community';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import type { ProductType } from '@vegaprotocol/types';
-import { Factors } from 'apps/trading/lib/hooks/use-current-programs';
+import type { Factors } from '../../lib/hooks/use-current-programs';
 
 const useFeesTableColumnDefs = (): ColDef[] => {
   const t = useT();

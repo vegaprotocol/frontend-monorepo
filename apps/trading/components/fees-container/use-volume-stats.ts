@@ -1,8 +1,8 @@
 import {
   areFactorsEqual,
-  Factors,
+  type Factors,
   parseFactors,
-  VolumeDiscountBenefitTier,
+  type VolumeDiscountBenefitTier,
 } from '../../lib/hooks/use-current-programs';
 import type { FeesQuery } from './__generated__/Fees';
 

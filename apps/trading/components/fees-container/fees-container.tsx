@@ -29,11 +29,11 @@ import { getTierGradient } from '../helpers/tiers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   areFactorsEqual,
-  Factors,
-  ReferralBenefitTier,
+  type Factors,
+  type ReferralBenefitTier,
   useCurrentPrograms,
-  VolumeDiscountBenefitTier,
-} from 'apps/trading/lib/hooks/use-current-programs';
+  type VolumeDiscountBenefitTier,
+} from '../../lib/hooks/use-current-programs';
 
 export const FeesContainer = () => {
   const t = useT();

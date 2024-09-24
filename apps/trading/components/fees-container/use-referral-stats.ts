@@ -1,8 +1,8 @@
 import {
   areFactorsEqual,
-  Factors,
+  type Factors,
   parseFactors,
-  ReferralBenefitTier,
+  type ReferralBenefitTier,
   type ProgramsData,
 } from '../../lib/hooks/use-current-programs';
 import type { FeesQuery } from './__generated__/Fees';
