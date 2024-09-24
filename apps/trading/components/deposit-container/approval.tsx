@@ -4,10 +4,10 @@ import { Intent, Notification, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { formatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
-import { useEvmApprove } from '../../lib/hooks/use-evm-approve';
+// import { useEvmApprove } from '../../lib/hooks/use-evm-approve';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 import { Trans } from 'react-i18next';
-import BigNumber from 'bignumber.js';
+import type BigNumber from 'bignumber.js';
 
 export const Approval = ({
   asset,
@@ -27,25 +27,25 @@ export const Approval = ({
   configs: Array<EthereumConfig | EVMBridgeConfig>;
   queryKey: QueryKey;
 }) => {
-  const { allowance, deposited, lifetimeLimit } = data;
+  const { deposited, lifetimeLimit } = data;
 
   const t = useT();
 
-  const { submitApprove, data: dataApprove } = useEvmApprove({ queryKey });
+  // const { submitApprove, data: dataApprove } = useEvmApprove({ queryKey });
 
-  const amount = BigNumber(_amount); // amount is raw user input so no need for decimals
+  // const amount = BigNumber(_amount); // amount is raw user input so no need for decimals
 
-  const handleActionClick = () => {
-    const assetChainId = asset.source.chainId;
-    const config = configs.find((c) => c.chain_id === assetChainId);
-    const bridgeAddress = config?.collateral_bridge_contract.address;
+  // const handleActionClick = () => {
+  //   const assetChainId = asset.source.chainId;
+  //   const config = configs.find((c) => c.chain_id === assetChainId);
+  //   const bridgeAddress = config?.collateral_bridge_contract.address;
 
-    if (!bridgeAddress) {
-      throw new Error(`no bridge found for asset ${asset.id}`);
-    }
+  //   if (!bridgeAddress) {
+  //     throw new Error(`no bridge found for asset ${asset.id}`);
+  //   }
 
-    submitApprove({ asset, bridgeAddress });
-  };
+  //   submitApprove({ asset, bridgeAddress });
+  // };
 
   if (deposited.isGreaterThanOrEqualTo(lifetimeLimit)) {
     return (
@@ -88,56 +88,56 @@ export const Approval = ({
     );
   }
 
-  if (allowance.isZero()) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Warning}
-          testId="approve-default"
-          message={t(
-            'Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet',
-            { assetSymbol: asset.symbol }
-          )}
-          buttonProps={{
-            size: 'sm',
-            text: dataApprove?.isPending
-              ? t('Approval pending')
-              : t('Approve {{assetSymbol}}', {
-                  assetSymbol: asset.symbol,
-                }),
-            action: handleActionClick,
-            dataTestId: 'approve-submit',
-            disabled: dataApprove?.isPending,
-          }}
-        />
-      </div>
-    );
-  }
+  // if (allowance.isZero()) {
+  //   return (
+  //     <div className="mb-4">
+  //       <Notification
+  //         intent={Intent.Warning}
+  //         testId="approve-default"
+  //         message={t(
+  //           'Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet',
+  //           { assetSymbol: asset.symbol }
+  //         )}
+  //         buttonProps={{
+  //           size: 'sm',
+  //           text: dataApprove?.isPending
+  //             ? t('Approval pending')
+  //             : t('Approve {{assetSymbol}}', {
+  //                 assetSymbol: asset.symbol,
+  //               }),
+  //           action: handleActionClick,
+  //           dataTestId: 'approve-submit',
+  //           disabled: dataApprove?.isPending,
+  //         }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
-  if (amount.isGreaterThan(allowance)) {
-    return (
-      <div className="mb-4">
-        <Notification
-          intent={Intent.Warning}
-          testId="approve-default"
-          message={t('Approve again to deposit more than {{allowance}}', {
-            allowance: formatNumber(allowance),
-          })}
-          buttonProps={{
-            size: 'sm',
-            text: dataApprove?.isPending
-              ? t('Approval pending')
-              : t('Approve {{assetSymbol}}', {
-                  assetSymbol: asset.symbol,
-                }),
-            action: handleActionClick,
-            dataTestId: 'approve-submit',
-            disabled: dataApprove?.isPending,
-          }}
-        />
-      </div>
-    );
-  }
+  // if (amount.isGreaterThan(allowance)) {
+  //   return (
+  //     <div className="mb-4">
+  //       <Notification
+  //         intent={Intent.Warning}
+  //         testId="approve-default"
+  //         message={t('Approve again to deposit more than {{allowance}}', {
+  //           allowance: formatNumber(allowance),
+  //         })}
+  //         buttonProps={{
+  //           size: 'sm',
+  //           text: dataApprove?.isPending
+  //             ? t('Approval pending')
+  //             : t('Approve {{assetSymbol}}', {
+  //                 assetSymbol: asset.symbol,
+  //               }),
+  //           action: handleActionClick,
+  //           dataTestId: 'approve-submit',
+  //           disabled: dataApprove?.isPending,
+  //         }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return null;
 };

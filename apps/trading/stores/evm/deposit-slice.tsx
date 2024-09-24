@@ -11,9 +11,9 @@ import {
 } from '@wagmi/core';
 
 import * as Toasts from '../../components/toasts';
-import { getApolloClient } from '../apollo-client';
-import { wagmiConfig } from '../wagmi-config';
-import { type DefaultSlice, type TxCommon } from './use-evm-tx';
+import { getApolloClient } from '../../lib/apollo-client';
+import { wagmiConfig } from '../../lib/wagmi-config';
+import { type DefaultSlice, type TxCommon } from './evm';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
 import {
@@ -21,7 +21,7 @@ import {
   type DepositBusEventSubscription,
   type DepositBusEventSubscriptionVariables,
 } from '@vegaprotocol/web3';
-import { getErc20Abi } from '../utils/get-erc20-abi';
+import { getErc20Abi } from '../../lib/utils/get-erc20-abi';
 import { DepositStatus } from '@vegaprotocol/types';
 
 type DepositConfig = {
@@ -201,7 +201,9 @@ export const createEvmDepositSlice = (
       });
       useToasts.getState().update(id, {
         intent: Intent.Success,
-        content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
+        content: (
+          <Toasts.FinalizedDeposit tx={get().txs.get(id) as TxDeposit} />
+        ),
         loader: false,
       });
 

@@ -3,22 +3,22 @@ import {
   createEvmDepositSlice,
   type DepositSlice,
   type TxDeposit,
-} from './use-evm-deposit-slice';
+} from './deposit-slice';
 import {
   createEvmSquidDepositSlice,
   type SquidDepositSlice,
   type TxSquidDeposit,
-} from './use-evm-squid-deposit-slice';
+} from './squid-deposit-slice';
 import {
   createEvmWithdrawSlice,
   type TxWithdraw,
   type WithdrawSlice,
-} from './use-evm-withdraw-slice';
+} from './withdraw-slice';
 import {
   createEvmFaucetSlice,
   type FaucetSlice,
   type TxFaucet,
-} from './use-evm-faucet-slice';
+} from './faucet-slice';
 
 export type Status =
   | 'idle'

@@ -4,8 +4,7 @@ import { useSimulateContract } from 'wagmi';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { ERC20_ABI } from '@vegaprotocol/smart-contracts';
 
-import { type TxFaucet } from './use-evm-faucet-slice';
-import { useEvmTxStore } from './use-evm-tx';
+import { useEvmTxStore, type TxFaucet } from '../../stores/evm';
 import { useRef } from 'react';
 
 export const useEvmFaucet = ({ asset }: { asset: AssetERC20 }) => {

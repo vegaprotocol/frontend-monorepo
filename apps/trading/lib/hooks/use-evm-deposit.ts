@@ -1,6 +1,5 @@
 import uniqueId from 'lodash/uniqueId';
-import { type TxDeposit } from './use-evm-deposit-slice';
-import { useEvmTxStore } from './use-evm-tx';
+import { useEvmTxStore, type TxDeposit } from '../../stores/evm';
 import { useRef } from 'react';
 
 export const useEvmDeposit = () => {

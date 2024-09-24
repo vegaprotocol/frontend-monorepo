@@ -3,9 +3,9 @@ import { type StoreApi } from 'zustand';
 import { switchChain, getChainId, getConnectorClient } from '@wagmi/core';
 
 import * as Toasts from '../../components/toasts';
-import { getApolloClient } from '../apollo-client';
-import { wagmiConfig } from '../wagmi-config';
-import { type DefaultSlice, type TxCommon } from './use-evm-tx';
+import { getApolloClient } from '../../lib/apollo-client';
+import { wagmiConfig } from '../../lib/wagmi-config';
+import { type DefaultSlice, type TxCommon } from './evm';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import {
   DepositBusEventDocument,
@@ -14,10 +14,10 @@ import {
 } from '@vegaprotocol/web3';
 import { DepositStatus } from '@vegaprotocol/types';
 import { type RouteResponse } from '@0xsquid/sdk/dist/types';
-import { queryClient } from '../query-client';
+import { queryClient } from '../../lib/query-client';
 import { type Squid } from '@0xsquid/sdk';
 import { type ethers } from 'ethers';
-import { clientToSigner } from './use-ethers-signer';
+import { clientToSigner } from '../../lib/hooks/use-ethers-signer';
 
 type SquidDepositConfig = {
   asset: AssetERC20;
@@ -133,7 +133,9 @@ export const createEvmSquidDepositSlice = (
       get().setTx(id, { status: 'finalized' });
       useToasts.getState().update(id, {
         intent: Intent.Success,
-        content: <Toasts.FinalizedDeposit tx={get().txs.get(id)} />,
+        content: (
+          <Toasts.FinalizedDeposit tx={get().txs.get(id) as TxSquidDeposit} />
+        ),
         loader: false,
       });
 

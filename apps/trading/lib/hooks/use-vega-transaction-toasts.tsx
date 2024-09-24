@@ -46,7 +46,7 @@ import {
   truncateByChars,
   useFormatTrigger,
 } from '@vegaprotocol/utils';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { type AssetERC20, useAssetsMapProvider } from '@vegaprotocol/assets';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import { getAsset, useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
@@ -753,7 +753,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     }
 
     withdraw.write({
-      asset,
+      asset: asset as AssetERC20,
       bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
       chainId: Number(asset.source.chainId),
       approval: tx.withdrawalApproval,

@@ -21,8 +21,7 @@ import BigNumber from 'bignumber.js';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
-import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
-import { type TxSquidDeposit } from '../../lib/hooks/use-evm-squid-deposit-slice';
+import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 
 export const DepositForm = ({
   squid,

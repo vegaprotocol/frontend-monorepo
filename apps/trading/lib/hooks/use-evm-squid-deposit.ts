@@ -1,6 +1,5 @@
 import uniqueId from 'lodash/uniqueId';
-import { type TxSquidDeposit } from './use-evm-squid-deposit-slice';
-import { useEvmTxStore } from './use-evm-tx';
+import { useEvmTxStore, type TxSquidDeposit } from '../../stores/evm';
 import { useRef } from 'react';
 
 export const useEvmSquidDeposit = () => {

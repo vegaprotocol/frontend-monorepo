@@ -6,8 +6,7 @@ import { useSquid } from './use-squid';
 import { FallbackDepositForm } from './fallback-deposit-form';
 import { useT } from '../../lib/use-t';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
-import { type TxSquidDeposit } from '../../lib/hooks/use-evm-squid-deposit-slice';
+import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 
 /**
  * Gets env vars, assets, and configs required for the deposit form

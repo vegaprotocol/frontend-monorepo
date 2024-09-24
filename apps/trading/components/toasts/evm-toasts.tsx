@@ -1,7 +1,7 @@
 import { Panel, ToastHeading, ProgressBar } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../lib/use-t';
-import { type TxDeposit, type Tx } from '../../lib/hooks/use-evm-tx';
+import { type TxDeposit, type Tx, type TxSquidDeposit } from '../../stores/evm';
 import {
   BlockExplorerLink,
   getExternalChainLabel,
@@ -87,8 +87,22 @@ export const FinalizedGeneric = ({ tx }: Props) => {
   );
 };
 
-export const FinalizedDeposit = ({ tx }: { tx: TxDeposit }) => {
+export const FinalizedDeposit = ({
+  tx,
+}: {
+  tx: TxDeposit | TxSquidDeposit;
+}) => {
   const t = useT();
+
+  if (tx.kind === 'squidDepositAsset') {
+    return (
+      <>
+        <ToastHeading>{t('Deposit complete')}</ToastHeading>
+        <p>{t('Your transaction has been completed.')} </p>
+        {tx.hash && <Link tx={{ chainId: tx.chainId, hash: tx.hash }} />}
+      </>
+    );
+  }
 
   return (
     <>

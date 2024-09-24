@@ -8,7 +8,6 @@ import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 
 import { getErc20Abi } from '../../lib/utils/get-erc20-abi';
 import { isAssetNative, toBigNum } from '@vegaprotocol/utils';
-import { type Address } from './constants';
 
 export const useAssetReadContracts = ({
   token,
@@ -23,12 +22,13 @@ export const useAssetReadContracts = ({
 }) => {
   const { address } = useAccount();
 
-  const assetAddress = token?.address as Address;
+  const assetAddress = token?.address as `0x${string}`;
   const assetChainId = Number(token?.chainId);
 
   const config = configs.find((c) => Number(c.chain_id) === assetChainId);
 
-  const bridgeAddress = config?.collateral_bridge_contract.address as Address;
+  const bridgeAddress = config?.collateral_bridge_contract
+    .address as `0x${string}`;
 
   const enabled = Boolean(
     assetAddress && !isAssetNative(assetAddress) && address
@@ -102,8 +102,8 @@ export const useAssetReadContracts = ({
 };
 
 const depositedAmountStorageLocation = (
-  account: Address,
-  assetSource: Address
+  account: `0x${string}`,
+  assetSource: `0x${string}`
 ) => {
   const innerHash = keccak256(
     encodeAbiParameters(

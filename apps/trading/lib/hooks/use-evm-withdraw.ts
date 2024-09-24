@@ -1,7 +1,6 @@
 import uniqueId from 'lodash/uniqueId';
 import { useRef } from 'react';
-import { useEvmTxStore } from './use-evm-tx';
-import { type TxWithdraw } from './use-evm-withdraw-slice';
+import { useEvmTxStore, type TxWithdraw } from '../../stores/evm';
 
 export const useEvmWithdraw = () => {
   const idRef = useRef(uniqueId());

@@ -2,9 +2,8 @@ import { Dialog, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { type ReactNode } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
-import { type TxDeposit } from '../../lib/hooks/use-evm-deposit-slice';
 import { BlockExplorerLink } from '@vegaprotocol/environment';
-import { type TxSquidDeposit } from '../../lib/hooks/use-evm-squid-deposit-slice';
+import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 
 type FeedbackDialogProps = {
   data?: TxDeposit;

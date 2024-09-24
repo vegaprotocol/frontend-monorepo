@@ -1,5 +1,5 @@
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { type TxCommon, type DefaultSlice } from './use-evm-tx';
+import { type TxCommon, type DefaultSlice } from './evm';
 import { type Address, type TransactionReceipt } from 'viem';
 import { type StoreApi } from 'zustand';
 import {
@@ -9,7 +9,7 @@ import {
   getChainId,
 } from '@wagmi/core';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
-import { wagmiConfig } from '../wagmi-config';
+import { wagmiConfig } from '../../lib/wagmi-config';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
 type Approval = {
