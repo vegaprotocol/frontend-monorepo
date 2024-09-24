@@ -1,7 +1,7 @@
 export async function install({ settings }) {
   await Promise.allSettled([
     settings.set('autoOpen', true),
-    settings.set('autoConsent', false),
+    settings.set('autoConsent', true),
     settings.set('version', 0),
   ]);
 }

@@ -1,9 +1,7 @@
-import { cn } from '@vegaprotocol/ui-toolkit';
-
+import { cn, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Side } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
-import { Intent, Button } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { useFundsAvailable } from '../../../lib/hooks/use-funds-available';
 import { useTicketContext } from '../ticket-context';
@@ -15,6 +13,16 @@ import {
 } from 'apps/trading/lib/hooks/use-sidebar';
 import { toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
+import { type ReactNode } from 'react';
+import omit from 'lodash/omit';
+
+type SubmitButtonProps = {
+  type: 'button' | 'submit';
+  side: Side | 'indeterminate';
+  disabled: boolean;
+  onClick?: () => void;
+  children: ReactNode;
+};
 
 export const SubmitButton = ({ text }: { text: string }) => {
   const t = useT();
@@ -34,25 +42,11 @@ export const SubmitButton = ({ text }: { text: string }) => {
     setSidebarInnerView([SidebarAccountsViewType.Deposit, assetId]);
   };
 
-  const { fundsAvailable } = useFundsAvailable();
+  const { fundsAvailable, loading: fundsLoading } = useFundsAvailable();
   const ticket = useTicketContext();
 
   const form = useForm();
   const side = form.watch('side');
-
-  const buttonProps = {
-    size: 'lg',
-    className: 'w-full',
-    intent: Intent.Secondary,
-  } as const;
-
-  if (!connected) {
-    return (
-      <Button {...buttonProps} onClick={openDialog}>
-        {t('Connect')}
-      </Button>
-    );
-  }
 
   const asset =
     ticket.type === 'default'
@@ -63,35 +57,81 @@ export const SubmitButton = ({ text }: { text: string }) => {
 
   const funds = fundsAvailable?.find((f) => f.asset.id === asset.id);
   const amount = funds ? toBigNum(funds.balance, asset.decimals) : BigNumber(0);
+  const needsDeposit = !fundsLoading && amount.isZero();
 
-  if (amount.isZero()) {
-    return (
-      <Button
-        {...buttonProps}
-        onClick={() => {
-          openDeposit(asset.id);
-        }}
-      >
-        {t('Deposit')}
-      </Button>
-    );
+  let p: SubmitButtonProps = {
+    type: 'button',
+    side,
+    disabled: true,
+    onClick: undefined,
+    children: text,
+  };
+
+  if (!connected) {
+    p = {
+      type: 'button',
+      side: 'indeterminate',
+      disabled: false,
+      onClick: openDialog,
+      children: t('Connect'),
+    };
+  } else if (fundsLoading) {
+    p = {
+      type: 'button',
+      side,
+      disabled: true,
+      onClick: undefined,
+      children: (
+        <div
+          className={cn(
+            'absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'
+          )}
+        >
+          <VegaIcon
+            size={18}
+            name={VegaIconNames.LOADING}
+            className="animate-spin text-white"
+          />
+        </div>
+      ),
+    };
+  } else if (needsDeposit) {
+    p = {
+      type: 'button',
+      side: 'indeterminate',
+      disabled: false,
+      onClick: () => {
+        openDeposit(asset.id);
+      },
+      children: t('Deposit'),
+    };
+  } else {
+    p = {
+      type: 'submit',
+      side,
+      disabled: false,
+      onClick: undefined,
+      children: text,
+    };
   }
 
   return (
     <button
       data-testid="place-order"
-      type="submit"
+      {...omit(p, 'children', 'side')}
       className={cn(
-        'w-full h-12 flex flex-col justify-center items-center rounded-button-lg text-white p-2 transition-colors',
+        'w-full h-12 flex flex-col justify-center items-center rounded-button-lg text-white p-2 transition-all',
+        'relative',
         {
           'bg-red-500 enabled:hover:bg-red-550 dark:bg-red-600 dark:enabled:hover:bg-red-650':
-            side === Side.SIDE_SELL,
+            p.side === Side.SIDE_SELL,
           'bg-green-600 enabled:hover:bg-green-650 dark:bg-green-650 dark:enabled:hover:bg-green-600':
-            side === Side.SIDE_BUY,
+            p.side === Side.SIDE_BUY,
+          'bg-intent-secondary': p.side === 'indeterminate',
         }
       )}
     >
-      {text}
+      {p.children}
     </button>
   );
 };

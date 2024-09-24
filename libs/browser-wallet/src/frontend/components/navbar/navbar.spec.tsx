@@ -72,7 +72,7 @@ describe('NavBar', () => {
     expect(screen.getAllByTestId('nav-button')).toHaveLength(3);
     const [wallets, transactions, settings] =
       screen.getAllByTestId('nav-button');
-    expect(wallets).toHaveTextContent('Wallets');
+    expect(wallets).toHaveTextContent('Keys');
     expect(transactions).toHaveTextContent('Transactions');
     expect(settings).toHaveTextContent('Settings');
   });

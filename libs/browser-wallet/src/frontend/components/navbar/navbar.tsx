@@ -53,7 +53,7 @@ export const NavBar = () => {
       <NavButton
         icon={<Wallet className="m-auto" squareFill={'black'} />}
         to={{ pathname: FULL_ROUTES.wallets }}
-        text="Wallets"
+        text="Keys"
       />
       <NavButton
         icon={<LeftRightArrows className="m-auto" />}
