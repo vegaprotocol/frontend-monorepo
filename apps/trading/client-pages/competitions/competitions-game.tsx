@@ -404,6 +404,17 @@ const GameDetails = ({
           <dd className={valueClasses}>{scoreUnit}</dd>
           <dt className={labelClasses}>{t('Scored in')}</dt>
         </div>
+        {dispatchStrategy.targetNotionalVolume && (
+          <div>
+            <dd className={valueClasses}>
+              {addDecimalsFormatNumber(
+                dispatchStrategy.targetNotionalVolume,
+                asset.decimals
+              )}
+            </dd>
+            <dt className={labelClasses}>{t('Reward scaling')}</dt>
+          </div>
+        )}
       </dl>
     </Card>
   );
