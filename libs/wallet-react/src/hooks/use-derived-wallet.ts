@@ -24,10 +24,11 @@ export const useCreateDerivedWallet = (
     mutationKey: ['ethereum.signTypedData', address],
     mutationFn: async () => {
       try {
-        if (!address)
-          {throw new Error(
+        if (!address) {
+          throw new Error(
             'Attempted to create a dervided wallet while not connected'
-          );}
+          );
+        }
         state.store.setState({
           status: 'creating',
         });
