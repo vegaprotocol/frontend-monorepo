@@ -10,6 +10,8 @@ import {
   stagnet,
   mainnet,
   mirror,
+  InBrowserConnector,
+  QuickStartConnector,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 
@@ -23,13 +25,15 @@ export const useVegaWalletConfig = () => {
     VEGA_TOKEN_URL,
     VEGA_CONSOLE_URL,
     ETHERSCAN_URL,
+    CONFIGURED_WALLETS,
     APP_NAME,
   } = useEnvironment();
   return useMemo(() => {
     if (!VEGA_ENV || !API_NODE || !VEGA_WALLET_URL || !APP_NAME) return;
 
     const injected = new InjectedConnector();
-
+    const quickStart = new InBrowserConnector();
+    const inBrowser = new QuickStartConnector();
     const jsonRpc = new JsonRpcConnector({
       url: VEGA_WALLET_URL,
     });
@@ -41,11 +45,18 @@ export const useVegaWalletConfig = () => {
     });
 
     const viewParty = new ViewPartyConnector();
-
+    const filteredConnectors = [
+      quickStart,
+      injected,
+      jsonRpc,
+      viewParty,
+      snap,
+      inBrowser,
+    ].filter((c) => CONFIGURED_WALLETS.includes(c.id));
     const config = createConfig({
       chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: [injected, snap, jsonRpc, viewParty],
+      connectors: filteredConnectors,
       walletConfig: {
         explorer: VEGA_EXPLORER_URL ?? '',
         docs: VEGA_DOCS_URL ?? '',
@@ -68,5 +79,6 @@ export const useVegaWalletConfig = () => {
     VEGA_CONSOLE_URL,
     ETHERSCAN_URL,
     APP_NAME,
+    CONFIGURED_WALLETS,
   ]);
 };
