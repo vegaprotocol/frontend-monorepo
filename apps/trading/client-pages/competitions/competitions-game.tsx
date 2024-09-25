@@ -401,16 +401,19 @@ const GameDetails = ({
             </div>
           </>
         )}
-        <div>
-          <dd className={valueClasses}>{scoreUnit}</dd>
-          <dt className={labelClasses}>{t('Scored in')}</dt>
-        </div>
+        {scoreUnit !== null && (
+          <div>
+            <dd className={valueClasses}>{scoreUnit}</dd>
+            <dt className={labelClasses}>{t('Scored in')}</dt>
+          </div>
+        )}
         {dispatchStrategy.targetNotionalVolume && (
           <div>
             <dd className={valueClasses}>
               {addDecimalsFormatNumber(
                 dispatchStrategy.targetNotionalVolume,
-                asset.decimals
+                asset.decimals,
+                0
               )}
             </dd>
             <dt className={labelClasses}>{t('Reward scaling')}</dt>
@@ -789,6 +792,10 @@ const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
   }
 
   if (metric === DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED) {
+    return asset.symbol;
+  }
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN) {
     return asset.symbol;
   }
 
