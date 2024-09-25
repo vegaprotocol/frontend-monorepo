@@ -8,7 +8,7 @@ import {
   useCurrentPrograms,
 } from '../../lib/hooks/use-current-programs';
 import { Table } from '../../components/table';
-import { cn, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { Button, cn, Intent } from '@vegaprotocol/ui-toolkit';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from '../../components/helpers/tag';
 import { getTierColor, getTierGradient } from '../../components/helpers/tiers';
@@ -325,14 +325,16 @@ const TiersTable = ({
   const [showFactors, setShowFactors] = useState(false);
   return (
     <div className="flex flex-col gap-1">
-      <button
+      <Button
+        size="xs"
+        intent={Intent.None}
         onClick={() => {
           setShowFactors(!showFactors);
         }}
         className="text-surface-0-fg-muted text-xs self-end mr-1"
       >
-        <VegaIcon name={VegaIconNames.BREAKDOWN} />
-      </button>
+        {showFactors ? t('Hide all factors') : t('Show all factors')}
+      </Button>
       <Table
         columns={compact([
           { name: 'tierElement', displayName: t('Tier') },
@@ -344,83 +346,97 @@ const TiersTable = ({
             ),
             className: '',
           },
-          showFactors && {
-            name: 'rewardInfrastructureFactor',
-            displayName: (
-              <span>
-                r<sub>i</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker infrastructure fees to be rewarded to the referrer"
-            ),
-            className: 'text-xs',
-          },
-          showFactors && {
-            name: 'rewardMakerFactor',
-            displayName: (
-              <span>
-                r<sub>m</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker maker fees to be rewarded to the referrer"
-            ),
-            className: 'text-xs',
-          },
-          showFactors && {
-            name: 'rewardLiquidityFactor',
-            displayName: (
-              <span>
-                r<sub>l</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker liquidity fees to be rewarded to the referrer"
-            ),
-            className: 'text-xs',
-          },
+
+          // reward factors:
+          ...(showFactors
+            ? [
+                {
+                  name: 'rewardInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      r<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'rewardMakerFactor',
+                  displayName: (
+                    <span>
+                      r<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'rewardLiquidityFactor',
+                  displayName: (
+                    <span>
+                      r<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
+
           {
             name: 'discount',
             displayName: t('Referee trading discount'),
             tooltip: t("The proportion of the referee's fees to be discounted"),
           },
-          showFactors && {
-            name: 'discountInfrastructureFactor',
-            displayName: (
-              <span>
-                d<sub>i</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker infrastructure fees to be discounted"
-            ),
-            className: 'text-xs',
-          },
-          showFactors && {
-            name: 'discountMakerFactor',
-            displayName: (
-              <span>
-                d<sub>m</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker maker fees to be discounted"
-            ),
-            className: 'text-xs',
-          },
-          showFactors && {
-            name: 'discountLiquidityFactor',
-            displayName: (
-              <span>
-                d<sub>l</sub>
-              </span>
-            ),
-            tooltip: t(
-              "The proportion of the referee's taker liquidity fees to be discounted"
-            ),
-            className: 'text-xs',
-          },
+
+          // discount factors
+          ...(showFactors
+            ? [
+                {
+                  name: 'discountInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      d<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountMakerFactor',
+                  displayName: (
+                    <span>
+                      d<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountLiquidityFactor',
+                  displayName: (
+                    <span>
+                      d<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
+
           {
             name: 'volume',
             displayName: t(
