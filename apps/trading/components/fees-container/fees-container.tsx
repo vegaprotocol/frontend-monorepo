@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import {
   Button,
   Intent,
+  TextChildrenTooltip,
   Tooltip,
   VegaIcon,
   VegaIconNames,
@@ -503,22 +504,31 @@ const TotalDiscount = ({
           <CardTableTD>
             <div className="flex gap-1 justify-end">
               <div>
-                {volumeDiscountFactors?.infrastructureFactor
-                  ? formatPercentage(volumeDiscountFactors.infrastructureFactor)
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('infrastructure factor')}>
+                  {volumeDiscountFactors?.infrastructureFactor
+                    ? formatPercentage(
+                        volumeDiscountFactors.infrastructureFactor,
+                        2
+                      )
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
               <div>
-                {volumeDiscountFactors?.liquidityFactor
-                  ? formatPercentage(volumeDiscountFactors.liquidityFactor)
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('liquidity factor')}>
+                  {volumeDiscountFactors?.liquidityFactor
+                    ? formatPercentage(volumeDiscountFactors.liquidityFactor, 2)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
               <div>
-                {volumeDiscountFactors?.makerFactor
-                  ? formatPercentage(volumeDiscountFactors.makerFactor)
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('maker factor')}>
+                  {volumeDiscountFactors?.makerFactor
+                    ? formatPercentage(volumeDiscountFactors.makerFactor, 2)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
             </div>
             {!isVolumeDiscountProgramRunning && (
@@ -536,24 +546,30 @@ const TotalDiscount = ({
           <CardTableTD>
             <div className="flex gap-1 justify-end">
               <div>
-                {referralDiscountFactors?.infrastructureFactor
-                  ? formatPercentage(
-                      referralDiscountFactors.infrastructureFactor
-                    )
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('infrastructure factor')}>
+                  {referralDiscountFactors?.infrastructureFactor
+                    ? formatPercentage(
+                        referralDiscountFactors.infrastructureFactor
+                      )
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
               <div>
-                {referralDiscountFactors?.liquidityFactor
-                  ? formatPercentage(referralDiscountFactors.liquidityFactor)
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('liquidity factor')}>
+                  {referralDiscountFactors?.liquidityFactor
+                    ? formatPercentage(referralDiscountFactors.liquidityFactor)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
               <div>
-                {referralDiscountFactors?.makerFactor
-                  ? formatPercentage(referralDiscountFactors.makerFactor)
-                  : 0}
-                %
+                <TextChildrenTooltip description={t('maker factor')}>
+                  {referralDiscountFactors?.makerFactor
+                    ? formatPercentage(referralDiscountFactors.makerFactor)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
               </div>
             </div>
             {!isReferralProgramRunning && (

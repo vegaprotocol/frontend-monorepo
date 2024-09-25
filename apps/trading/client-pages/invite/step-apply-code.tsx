@@ -111,6 +111,7 @@ export const StepApplyCode = () => {
                   {t('at least')}{' '}
                   {BigNumber(firstBenefitTier.discountFactor)
                     .times(100)
+                    .toFixed(2)
                     .toString()}
                   %
                 </GradientText>
