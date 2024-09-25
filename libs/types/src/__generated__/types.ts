@@ -1074,6 +1074,8 @@ export type DispatchStrategy = {
   dispatchMetricAssetId: Scalars['ID'];
   /** Controls how the reward is distributed between qualifying parties */
   distributionStrategy: DistributionStrategy;
+  /** A list of party keys that are in scope for the reward */
+  eligibleKeys?: Maybe<Array<Scalars['String']>>;
   /** The type of entities eligible for this strategy */
   entityScope: EntityScope;
   /** If entity scope is individuals then this defines the scope for individuals */
@@ -1090,6 +1092,8 @@ export type DispatchStrategy = {
   rankTable?: Maybe<Array<Maybe<RankTable>>>;
   /** Minimum number of governance tokens, e.g. VEGA, staked for a party to be considered eligible */
   stakingRequirement: Scalars['String'];
+  /** The target notional factor used to scale the amount to be taken from the source account */
+  targetNotionalVolume?: Maybe<Scalars['String']>;
   /** The teams in scope for the reward, if the entity is teams */
   teamScope?: Maybe<Array<Maybe<Scalars['ID']>>>;
   /** Interval for the distribution of the transfer */
@@ -1677,6 +1681,8 @@ export type FundingPayment = {
   amount?: Maybe<Scalars['String']>;
   /** Sequence number of the funding period the funding payment belongs to. */
   fundingPeriodSeq: Scalars['Int'];
+  /** Amount lost due to loss socialisation. */
+  lossAmount?: Maybe<Scalars['String']>;
   /** Market the funding payment applies to. */
   marketId: Scalars['ID'];
   /** Party the funding payment applies to. */
@@ -2607,6 +2613,8 @@ export type Market = {
   __typename?: 'Market';
   /** Get account for a party or market */
   accountsConnection?: Maybe<AccountsConnection>;
+  /** Number of allowed price levels between an AMM's fair price and its quote prices. An AMM definition that exceeds this will be rejected at submission */
+  allowedEmptyAMMLevels: Scalars['Int'];
   /** Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination */
   candlesConnection?: Maybe<CandleDataConnection>;
   /** marketData for the given market */
@@ -3110,6 +3118,8 @@ export type NewFreeform = {
 
 export type NewMarket = {
   __typename?: 'NewMarket';
+  /** Number of allowed price levels between an AMM's fair price and its quote prices. An AMM definition that exceeds this will be rejected at submission */
+  allowedEmptyAMMLevels?: Maybe<Scalars['Int']>;
   /** Decimal places used for the new market, sets the smallest price increment on the book */
   decimalPlaces: Scalars['Int'];
   /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
@@ -4497,8 +4507,20 @@ export type Position = {
   __typename?: 'Position';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
+  /** The total amount in fees paid (liquidity, infrastructure, treasury, buy-back, and high volume maker fees) */
+  feesPaid: Scalars['String'];
+  /** Fees paid since opening the current long/short positions. */
+  feesPaidSince: Scalars['String'];
+  /** The total amount received or paid in funding payments */
+  fundingPaymentAmount: Scalars['String'];
+  /** The amount paid or received in funding payments since opening the current position */
+  fundingPaymentAmountSince: Scalars['String'];
   /** The total amount of profit and loss that was not transferred due to loss socialisation */
   lossSocializationAmount: Scalars['String'];
+  /** The total amount in maker fees received */
+  makerFeesReceived: Scalars['String'];
+  /** Maker fees received since opening the current long/short position. */
+  makerFeesReceivedSince: Scalars['String'];
   /** Margins of the party for the given position */
   marginsConnection?: Maybe<MarginConnection>;
   /** Market relating to this position */
@@ -4511,6 +4533,10 @@ export type Position = {
   positionStatus: PositionStatus;
   /** Realised Profit and Loss (int64) */
   realisedPNL: Scalars['String'];
+  /** The total amount paid in taker fees */
+  takerFeesPaid: Scalars['String'];
+  /** Taker fees paid since opening the current long/short position. Gets reset when opening a position or changing between long and short. */
+  takerFeesPaidSince: Scalars['String'];
   /** Unrealised Profit and Loss (int64) */
   unrealisedPNL: Scalars['String'];
   /** RFC3339Nano time the position was updated */
@@ -4611,6 +4637,7 @@ export type PositionUpdate = {
 
 /** Filter to apply to the positions connection query */
 export type PositionsFilter = {
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketIds?: InputMaybe<Array<Scalars['ID']>>;
   partyIds?: InputMaybe<Array<Scalars['ID']>>;
 };
@@ -5368,6 +5395,7 @@ export type Query = {
 export type QueryammsArgs = {
   ammPartyId?: InputMaybe<Scalars['ID']>;
   id?: InputMaybe<Scalars['ID']>;
+  liveOnly?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
@@ -7580,6 +7608,8 @@ export type UpdateMarket = {
 
 export type UpdateMarketConfiguration = {
   __typename?: 'UpdateMarketConfiguration';
+  /** Number of allowed price levels between an AMM's fair price and its quote prices. An AMM definition that exceeds this will be rejected at submission */
+  allowedEmptyAMMLevels?: Maybe<Scalars['Int']>;
   /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
   enableTxReordering: Scalars['Boolean'];
   /** Updated futures market instrument configuration. */

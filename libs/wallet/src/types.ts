@@ -73,6 +73,7 @@ export type CoreStore = {
   chainId: string;
   status: Status;
   current: ConnectorType | undefined;
+  currentConnector: Connector | undefined;
   keys: Key[];
   error: ConnectorError | undefined;
   jsonRpcToken: string | undefined;
