@@ -49,12 +49,12 @@ jobs:
         run: echo "APP_ENV_FILE=.env.testnet" >> "$GITHUB_ENV"
 
       - name: Build trading app
-        if: ${{ matrix.app == 'trading' }} # Trading app requires a call to `nx export`
+        if: ${{ matrix.app == 'trading' }}
         run: |
-          yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx run export trading --skip-nx-cache
+          NODE_ENV=production yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx run export trading --skip-nx-cache
 
       - name: Build ${{ matrix.app }} app
-        if: ${{ matrix.app != 'trading' }} # Trading app requires a call to `nx export`
+        if: ${{ matrix.app != 'trading' }}
         run: yarn env-cmd -f ./apps/${{ matrix.app }}/$APP_ENV_FILE yarn nx build ${{ matrix.app }}
 
       - name: Deploy ${{ matrix.app }} preview
