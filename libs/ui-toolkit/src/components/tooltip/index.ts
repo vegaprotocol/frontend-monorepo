@@ -1,1 +1,6 @@
-export { TooltipProvider, Tooltip } from './tooltip';
+export {
+  TooltipProvider,
+  Tooltip,
+  TooltipCellComponent,
+  TextChildrenTooltip,
+} from './tooltip';
