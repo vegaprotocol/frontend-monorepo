@@ -236,6 +236,7 @@ export const CompetitionsGame = () => {
                   rankTable={rankTable}
                   teams={teams}
                   distributionStrategy={dispatchStrategy.distributionStrategy}
+                  targetNotionalVolume={dispatchStrategy.targetNotionalVolume}
                 />
               )}
             </TabsContent>
@@ -404,6 +405,17 @@ const GameDetails = ({
           <dd className={valueClasses}>{scoreUnit}</dd>
           <dt className={labelClasses}>{t('Scored in')}</dt>
         </div>
+        {dispatchStrategy.targetNotionalVolume && (
+          <div>
+            <dd className={valueClasses}>
+              {addDecimalsFormatNumber(
+                dispatchStrategy.targetNotionalVolume,
+                asset.decimals
+              )}
+            </dd>
+            <dt className={labelClasses}>{t('Reward scaling')}</dt>
+          </div>
+        )}
       </dl>
     </Card>
   );
@@ -421,6 +433,7 @@ const LiveScoresTable = ({
   rankTable,
   teams,
   rewardAmount,
+  targetNotionalVolume,
 }: {
   currentScores: TeamScoreFieldsFragment[];
   metric: Metric;
@@ -429,6 +442,7 @@ const LiveScoresTable = ({
   rankTable: RankTable[];
   teams: Record<string, TeamsFieldsFragment>;
   rewardAmount: string;
+  targetNotionalVolume?: string | null;
 }) => {
   const t = useT();
 
@@ -543,13 +557,44 @@ const LiveScoresTable = ({
         },
         {
           name: 'estimatedRewards',
-          displayName: t('Estimated reward ({{symbol}})', {
-            symbol: asset.symbol,
-          }),
+          displayName: (
+            <EstimatedRewards
+              asset={asset}
+              targetNotionalVolume={targetNotionalVolume}
+            />
+          ),
         },
       ]}
       data={lastEpochScores}
     />
+  );
+};
+
+const EstimatedRewards = (props: {
+  asset: AssetFieldsFragment;
+  targetNotionalVolume?: string | null;
+}) => {
+  const t = useT();
+  const text = t('Estimated reward ({{symbol}})', {
+    symbol: props.asset.symbol,
+  });
+
+  let warning = null;
+
+  if (props.targetNotionalVolume) {
+    warning = (
+      <Tooltip description={t('Reward scaling is active so rewards may vary')}>
+        <span>
+          <VegaIcon name={VegaIconNames.EXCLAMATION_MARK} size={16} />
+        </span>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <span>
+      {text} {warning}
+    </span>
   );
 };
 

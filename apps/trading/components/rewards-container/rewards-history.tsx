@@ -258,6 +258,11 @@ export const RewardHistoryTable = ({
         cellRenderer: rewardCellRenderer,
       },
       {
+        field: 'eligibleEntities',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
         field: 'total',
         type: 'rightAligned',
         valueFormatter: rewardValueFormatter,

@@ -57,6 +57,7 @@ fragment RecurringTransferFields on RecurringTransfer {
       startRank
       shareRatio
     }
+    targetNotionalVolume
   }
 }
 
