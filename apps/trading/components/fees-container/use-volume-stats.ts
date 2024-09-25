@@ -6,7 +6,7 @@ import {
 } from '../../lib/hooks/use-current-programs';
 import type { FeesQuery } from './__generated__/Fees';
 
-type VolumeStats = {
+export type VolumeStats = {
   /** The current discount factors applied */
   discountFactors: Factors | undefined;
   /** The benefit tier matching the current factors applied */
@@ -15,11 +15,19 @@ type VolumeStats = {
   volume: number;
 };
 
+export type VolumeDiscountStat = NonNullable<
+  FeesQuery['volumeDiscountStats']['edges']['0']
+>['node'];
+
+export const EMPTY: VolumeStats = {
+  discountFactors: undefined,
+  benefitTier: undefined,
+  volume: 0,
+};
+
 export const useVolumeStats = (
   previousEpoch: number,
-  lastEpochStats?: NonNullable<
-    FeesQuery['volumeDiscountStats']['edges']['0']
-  >['node'],
+  lastEpochStats?: VolumeDiscountStat,
   benefitTiers?: VolumeDiscountBenefitTier[]
 ): VolumeStats => {
   if (
@@ -27,11 +35,7 @@ export const useVolumeStats = (
     lastEpochStats.atEpoch !== previousEpoch ||
     !benefitTiers
   ) {
-    return {
-      discountFactors: undefined,
-      benefitTier: undefined,
-      volume: 0,
-    };
+    return EMPTY;
   }
 
   const discountFactors = parseFactors(lastEpochStats.discountFactors);

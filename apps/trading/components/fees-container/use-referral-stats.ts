@@ -7,7 +7,7 @@ import {
 } from '../../lib/hooks/use-current-programs';
 import type { FeesQuery } from './__generated__/Fees';
 
-type ReferralStats = {
+export type ReferralStats = {
   /** The current discount factors applied */
   discountFactors: Factors | undefined;
   /** The current running volume (in program's window) */
@@ -22,17 +22,34 @@ type ReferralStats = {
   isReferrer: boolean;
 };
 
+export type ReferralSetStat = NonNullable<
+  FeesQuery['referralSetStats']['edges']['0']
+>['node'];
+
+export type ReferralSetReferees = NonNullable<
+  FeesQuery['referralSetReferees']['edges']['0']
+>['node'];
+
+export type ReferralSetInfo =
+  | NonNullable<FeesQuery['referrer']['edges']['0']>['node']
+  | NonNullable<FeesQuery['referee']['edges']['0']>['node'];
+
+export const EMPTY: ReferralStats = {
+  discountFactors: undefined,
+  volume: 0,
+  benefitTier: undefined,
+  epochsInSet: 0,
+  code: undefined,
+  isReferrer: false,
+};
+
 export const useReferralStats = (
   previousEpoch?: number,
-  referralStats?: NonNullable<
-    FeesQuery['referralSetStats']['edges']['0']
-  >['node'],
-  setReferees?: NonNullable<
-    FeesQuery['referralSetReferees']['edges']['0']
-  >['node'],
+  referralStats?: ReferralSetStat,
+  setReferees?: ReferralSetReferees,
   program?: ProgramsData['referralProgram'],
-  setIfReferrer?: NonNullable<FeesQuery['referrer']['edges']['0']>['node'],
-  setIfReferee?: NonNullable<FeesQuery['referee']['edges']['0']>['node']
+  setIfReferrer?: ReferralSetInfo,
+  setIfReferee?: ReferralSetInfo
 ): ReferralStats => {
   if (
     !previousEpoch ||
@@ -40,14 +57,7 @@ export const useReferralStats = (
     !program ||
     !setReferees
   ) {
-    return {
-      discountFactors: undefined,
-      volume: 0,
-      benefitTier: undefined,
-      epochsInSet: 0,
-      code: undefined,
-      isReferrer: false,
-    };
+    return EMPTY;
   }
 
   const discountFactors = parseFactors(referralStats.discountFactors);
