@@ -12,7 +12,7 @@ import {
   type VolumeDiscountFieldsFragment,
 } from './__generated__/CurrentPrograms';
 
-type Fees = {
+export type Fees = {
   buybackFee: number;
   infrastructureFee: number;
   liquidityFee: number;
@@ -126,7 +126,7 @@ export const useCurrentPrograms = (): ProgramsData => {
   };
 };
 
-function prepareReferralBenefitTiers(
+export function prepareReferralBenefitTiers(
   program: ReferralProgramFieldsFragment,
   fees: Fees
 ): ReferralBenefitTier[] {
@@ -154,7 +154,7 @@ function prepareReferralBenefitTiers(
   return benefitTiers;
 }
 
-function prepareReferralStakingTiers(
+export function prepareReferralStakingTiers(
   program: ReferralProgramFieldsFragment
 ): ReferralStakingTier[] {
   const stakingTiers = sortBy(program.stakingTiers, (t) =>
@@ -162,14 +162,14 @@ function prepareReferralStakingTiers(
   ).map((t, i) => {
     return {
       tier: i + 1,
-      ...t,
+      ...omit(t, '__typename'),
     };
   });
 
   return stakingTiers;
 }
 
-function prepareVolumeDiscountBenefitTiers(
+export function prepareVolumeDiscountBenefitTiers(
   program: VolumeDiscountFieldsFragment,
   fees: Fees
 ): VolumeDiscountBenefitTier[] {
@@ -220,15 +220,19 @@ function getFees(data: CurrentProgramsQuery | undefined): Fees {
   };
 }
 
-function calcRewardFactor(fees: Fees, factors: Factors) {
-  const MF = BigNumber(fees.makerFee).times(factors.makerFactor);
-  const IF = BigNumber(fees.infrastructureFee).times(
+export function calcRewardFactor(fees: Fees, factors: Factors) {
+  const makerFeePortion = BigNumber(fees.makerFee).times(factors.makerFactor);
+  const infrastructureFeePortion = BigNumber(fees.infrastructureFee).times(
     factors.infrastructureFactor
   );
-  const LF = BigNumber(fees.liquidityFee).times(factors.liquidityFactor);
+  const liquidityFeePortion = BigNumber(fees.liquidityFee).times(
+    factors.liquidityFactor
+  );
 
   // makerFee * makerFactor + infraFee * infraFactor + MAX(liquidityFee) * liquidityFactor
-  const reward = MF.plus(IF).plus(LF);
+  const reward = makerFeePortion
+    .plus(infrastructureFeePortion)
+    .plus(liquidityFeePortion);
 
   const totalFee = BigNumber(fees.makerFee)
     .plus(fees.infrastructureFee)
@@ -242,20 +246,21 @@ function calcRewardFactor(fees: Fees, factors: Factors) {
   return rewardFactor;
 }
 
-function calcDiscountFactor(fees: Fees, factors: Factors) {
-  const MF = BigNumber(fees.makerFee).times(
+export function calcDiscountFactor(fees: Fees, factors: Factors) {
+  const discountedMakerFee = BigNumber(fees.makerFee).times(
     BigNumber(1).minus(factors.makerFactor)
   );
-  const IF = BigNumber(fees.infrastructureFee).times(
+  const discountInfrastructureFee = BigNumber(fees.infrastructureFee).times(
     BigNumber(1).minus(factors.infrastructureFactor)
   );
-  const LF = BigNumber(fees.liquidityFee).times(
+  const discountLiquidityFee = BigNumber(fees.liquidityFee).times(
     BigNumber(1).minus(factors.liquidityFactor)
   );
 
   //  makerFee * (1 - makerDiscount) + infraFee * (1- infraDiscount) + MAX(liquidityFee) * (1- liquidityDiscount) + buybackFee + treasuryFee
-  const discountedFee = MF.plus(IF)
-    .plus(LF)
+  const discountedFee = discountedMakerFee
+    .plus(discountInfrastructureFee)
+    .plus(discountLiquidityFee)
     .plus(fees.buybackFee)
     .plus(fees.treasuryFee);
 
@@ -277,7 +282,6 @@ export function areFactorsEqual(a: Factors, b: Factors) {
   const liqui = a.liquidityFactor === b.liquidityFactor;
   const maker = a.makerFactor === b.makerFactor;
   return infra && liqui && maker;
-  // return isEqual(a, b)
 }
 
 export function parseFactors(data: RawFactors): Factors {
