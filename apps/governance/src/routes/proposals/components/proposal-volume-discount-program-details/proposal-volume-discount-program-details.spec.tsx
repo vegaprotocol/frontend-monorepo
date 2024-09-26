@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProposalVolumeDiscountProgramDetails } from './proposal-volume-discount-program-details';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   useAppState: () => ({
@@ -50,15 +51,23 @@ const mockChange = {
 };
 
 describe('ProposalVolumeDiscountProgramDetails', () => {
+  // eslint-disable-next-line
+  const renderComponent = (props: any) => {
+    return render(
+      <TooltipProvider>
+        <ProposalVolumeDiscountProgramDetails {...props} />
+      </TooltipProvider>
+    );
+  };
   it('should not render if proposal is null', () => {
-    render(<ProposalVolumeDiscountProgramDetails change={null} />);
+    renderComponent({ change: null });
     expect(
       screen.queryByTestId('proposal-volume-discount-program-details')
     ).toBeNull();
   });
 
   it('should render relevant fields if present', () => {
-    render(<ProposalVolumeDiscountProgramDetails change={mockChange} />);
+    renderComponent({ change: mockChange });
     expect(
       screen.getByTestId('proposal-volume-discount-program-window-length')
     ).toBeInTheDocument();

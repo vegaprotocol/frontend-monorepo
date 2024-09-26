@@ -42,7 +42,7 @@ export const formatVolumeDiscountFactor = (value: string) => {
   return formatNumberPercentage(new BigNumber(value).times(100));
 };
 
-interface ProposalReferralProgramDetailsProps {
+export interface ProposalReferralProgramDetailsProps {
   change: IUpdateNetworkParameterFieldsFragment | null;
 }
 

@@ -6,7 +6,9 @@ import {
   formatMinimumStakedTokens,
   formatReferralRewardMultiplier,
   ProposalReferralProgramDetails,
+  type ProposalReferralProgramDetailsProps,
 } from './proposal-referral-program-details';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   useAppState: () => ({
@@ -99,8 +101,15 @@ const mockChange = {
 };
 
 describe('<ProposalReferralProgramDetails />', () => {
+  const renderComponent = (props: ProposalReferralProgramDetailsProps) => {
+    return render(
+      <TooltipProvider>
+        <ProposalReferralProgramDetails {...props} />
+      </TooltipProvider>
+    );
+  };
   it('should not render if proposal is null', () => {
-    render(<ProposalReferralProgramDetails change={null} />);
+    renderComponent({ change: null });
     expect(
       screen.queryByTestId('proposal-referral-program-details')
     ).toBeNull();
@@ -109,14 +118,14 @@ describe('<ProposalReferralProgramDetails />', () => {
   it('should not render if there are no relevant fields', () => {
     const emptyChange = {};
     // @ts-ignore change deliberately empty
-    render(<ProposalReferralProgramDetails change={emptyChange} />);
+    renderComponent({ change: emptyChange });
     expect(
       screen.queryByTestId('proposal-referral-program-details')
     ).toBeNull();
   });
 
   it('should render relevant fields if present', () => {
-    render(<ProposalReferralProgramDetails change={mockChange} />);
+    renderComponent({ change: mockChange });
     expect(
       screen.getByTestId('proposal-referral-program-window-length')
     ).toBeInTheDocument();
