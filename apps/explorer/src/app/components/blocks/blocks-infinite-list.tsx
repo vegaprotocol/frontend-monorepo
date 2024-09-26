@@ -7,7 +7,7 @@ import { BlockData } from './block-data';
 import EmptyList from '../empty-list/empty-list';
 import { Loader } from '@vegaprotocol/ui-toolkit';
 
-interface BlocksInfiniteListProps {
+export interface BlocksInfiniteListProps {
   hasMoreBlocks: boolean;
   areBlocksLoading: boolean | undefined;
   blocks: BlockMeta[] | undefined;

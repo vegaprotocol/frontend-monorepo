@@ -1,10 +1,14 @@
-import { render } from '@testing-library/react';
-import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
+import { screen, render } from '@testing-library/react';
+import {
+  TxDetailsLiquidityAmendment,
+  type TxDetailsLiquidityAmendmentProps,
+} from './tx-liquidity-amend';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { MockExplorerEpochForBlockBlank } from '../../../mocks/links';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../../components/links/');
 jest.mock('../../../components/price-in-market/price-in-market');
@@ -31,60 +35,54 @@ describe('TxDetailsLiquidityAmendment', () => {
     },
   };
 
-  it('should render the component with correct data', () => {
-    const { getByText } = render(
+  const renderComponent = (props: TxDetailsLiquidityAmendmentProps) => {
+    return render(
       <MockedProvider mocks={[MockExplorerEpochForBlockBlank]}>
         <MemoryRouter>
-          <TxDetailsLiquidityAmendment
-            txData={mockTxData as BlockExplorerTransactionResult}
-            pubKey={mockPubKey}
-            blockData={mockBlockData as TendermintBlocksResponse}
-          />
+          <TooltipProvider>
+            <TxDetailsLiquidityAmendment {...props} />
+          </TooltipProvider>
         </MemoryRouter>
       </MockedProvider>
     );
+  };
 
-    expect(getByText('Market')).toBeInTheDocument();
-    expect(getByText('BTC-USD')).toBeInTheDocument();
-    expect(getByText('Commitment amount')).toBeInTheDocument();
-    expect(getByText('100')).toBeInTheDocument();
-    expect(getByText('Fee')).toBeInTheDocument();
-    expect(getByText('1%')).toBeInTheDocument();
+  it('should render the component with correct data', () => {
+    renderComponent({
+      txData: mockTxData as BlockExplorerTransactionResult,
+      pubKey: mockPubKey,
+      blockData: mockBlockData as TendermintBlocksResponse,
+    });
+
+    expect(screen.getByText('Market')).toBeInTheDocument();
+    expect(screen.getByText('BTC-USD')).toBeInTheDocument();
+    expect(screen.getByText('Commitment amount')).toBeInTheDocument();
+    expect(screen.getByText('100')).toBeInTheDocument();
+    expect(screen.getByText('Fee')).toBeInTheDocument();
+    expect(screen.getByText('1%')).toBeInTheDocument();
   });
 
   it('should display awaiting message when tx data is undefined', () => {
-    const { getByText } = render(
-      <MockedProvider>
-        <MemoryRouter>
-          <TxDetailsLiquidityAmendment
-            txData={undefined}
-            pubKey={mockPubKey}
-            blockData={mockBlockData as TendermintBlocksResponse}
-          />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderComponent({
+      txData: undefined,
+      pubKey: mockPubKey,
+      blockData: mockBlockData as TendermintBlocksResponse,
+    });
 
     expect(
-      getByText('Awaiting Block Explorer transaction details')
+      screen.getByText('Awaiting Block Explorer transaction details')
     ).toBeInTheDocument();
   });
 
   it('should display awaiting message when liquidityProvisionAmendment is undefined', () => {
-    const { getByText } = render(
-      <MockedProvider>
-        <MemoryRouter>
-          <TxDetailsLiquidityAmendment
-            txData={{ command: {} } as BlockExplorerTransactionResult}
-            pubKey={mockPubKey}
-            blockData={mockBlockData as TendermintBlocksResponse}
-          />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    renderComponent({
+      txData: { command: {} } as BlockExplorerTransactionResult,
+      pubKey: mockPubKey,
+      blockData: mockBlockData as TendermintBlocksResponse,
+    });
 
     expect(
-      getByText('Awaiting Block Explorer transaction details')
+      screen.getByText('Awaiting Block Explorer transaction details')
     ).toBeInTheDocument();
   });
 });

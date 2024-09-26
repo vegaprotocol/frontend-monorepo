@@ -1,5 +1,9 @@
-import { BlocksInfiniteList } from './blocks-infinite-list';
+import {
+  BlocksInfiniteList,
+  type BlocksInfiniteListProps,
+} from './blocks-infinite-list';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 import { MemoryRouter } from 'react-router-dom';
 
 const generateBlocks = (number: number) => {
@@ -49,31 +53,36 @@ const generateBlocks = (number: number) => {
 };
 
 describe('Blocks infinite list', () => {
-  it('should display a "no items" message when no items provided', () => {
-    render(
-      <BlocksInfiniteList
-        blocks={undefined}
-        areBlocksLoading={false}
-        hasMoreBlocks={false}
-        loadMoreBlocks={() => null}
-        error={undefined}
-      />
+  const renderComponent = (props: BlocksInfiniteListProps) => {
+    return render(
+      <MemoryRouter>
+        <TooltipProvider>
+          <BlocksInfiniteList {...props} />
+        </TooltipProvider>
+      </MemoryRouter>
     );
+  };
+  it('should display a "no items" message when no items provided', () => {
+    renderComponent({
+      blocks: undefined,
+      areBlocksLoading: false,
+      hasMoreBlocks: false,
+      loadMoreBlocks: () => null,
+      error: undefined,
+    });
     expect(screen.getByTestId('emptylist')).toBeInTheDocument();
     expect(screen.getByText('This chain has 0 blocks')).toBeInTheDocument();
   });
 
   it('error is displayed at item level', () => {
     const blocks = generateBlocks(1);
-    render(
-      <BlocksInfiniteList
-        blocks={blocks}
-        areBlocksLoading={false}
-        hasMoreBlocks={false}
-        loadMoreBlocks={() => null}
-        error={Error('test error!')}
-      />
-    );
+    renderComponent({
+      blocks,
+      areBlocksLoading: false,
+      hasMoreBlocks: false,
+      loadMoreBlocks: () => null,
+      error: new Error('test error!'),
+    });
     expect(screen.getByText('Error: test error!')).toBeInTheDocument();
   });
 
@@ -81,17 +90,13 @@ describe('Blocks infinite list', () => {
     // Provided the number of items doesn't exceed the 20 it initially
     // desires, all blocks will initially render
     const blocks = generateBlocks(10);
-    render(
-      <MemoryRouter>
-        <BlocksInfiniteList
-          blocks={blocks}
-          areBlocksLoading={false}
-          hasMoreBlocks={false}
-          loadMoreBlocks={() => null}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
+    renderComponent({
+      blocks,
+      areBlocksLoading: false,
+      hasMoreBlocks: false,
+      loadMoreBlocks: () => null,
+      error: undefined,
+    });
 
     expect(
       screen
@@ -105,18 +110,13 @@ describe('Blocks infinite list', () => {
     // in view of the viewport, and the callback should be executed
     const blocks = generateBlocks(15);
     const callback = jest.fn();
-
-    render(
-      <MemoryRouter>
-        <BlocksInfiniteList
-          blocks={blocks}
-          areBlocksLoading={false}
-          hasMoreBlocks={true}
-          loadMoreBlocks={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
+    renderComponent({
+      blocks,
+      areBlocksLoading: false,
+      hasMoreBlocks: true,
+      loadMoreBlocks: callback,
+      error: undefined,
+    });
 
     expect(callback.mock.calls.length).toEqual(1);
   });
@@ -125,17 +125,13 @@ describe('Blocks infinite list', () => {
     const blocks = generateBlocks(3);
     const callback = jest.fn();
 
-    render(
-      <MemoryRouter>
-        <BlocksInfiniteList
-          blocks={blocks}
-          areBlocksLoading={false}
-          hasMoreBlocks={false}
-          loadMoreBlocks={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
+    renderComponent({
+      blocks,
+      areBlocksLoading: false,
+      hasMoreBlocks: false,
+      loadMoreBlocks: callback,
+      error: undefined,
+    });
 
     expect(callback.mock.calls.length).toEqual(0);
   });
@@ -144,17 +140,13 @@ describe('Blocks infinite list', () => {
     const blocks = generateBlocks(20);
     const callback = jest.fn();
 
-    render(
-      <MemoryRouter>
-        <BlocksInfiniteList
-          blocks={blocks}
-          areBlocksLoading={false}
-          hasMoreBlocks={true}
-          loadMoreBlocks={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
+    renderComponent({
+      blocks,
+      areBlocksLoading: false,
+      hasMoreBlocks: true,
+      loadMoreBlocks: callback,
+      error: undefined,
+    });
 
     act(() => {
       fireEvent.scroll(screen.getByTestId('infinite-scroll-wrapper'), {

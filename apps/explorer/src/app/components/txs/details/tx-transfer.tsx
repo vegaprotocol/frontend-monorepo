@@ -17,7 +17,7 @@ import Hash from '../../links/hash';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
-interface TxDetailsNodeAnnounceProps {
+export interface TxDetailsNodeAnnounceProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
