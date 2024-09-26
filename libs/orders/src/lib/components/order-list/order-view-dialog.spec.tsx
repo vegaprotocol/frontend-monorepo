@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { OrderViewDialog, type OrderViewDialogProps } from './order-view-dialog';
+import {
+  OrderViewDialog,
+  type OrderViewDialogProps,
+} from './order-view-dialog';
 import type { Order } from '../order-data-provider';
 import { BrowserRouter } from 'react-router-dom';
 import {
