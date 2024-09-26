@@ -25,6 +25,7 @@ import {
   mockConfig,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const mockKeys = [
   {
@@ -314,7 +315,9 @@ describe('ReferralStatistics', () => {
       <MemoryRouter>
         <MockedProvider mocks={mocks} showWarnings={false}>
           <MockedWalletProvider>
-            <ReferralStatistics />
+            <TooltipProvider>
+              <ReferralStatistics />
+            </TooltipProvider>
           </MockedWalletProvider>
         </MockedProvider>
       </MemoryRouter>

@@ -7,6 +7,7 @@ import {
   NodeCheckDocument,
   type NodeCheckQuery,
 } from '@vegaprotocol/environment';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const mockSetNodeSwitcher = jest.fn();
 
@@ -53,7 +54,9 @@ describe('NodeHealthContainer', () => {
     return render(
       <MemoryRouter>
         <MockedProvider mocks={mocks}>
-          <NodeHealthContainer />
+          <TooltipProvider>
+            <NodeHealthContainer />
+          </TooltipProvider>
         </MockedProvider>
       </MemoryRouter>
     );

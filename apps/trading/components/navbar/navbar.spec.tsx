@@ -14,6 +14,7 @@ import {
   type PartyProfilesQuery,
   type PartyProfilesQueryVariables,
 } from '../../lib/hooks/__generated__/PartyProfiles';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -75,7 +76,9 @@ describe('Navbar', () => {
       <MemoryRouter initialEntries={initialEntries}>
         <MockedProvider mocks={[partyProfilesMock]}>
           <MockedWalletProvider>
-            <Navbar />
+            <TooltipProvider>
+              <Navbar />
+            </TooltipProvider>
           </MockedWalletProvider>
         </MockedProvider>
       </MemoryRouter>
