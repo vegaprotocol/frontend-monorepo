@@ -4,6 +4,7 @@ import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 
 import { locators as decimalTooltipLocators } from './decimal-tooltip';
 import { locators, PriceWithTooltip } from './price-with-tooltip';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const renderComponent = ({
   marketId,
@@ -14,7 +15,9 @@ const renderComponent = ({
 }) =>
   render(
     <MockNetworkProvider>
-      <PriceWithTooltip marketId={marketId} price={price} />
+      <TooltipProvider>
+        <PriceWithTooltip marketId={marketId} price={price} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 

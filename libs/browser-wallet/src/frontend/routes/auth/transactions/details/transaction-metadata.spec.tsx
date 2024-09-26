@@ -8,6 +8,7 @@ import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../config/well-known-networks';
 import { locators, TransactionMetadata } from './transaction-metadata';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../transactions-state', () => ({
   VegaTransactionState: () => <div data-testid="transaction-state" />,
@@ -17,7 +18,9 @@ const renderComponent = (transaction: StoredTransaction) => {
   render(
     <MemoryRouter>
       <MockNetworkProvider>
-        <TransactionMetadata transaction={transaction} />
+        <TooltipProvider>
+          <TransactionMetadata transaction={transaction} />
+        </TooltipProvider>
       </MockNetworkProvider>
     </MemoryRouter>
   );

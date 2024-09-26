@@ -5,6 +5,7 @@ import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 
 import { locators as tableLocators } from '../../../data-table';
 import { locators, StopOrderSubmission } from './submission';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../utils/order-table', () => ({
   OrderTable: () => <div data-testid="order-table" />,
@@ -37,7 +38,9 @@ const validateStopOrderDetails = (type: string) => {
 const renderComponent = ({ transaction }: { transaction: any }) =>
   render(
     <MockNetworkProvider>
-      <StopOrderSubmission transaction={transaction} />
+      <TooltipProvider>
+        <StopOrderSubmission transaction={transaction} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 
