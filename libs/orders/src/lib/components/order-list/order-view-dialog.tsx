@@ -20,7 +20,7 @@ import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
 
-interface OrderViewDialogProps {
+export interface OrderViewDialogProps {
   isOpen: boolean;
   order: Order;
   onChange: (open: boolean) => void;

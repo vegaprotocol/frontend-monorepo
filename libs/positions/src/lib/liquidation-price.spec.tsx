@@ -7,6 +7,7 @@ import type { EstimatePositionQuery } from './__generated__/Positions';
 import { LiquidationPrice } from './liquidation-price';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { MarginMode } from '@vegaprotocol/types';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('LiquidationPrice', () => {
   const variables = {
@@ -54,7 +55,9 @@ describe('LiquidationPrice', () => {
   it('correctly formats best and worst case values for the tooltip', async () => {
     render(
       <MockedProvider mocks={[mock]}>
-        <LiquidationPrice {...props} />
+        <TooltipProvider>
+          <LiquidationPrice {...props} />
+        </TooltipProvider>
       </MockedProvider>
     );
 

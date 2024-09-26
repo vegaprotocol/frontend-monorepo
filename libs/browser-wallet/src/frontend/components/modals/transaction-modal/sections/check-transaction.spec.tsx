@@ -5,6 +5,7 @@ import { useInteractionStore } from '@/stores/interaction-store';
 import { mockStore } from '@/test-helpers/mock-store';
 
 import { CheckTransaction, locators } from './check-transaction';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@/stores/interaction-store');
 jest.mock('@/hooks/async-action');
@@ -19,7 +20,13 @@ const renderComponent = () => {
   const checkTransaction = jest.fn();
   mockStore(useInteractionStore, { checkTransaction });
   const view = render(
-    <CheckTransaction publicKey="publicKey" origin="origin" transaction={{}} />
+    <TooltipProvider>
+      <CheckTransaction
+        publicKey="publicKey"
+        origin="origin"
+        transaction={{}}
+      />
+    </TooltipProvider>
   );
   return {
     view,

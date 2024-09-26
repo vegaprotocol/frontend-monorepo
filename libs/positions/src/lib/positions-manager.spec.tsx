@@ -9,6 +9,7 @@ import {
   mockConfig,
 } from '@vegaprotocol/wallet-react/testing';
 import userEvent from '@testing-library/user-event';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const key = {
   publicKey: '123',
@@ -51,7 +52,9 @@ describe('PositionsManager', () => {
     render(
       <MockedProvider>
         <MockedWalletProvider>
-          <PositionsManager partyIds={['partyId']} isReadOnly={false} />
+          <TooltipProvider>
+            <PositionsManager partyIds={['partyId']} isReadOnly={false} />
+          </TooltipProvider>
         </MockedWalletProvider>
       </MockedProvider>
     );

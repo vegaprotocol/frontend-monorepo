@@ -5,6 +5,7 @@ import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { fairground } from '../../../../../config/well-known-networks';
 import { AmountWithTooltip, locators } from './amount-with-tooltip';
 import { locators as decimalTooltipLocators } from './decimal-tooltip';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const renderComponent = ({
   assetId,
@@ -15,7 +16,9 @@ const renderComponent = ({
 }) =>
   render(
     <MockNetworkProvider>
-      <AmountWithTooltip assetId={assetId} amount={amount} />
+      <TooltipProvider>
+        <AmountWithTooltip assetId={assetId} amount={amount} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 

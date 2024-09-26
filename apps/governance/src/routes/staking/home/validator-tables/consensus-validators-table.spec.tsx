@@ -12,6 +12,7 @@ import type { PartialDeep } from 'type-fest';
 import type { NodesFragmentFragment } from '../__generated__/Nodes';
 import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
 import type { ValidatorsView } from './validator-tables';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const nodeFactory = (
   overrides?: PartialDeep<NodesFragmentFragment>
@@ -189,12 +190,14 @@ const renderValidatorsTable = (
     <AppStateProvider initialState={{ decimals: 18 }}>
       <MemoryRouter>
         <MockedProvider mocks={[nodesDataMock, previousEpochMock]}>
-          <ConsensusValidatorsTable
-            data={data}
-            previousEpochData={previousEpochData}
-            totalStake={MOCK_TOTAL_STAKE}
-            validatorsView={validatorsView}
-          />
+          <TooltipProvider>
+            <ConsensusValidatorsTable
+              data={data}
+              previousEpochData={previousEpochData}
+              totalStake={MOCK_TOTAL_STAKE}
+              validatorsView={validatorsView}
+            />
+          </TooltipProvider>
         </MockedProvider>
       </MemoryRouter>
     </AppStateProvider>

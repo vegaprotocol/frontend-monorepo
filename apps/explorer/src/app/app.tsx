@@ -9,7 +9,7 @@ import {
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
-import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { Loader, Splash, TooltipProvider } from '@vegaprotocol/ui-toolkit';
 import { DEFAULT_CACHE_CONFIG } from '@vegaprotocol/apollo-client';
 import { RouterProvider } from 'react-router-dom';
 import { useRouterConfig } from './routes/router-config';
@@ -31,27 +31,29 @@ function App() {
   return (
     <TendermintWebsocketProvider>
       <Suspense fallback={splashLoading}>
-        <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
-          <NodeGuard
-            skeleton={<div>{t('Loading')}</div>}
-            failure={
-              <NodeFailure
-                title={t(`Node: ${API_NODE?.graphQLApiUrl} is unsuitable`)}
-              />
-            }
-          >
-            <Suspense fallback={splashLoading}>
-              <RouterProvider
-                router={createBrowserRouter(useRouterConfig())}
-                fallbackElement={splashLoading}
-              />
-            </Suspense>
-          </NodeGuard>
-          <NodeSwitcherDialog
-            open={nodeSwitcherOpen}
-            setOpen={setNodeSwitcherOpen}
-          />
-        </NetworkLoader>
+        <TooltipProvider>
+          <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
+            <NodeGuard
+              skeleton={<div>{t('Loading')}</div>}
+              failure={
+                <NodeFailure
+                  title={t(`Node: ${API_NODE?.graphQLApiUrl} is unsuitable`)}
+                />
+              }
+            >
+              <Suspense fallback={splashLoading}>
+                <RouterProvider
+                  router={createBrowserRouter(useRouterConfig())}
+                  fallbackElement={splashLoading}
+                />
+              </Suspense>
+            </NodeGuard>
+            <NodeSwitcherDialog
+              open={nodeSwitcherOpen}
+              setOpen={setNodeSwitcherOpen}
+            />
+          </NetworkLoader>
+        </TooltipProvider>
       </Suspense>
     </TendermintWebsocketProvider>
   );

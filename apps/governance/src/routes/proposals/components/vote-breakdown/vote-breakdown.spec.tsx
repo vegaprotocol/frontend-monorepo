@@ -17,6 +17,7 @@ import { type AppState } from '../../../../contexts/app-state/app-state-context'
 import { type Proposal } from '../../types';
 import { type ProposalNode } from '../proposal/proposal-utils';
 import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const mockTotalSupply = new BigNumber(100);
 // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
@@ -55,7 +56,9 @@ const renderComponent = (
   render(
     <Router>
       <MockedProvider mocks={mocks}>
-        <VoteBreakdown proposal={proposal} restData={mockProposal} />
+        <TooltipProvider>
+          <VoteBreakdown proposal={proposal} restData={mockProposal} />
+        </TooltipProvider>
       </MockedProvider>
     </Router>
   );

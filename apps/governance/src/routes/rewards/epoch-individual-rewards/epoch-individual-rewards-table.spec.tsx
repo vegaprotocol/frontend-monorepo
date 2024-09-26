@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { useWallet } from '@vegaprotocol/wallet-react';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 jest.mock('@vegaprotocol/wallet-react');
 
 const mockData = {
@@ -49,12 +50,14 @@ describe('EpochIndividualRewardsTable', () => {
   });
   it('should render correctly', () => {
     const { getByTestId } = render(
-      <AppStateProvider>
-        <EpochIndividualRewardsTable
-          data={mockData}
-          marketCreationQuantumMultiple={'1000'}
-        />
-      </AppStateProvider>
+      <TooltipProvider>
+        <AppStateProvider>
+          <EpochIndividualRewardsTable
+            data={mockData}
+            marketCreationQuantumMultiple={'1000'}
+          />
+        </AppStateProvider>
+      </TooltipProvider>
     );
     expect(getByTestId('epoch-individual-rewards-table')).toBeInTheDocument();
     expect(getByTestId('individual-rewards-asset')).toBeInTheDocument();

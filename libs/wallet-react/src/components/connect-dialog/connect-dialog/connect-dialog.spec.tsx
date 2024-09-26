@@ -12,6 +12,7 @@ import {
 } from '@vegaprotocol/wallet';
 import { MockedWalletProvider } from '../../../testing';
 import { ConnectDialog, DIALOG_CLOSE_DELAY } from './connect-dialog';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('ConnectDialog', () => {
   const defaultProps = {
@@ -47,7 +48,9 @@ describe('ConnectDialog', () => {
       user: userEvent.setup(),
       ...render(
         <MockedWalletProvider config={config}>
-          <ConnectDialog {...defaultProps} {...props} />
+          <TooltipProvider>
+            <ConnectDialog {...defaultProps} {...props} />
+          </TooltipProvider>
         </MockedWalletProvider>
       ),
     };

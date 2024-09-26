@@ -37,7 +37,7 @@ const defaultColDef = {
   sortable: true,
 };
 
-export type Props = (AgGridReactProps | AgReactUiProps) & {
+export type FundingPaymentsTableProps = (AgGridReactProps | AgReactUiProps) & {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   fundingRate?: string | null;
 };
@@ -56,109 +56,110 @@ const formatAmount = ({
   return `${valueFormatted} ${assetSymbol}`;
 };
 
-export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
-  ({ onMarketClick, ...props }, ref) => {
-    const t = useT();
-    const columnDefs = useMemo<ColDef[]>(
-      () => [
-        {
-          headerName: t('Market'),
-          field: 'market.tradableInstrument.instrument.code',
-          cellRenderer: 'MarketNameCell',
-          filter: true,
-          cellRendererParams: { idPath: 'market.id', onMarketClick },
-        },
-        {
-          headerName: t('Amount'),
-          field: 'amount',
-          valueFormatter: formatAmount,
-          type: 'rightAligned',
-          filter: 'agNumberColumnFilter',
-          valueGetter: ({ data }: VegaValueGetterParams<FundingPayment>) =>
-            data?.amount && data?.market
-              ? toBigNum(data.amount, getAsset(data.market).decimals).toNumber()
-              : 0,
-          cellRenderer: ({ data }: { data: FundingPayment }) => {
-            const tooltip = () => {
-              const positive = !data?.amount?.startsWith('-');
-              const negative = !!data?.amount?.startsWith('-');
-              const fundingRateValue = props.fundingRate
-                ? `${(Number(props.fundingRate) * 100).toFixed(4)}%`
-                : '-';
-              if (positive) {
-                return t(
-                  `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, longs will pay shorts at a rate of {{fundingRate}}.`,
-                  {
-                    fundingRate: fundingRateValue,
-                  }
-                );
-              }
-              if (negative) {
-                return t(
-                  `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, shorts will pay longs at a rate of {{fundingRate}}.`,
-                  {
-                    fundingRate: fundingRateValue,
-                  }
-                );
-              }
-              return null;
-            };
-
-            if (!data?.market || !isNumeric(data.amount)) {
-              return '-';
+export const FundingPaymentsTable = forwardRef<
+  AgGridReact,
+  FundingPaymentsTableProps
+>(({ onMarketClick, ...props }, ref) => {
+  const t = useT();
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      {
+        headerName: t('Market'),
+        field: 'market.tradableInstrument.instrument.code',
+        cellRenderer: 'MarketNameCell',
+        filter: true,
+        cellRendererParams: { idPath: 'market.id', onMarketClick },
+      },
+      {
+        headerName: t('Amount'),
+        field: 'amount',
+        valueFormatter: formatAmount,
+        type: 'rightAligned',
+        filter: 'agNumberColumnFilter',
+        valueGetter: ({ data }: VegaValueGetterParams<FundingPayment>) =>
+          data?.amount && data?.market
+            ? toBigNum(data.amount, getAsset(data.market).decimals).toNumber()
+            : 0,
+        cellRenderer: ({ data }: { data: FundingPayment }) => {
+          const tooltip = () => {
+            const positive = !data?.amount?.startsWith('-');
+            const negative = !!data?.amount?.startsWith('-');
+            const fundingRateValue = props.fundingRate
+              ? `${(Number(props.fundingRate) * 100).toFixed(4)}%`
+              : '-';
+            if (positive) {
+              return t(
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, longs will pay shorts at a rate of {{fundingRate}}.`,
+                {
+                  fundingRate: fundingRateValue,
+                }
+              );
             }
-            const { symbol: assetSymbol, decimals: assetDecimals } = getAsset(
-              data.market
-            );
-            const valueFormatted = addDecimalsFormatNumber(
-              data.amount,
-              assetDecimals
-            );
-            return (
-              <Tooltip description={<span>{tooltip()}</span>}>
-                <span>
-                  <span
-                    className={cn({
-                      [positiveClassNames]: !data?.amount?.startsWith('-'),
-                      [negativeClassNames]: !!data?.amount?.startsWith('-'),
-                    })}
-                  >
-                    {valueFormatted}
-                  </span>
-                  {` ${assetSymbol}`}
+            if (negative) {
+              return t(
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, shorts will pay longs at a rate of {{fundingRate}}.`,
+                {
+                  fundingRate: fundingRateValue,
+                }
+              );
+            }
+            return null;
+          };
+
+          if (!data?.market || !isNumeric(data.amount)) {
+            return '-';
+          }
+          const { symbol: assetSymbol, decimals: assetDecimals } = getAsset(
+            data.market
+          );
+          const valueFormatted = addDecimalsFormatNumber(
+            data.amount,
+            assetDecimals
+          );
+          return (
+            <Tooltip description={<span>{tooltip()}</span>}>
+              <span>
+                <span
+                  className={cn({
+                    [positiveClassNames]: !data?.amount?.startsWith('-'),
+                    [negativeClassNames]: !!data?.amount?.startsWith('-'),
+                  })}
+                >
+                  {valueFormatted}
                 </span>
-              </Tooltip>
-            );
-          },
+                {` ${assetSymbol}`}
+              </span>
+            </Tooltip>
+          );
         },
-        {
-          headerName: t('Date'),
-          field: 'timestamp',
-          type: 'rightAligned',
-          filter: DateRangeFilter,
-          valueFormatter: ({
-            value,
-          }: VegaValueFormatterParams<FundingPayment, 'timestamp'>) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : '';
-          },
+      },
+      {
+        headerName: t('Date'),
+        field: 'timestamp',
+        type: 'rightAligned',
+        filter: DateRangeFilter,
+        valueFormatter: ({
+          value,
+        }: VegaValueFormatterParams<FundingPayment, 'timestamp'>) => {
+          return value ? getDateTimeFormat().format(new Date(value)) : '';
         },
-      ],
-      [onMarketClick, props.fundingRate, t]
-    );
-    return (
-      <AgGrid
-        ref={ref}
-        defaultColDef={defaultColDef}
-        columnDefs={columnDefs}
-        overlayNoRowsTemplate={t('No funding payments')}
-        getRowId={({ data }: { data?: FundingPayment }) =>
-          `${data?.marketId}-${data?.fundingPeriodSeq}`
-        }
-        components={{ MarketNameCell }}
-        tooltipShowDelay={0}
-        tooltipHideDelay={10000}
-        {...props}
-      />
-    );
-  }
-);
+      },
+    ],
+    [onMarketClick, props.fundingRate, t]
+  );
+  return (
+    <AgGrid
+      ref={ref}
+      defaultColDef={defaultColDef}
+      columnDefs={columnDefs}
+      overlayNoRowsTemplate={t('No funding payments')}
+      getRowId={({ data }: { data?: FundingPayment }) =>
+        `${data?.marketId}-${data?.fundingPeriodSeq}`
+      }
+      components={{ MarketNameCell }}
+      tooltipShowDelay={0}
+      tooltipHideDelay={10000}
+      {...props}
+    />
+  );
+});

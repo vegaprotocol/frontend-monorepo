@@ -12,6 +12,7 @@ import {
   lastMonth,
   nextMonth,
 } from '../../test-helpers/mocks';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../vote-details/use-user-vote', () => ({
   useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
@@ -64,9 +65,11 @@ const failedProposalClosedLastMonth = generateProposal({
 const renderComponent = (proposals: Proposals) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
-      <AppStateProvider>
-        <ProposalsList proposals={proposals} />
-      </AppStateProvider>
+      <TooltipProvider>
+        <AppStateProvider>
+          <ProposalsList proposals={proposals} />
+        </AppStateProvider>
+      </TooltipProvider>
     </MockedProvider>
   </Router>
 );

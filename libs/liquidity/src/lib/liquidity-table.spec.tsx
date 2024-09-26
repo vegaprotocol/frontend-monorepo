@@ -1,8 +1,9 @@
-import LiquidityTable from './liquidity-table';
-import { act, render, screen, within } from '@testing-library/react';
+import { LiquidityTable, type LiquidityTableProps } from './liquidity-table';
+import { render, screen, within } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 import userEvent from '@testing-library/user-event';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const partyId1 = 'party1';
 const partyId2 = 'party2';
@@ -57,24 +58,33 @@ const singleRowData = [singleRow];
 const multiRowData = [singleRow, multiRow];
 
 describe('LiquidityTable', () => {
+  const renderComponent = async (props: LiquidityTableProps) => {
+    const result = render(
+      <TooltipProvider>
+        <LiquidityTable {...props} />
+      </TooltipProvider>
+    );
+    // Wait for AgGrid to render
+    expect((await screen.findAllByRole('row')).length).toBeGreaterThan(0);
+    return result;
+  };
+
   it('should render successfully', async () => {
-    await act(async () => {
-      const { baseElement } = render(
-        <LiquidityTable rowData={[]} stakeToCcyVolume={'1'} />
-      );
-      // 5002-LIQP-002
-      // 5002-LIQP-004
-      // 5002-LIQP-005
-      // 5002-LIQP-011
-      expect(baseElement).toBeTruthy();
+    const { baseElement } = await renderComponent({
+      rowData: [],
+      stakeToCcyVolume: '1',
     });
+    // 5002-LIQP-002
+    // 5002-LIQP-004
+    // 5002-LIQP-005
+    // 5002-LIQP-011
+    expect(baseElement).toBeTruthy();
   });
 
   it('should render correct columns', async () => {
-    await act(async () => {
-      render(
-        <LiquidityTable rowData={singleRowData} stakeToCcyVolume={'0.3'} />
-      );
+    await renderComponent({
+      rowData: singleRowData,
+      stakeToCcyVolume: '0.3',
     });
 
     const headers = await screen.findAllByRole('columnheader');
@@ -106,11 +116,7 @@ describe('LiquidityTable', () => {
   });
 
   it('should be able to sort', async () => {
-    await act(async () => {
-      render(
-        <LiquidityTable rowData={multiRowData} stakeToCcyVolume={'0.3'} />
-      );
-    });
+    await renderComponent({ rowData: multiRowData, stakeToCcyVolume: '0.3' });
     const headers = await screen.findAllByRole('columnheader');
 
     const commitmentHeader = headers.find(

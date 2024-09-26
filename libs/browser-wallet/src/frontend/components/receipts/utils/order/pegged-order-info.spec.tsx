@@ -9,6 +9,7 @@ import { type DeepPartial, mockStore } from '@/test-helpers/mock-store';
 import { locators as amountWithSymbolLocators } from '../string-amounts/amount-with-symbol';
 import { locators as priceWithTooltipLocators } from '../string-amounts/price-with-tooltip';
 import { PeggedOrderInfo } from './pegged-order-info';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@/stores/assets-store');
 jest.mock('@/stores/markets-store');
@@ -43,7 +44,9 @@ const renderComponent = ({
 }) =>
   render(
     <MockNetworkProvider>
-      <PeggedOrderInfo peggedOrder={peggedOrder} marketId={marketId} />
+      <TooltipProvider>
+        <PeggedOrderInfo peggedOrder={peggedOrder} marketId={marketId} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 

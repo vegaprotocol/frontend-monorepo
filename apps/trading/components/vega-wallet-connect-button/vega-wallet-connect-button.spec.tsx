@@ -11,6 +11,7 @@ import {
   PartyProfilesDocument,
   type PartyProfilesQuery,
 } from '../../lib/hooks/__generated__/PartyProfiles';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const key = { publicKey: '123456__123456', name: 'test' };
 const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
@@ -47,7 +48,9 @@ const renderComponent = (mockOnClick = jest.fn()) => {
     <MemoryRouter>
       <MockedProvider mocks={[partyProfilesMock]}>
         <MockedWalletProvider>
-          <VegaWalletConnectButton onClick={mockOnClick} />
+          <TooltipProvider>
+            <VegaWalletConnectButton onClick={mockOnClick} />
+          </TooltipProvider>
         </MockedWalletProvider>
       </MockedProvider>
     </MemoryRouter>

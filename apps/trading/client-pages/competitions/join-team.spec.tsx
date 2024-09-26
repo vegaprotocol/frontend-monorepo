@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { JoinButton } from './join-team';
+import { JoinButton, type JoinButtonProps } from './join-team';
 import { type Team } from '../../lib/hooks/use-team';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('JoinButton', () => {
   const teamA = {
@@ -28,8 +29,16 @@ describe('JoinButton', () => {
     props.onJoin.mockClear();
   });
 
+  const renderComponent = (props: JoinButtonProps) => {
+    return render(
+      <TooltipProvider>
+        <JoinButton {...props} />
+      </TooltipProvider>
+    );
+  };
+
   it('disables button if not connected', async () => {
-    render(<JoinButton {...props} pubKey={undefined} />);
+    renderComponent({ ...props, pubKey: undefined });
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
     await userEvent.hover(button);
@@ -38,21 +47,19 @@ describe('JoinButton', () => {
   });
 
   it('disables button if you created the current team', () => {
-    render(
-      <JoinButton
-        {...props}
-        pubKey={teamA.referrer}
-        team={teamA}
-        partyTeam={teamA}
-      />
-    );
+    renderComponent({
+      ...props,
+      pubKey: teamA.referrer,
+      team: teamA,
+      partyTeam: teamA,
+    });
 
     const button = screen.getByRole('button', { name: /Owner/ });
     expect(button).toBeDisabled();
   });
 
   it('disables button if you created a team', async () => {
-    render(<JoinButton {...props} pubKey={teamB.referrer} />);
+    renderComponent({ ...props, pubKey: teamB.referrer });
 
     const button = screen.getByRole('button', { name: /Switch team/ });
     expect(button).toBeDisabled();
@@ -62,14 +69,14 @@ describe('JoinButton', () => {
   });
 
   it('shows if party is already in team', async () => {
-    render(<JoinButton {...props} team={teamA} partyTeam={teamA} />);
+    renderComponent({ ...props, team: teamA, partyTeam: teamA });
 
     const button = screen.getByRole('button', { name: /Joined/ });
     expect(button).toBeDisabled();
   });
 
   it('enables switch team if party is in a different team', async () => {
-    render(<JoinButton {...props} />);
+    renderComponent(props);
 
     const button = screen.getByRole('button', { name: /Switch team/ });
     expect(button).toBeEnabled();
@@ -78,7 +85,7 @@ describe('JoinButton', () => {
   });
 
   it('enables join team if party is not in a team', async () => {
-    render(<JoinButton {...props} partyTeam={undefined} />);
+    renderComponent({ ...props, partyTeam: undefined });
 
     const button = screen.getByRole('button', { name: /Join team/ });
     expect(button).toBeEnabled();

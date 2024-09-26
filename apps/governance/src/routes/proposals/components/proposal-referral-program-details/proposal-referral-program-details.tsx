@@ -15,7 +15,7 @@ import BigNumber from 'bignumber.js';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { type UpdateReferralProgramsFragment } from '../../__generated__/Proposals';
 
-interface ProposalReferralProgramDetailsProps {
+export interface ProposalReferralProgramDetailsProps {
   change: UpdateReferralProgramsFragment | null;
 }
 

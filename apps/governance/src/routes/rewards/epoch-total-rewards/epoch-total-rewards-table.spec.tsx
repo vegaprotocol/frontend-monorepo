@@ -8,6 +8,7 @@ import type {
 } from './generate-epoch-total-rewards-list';
 import { AccountType } from '@vegaprotocol/types';
 import { useWallet } from '@vegaprotocol/wallet-react';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 jest.mock('@vegaprotocol/wallet-react');
 
 const assetId =
@@ -72,12 +73,14 @@ describe('EpochTotalRewardsTable', () => {
   });
   it('should render correctly', () => {
     const { getByTestId } = render(
-      <AppStateProvider>
-        <EpochTotalRewardsTable
-          data={mockData}
-          marketCreationQuantumMultiple={'1000'}
-        />
-      </AppStateProvider>
+      <TooltipProvider>
+        <AppStateProvider>
+          <EpochTotalRewardsTable
+            data={mockData}
+            marketCreationQuantumMultiple={'1000'}
+          />
+        </AppStateProvider>
+      </TooltipProvider>
     );
     expect(getByTestId('epoch-total-rewards-table')).toBeInTheDocument();
     expect(getByTestId('asset')).toBeInTheDocument();

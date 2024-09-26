@@ -59,19 +59,21 @@ export const JoinTeam = ({
   );
 };
 
+export interface JoinButtonProps {
+  pubKey: string | undefined;
+  isReadOnly: boolean;
+  team: Team;
+  partyTeam?: Team;
+  onJoin: (type: JoinType) => void;
+}
+
 export const JoinButton = ({
   pubKey,
   isReadOnly,
   team,
   partyTeam,
   onJoin,
-}: {
-  pubKey: string | undefined;
-  isReadOnly: boolean;
-  team: Team;
-  partyTeam?: Team;
-  onJoin: (type: JoinType) => void;
-}) => {
+}: JoinButtonProps) => {
   const t = useT();
 
   /**

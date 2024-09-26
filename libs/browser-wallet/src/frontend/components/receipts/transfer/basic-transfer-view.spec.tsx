@@ -10,6 +10,7 @@ import {
   locators as basicLocators,
 } from './basic-transfer-view';
 import { AccountType } from '@vegaprotocol/enums';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const mockTransaction = {
   transfer: {
@@ -27,7 +28,9 @@ describe('BasicTransferView', () => {
   it('renders correctly', () => {
     render(
       <MockNetworkProvider>
-        <BasicTransferView transaction={mockTransaction} />
+        <TooltipProvider>
+          <BasicTransferView transaction={mockTransaction} />
+        </TooltipProvider>
       </MockNetworkProvider>
     );
 

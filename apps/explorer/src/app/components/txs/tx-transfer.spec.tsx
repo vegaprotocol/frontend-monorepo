@@ -3,14 +3,16 @@ import type { TendermintBlocksResponse } from '../../routes/blocks/tendermint-bl
 import type { components } from '../../../types/explorer';
 
 import {
+  type TxDetailsNodeAnnounceProps,
   TxDetailsTransfer,
   getTypeLabelForTransfer,
 } from './details/tx-transfer';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { render } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import { ExplorerTransferStatusDocument } from './details/transfer/__generated__/Transfer';
 import { ExplorerEpochForBlockDocument } from '../links/block-link/__generated__/EpochByBlock';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
@@ -157,32 +159,38 @@ describe('TxDetailsTransfer', () => {
     },
   };
 
-  it('renders basic transfer details', () => {
-    const { getByTestId } = render(
+  const renderComponent = (props: TxDetailsNodeAnnounceProps) => {
+    return render(
       <MockedProvider mocks={[MockTransferDetails, MockExplorerEpochForBlock]}>
         <MemoryRouter>
-          <TxDetailsTransfer
-            txData={mockTxData as BlockExplorerTransactionResult}
-            pubKey={mockTxData.command.submitter}
-            blockData={mockBlockData as TendermintBlocksResponse}
-          />
+          <TooltipProvider>
+            <TxDetailsTransfer {...props} />
+          </TooltipProvider>
         </MemoryRouter>
       </MockedProvider>
     );
+  };
 
-    const id = getByTestId('id');
+  it('renders basic transfer details', () => {
+    renderComponent({
+      txData: mockTxData as BlockExplorerTransactionResult,
+      pubKey: mockTxData.command.submitter,
+      blockData: mockBlockData as TendermintBlocksResponse,
+    });
+
+    const id = screen.getByTestId('id');
     expect(id.children[0].textContent).toEqual('Transfer ID');
     expect(id.children[1].textContent).toEqual(
       '51f3bab5eb2637651012507a64d497790a734248792c16e5cf36df8984074fbd'
     );
 
-    const type = getByTestId('type');
+    const type = screen.getByTestId('type');
     expect(type.children[1].textContent).toEqual('Transfer');
 
-    const from = getByTestId('from');
+    const from = screen.getByTestId('from');
     expect(from.children[1].textContent).toEqual(mockTxData.submitter);
 
-    const to = getByTestId('to');
+    const to = screen.getByTestId('to');
     expect(to.children[1].textContent).toEqual(mockTxData.command.transfer.to);
   });
 });
