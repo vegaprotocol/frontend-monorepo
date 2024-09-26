@@ -47,7 +47,7 @@ import { cn } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useLatestTrade } from '@vegaprotocol/trades';
 
-interface Props extends TypedDataAgGrid<Position> {
+export interface PositionsTableProps extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   onEditTPSL?: (id: string) => void;
@@ -211,7 +211,7 @@ export const PositionsTable = ({
   pubKeys,
   pubKey,
   ...props
-}: Props) => {
+}: PositionsTableProps) => {
   const t = useT();
 
   const colDefs = useMemo<ColDef[]>(() => {
@@ -635,10 +635,9 @@ export const PositionsTable = ({
   );
 };
 
-export const PNLCell = ({
-  valueFormatted,
-  data,
-}: VegaICellRendererParams<Position, 'realisedPNL'>) => {
+export type PNLCellProps = VegaICellRendererParams<Position, 'realisedPNL'>;
+
+export const PNLCell = ({ valueFormatted, data }: PNLCellProps) => {
   if (!data) {
     return <>-</>;
   }
@@ -652,10 +651,15 @@ export const PNLCell = ({
   return <WarningCell>{valueFormatted}</WarningCell>;
 };
 
+export type OpenVolumeCellProps = VegaICellRendererParams<
+  Position,
+  'openVolume'
+>;
+
 export const OpenVolumeCell = ({
   valueFormatted,
   data,
-}: VegaICellRendererParams<Position, 'openVolume'>) => {
+}: OpenVolumeCellProps) => {
   const t = useT();
 
   const { data: latestTrade } = useLatestTrade(
