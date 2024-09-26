@@ -18,6 +18,7 @@ export const ReferrerStatistics = ({
   aggregationEpochs,
   setId,
   createdAt,
+  withTeamTile,
 }: {
   /** The aggregation epochs used to calculate statistics. */
   aggregationEpochs: number;
@@ -25,6 +26,7 @@ export const ReferrerStatistics = ({
   setId: string;
   /** The referral set date of creation. */
   createdAt: string;
+  withTeamTile?: boolean;
 }) => {
   const {
     baseCommission,
@@ -47,7 +49,7 @@ export const ReferrerStatistics = ({
     >
       <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
         {/** TEAM TILE - referral set id is the same as team id */}
-        <TeamTile teamId={setId} />
+        {withTeamTile && <TeamTile teamId={setId} />}
         {/** TILES ROW 1 */}
         <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
           {isProgramRunning ? (

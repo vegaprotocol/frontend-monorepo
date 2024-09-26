@@ -27,6 +27,7 @@ export const RefereeStatistics = ({
   setId,
   pubKey,
   referrerPubKey,
+  withTeamTile,
 }: {
   /** The aggregation epochs used to calculate statistics. */
   aggregationEpochs: number;
@@ -36,6 +37,7 @@ export const RefereeStatistics = ({
   pubKey: string;
   /** The referrer's public key. */
   referrerPubKey: string;
+  withTeamTile?: boolean;
 }) => {
   const t = useT();
   const {
@@ -60,7 +62,7 @@ export const RefereeStatistics = ({
       >
         <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
           {/** TEAM TILE - referral set id is the same as team id */}
-          <TeamTile teamId={setId} />
+          {withTeamTile && <TeamTile teamId={setId} />}
           {/** TILES ROW 1 */}
           <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
             {isProgramRunning ? (
@@ -133,7 +135,7 @@ export const RefereeStatistics = ({
 
 export const PreviewRefereeStatistics = ({
   setId,
-  withTeamTile = true,
+  withTeamTile,
   className,
 }: {
   setId: string;
