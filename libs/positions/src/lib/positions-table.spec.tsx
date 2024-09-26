@@ -39,9 +39,8 @@ describe('Positions', () => {
         />
       </TooltipProvider>
     );
-
+    // Wait for ag grid to render
     expect((await screen.findAllByRole('row')).length).toBeGreaterThan(0);
-
     return result;
   };
 
