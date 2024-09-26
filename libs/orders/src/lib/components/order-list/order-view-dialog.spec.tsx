@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { OrderViewDialog } from './order-view-dialog';
+import { OrderViewDialog, type OrderViewDialogProps } from './order-view-dialog';
 import type { Order } from '../order-data-provider';
 import { BrowserRouter } from 'react-router-dom';
 import {
@@ -10,9 +10,20 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('OrderViewDialog', () => {
   it('should render the order view dialog if the order is provided', async () => {
+    const renderComponent = (props: OrderViewDialogProps) => {
+      return render(
+        <BrowserRouter>
+          <TooltipProvider>
+            <OrderViewDialog {...props} />
+          </TooltipProvider>
+        </BrowserRouter>
+      );
+    };
+
     const order: Order = {
       id: '7f2a78f370062e41683d26a0fcc4521b2bd4b747530b78bc6bc86195db0e5fb3',
       market: {
@@ -169,11 +180,7 @@ describe('OrderViewDialog', () => {
       __typename: 'Order',
     };
 
-    render(
-      <BrowserRouter>
-        <OrderViewDialog order={order} onChange={jest.fn()} isOpen={true} />
-      </BrowserRouter>
-    );
+    renderComponent({ order, onChange: jest.fn(), isOpen: true });
 
     expect(screen.getByTestId('order-market-label')).toHaveTextContent(
       'Market'
