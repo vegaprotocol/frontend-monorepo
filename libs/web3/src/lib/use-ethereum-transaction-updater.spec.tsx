@@ -43,6 +43,9 @@ const depositBusEvent: DepositBusEventFieldsFragment = {
   id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
   status: DepositStatus.STATUS_FINALIZED,
   amount: '100',
+  party: {
+    id: 'party-id',
+  },
   asset: {
     __typename: 'Asset',
     id: 'asset-id',
