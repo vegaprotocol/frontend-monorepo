@@ -5,6 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import { CopyWithTooltip } from './copy-with-tooltip';
+import { TooltipProvider } from '../tooltip';
 
 beforeAll(() => {
   jest.useFakeTimers();
@@ -17,9 +18,11 @@ afterAll(() => {
 it('CopyWithTooltip', async () => {
   const copyText = 'Text to be copied';
   render(
-    <CopyWithTooltip text={copyText}>
-      <button>Copy</button>
-    </CopyWithTooltip>
+    <TooltipProvider>
+      <CopyWithTooltip text={copyText}>
+        <button>Copy</button>
+      </CopyWithTooltip>
+    </TooltipProvider>
   );
 
   fireEvent.click(screen.getByText('Copy'));
