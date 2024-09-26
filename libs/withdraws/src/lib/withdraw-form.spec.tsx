@@ -6,7 +6,7 @@ import { generateAsset } from './test-helpers';
 import type { WithdrawFormProps } from './withdraw-form';
 import type { Asset } from '@vegaprotocol/assets';
 import { type AssetData, toAssetData } from '@vegaprotocol/web3';
-import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { TooltipProvider, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@web3-react/core');
 
@@ -48,8 +48,15 @@ beforeEach(() => {
 });
 
 describe('Withdrawal form', () => {
+  const renderComponent = (props: WithdrawFormProps) => {
+    return render(
+      <TooltipProvider>
+        <WithdrawForm {...props} />
+      </TooltipProvider>
+    );
+  };
   it('renders with default values', async () => {
-    render(<WithdrawForm {...props} />);
+    renderComponent(props);
 
     expect(screen.getByLabelText('Asset')).toHaveValue('');
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
@@ -60,7 +67,7 @@ describe('Withdrawal form', () => {
 
   describe('field validation', () => {
     it('fails when submitted with empty required fields', async () => {
-      render(<WithdrawForm {...props} />);
+      renderComponent(props);
 
       fireEvent.submit(screen.getByTestId('withdraw-form'));
 
@@ -72,7 +79,7 @@ describe('Withdrawal form', () => {
       (useWeb3React as jest.Mock).mockReturnValue({ account: '123' });
       const asset = toAssetData(props.assets[0]) as AssetData;
       expect(asset).not.toBeNull();
-      render(<WithdrawForm {...props} selectedAsset={asset} />);
+      renderComponent({ ...props, selectedAsset: asset });
 
       fireEvent.change(screen.getByLabelText('Asset'), {
         target: { value: props.assets[0].id },
@@ -96,7 +103,7 @@ describe('Withdrawal form', () => {
       const asset = toAssetData(props.assets[0]) as AssetData;
       expect(asset).not.toBeNull();
 
-      render(<WithdrawForm {...props} selectedAsset={asset} />);
+      renderComponent({ ...props, selectedAsset: asset });
 
       fireEvent.change(screen.getByLabelText('Amount'), {
         target: { value: '0.000000000001' },
@@ -112,7 +119,7 @@ describe('Withdrawal form', () => {
     it('passes validation with correct field values', async () => {
       const asset = toAssetData(props.assets[0]) as AssetData;
       expect(asset).not.toBeNull();
-      render(<WithdrawForm {...props} selectedAsset={asset} />);
+      renderComponent({ ...props, selectedAsset: asset });
 
       fireEvent.change(screen.getByLabelText('Amount'), {
         target: { value: '40' },
@@ -135,7 +142,7 @@ describe('Withdrawal form', () => {
     const asset = toAssetData(props.assets[0]) as AssetData;
     expect(asset).not.toBeNull();
 
-    render(<WithdrawForm {...props} selectedAsset={asset} />);
+    renderComponent({ ...props, selectedAsset: asset });
 
     fireEvent.click(screen.getByText('Use maximum'));
 

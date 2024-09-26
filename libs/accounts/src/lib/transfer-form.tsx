@@ -473,17 +473,19 @@ export const TransferForm = ({
   );
 };
 
+export interface TransferFeeProps {
+  amount: string;
+  fee?: string;
+  discount?: string;
+  decimals: number;
+}
+
 export const TransferFee = ({
   amount,
   fee,
   discount,
   decimals,
-}: {
-  amount: string;
-  fee?: string;
-  discount?: string;
-  decimals: number;
-}) => {
+}: TransferFeeProps) => {
   const t = useT();
   if (!amount || !fee) return null;
   if (isNaN(Number(amount)) || isNaN(Number(fee))) {

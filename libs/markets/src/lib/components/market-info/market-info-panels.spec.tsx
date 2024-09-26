@@ -7,6 +7,7 @@ import { DataSourceProof, SuccessionLineInfoPanel } from './market-info-panels';
 import { MockedProvider } from '@apollo/react-testing';
 import { SuccessorMarketIdsDocument } from '../../__generated__';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../hooks/use-oracle-markets', () => ({
   useOracleMarkets: () => [],
@@ -203,11 +204,13 @@ describe('MarketInfoPanels', () => {
       async (id, number) => {
         render(
           <MockedProvider mocks={mocks}>
-            <SuccessionLineInfoPanel
-              market={{
-                id,
-              }}
-            />
+            <TooltipProvider>
+              <SuccessionLineInfoPanel
+                market={{
+                  id,
+                }}
+              />
+            </TooltipProvider>
           </MockedProvider>
         );
 
