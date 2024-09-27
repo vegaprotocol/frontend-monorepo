@@ -1,4 +1,9 @@
-import { Dialog, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Dialog,
+  DialogTitle,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { type ReactNode } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
@@ -17,9 +22,11 @@ type FeedbackDialogProps = {
 };
 
 export const FeedbackDialog = (props: FeedbackDialogProps) => {
+  const t = useT();
   const txActive = Boolean(props.data && props.data.status !== 'idle');
   return (
     <Dialog open={txActive} onChange={props.onChange}>
+      <DialogTitle className="sr-only">{t('Deposit')}</DialogTitle>
       {props.data && <Content tx={props.data} />}
     </Dialog>
   );
@@ -36,7 +43,7 @@ const Content = (props: { tx: TxDeposit }) => {
       <div>
         <p className="text-surface-1-fg-muted">
           {t('Deposit')} <br />
-          {data && (
+          {data && data.asset && (
             <span className="text-surface-1-fg text-2xl">
               {addDecimalsFormatNumber(data.amount, data.asset.decimals)}{' '}
               {data.asset.symbol}
@@ -114,9 +121,11 @@ type SquidFeedbackDialogProps = {
 };
 
 export const SquidFeedbackDialog = (props: SquidFeedbackDialogProps) => {
+  const t = useT();
   const txActive = Boolean(props.data && props.data.status !== 'idle');
   return (
     <Dialog open={txActive} onChange={props.onChange}>
+      <DialogTitle className="sr-only">{t('Swap and Deposit')}</DialogTitle>
       {props.data && <SquidContent tx={props.data} />}
     </Dialog>
   );
