@@ -1,21 +1,3 @@
-query DiscountPrograms {
-  currentReferralProgram {
-    benefitTiers {
-      minimumEpochs
-      minimumRunningNotionalTakerVolume
-      referralDiscountFactor
-    }
-    windowLength
-  }
-  currentVolumeDiscountProgram {
-    benefitTiers {
-      minimumRunningNotionalTakerVolume
-      volumeDiscountFactor
-    }
-    windowLength
-  }
-}
-
 query Fees($partyId: ID!) {
   epoch {
     id
@@ -24,7 +6,11 @@ query Fees($partyId: ID!) {
     edges {
       node {
         atEpoch
-        discountFactor
+        discountFactors {
+          infrastructureFactor
+          makerFactor
+          liquidityFactor
+        }
         runningVolume
       }
     }
@@ -56,7 +42,11 @@ query Fees($partyId: ID!) {
     edges {
       node {
         atEpoch
-        discountFactor
+        discountFactors {
+          infrastructureFactor
+          makerFactor
+          liquidityFactor
+        }
         referralSetRunningNotionalTakerVolume
       }
     }

@@ -81,7 +81,7 @@ export const TextChildrenTooltip = ({
   children,
   ...props
 }: Omit<TooltipProps, 'children'> & {
-  children: string | string[];
+  children: string | number | (string | number)[];
 }) => (
   <Tooltip {...props}>
     <span>{children}</span>

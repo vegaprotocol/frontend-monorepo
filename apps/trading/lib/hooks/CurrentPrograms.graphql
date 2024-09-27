@@ -1,0 +1,81 @@
+fragment ReferralProgramFields on CurrentReferralProgram {
+  id
+  version
+  endOfProgramTimestamp
+  windowLength
+  endedAt
+  benefitTiers {
+    minimumEpochs
+    minimumRunningNotionalTakerVolume
+    referralDiscountFactors {
+      infrastructureFactor
+      makerFactor
+      liquidityFactor
+    }
+    referralRewardFactors {
+      infrastructureFactor
+      makerFactor
+      liquidityFactor
+    }
+  }
+  stakingTiers {
+    minimumStakedTokens
+    referralRewardMultiplier
+  }
+}
+
+fragment VolumeDiscountFields on VolumeDiscountProgram {
+  id
+  version
+  endOfProgramTimestamp
+  windowLength
+  endedAt
+  benefitTiers {
+    minimumRunningNotionalTakerVolume
+    volumeDiscountFactors {
+      infrastructureFactor
+      makerFactor
+      liquidityFactor
+    }
+  }
+  windowLength
+}
+
+query CurrentPrograms {
+  currentReferralProgram {
+    ...ReferralProgramFields
+  }
+  currentVolumeDiscountProgram {
+    ...VolumeDiscountFields
+  }
+  defaultBuybackFee: networkParameter(key: "market.fee.factors.buybackFee") {
+    value
+  }
+  defaultInfrastructureFee: networkParameter(
+    key: "market.fee.factors.infrastructureFee"
+  ) {
+    value
+  }
+  defaultMakerFee: networkParameter(key: "market.fee.factors.makerFee") {
+    value
+  }
+  defaultTreasuryFee: networkParameter(key: "market.fee.factors.treasuryFee") {
+    value
+  }
+  feesPerMarket: marketsConnection {
+    edges {
+      node {
+        state
+        fees {
+          factors {
+            makerFee
+            infrastructureFee
+            liquidityFee
+            buyBackFee
+            treasuryFee
+          }
+        }
+      }
+    }
+  }
+}

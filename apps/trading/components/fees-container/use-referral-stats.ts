@@ -1,50 +1,79 @@
-import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
+import {
+  areFactorsEqual,
+  type Factors,
+  parseFactors,
+  type ReferralBenefitTier,
+  type ProgramsData,
+} from '../../lib/hooks/use-current-programs';
+import type { FeesQuery } from './__generated__/Fees';
+
+export type ReferralStats = {
+  /** The current discount factors applied */
+  discountFactors: Factors | undefined;
+  /** The current running volume (in program's window) */
+  volume: number;
+  /** The benefit tier matching the current factors applied */
+  benefitTier: ReferralBenefitTier | undefined;
+  /** The number of epochs in this set */
+  epochsInSet: number;
+  /** The referral code of this set (set id) */
+  code: string | undefined;
+  /** A flag indicating whether the given pubkey (see Fees query) is a referrer */
+  isReferrer: boolean;
+};
+
+export type ReferralSetStat = NonNullable<
+  FeesQuery['referralSetStats']['edges']['0']
+>['node'];
+
+export type ReferralSetReferees = NonNullable<
+  FeesQuery['referralSetReferees']['edges']['0']
+>['node'];
+
+export type ReferralSetInfo =
+  | NonNullable<FeesQuery['referrer']['edges']['0']>['node']
+  | NonNullable<FeesQuery['referee']['edges']['0']>['node'];
+
+export const EMPTY: ReferralStats = {
+  discountFactors: undefined,
+  volume: 0,
+  benefitTier: undefined,
+  epochsInSet: 0,
+  code: undefined,
+  isReferrer: false,
+};
 
 export const useReferralStats = (
   previousEpoch?: number,
-  referralStats?: NonNullable<
-    FeesQuery['referralSetStats']['edges']['0']
-  >['node'],
-  setReferees?: NonNullable<
-    FeesQuery['referralSetReferees']['edges']['0']
-  >['node'],
-  program?: DiscountProgramsQuery['currentReferralProgram'],
-  setIfReferrer?: NonNullable<FeesQuery['referrer']['edges']['0']>['node'],
-  setIfReferee?: NonNullable<FeesQuery['referee']['edges']['0']>['node']
-) => {
-  const referralTiers = program?.benefitTiers || [];
-
+  referralStats?: ReferralSetStat,
+  setReferees?: ReferralSetReferees,
+  program?: ProgramsData['referralProgram'],
+  setIfReferrer?: ReferralSetInfo,
+  setIfReferee?: ReferralSetInfo
+): ReferralStats => {
   if (
     !previousEpoch ||
     referralStats?.atEpoch !== previousEpoch ||
     !program ||
     !setReferees
   ) {
-    return {
-      referralDiscount: 0,
-      referralVolumeInWindow: 0,
-      referralTierIndex: -1,
-      referralTiers,
-      epochsInSet: 0,
-      code: undefined,
-      isReferrer: false,
-    };
+    return EMPTY;
   }
 
-  const referralDiscount = Number(referralStats?.discountFactor || 0);
-  const referralVolumeInWindow = Number(
+  const discountFactors = parseFactors(referralStats.discountFactors);
+  const volume = Number(
     referralStats?.referralSetRunningNotionalTakerVolume || 0
   );
 
-  const referralTierIndex = referralTiers.findIndex(
-    (tier) => tier.referralDiscountFactor === referralStats?.discountFactor
+  const benefitTiers = program?.benefitTiers || [];
+  const benefitTier = benefitTiers.find((tier) =>
+    areFactorsEqual(tier.discountFactors, discountFactors)
   );
 
   return {
-    referralDiscount,
-    referralVolumeInWindow,
-    referralTierIndex,
-    referralTiers,
+    discountFactors,
+    volume,
+    benefitTier,
     epochsInSet: referralStats.atEpoch - setReferees.atEpoch,
     code: (setIfReferrer || setIfReferee)?.id,
     isReferrer: Boolean(setIfReferrer),

@@ -12,7 +12,7 @@ import {
   dateFormatter,
 } from './tiles';
 import { CodeTile } from './tile';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 
 export const ReferrerStatistics = ({
   aggregationEpochs,
@@ -38,7 +38,8 @@ export const ReferrerStatistics = ({
     volume,
   } = useReferrerStats(setId, aggregationEpochs);
 
-  const { details } = useReferralProgram();
+  const { referralProgram } = useCurrentPrograms();
+  const details = referralProgram?.details;
   const isProgramRunning = Boolean(details);
 
   return (

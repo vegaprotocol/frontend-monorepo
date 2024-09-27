@@ -17,7 +17,7 @@ import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useT } from '../../lib/use-t';
 import { Navigate } from 'react-router-dom';
 import { Routes } from '../../lib/links';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import {
   useFindReferralSet,
@@ -182,7 +182,8 @@ const CreateCodeDialog = ({
   const { stakeAvailable: currentStakeAvailable, requiredStake } =
     useReferralSetTransaction();
 
-  const { details: programDetails } = useReferralProgram();
+  const { referralProgram } = useCurrentPrograms();
+  const programDetails = referralProgram?.details;
 
   if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
     return (

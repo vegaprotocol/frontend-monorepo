@@ -19,7 +19,7 @@ import { ProgressionChain } from './step-progression-chain';
 import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
 import { Trans } from 'react-i18next';
-import { useReferralProgram } from '../referrals/hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { useOnboardStore } from '../../stores/onboard';
 import { useForm } from 'react-hook-form';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
@@ -29,13 +29,17 @@ import { GradientText } from '../../components/gradient-text';
 import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 import minBy from 'lodash/minBy';
 import { ExitInvite } from './exit-invite';
+import BigNumber from 'bignumber.js';
 
 export const StepApplyCode = () => {
   const t = useT();
   const code = useOnboardStore((state) => state.code);
-  const program = useReferralProgram();
+  const program = useCurrentPrograms();
 
-  const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
+  const firstBenefitTier = minBy(
+    program.referralProgram?.benefitTiers,
+    (bt) => bt.epochs
+  );
   const minEpochs = firstBenefitTier ? firstBenefitTier.epochs : 0;
 
   type formFields = { code: string };
@@ -103,7 +107,14 @@ export const StepApplyCode = () => {
           {firstBenefitTier ? (
             <dl className="flex flex-col gap-2 items-center border-b pb-4">
               <dt className="text-6xl">
-                <GradientText>{firstBenefitTier.discount}</GradientText>
+                <GradientText>
+                  {t('at least')}{' '}
+                  {BigNumber(firstBenefitTier.discountFactor)
+                    .times(100)
+                    .toFixed(2)
+                    .toString()}
+                  %
+                </GradientText>
               </dt>
               <dd className="flex flex-col gap-1 items-center">
                 <span className="text-2xl">

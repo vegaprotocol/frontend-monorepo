@@ -1,60 +1,99 @@
 import { renderHook } from '@testing-library/react';
-import { useVolumeStats } from './use-volume-stats';
+import {
+  EMPTY,
+  useVolumeStats,
+  type VolumeDiscountStat,
+  type VolumeStats,
+} from './use-volume-stats';
+import type {
+  ProgramsData,
+  VolumeDiscountBenefitTier,
+} from '../../lib/hooks/use-current-programs';
+import BigNumber from 'bignumber.js';
 
 describe('useReferralStats', () => {
-  const stats = {
+  const TIER_1: VolumeDiscountBenefitTier = {
+    tier: 1,
+    discountFactor: BigNumber(0),
+    discountFactors: {
+      infrastructureFactor: 0.01,
+      liquidityFactor: 0.01,
+      makerFactor: 0.01,
+    },
+    minimumRunningNotionalTakerVolume: 100,
+  };
+
+  const TIER_2: VolumeDiscountBenefitTier = {
+    tier: 2,
+    discountFactor: BigNumber(0),
+    discountFactors: {
+      infrastructureFactor: 0.05,
+      liquidityFactor: 0.05,
+      makerFactor: 0.05,
+    },
+    minimumRunningNotionalTakerVolume: 200,
+  };
+
+  const TIER_3: VolumeDiscountBenefitTier = {
+    tier: 3,
+    discountFactor: BigNumber(0),
+    discountFactors: {
+      infrastructureFactor: 0.1,
+      liquidityFactor: 0.1,
+      makerFactor: 0.1,
+    },
+    minimumRunningNotionalTakerVolume: 300,
+  };
+
+  const stats: VolumeDiscountStat = {
     __typename: 'VolumeDiscountStats' as const,
     atEpoch: 10,
-    discountFactor: '0.05',
+    discountFactors: {
+      infrastructureFactor: '0.05',
+      liquidityFactor: '0.05',
+      makerFactor: '0.05',
+    },
     runningVolume: '200',
   };
 
-  const program = {
-    windowLength: 5,
-    benefitTiers: [
-      {
-        minimumRunningNotionalTakerVolume: '100',
-        volumeDiscountFactor: '0.01',
-      },
-      {
-        minimumRunningNotionalTakerVolume: '200',
-        volumeDiscountFactor: '0.05',
-      },
-      {
-        minimumRunningNotionalTakerVolume: '300',
-        volumeDiscountFactor: '0.1',
-      },
-    ],
+  const program: ProgramsData['volumeDiscountProgram'] = {
+    details: {
+      windowLength: 5,
+      id: 'VP1',
+      version: 0,
+      endOfProgramTimestamp: undefined,
+    },
+    benefitTiers: [TIER_1, TIER_2, TIER_3],
   };
 
   it('returns correct default values', () => {
     const { result } = renderHook(() => useVolumeStats(10));
-    expect(result.current).toEqual({
-      volumeDiscount: 0,
-      volumeInWindow: 0,
-      volumeTierIndex: -1,
-      volumeTiers: [],
-    });
+
+    expect(result.current).toEqual(EMPTY);
   });
 
   it('returns default values if no stat is not from previous epoch', () => {
-    const { result } = renderHook(() => useVolumeStats(11, stats, program));
-    expect(result.current).toEqual({
-      volumeDiscount: 0,
-      volumeInWindow: 0,
-      volumeTierIndex: -1,
-      volumeTiers: program.benefitTiers,
-    });
+    const { result } = renderHook(() =>
+      useVolumeStats(11, stats, program.benefitTiers)
+    );
+    expect(result.current).toEqual(EMPTY);
   });
 
   it('returns formatted data and tiers', () => {
-    const { result } = renderHook(() => useVolumeStats(10, stats, program));
+    const { result } = renderHook(() =>
+      useVolumeStats(10, stats, program.benefitTiers)
+    );
 
-    expect(result.current).toEqual({
-      volumeDiscount: Number(stats.discountFactor),
-      volumeInWindow: Number(stats.runningVolume),
-      volumeTierIndex: 1,
-      volumeTiers: program.benefitTiers,
-    });
+    const expectedStats: VolumeStats = {
+      discountFactors: {
+        infrastructureFactor: 0.05,
+        liquidityFactor: 0.05,
+        makerFactor: 0.05,
+      },
+      benefitTier: TIER_2,
+      volume: 200,
+    };
+
+    expect(result.current).toEqual(expectedStats);
   });
 });

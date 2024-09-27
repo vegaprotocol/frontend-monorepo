@@ -1,33 +1,53 @@
-import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
+import {
+  areFactorsEqual,
+  type Factors,
+  parseFactors,
+  type VolumeDiscountBenefitTier,
+} from '../../lib/hooks/use-current-programs';
+import type { FeesQuery } from './__generated__/Fees';
+
+export type VolumeStats = {
+  /** The current discount factors applied */
+  discountFactors: Factors | undefined;
+  /** The benefit tier matching the current factors applied */
+  benefitTier: VolumeDiscountBenefitTier | undefined;
+  /** The current running volume (in program's window) */
+  volume: number;
+};
+
+export type VolumeDiscountStat = NonNullable<
+  FeesQuery['volumeDiscountStats']['edges']['0']
+>['node'];
+
+export const EMPTY: VolumeStats = {
+  discountFactors: undefined,
+  benefitTier: undefined,
+  volume: 0,
+};
 
 export const useVolumeStats = (
   previousEpoch: number,
-  lastEpochStats?: NonNullable<
-    FeesQuery['volumeDiscountStats']['edges']['0']
-  >['node'],
-  program?: DiscountProgramsQuery['currentVolumeDiscountProgram']
-) => {
-  const volumeTiers = program?.benefitTiers || [];
-
-  if (!lastEpochStats || lastEpochStats.atEpoch !== previousEpoch || !program) {
-    return {
-      volumeDiscount: 0,
-      volumeTierIndex: -1,
-      volumeInWindow: 0,
-      volumeTiers,
-    };
+  lastEpochStats?: VolumeDiscountStat,
+  benefitTiers?: VolumeDiscountBenefitTier[]
+): VolumeStats => {
+  if (
+    !lastEpochStats ||
+    lastEpochStats.atEpoch !== previousEpoch ||
+    !benefitTiers
+  ) {
+    return EMPTY;
   }
 
-  const volumeDiscount = Number(lastEpochStats?.discountFactor || 0);
-  const volumeInWindow = Number(lastEpochStats?.runningVolume || 0);
-  const volumeTierIndex = volumeTiers.findIndex(
-    (tier) => tier.volumeDiscountFactor === lastEpochStats?.discountFactor
+  const discountFactors = parseFactors(lastEpochStats.discountFactors);
+  const volume = Number(lastEpochStats.runningVolume);
+
+  const benefitTier = benefitTiers.find((tier) =>
+    areFactorsEqual(tier.discountFactors, discountFactors)
   );
 
   return {
-    volumeDiscount,
-    volumeTierIndex,
-    volumeInWindow,
-    volumeTiers,
+    discountFactors,
+    benefitTier,
+    volume,
   };
 };

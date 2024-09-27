@@ -1,14 +1,18 @@
 import {
   addDecimalsFormatNumber,
+  formatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
-import { useReferralProgram } from './hooks/use-referral-program';
+import {
+  type ReferralStakingTier,
+  useCurrentPrograms,
+} from '../../lib/hooks/use-current-programs';
 import { Table } from '../../components/table';
-import { cn } from '@vegaprotocol/ui-toolkit';
+import { Button, cn, Intent } from '@vegaprotocol/ui-toolkit';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from '../../components/helpers/tag';
 import { getTierColor, getTierGradient } from '../../components/helpers/tiers';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ExternalLink, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import {
   DApp,
@@ -19,10 +23,12 @@ import {
 } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+import BigNumber from 'bignumber.js';
+import compact from 'lodash/compact';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
-    className={cn('bg-surface-1  rounded-lg animate-pulse', {
+    className={cn('bg-surface-2 rounded-lg animate-pulse', {
       'w-full h-20': variant === 'large',
     })}
   ></div>
@@ -92,8 +98,11 @@ const StakingTier = ({
 
 export const TiersContainer = () => {
   const t = useT();
-  const { benefitTiers, stakingTiers, details, loading, error } =
-    useReferralProgram();
+  const { referralProgram, loading, error } = useCurrentPrograms();
+
+  const details = referralProgram?.details;
+  const benefitTiers = referralProgram?.benefitTiers;
+  const stakingTiers = referralProgram?.stakingTiers;
 
   const ends = details?.endOfProgramTimestamp
     ? getDateTimeFormat().format(new Date(details.endOfProgramTimestamp))
@@ -203,12 +212,40 @@ export const TiersContainer = () => {
             <TiersTable
               windowLength={details?.windowLength}
               data={benefitTiers.map((bt) => ({
-                ...bt,
+                commission: bt.rewardFactor.times(100).toFixed(2) + '%',
+                discount: bt.discountFactor.times(100).toFixed(2) + '%',
+                tier: bt.tier,
+                volume: formatNumber(bt.minimumRunningNotionalTakerVolume, 0),
                 tierElement: (
                   <div className="rounded-full p-1 w-8 h-8 text-center">
                     {bt.tier}
                   </div>
                 ),
+                rewardInfrastructureFactor:
+                  BigNumber(bt.rewardFactors.infrastructureFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                rewardMakerFactor:
+                  BigNumber(bt.rewardFactors.makerFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                rewardLiquidityFactor:
+                  BigNumber(bt.rewardFactors.liquidityFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                discountInfrastructureFactor:
+                  BigNumber(bt.discountFactors.infrastructureFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                discountMakerFactor:
+                  BigNumber(bt.discountFactors.makerFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                discountLiquidityFactor:
+                  BigNumber(bt.discountFactors.liquidityFactor)
+                    .times(100)
+                    .toFixed(2) + '%',
+                epochs: bt.epochs,
               }))}
             />
           )}
@@ -224,7 +261,7 @@ export const TiersContainer = () => {
           </p>
         </div>
         <div className="gap-5 grid lg:grid-cols-3">
-          {loading || !stakingTiers || stakingTiers.length === 0 ? (
+          {loading ? (
             <>
               <Loading variant="large" />
               <Loading variant="large" />
@@ -239,23 +276,31 @@ export const TiersContainer = () => {
   );
 };
 
-const StakingTiers = ({
-  data,
-}: {
-  data: ReturnType<typeof useReferralProgram>['stakingTiers'];
-}) => (
-  <>
-    {data.map(({ tier, referralRewardMultiplier, minimumStakedTokens }, i) => (
-      <StakingTier
-        key={i}
-        tier={tier}
-        max={data.length}
-        referralRewardMultiplier={referralRewardMultiplier}
-        minimumStakedTokens={minimumStakedTokens}
-      />
-    ))}
-  </>
-);
+const StakingTiers = ({ data }: { data?: ReferralStakingTier[] }) => {
+  const t = useT();
+  if (!data || data.length === 0) {
+    return (
+      <span className="text-xs text-surface-0-fg-muted">
+        {t('Currently not available')}
+      </span>
+    );
+  }
+  return (
+    <>
+      {data.map(
+        ({ tier, referralRewardMultiplier, minimumStakedTokens }, i) => (
+          <StakingTier
+            key={i}
+            tier={tier}
+            max={data.length}
+            referralRewardMultiplier={referralRewardMultiplier}
+            minimumStakedTokens={minimumStakedTokens}
+          />
+        )
+      )}
+    </>
+  );
+};
 
 const TiersTable = ({
   data,
@@ -267,52 +312,158 @@ const TiersTable = ({
     commission: string;
     discount: string;
     volume: string;
+    rewardInfrastructureFactor?: string;
+    rewardMakerFactor?: string;
+    rewardLiquidityFactor?: string;
+    discountInfrastructureFactor?: string;
+    discountMakerFactor?: string;
+    discountLiquidityFactor?: string;
   }>;
   windowLength?: number;
 }) => {
   const t = useT();
+  const [showFactors, setShowFactors] = useState(false);
   return (
-    <Table
-      columns={[
-        { name: 'tierElement', displayName: t('Tier') },
-        {
-          name: 'commission',
-          displayName: t('Referrer commission'),
-          tooltip: t(
-            "The proportion of the referee's taker fees to be rewarded to the referrer"
-          ),
-        },
-        {
-          name: 'discount',
-          displayName: t('Referee trading discount'),
-          tooltip: t(
-            "The proportion of the referee's taker fees to be discounted"
-          ),
-        },
-        {
-          name: 'volume',
-          displayName: t(
-            'minTradingVolume',
-            'Min. trading volume (last {{count}} epochs)',
-            {
-              count: windowLength,
-            }
-          ),
-          tooltip: t('The minimum running notional for the given benefit tier'),
-        },
-        {
-          name: 'epochs',
-          displayName: t('Min. epochs'),
-          tooltip: t(
-            'The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit'
-          ),
-        },
-      ]}
-      className="bg-white dark:bg-black"
-      data={data.map((d) => ({
-        ...d,
-        className: cn(getTierGradient(d.tier, data.length)),
-      }))}
-    />
+    <div className="flex flex-col gap-1">
+      <Button
+        size="xs"
+        intent={Intent.None}
+        onClick={() => {
+          setShowFactors(!showFactors);
+        }}
+        className="text-surface-0-fg-muted text-xs self-end mr-1"
+      >
+        {showFactors ? t('Hide all factors') : t('Show all factors')}
+      </Button>
+      <Table
+        columns={compact([
+          { name: 'tierElement', displayName: t('Tier') },
+          {
+            name: 'commission',
+            displayName: t('Referrer commission'),
+            tooltip: t(
+              "The proportion of the referee's fees to be rewarded to the referrer"
+            ),
+            className: '',
+          },
+
+          // reward factors:
+          ...(showFactors
+            ? [
+                {
+                  name: 'rewardInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      r<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'rewardMakerFactor',
+                  displayName: (
+                    <span>
+                      r<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'rewardLiquidityFactor',
+                  displayName: (
+                    <span>
+                      r<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be rewarded to the referrer"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
+
+          {
+            name: 'discount',
+            displayName: t('Referee trading discount'),
+            tooltip: t("The proportion of the referee's fees to be discounted"),
+          },
+
+          // discount factors
+          ...(showFactors
+            ? [
+                {
+                  name: 'discountInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      d<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountMakerFactor',
+                  displayName: (
+                    <span>
+                      d<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountLiquidityFactor',
+                  displayName: (
+                    <span>
+                      d<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
+
+          {
+            name: 'volume',
+            displayName: t(
+              'minTradingVolume',
+              'Min. trading volume (last {{count}} epochs)',
+              {
+                count: windowLength,
+              }
+            ),
+            tooltip: t(
+              'The minimum running notional for the given benefit tier'
+            ),
+          },
+          {
+            name: 'epochs',
+            displayName: t('Min. epochs'),
+            tooltip: t(
+              'The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit'
+            ),
+          },
+        ])}
+        className="bg-white dark:bg-black"
+        data={data.map((d) => ({
+          ...d,
+          className: cn(getTierGradient(d.tier, data.length)),
+        }))}
+      />
+    </div>
   );
 };
