@@ -195,6 +195,13 @@ html [data-theme='dark'] {
     --ag-header-height: 36px;
   }
 }
+.ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
+  background: rgb(214, 233, 255);
+}
+
+.ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
+  background: rgb(1, 20, 42);
+}
 
 /* Light variables */
 .ag-theme-balham {

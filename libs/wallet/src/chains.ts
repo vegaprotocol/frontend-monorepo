@@ -17,7 +17,7 @@ export const mirror = {
 };
 
 export const fairground = {
-  id: 'vega-fairground-202305051805',
+  id: 'fairground-20240816',
   testnet: true,
   name: 'Fairground',
 };
