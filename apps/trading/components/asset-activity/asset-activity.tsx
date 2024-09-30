@@ -102,58 +102,6 @@ export const AssetActivityDatagrid = ({
         },
       },
       {
-        headerName: t('Asset'),
-        field: 'asset.symbol',
-        cellClass: 'underline underline-offset-4',
-        filter: 'agTextColumnFilter',
-        valueFormatter: ({ data }) => {
-          return getAssetSymbol(data.asset);
-        },
-        onCellClicked: ({ data }: { data: Row }) => {
-          if (!data.asset) return;
-          openAssetDialog(data.asset.id);
-        },
-      },
-
-      {
-        headerName: t('Created at'),
-        field: 'createdTimestamp',
-        filter: 'agDateColumnFilter',
-        valueFormatter: ({ value }) => getDateTimeFormat().format(value),
-        sort: 'desc',
-      },
-      {
-        headerName: t('Amount'),
-        field: 'amount',
-        filter: 'agNumberColumnFilter',
-        valueGetter: ({ data }: { data: Row }) => {
-          return data.bAmount.toNumber();
-        },
-        valueFormatter: ({ data }: { data: Row }) => {
-          if (!data.amount || !data.asset) return '-';
-          return addDecimalsFormatNumber(data.amount, data.asset.decimals);
-        },
-      },
-      {
-        headerName: t('To/From'),
-        field: 'type',
-        cellRenderer: ({ data }: { data: Row }) => {
-          if (data.type === 'Deposit') {
-            return <DepositToFromCell data={data} />;
-          }
-
-          if (data.type === 'Withdrawal') {
-            return <WithdrawalToFromCell data={data} />;
-          }
-
-          if (data.type === 'Transfer') {
-            return <TransferToFromCell data={data} partyId={partyId} />;
-          }
-
-          return '-';
-        },
-      },
-      {
         headerName: 'Status',
         field: 'type',
         filter: SetFilter,
@@ -234,6 +182,58 @@ export const AssetActivityDatagrid = ({
 
           return '-';
         },
+      },
+      {
+        headerName: t('Amount'),
+        field: 'amount',
+        filter: 'agNumberColumnFilter',
+        valueGetter: ({ data }: { data: Row }) => {
+          return data.bAmount.toNumber();
+        },
+        valueFormatter: ({ data }: { data: Row }) => {
+          if (!data.amount || !data.asset) return '-';
+          return addDecimalsFormatNumber(data.amount, data.asset.decimals);
+        },
+      },
+
+      {
+        headerName: t('Asset'),
+        field: 'asset.symbol',
+        cellClass: 'underline underline-offset-4',
+        filter: 'agTextColumnFilter',
+        valueFormatter: ({ data }) => {
+          return getAssetSymbol(data.asset);
+        },
+        onCellClicked: ({ data }: { data: Row }) => {
+          if (!data.asset) return;
+          openAssetDialog(data.asset.id);
+        },
+      },
+      {
+        headerName: t('To/From'),
+        field: 'type',
+        cellRenderer: ({ data }: { data: Row }) => {
+          if (data.type === 'Deposit') {
+            return <DepositToFromCell data={data} />;
+          }
+
+          if (data.type === 'Withdrawal') {
+            return <WithdrawalToFromCell data={data} />;
+          }
+
+          if (data.type === 'Transfer') {
+            return <TransferToFromCell data={data} partyId={partyId} />;
+          }
+
+          return '-';
+        },
+      },
+      {
+        headerName: t('Created at'),
+        field: 'createdTimestamp',
+        filter: 'agDateColumnFilter',
+        valueFormatter: ({ value }) => getDateTimeFormat().format(value),
+        sort: 'desc',
       },
     ],
     [partyId, t, openAssetDialog, openWithdrawalDialog]
