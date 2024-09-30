@@ -196,11 +196,22 @@ html [data-theme='dark'] {
   }
 }
 .ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
-  background: rgb(214, 233, 255);
+  background: theme(colors.vega.blue.300);
+}
+.ag-theme-balham
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: theme(colors.vega.blue.350);
 }
 
 .ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
-  background: rgb(1, 20, 42);
+  background: theme(colors.vega.blue.700);
+}
+
+.ag-theme-balham-dark
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: theme(colors.vega.blue.650);
 }
 
 /* Light variables */

@@ -195,7 +195,6 @@ export const AssetActivityDatagrid = ({
           return addDecimalsFormatNumber(data.amount, data.asset.decimals);
         },
       },
-
       {
         headerName: t('Asset'),
         field: 'asset.symbol',

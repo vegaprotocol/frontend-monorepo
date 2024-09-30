@@ -142,8 +142,10 @@ export const useEvmTxStore = create<{
           loader: false,
         });
       } else {
+        const error =
+          err instanceof Error ? err : new Error('Something went wrong');
         toastStore.update(id, {
-          content: <Toasts.Error />,
+          content: <Toasts.Error message={error.message} />,
           intent: Intent.Danger,
           loader: false,
         });

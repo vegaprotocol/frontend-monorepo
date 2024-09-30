@@ -12,7 +12,8 @@ import { useEvmWithdraw } from '../../lib/hooks/use-evm-withdraw';
 import { useAccount, useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
-import { ConnectKitButton } from 'connectkit';
+import { useModal } from 'connectkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 type Props = {
   data: RowWithdrawal;
@@ -30,15 +31,58 @@ export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
   return <>{WithdrawalStatusMapping[data.detail.status]}</>;
 };
 
+// Keep track of the curretly active withdrawal, so that we only trigger one withdrawal
+// for the clicked cell
+let activeId: string;
+
 const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
   const { status: ethWalletStatus } = useAccount();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { submitWithdraw } = useEvmWithdraw();
+  const { submitWithdraw, data: txData } = useEvmWithdraw();
   const { data: approval } = useWithdrawalApprovalQuery({
     variables: {
       withdrawalId: data.detail.id,
+    },
+  });
+
+  const handleComplete = () => {
+    if (txData?.hash) return;
+
+    const asset = data.asset;
+
+    if (!config || !configs) {
+      throw new Error('could not fetch ethereum configs');
+    }
+
+    if (!approval?.erc20WithdrawalApproval) {
+      throw new Error('no withdrawal approval');
+    }
+
+    if (asset?.source.__typename !== 'ERC20') {
+      throw new Error(`invalid asset type ${asset?.source.__typename}`);
+    }
+
+    if (!cfg) {
+      throw new Error(`could not find evm config for asset ${asset.id}`);
+    }
+
+    submitWithdraw({
+      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
+      approval: approval.erc20WithdrawalApproval,
+      asset,
+    });
+  };
+
+  const modal = useModal({
+    onConnect: () => {
+      // onConnect will be called for all mounted WithdrawalStatusCell components. To avoid
+      // multiple switch chain calls we only call handleComplete for the withdrawal that
+      // was clicked
+      if (activeId === data.detail.id) {
+        handleComplete();
+      }
     },
   });
 
@@ -57,6 +101,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
 
     return 'idle';
   });
+
   const [readyAt, setReadyAt] = useState<Date>();
   const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -130,77 +175,27 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   }
 
   if (status === 'ready') {
-    if (ethWalletStatus === 'connected') {
-      return (
-        <span className="flex gap-1 items-center">
-          {t('Pending')}:{' '}
-          <button
-            onClick={() => {
-              const asset = data.asset;
-
-              if (!config || !configs) {
-                throw new Error('could not fetch ethereum configs');
-              }
-
-              if (!approval?.erc20WithdrawalApproval) {
-                throw new Error('no withdrawal approval');
-              }
-
-              if (asset?.source.__typename !== 'ERC20') {
-                throw new Error(
-                  `invalid asset type ${asset?.source.__typename}`
-                );
-              }
-
-              if (!cfg) {
-                throw new Error(
-                  `could not find evm config for asset ${asset.id}`
-                );
-              }
-
-              submitWithdraw({
-                bridgeAddress: cfg.collateral_bridge_contract
-                  .address as `0x${string}`,
-                approval: approval.erc20WithdrawalApproval,
-                asset,
-              });
-            }}
-            className="underline underline-offset-4"
-          >
-            {t('Complete')}
-          </button>
-          <button
-            onClick={() => openDialog(data.detail.id)}
-            className="underline underline-offset-4"
-          >
-            {t('View')}
-          </button>
-        </span>
-      );
-    }
-
     return (
       <span className="flex gap-1 items-center">
-        {t('Pending')}:{' '}
-        <ConnectKitButton.Custom>
-          {({ show }) => {
-            return (
-              <button
-                className="underline underline-offset-4"
-                onClick={() => {
-                  if (show) show();
-                }}
-              >
-                {t('Connect')}
-              </button>
-            );
+        <Button
+          size="xs"
+          onClick={() => {
+            activeId = data.detail.id;
+            if (ethWalletStatus === 'disconnected') {
+              modal.setOpen(true);
+              return;
+            }
+
+            handleComplete();
           }}
-        </ConnectKitButton.Custom>
+        >
+          {t('Complete')}
+        </Button>
         <button
           onClick={() => openDialog(data.detail.id)}
-          className="underline underline-offset-4"
+          className="text-gs-100"
         >
-          {t('View')}
+          <VegaIcon name={VegaIconNames.INFO} className="mt-1" />
         </button>
       </span>
     );
