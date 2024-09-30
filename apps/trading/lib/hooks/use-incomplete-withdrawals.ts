@@ -11,6 +11,7 @@ import {
   withdrawalProvider,
 } from '@vegaprotocol/withdraws';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
 export type TimestampedWithdrawals = {
   data: WithdrawalFieldsFragment;
@@ -62,7 +63,12 @@ export const getReadyAndDelayed = (
   withdrawals: WithdrawalFieldsFragment[],
   delays: Map<number, bigint>
 ) => {
-  const incompleteWithdrawals = withdrawals?.filter((w) => !w.txHash);
+  const incompleteWithdrawals = withdrawals?.filter((w) => {
+    if (w.status === WithdrawalStatus.STATUS_REJECTED) return false;
+    if (w.status === WithdrawalStatus.STATUS_FINALIZED) return false;
+    if (w.txHash) return false;
+    return true;
+  });
 
   const timestamped = incompleteWithdrawals?.map((w) => {
     let timestamp = undefined;
