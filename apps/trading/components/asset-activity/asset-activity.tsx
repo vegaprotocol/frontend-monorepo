@@ -247,6 +247,7 @@ export const AssetActivityDatagrid = ({
         pinnedTopRowData={pinnedTopRowData}
         overlayNoRowsTemplate={t('No data')}
         rowClass="ag-highlight-pinned"
+        autoSizeStrategy={{ type: 'fitGridWidth' }}
       />
       <Pagination
         count={rowData.length}
