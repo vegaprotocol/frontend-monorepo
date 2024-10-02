@@ -248,7 +248,7 @@ def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]
     expect(page.get_by_test_id("endtime-0")).to_be_visible()
     expect(page.get_by_test_id("type-0")).to_have_text("Price maker fees paid • tDAI ")
     expect(page.get_by_test_id("asset-0")).to_have_text("VEGA")
-    expect(page.get_by_test_id("daily-0")).to_have_text("100.00")
+    expect(page.get_by_test_id("amountAvailable-0")).to_have_text("100.00")
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("amount-0")).to_have_text("50.00")
     expect(page.get_by_test_id("participatingTeams-0")).to_have_text("2")
