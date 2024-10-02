@@ -11,7 +11,7 @@ export const WithdrawalsIndicator = () => {
   return (
     <Tooltip
       description={t('withdrawalsIncompleteTooltip', {
-        count: ready.length * 3,
+        count: ready.length,
       })}
     >
       <span className="p-1 text-2xs leading-none rounded bg-surface-3">

@@ -23,7 +23,6 @@ export const useIncompleteWithdrawals = () => {
   const { configs } = useEVMBridgeConfigs();
 
   const allConfigs = [config, ...(configs || [])];
-
   const contracts = compact(
     allConfigs.map((c) => {
       if (!c) return null;
@@ -31,7 +30,7 @@ export const useIncompleteWithdrawals = () => {
       return {
         abi: BRIDGE_ABI as Abi,
         address: c.collateral_bridge_contract.address as `0x${string}`,
-        functionName: 'default_withdraw_delay',
+        functionName: 'defaultWithdrawDelay',
         chainId: Number(c.chain_id),
       };
     })
