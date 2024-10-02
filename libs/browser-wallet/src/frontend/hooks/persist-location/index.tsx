@@ -3,8 +3,6 @@ import { useLocation } from 'react-router-dom';
 
 import { FULL_ROUTES } from '../../routes/route-names';
 
-export const LOCATION_KEY = 'location';
-
 const IGNORED_PATHS = new Set([
   FULL_ROUTES.home,
   FULL_ROUTES.login,
@@ -15,6 +13,12 @@ const IGNORED_PATHS = new Set([
   FULL_ROUTES.importWallet,
 ]);
 
+export let previousLocation: string | null = null;
+
+export const setPreviousLocation = (val: string | null) => {
+  previousLocation = val;
+};
+
 export const usePersistLocation = () => {
   const location = useLocation();
 
@@ -24,7 +28,7 @@ export const usePersistLocation = () => {
     // to get them to the place they need to be. So if on home this is
     // an initial load we do not wish to persist
     if (!IGNORED_PATHS.has(location.pathname)) {
-      localStorage.setItem(LOCATION_KEY, location.pathname);
+      previousLocation = location.pathname;
     }
   }, [location]);
 };
