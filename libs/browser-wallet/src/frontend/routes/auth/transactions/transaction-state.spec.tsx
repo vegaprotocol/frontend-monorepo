@@ -12,13 +12,13 @@ describe('TransactionState', () => {
   it('renders info color when transaction state is confirmed', () => {
     renderComponent(TransactionState.Confirmed);
     expect(screen.getByTestId(locators.transactionState)).toHaveClass(
-      'text-intent-info-background'
+      'text-intent-info'
     );
   });
   it('renders error color when transaction state is error', () => {
     renderComponent(TransactionState.Error);
     expect(screen.getByTestId(locators.transactionState)).toHaveClass(
-      'text-intent-danger-background'
+      'text-intent-danger'
     );
   });
   it('renders neutral color when transaction state is rejected', () => {

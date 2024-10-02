@@ -9,7 +9,6 @@ import { TransactionModalFooter } from './transaction-modal-footer';
 
 export const locators = {
   transactionWrapper: 'transaction-wrapper',
-  transactionTimeAgo: 'transaction-time-ago',
 };
 
 export const TransactionModal = () => {

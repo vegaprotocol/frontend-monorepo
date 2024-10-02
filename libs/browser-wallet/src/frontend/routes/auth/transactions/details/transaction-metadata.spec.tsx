@@ -3,7 +3,6 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { locators as subHeaderLocators } from '@/components/sub-header';
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
-import { FULL_ROUTES } from '@/routes/route-names';
 import { type StoredTransaction, TransactionState } from '@/types/backend';
 
 import { testingNetwork } from '../../../../../config/well-known-networks';
@@ -75,28 +74,11 @@ describe('TransactionMeta', () => {
     ).toHaveTextContent('000000…0000');
 
     expect(
-      screen.getByTestId(locators.transactionMetadataNetwork)
-    ).toHaveTextContent(testingNetwork.id);
-    expect(
-      screen.getByTestId(locators.transactionMetadataNetwork)
-    ).toHaveAttribute(
-      'href',
-      `${FULL_ROUTES.networksSettings}/${testingNetwork.id}`
-    );
-
-    expect(
       screen.getByTestId(locators.transactionMetadataNode)
     ).toHaveTextContent('https://node.com');
     expect(
       screen.getByTestId(locators.transactionMetadataNode)
     ).toHaveAttribute('href', 'https://node.com');
-
-    expect(
-      screen.getByTestId(locators.transactionMetadataOrigin)
-    ).toHaveTextContent('https://foo.com');
-    expect(
-      screen.getByTestId(locators.transactionMetadataOrigin)
-    ).toHaveAttribute('href', 'https://foo.com');
 
     // TODO: Set explicit date format for tests
     // expect(

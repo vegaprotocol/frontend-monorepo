@@ -31,13 +31,12 @@ export const TransactionHeader = ({
           data-testid={locators.transactionTimeAgo}
           className="text-sm text-surface-0-fg-muted"
         >
-          (Received{' '}
+          Received{' '}
           <ReactTimeAgo
             timeStyle="round"
             date={new Date(receivedAt)}
             locale="en-US"
           />
-          )
         </div>
       </div>
     </>
