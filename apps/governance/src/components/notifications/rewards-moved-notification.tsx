@@ -37,7 +37,7 @@ export const RewardsMovedNotification = () => {
   return (
     <NotificationBanner
       intent={Intent.Warning}
-      icon={getIntentIcon(Intent.Warning)}
+      icon={<VegaIcon name={getIntentIcon(Intent.Warning)} />}
     >
       <Trans
         i18nKey="rewardsMovedNotification"
