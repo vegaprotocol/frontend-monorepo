@@ -5,7 +5,6 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { NavLink } from 'react-router-dom';
 
 import { DataTable } from '@/components/data-table';
 import { ExternalLink } from '@/components/external-link';
@@ -13,7 +12,6 @@ import { SubHeader } from '@/components/sub-header';
 import { VegaSection } from '@/components/vega-section';
 import { useNetwork } from '@/contexts/network/network-context';
 import { formatDateTime } from '@/lib/utils';
-import { FULL_ROUTES } from '@/routes/route-names';
 import type { StoredTransaction } from '@/types/backend';
 
 import { VegaTransactionState } from '../transactions-state';
@@ -62,17 +60,6 @@ export const TransactionMetadata = ({
         ]
       : null,
     [
-      'Network',
-      <NavLink
-        data-testid={locators.transactionMetadataNetwork}
-        key="transaction-details-network"
-        className="underline"
-        to={`${FULL_ROUTES.networksSettings}/${transaction.networkId}`}
-      >
-        {transaction.networkId}
-      </NavLink>,
-    ],
-    [
       'Node',
       <ExternalLink
         data-testid={locators.transactionMetadataNode}
@@ -80,16 +67,6 @@ export const TransactionMetadata = ({
         href={transaction.node}
       >
         {transaction.node}
-      </ExternalLink>,
-    ],
-    [
-      'Origin',
-      <ExternalLink
-        data-testid={locators.transactionMetadataOrigin}
-        key="transaction-details-origin"
-        href={transaction.origin}
-      >
-        {transaction.origin}
       </ExternalLink>,
     ],
     [
