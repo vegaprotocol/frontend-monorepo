@@ -73,7 +73,7 @@ export const FeedbackStop = () => {
   }
 
   if (
-    !pubKey &&
+    !pubKey ||
     [
       estimateLoading,
       marketStateLoading,
@@ -81,8 +81,9 @@ export const FeedbackStop = () => {
       activeOrdersLoading,
       activeStopOrdersLoading,
     ].some((l) => l)
-  )
-    {return null;}
+  ) {
+    return null;
+  }
   if (!maxStopOrders) return null;
 
   if (ticket.marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
