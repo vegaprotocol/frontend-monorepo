@@ -35,7 +35,7 @@ const ExplorerLinks = {
 
 const ConsoleLinks = {
   ...EmptyLinks,
-  [Networks.MAINNET]: 'https://trading.neb.exchange',
+  [Networks.MAINNET]: 'https://trade.neb.exchange',
 };
 
 const GovernanceLinks = {
