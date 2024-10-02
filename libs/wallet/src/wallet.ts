@@ -13,7 +13,7 @@ import {
 import { ConnectorError, noConnectorError, unknownError } from './errors';
 
 export const STORE_KEY = 'vega_wallet_store';
-const STORE_VERSION = 1;
+const STORE_VERSION = 2;
 
 // get/set functions are not used in the slices so these
 // can be plain objects
@@ -57,7 +57,6 @@ export function createConfig(cfg: Config): Wallet {
         return {
           chainId: state.chainId,
           current: state.current,
-          pubKey: state.pubKey,
           previousKey: state.pubKey,
           jsonRpcToken: state.jsonRpcToken,
         };
