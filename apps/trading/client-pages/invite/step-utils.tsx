@@ -3,6 +3,15 @@ import { useOnboardStore } from '../../stores/onboard';
 import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
+import {
+  Intent,
+  Panel,
+  ToastHeading,
+  useToasts,
+} from '@vegaprotocol/ui-toolkit';
+import { useEffect } from 'react';
+import { Trans } from 'react-i18next';
+import { ns, t } from '../../lib/use-t';
 
 export enum Step {
   Connect = 'Connect',
@@ -74,6 +83,11 @@ export const useDetermineStepProgression = () => {
 export const useDetermineCurrentStep = (
   steps: Step[] = StepProgressions.Default
 ) => {
+  const storedCode = useOnboardStore((state) => state.code);
+  const [setToast, removeToast] = useToasts((state) => [
+    state.setToast,
+    state.remove,
+  ]);
   const { pubKey, status, isReadOnly } = useVegaWallet();
   const {
     requiredFunds,
@@ -86,6 +100,39 @@ export const useDetermineCurrentStep = (
 
   const loading = fundsLoading || referralLoading || teamLoading;
   const connected = pubKey && status === 'connected' && !isReadOnly;
+
+  const inRequestedReferralSet = referralSet && storedCode === referralSet.id;
+
+  useEffect(() => {
+    if (referralSet && !inRequestedReferralSet) {
+      const toastId = 'invite-already-has-referral-set';
+      setToast({
+        id: toastId,
+        intent: Intent.Danger,
+        closeAfter: 30000,
+        content: (
+          <div>
+            <ToastHeading>
+              {t('ONBOARDING_STEP_APPLY_CODE_ALREADY_IN_IT_HEADER')}
+            </ToastHeading>
+            <Trans
+              i18nKey={'ONBOARDING_STEP_APPLY_CODE_ALREADY_IN_IT_DESCRIPTION'}
+              ns={ns}
+              components={[
+                <Panel key="code" className="truncate">
+                  CODE
+                </Panel>,
+              ]}
+              values={{ code: referralSet.id }}
+            />
+          </div>
+        ),
+        onClose: () => {
+          removeToast(toastId);
+        },
+      });
+    }
+  }, [referralSet, inRequestedReferralSet, setToast, removeToast]);
 
   let step = undefined;
 

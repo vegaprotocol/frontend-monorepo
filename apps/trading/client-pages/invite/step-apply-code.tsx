@@ -22,9 +22,15 @@ import { Trans } from 'react-i18next';
 import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { useOnboardStore } from '../../stores/onboard';
 import { useForm } from 'react-hook-form';
-import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
+import {
+  useFindReferralSet,
+  useReferralSet,
+} from '../referrals/hooks/use-find-referral-set';
 import { useCallback, useState } from 'react';
-import { useSimpleTransaction } from '@vegaprotocol/wallet-react';
+import {
+  useSimpleTransaction,
+  useVegaWallet,
+} from '@vegaprotocol/wallet-react';
 import { GradientText } from '../../components/gradient-text';
 import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 import minBy from 'lodash/minBy';
@@ -36,10 +42,14 @@ export const StepApplyCode = () => {
   const code = useOnboardStore((state) => state.code);
   const program = useCurrentPrograms();
 
+  const { pubKey } = useVegaWallet();
+  const { refetch } = useFindReferralSet(pubKey);
+
   const firstBenefitTier = minBy(
     program.referralProgram?.benefitTiers,
     (bt) => bt.epochs
   );
+
   const minEpochs = firstBenefitTier ? firstBenefitTier.epochs : 0;
 
   type formFields = { code: string };
@@ -78,11 +88,18 @@ export const StepApplyCode = () => {
   const [txDialogOpen, setTxDialogOpen] = useState(false);
   const { error, reset, result, send, status } = useSimpleTransaction();
 
+  const dismiss = () => {
+    refetch();
+    reset();
+    setTxDialogOpen(false);
+  };
+
   const onSubmit = ({ code: codeField }: formFields) => {
     setTxDialogOpen(true);
     send({
       applyReferralCode: {
         id: codeField,
+        do_not_join_team: true,
       },
     });
   };
@@ -175,10 +192,7 @@ export const StepApplyCode = () => {
               error={error}
               // TODO: If next is join team then diff label needed
               confirmedLabel={t('ONBOARDING_STEP_START_PLAYING')}
-              reset={() => {
-                reset();
-                setTxDialogOpen(false);
-              }}
+              reset={dismiss}
               resetLabel={t('Dismiss')}
             />
           </Dialog>
