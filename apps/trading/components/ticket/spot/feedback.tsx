@@ -36,8 +36,9 @@ export const Feedback = () => {
   const { data: marketTradingMode, loading: tradingModeLoading } =
     useMarketTradingMode(ticket.market.id);
 
-  if (!pubKey || priceLoading || stateLoading || tradingModeLoading)
-    {return null;}
+  if (!pubKey || priceLoading || stateLoading || tradingModeLoading) {
+    return null;
+  }
 
   const price =
     type === OrderType.TYPE_LIMIT
