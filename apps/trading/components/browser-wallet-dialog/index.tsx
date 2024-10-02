@@ -42,7 +42,7 @@ export const BrowserWalletDialog = () => {
         set(open);
       }}
     >
-      <div className="h-full" style={{ height: 600 }}>
+      <div className="h-full" style={{ height: 650 }}>
         <BrowserWallet />
       </div>
     </Dialog>
