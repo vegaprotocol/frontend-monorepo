@@ -2,10 +2,6 @@ import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { ReferralStatistics } from './referral-statistics';
 import {
-  ReferralProgramDocument,
-  type ReferralProgramQuery,
-} from './hooks/__generated__/CurrentReferralProgram';
-import {
   ReferralSetsDocument,
   type ReferralSetsQueryVariables,
   type ReferralSetsQuery,
@@ -25,6 +21,11 @@ import {
   mockConfig,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
+import {
+  CurrentProgramsDocument,
+  type CurrentProgramsQuery,
+} from '../../lib/hooks/__generated__/CurrentPrograms';
 
 const mockKeys = [
   {
@@ -66,7 +67,7 @@ const MOCK_NON_ELIGIBILE_STAKE_AVAILABLE: StakeAvailableQuery = {
   },
 };
 
-const MOCK_REFERRAL_PROGRAM: ReferralProgramQuery = {
+const MOCK_REFERRAL_PROGRAM: CurrentProgramsQuery = {
   currentReferralProgram: {
     __typename: 'CurrentReferralProgram',
     benefitTiers: [
@@ -74,15 +75,35 @@ const MOCK_REFERRAL_PROGRAM: ReferralProgramQuery = {
         __typename: 'BenefitTier',
         minimumEpochs: 1,
         minimumRunningNotionalTakerVolume: '0',
-        referralDiscountFactor: '0.01',
-        referralRewardFactor: '0.01',
+        referralDiscountFactors: {
+          __typename: 'DiscountFactors',
+          infrastructureFactor: '0.01',
+          liquidityFactor: '0.01',
+          makerFactor: '0.01',
+        },
+        referralRewardFactors: {
+          __typename: 'RewardFactors',
+          infrastructureFactor: '0.01',
+          liquidityFactor: '0.01',
+          makerFactor: '0.01',
+        },
       },
       {
         __typename: 'BenefitTier',
         minimumEpochs: 2,
         minimumRunningNotionalTakerVolume: '10',
-        referralDiscountFactor: '0.02',
-        referralRewardFactor: '0.02',
+        referralDiscountFactors: {
+          __typename: 'DiscountFactors',
+          infrastructureFactor: '0.02',
+          liquidityFactor: '0.02',
+          makerFactor: '0.02',
+        },
+        referralRewardFactors: {
+          __typename: 'RewardFactors',
+          infrastructureFactor: '0.02',
+          liquidityFactor: '0.02',
+          makerFactor: '0.02',
+        },
       },
     ],
     endOfProgramTimestamp: '202411012023-11-26T05:58:24.045158Z',
@@ -103,6 +124,12 @@ const MOCK_REFERRAL_PROGRAM: ReferralProgramQuery = {
     windowLength: 3,
     endedAt: null,
   },
+  currentVolumeDiscountProgram: undefined,
+  defaultBuybackFee: undefined,
+  defaultInfrastructureFee: undefined,
+  defaultMakerFee: undefined,
+  defaultTreasuryFee: undefined,
+  feesPerMarket: undefined,
 };
 
 const MOCK_REFERRER_SET: ReferralSetsQuery = {
@@ -184,9 +211,9 @@ const MOCK_REFEREES_30: RefereesQuery = {
   },
 };
 
-const programMock: MockedResponse<ReferralProgramQuery> = {
+const programMock: MockedResponse<CurrentProgramsQuery> = {
   request: {
-    query: ReferralProgramDocument,
+    query: CurrentProgramsDocument,
   },
   result: { data: MOCK_REFERRAL_PROGRAM },
 };
@@ -314,7 +341,9 @@ describe('ReferralStatistics', () => {
       <MemoryRouter>
         <MockedProvider mocks={mocks} showWarnings={false}>
           <MockedWalletProvider>
-            <ReferralStatistics />
+            <TooltipProvider>
+              <ReferralStatistics />
+            </TooltipProvider>
           </MockedWalletProvider>
         </MockedProvider>
       </MemoryRouter>

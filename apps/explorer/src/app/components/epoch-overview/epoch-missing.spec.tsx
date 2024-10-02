@@ -3,7 +3,10 @@ import { render } from '@testing-library/react';
 import EpochMissingOverview, { calculateEpochData } from './epoch-missing';
 import { getSecondsFromInterval } from '@vegaprotocol/utils';
 import { ExplorerFutureEpochDocument } from './__generated__/Epoch';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
+
 const START_DATE_PAST = 'Monday, 17 February 2022 11:44:09';
+
 describe('getSecondsFromInterval', () => {
   it('returns 0 for bad data', () => {
     expect(getSecondsFromInterval(null as unknown as string)).toEqual(0);
@@ -131,7 +134,9 @@ describe('EpochMissingOverview', () => {
 
     return render(
       <MockedProvider mocks={[mock]}>
-        <EpochMissingOverview missingEpochId={missingEpochId} />
+        <TooltipProvider>
+          <EpochMissingOverview missingEpochId={missingEpochId} />
+        </TooltipProvider>
       </MockedProvider>
     );
   }

@@ -1,7 +1,7 @@
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { ApplyCodeFormContainer } from './apply-code-form';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { useFindReferralSet } from './hooks/use-find-referral-set';
 import { Referees } from './referees';
 import { ReferrerStatistics } from './referrer-statistics';
@@ -11,7 +11,7 @@ import { DEFAULT_AGGREGATION_DAYS } from './constants';
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
 
-  const program = useReferralProgram();
+  const program = useCurrentPrograms();
 
   const {
     data: referralSet,
@@ -25,7 +25,7 @@ export const ReferralStatistics = () => {
   }
 
   const aggregationEpochs =
-    program.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
+    program.referralProgram?.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
 
   if (pubKey && referralSet?.id && role === 'referrer') {
     return (

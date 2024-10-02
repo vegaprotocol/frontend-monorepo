@@ -28,6 +28,7 @@ import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
 import { NodeHealthContainer } from '../components/node-health';
 import dynamic from 'next/dynamic';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 export const BrowserWalletContainer = dynamic(
   () =>
@@ -118,12 +119,17 @@ function VegaTradingApp(props: AppProps) {
   return (
     <Suspense fallback={<AppLoader />}>
       <HashRouter>
-        <Bootstrapper>
-          <BrowserWalletContainer>
-            <AppBody {...props} />
-          </BrowserWalletContainer>
-        </Bootstrapper>
-        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+        <TooltipProvider>
+          <Bootstrapper>
+            <BrowserWalletContainer>
+              <AppBody {...props} />
+            </BrowserWalletContainer>
+          </Bootstrapper>
+          <NodeSwitcherDialog
+            open={nodeSwitcherOpen}
+            setOpen={setNodeSwitcher}
+          />
+        </TooltipProvider>
       </HashRouter>
     </Suspense>
   );

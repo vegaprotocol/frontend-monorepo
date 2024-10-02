@@ -8,6 +8,7 @@ import {
   type RewardPotProps,
   Multipliers,
 } from './rewards-container';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const rewardAsset = {
   id: 'asset-1',
@@ -29,7 +30,9 @@ describe('RewardPot', () => {
   const renderComponent = (props: RewardPotProps) => {
     return render(
       <MemoryRouter>
-        <RewardPot {...props} />
+        <TooltipProvider>
+          <RewardPot {...props} />
+        </TooltipProvider>
       </MemoryRouter>
     );
   };

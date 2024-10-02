@@ -5,7 +5,7 @@ import {
   PeggedReference as vegaPeggedReference,
   Side as vegaSide,
 } from '@vegaprotocol/enums';
-import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { TooltipProvider, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 import { MockNetworkProvider } from '@/contexts/network/mock-network-provider';
 import { useAssetsStore } from '@/stores/assets-store';
@@ -32,7 +32,9 @@ jest.mock('@/stores/assets-store');
 const renderComponent = (properties: OrderTableProperties) =>
   render(
     <MockNetworkProvider>
-      <OrderTable {...properties} />
+      <TooltipProvider>
+        <OrderTable {...properties} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 

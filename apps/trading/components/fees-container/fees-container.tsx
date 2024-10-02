@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/network-parameters';
 import { activeMarketsProvider } from '@vegaprotocol/markets';
 import { formatNumber, formatNumberRounded } from '@vegaprotocol/utils';
-import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
+import { useFeesQuery } from './__generated__/Fees';
 import { Card, CardStat, CardTable, CardTableTD, CardTableTH } from '../card';
 import { MarketFees } from './market-fees';
 import { useVolumeStats } from './use-volume-stats';
@@ -18,6 +18,9 @@ import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
 import {
+  Button,
+  Intent,
+  TextChildrenTooltip,
   Tooltip,
   VegaIcon,
   VegaIconNames,
@@ -27,6 +30,15 @@ import { useT } from '../../lib/use-t';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { getTierGradient } from '../helpers/tiers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import {
+  areFactorsEqual,
+  type Factors,
+  type ReferralBenefitTier,
+  useCurrentPrograms,
+  type VolumeDiscountBenefitTier,
+} from '../../lib/hooks/use-current-programs';
+import compact from 'lodash/compact';
+import { useState } from 'react';
 
 export const FeesContainer = () => {
   const t = useT();
@@ -41,17 +53,17 @@ export const FeesContainer = () => {
     variables: undefined,
   });
 
-  const { data: programData, loading: programLoading } =
-    useDiscountProgramsQuery({
-      errorPolicy: 'ignore',
-      fetchPolicy: 'cache-and-network',
-      pollInterval: 15000,
-    });
+  const {
+    referralProgram,
+    volumeDiscountProgram,
+    loading: currentProgramsLoading,
+  } = useCurrentPrograms();
 
   const volumeDiscountWindowLength =
-    programData?.currentVolumeDiscountProgram?.windowLength || 1;
+    volumeDiscountProgram?.details?.windowLength || 1;
   const referralDiscountWindowLength =
-    programData?.currentReferralProgram?.windowLength || 1;
+    referralProgram?.details?.windowLength || 1;
+
   const { data: feesData, loading: feesLoading } = useFeesQuery({
     variables: {
       partyId: pubKey || '',
@@ -63,37 +75,29 @@ export const FeesContainer = () => {
 
   const previousEpoch = (Number(feesData?.epoch.id) || 0) - 1;
 
-  const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
-    useVolumeStats(
-      previousEpoch,
-      feesData?.volumeDiscountStats.edges?.[0]?.node,
-      programData?.currentVolumeDiscountProgram
-    );
+  const volumeStats = useVolumeStats(
+    previousEpoch,
+    feesData?.volumeDiscountStats.edges?.[0]?.node,
+    volumeDiscountProgram?.benefitTiers
+  );
 
-  const {
-    referralDiscount,
-    referralVolumeInWindow,
-    referralTierIndex,
-    referralTiers,
-    epochsInSet,
-    code,
-    isReferrer,
-  } = useReferralStats(
+  const referralStats = useReferralStats(
     previousEpoch,
     feesData?.referralSetStats.edges?.[0]?.node,
     feesData?.referralSetReferees.edges?.[0]?.node,
-    programData?.currentReferralProgram,
+    referralProgram,
     feesData?.referrer.edges?.[0]?.node,
     feesData?.referee.edges?.[0]?.node
   );
 
-  const loading = paramsLoading || feesLoading || programLoading;
+  const loading = paramsLoading || feesLoading || currentProgramsLoading;
   const isConnected = Boolean(pubKey);
 
-  const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
-  const isVolumeDiscountProgramRunning = Boolean(
-    programData?.currentVolumeDiscountProgram
-  );
+  const isReferralProgramRunning = Boolean(referralProgram);
+  const isVolumeDiscountProgramRunning = Boolean(volumeDiscountProgram);
+
+  const [showVolumeFactors, setShowVolumeFactors] = useState(false);
+  const [showReferralFactors, setShowReferralFactors] = useState(false);
 
   return (
     <>
@@ -111,8 +115,8 @@ export const FeesContainer = () => {
               <TradingFees
                 params={params}
                 markets={markets}
-                referralDiscount={referralDiscount}
-                volumeDiscount={volumeDiscount}
+                referralDiscountFactors={referralStats.discountFactors}
+                volumeDiscountFactors={volumeStats.discountFactors}
               />
             </Card>
             <Card
@@ -121,8 +125,8 @@ export const FeesContainer = () => {
               loading={loading}
             >
               <TotalDiscount
-                referralDiscount={referralDiscount}
-                volumeDiscount={volumeDiscount}
+                referralDiscountFactors={referralStats.discountFactors}
+                volumeDiscountFactors={volumeStats.discountFactors}
                 isReferralProgramRunning={isReferralProgramRunning}
                 isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
               />
@@ -134,9 +138,9 @@ export const FeesContainer = () => {
             >
               {isVolumeDiscountProgramRunning ? (
                 <CurrentVolume
-                  tiers={volumeTiers}
-                  tierIndex={volumeTierIndex}
-                  windowLengthVolume={volumeInWindow}
+                  tiers={volumeDiscountProgram?.benefitTiers}
+                  currentTier={volumeStats.benefitTier}
+                  windowLengthVolume={volumeStats.volume}
                   windowLength={volumeDiscountWindowLength}
                 />
               ) : (
@@ -154,12 +158,15 @@ export const FeesContainer = () => {
               loading={loading}
               data-testid="referral-benefits-card"
             >
-              {isReferrer ? (
-                <ReferrerInfo code={code} data-testid="referrer-info" />
+              {referralStats.isReferrer ? (
+                <ReferrerInfo
+                  code={referralStats.code}
+                  data-testid="referrer-info"
+                />
               ) : isReferralProgramRunning ? (
                 <ReferralBenefits
-                  setRunningNotionalTakerVolume={referralVolumeInWindow}
-                  epochsInSet={epochsInSet}
+                  setRunningNotionalTakerVolume={referralStats.volume}
+                  epochsInSet={referralStats.epochsInSet}
                   epochs={referralDiscountWindowLength}
                   data-testid="referral-benefits"
                 />
@@ -178,25 +185,55 @@ export const FeesContainer = () => {
           className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
           data-testid="volume-discount-card"
         >
-          <h3>{t('Volume discount')}</h3>
+          <div className="flex gap-2 justify-between">
+            <h3>{t('Volume discount')}</h3>
+            <Button
+              size="xs"
+              intent={Intent.None}
+              onClick={() => {
+                setShowVolumeFactors(!showVolumeFactors);
+              }}
+              className="text-surface-0-fg-muted text-xs"
+            >
+              {showVolumeFactors
+                ? t('Hide all factors')
+                : t('Show all factors')}
+            </Button>
+          </div>
           <VolumeTiers
-            tiers={volumeTiers}
-            tierIndex={volumeTierIndex}
-            lastEpochVolume={volumeInWindow}
+            tiers={volumeDiscountProgram?.benefitTiers}
+            currentTier={volumeStats.benefitTier}
+            lastEpochVolume={volumeStats.volume}
             windowLength={volumeDiscountWindowLength}
+            showFactors={showVolumeFactors}
           />
         </div>
         <div
           className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
           data-testid="referral-discount-card"
         >
-          <h3>{t('Referral discount')}</h3>
+          <div className="flex gap-2 justify-between">
+            <h3>{t('Referral discount')}</h3>
+            <Button
+              size="xs"
+              intent={Intent.None}
+              onClick={() => {
+                setShowReferralFactors(!showReferralFactors);
+              }}
+              className="text-surface-0-fg-muted text-xs"
+            >
+              {showReferralFactors
+                ? t('Hide all factors')
+                : t('Show all factors')}
+            </Button>
+          </div>
           <ReferralTiers
-            tiers={referralTiers}
-            tierIndex={referralTierIndex}
-            epochsInSet={epochsInSet}
-            referralVolumeInWindow={referralVolumeInWindow}
+            tiers={referralProgram?.benefitTiers}
+            currentTier={referralStats.benefitTier}
+            epochsInSet={referralStats.epochsInSet}
+            referralVolumeInWindow={referralStats.volume}
             referralDiscountWindowLength={referralDiscountWindowLength}
+            showFactors={showReferralFactors}
           />
         </div>
       </section>
@@ -207,8 +244,8 @@ export const FeesContainer = () => {
         <h3>{t('Fees by market')}</h3>
         <MarketFees
           markets={markets}
-          referralDiscount={referralDiscount}
-          volumeDiscount={volumeDiscount}
+          referralDiscountFactors={referralStats.discountFactors}
+          volumeDiscountFactors={volumeStats.discountFactors}
         />
       </section>
     </>
@@ -218,20 +255,26 @@ export const FeesContainer = () => {
 export const TradingFees = ({
   params,
   markets,
-  referralDiscount,
-  volumeDiscount,
+  referralDiscountFactors,
+  volumeDiscountFactors,
 }: {
   params: {
     market_fee_factors_infrastructureFee: string;
     market_fee_factors_makerFee: string;
   };
   markets: Array<{ fees: { factors: { liquidityFee: string } } }> | null;
-  referralDiscount: number;
-  volumeDiscount: number;
+  referralDiscountFactors: Factors | undefined;
+  volumeDiscountFactors: Factors | undefined;
 }) => {
   const t = useT();
-  const referralDiscountBigNum = new BigNumber(referralDiscount);
-  const volumeDiscountBigNum = new BigNumber(volumeDiscount);
+
+  const referralDiscounts = referralDiscountFactors
+    ? Object.values(referralDiscountFactors).map((d) => new BigNumber(d))
+    : [];
+
+  const volumeDiscounts = volumeDiscountFactors
+    ? Object.values(volumeDiscountFactors).map((d) => new BigNumber(d))
+    : [];
 
   // Show min and max liquidity fees from all markets
   const minLiq = minBy(markets, (m) => Number(m.fees.factors.liquidityFee));
@@ -243,7 +286,7 @@ export const TradingFees = ({
 
   const adjustedTotal = getAdjustedFee(
     [total],
-    [referralDiscountBigNum, volumeDiscountBigNum]
+    [...referralDiscounts, ...volumeDiscounts]
   );
 
   let minTotal;
@@ -261,12 +304,12 @@ export const TradingFees = ({
 
     minAdjustedTotal = getAdjustedFee(
       [total, minLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [...referralDiscounts, ...volumeDiscounts]
     );
 
     maxAdjustedTotal = getAdjustedFee(
       [total, maxLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [...referralDiscounts, ...volumeDiscounts]
     );
   }
 
@@ -324,17 +367,25 @@ export const TradingFees = ({
 
 export const CurrentVolume = ({
   tiers,
-  tierIndex,
+  currentTier,
   windowLengthVolume,
   windowLength,
 }: {
-  tiers: Array<{ minimumRunningNotionalTakerVolume: string }>;
-  tierIndex: number;
+  tiers: VolumeDiscountBenefitTier[] | undefined;
+  currentTier: VolumeDiscountBenefitTier | undefined;
   windowLengthVolume: number;
   windowLength: number;
 }) => {
   const t = useT();
-  const nextTier = tiers[tierIndex + 1];
+
+  const tierIndex =
+    tiers && currentTier
+      ? tiers.findIndex((t) =>
+          areFactorsEqual(t.discountFactors, currentTier.discountFactors)
+        )
+      : -1;
+
+  const nextTier = tiers?.[tierIndex + 1];
   const requiredForNextTier = nextTier
     ? new BigNumber(nextTier.minimumRunningNotionalTakerVolume).minus(
         windowLengthVolume
@@ -396,22 +447,34 @@ const ReferralBenefits = ({
 };
 
 const TotalDiscount = ({
-  referralDiscount,
-  volumeDiscount,
+  referralDiscountFactors,
+  volumeDiscountFactors,
   isReferralProgramRunning,
   isVolumeDiscountProgramRunning,
 }: {
-  referralDiscount: number;
-  volumeDiscount: number;
+  referralDiscountFactors: Factors | undefined;
+  volumeDiscountFactors: Factors | undefined;
   isReferralProgramRunning: boolean;
   isVolumeDiscountProgramRunning: boolean;
 }) => {
   const t = useT();
 
-  // 1 - (1 - volumeDiscount) * (1 - referralDiscount)
-  const vd = BigNumber(1).minus(volumeDiscount);
-  const rd = BigNumber(1).minus(referralDiscount);
-  const totalDiscount = BigNumber(1).minus(vd.multipliedBy(rd));
+  const referralDiscounts = referralDiscountFactors
+    ? Object.values(referralDiscountFactors).map((d) => new BigNumber(d))
+    : [];
+
+  const volumeDiscounts = volumeDiscountFactors
+    ? Object.values(volumeDiscountFactors).map((d) => new BigNumber(d))
+    : [];
+
+  const combinedFactors = [...referralDiscounts, ...volumeDiscounts].reduce(
+    (acc, d) => {
+      return acc.times(new BigNumber(1).minus(d));
+    },
+    new BigNumber(1)
+  );
+
+  const totalDiscount = BigNumber(1).minus(combinedFactors);
 
   const totalDiscountDescription = t(
     'The total discount is calculated according to the following formula: '
@@ -439,7 +502,35 @@ const TotalDiscount = ({
         <tr data-testid="volume-discount-row">
           <CardTableTH>{t('Volume discount')}</CardTableTH>
           <CardTableTD>
-            {formatPercentage(volumeDiscount)}%
+            <div className="flex gap-1 justify-end">
+              <div>
+                <TextChildrenTooltip description={t('infrastructure factor')}>
+                  {volumeDiscountFactors?.infrastructureFactor
+                    ? formatPercentage(
+                        volumeDiscountFactors.infrastructureFactor,
+                        2
+                      )
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+              <div>
+                <TextChildrenTooltip description={t('liquidity factor')}>
+                  {volumeDiscountFactors?.liquidityFactor
+                    ? formatPercentage(volumeDiscountFactors.liquidityFactor, 2)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+              <div>
+                <TextChildrenTooltip description={t('maker factor')}>
+                  {volumeDiscountFactors?.makerFactor
+                    ? formatPercentage(volumeDiscountFactors.makerFactor, 2)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+            </div>
             {!isVolumeDiscountProgramRunning && (
               <Tooltip description={t('No active volume discount programme')}>
                 <span className="cursor-help">
@@ -453,7 +544,34 @@ const TotalDiscount = ({
         <tr data-testid="referral-discount-row">
           <CardTableTH>{t('Referral discount')}</CardTableTH>
           <CardTableTD>
-            {formatPercentage(referralDiscount)}%
+            <div className="flex gap-1 justify-end">
+              <div>
+                <TextChildrenTooltip description={t('infrastructure factor')}>
+                  {referralDiscountFactors?.infrastructureFactor
+                    ? formatPercentage(
+                        referralDiscountFactors.infrastructureFactor
+                      )
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+              <div>
+                <TextChildrenTooltip description={t('liquidity factor')}>
+                  {referralDiscountFactors?.liquidityFactor
+                    ? formatPercentage(referralDiscountFactors.liquidityFactor)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+              <div>
+                <TextChildrenTooltip description={t('maker factor')}>
+                  {referralDiscountFactors?.makerFactor
+                    ? formatPercentage(referralDiscountFactors.makerFactor)
+                    : 0}
+                  %
+                </TextChildrenTooltip>
+              </div>
+            </div>
             {!isReferralProgramRunning && (
               <Tooltip description={t('No active referral programme')}>
                 <span className="cursor-help">
@@ -471,20 +589,19 @@ const TotalDiscount = ({
 
 const VolumeTiers = ({
   tiers,
-  tierIndex,
+  currentTier,
   lastEpochVolume,
   windowLength,
+  showFactors = false,
 }: {
-  tiers: Array<{
-    volumeDiscountFactor: string;
-    minimumRunningNotionalTakerVolume: string;
-  }>;
-  tierIndex: number;
+  tiers: VolumeDiscountBenefitTier[] | undefined;
+  currentTier: VolumeDiscountBenefitTier | undefined;
   lastEpochVolume: number;
   windowLength: number;
+  showFactors?: boolean;
 }) => {
   const t = useT();
-  if (!tiers.length) {
+  if (!tiers || !tiers.length) {
     return (
       <p className="text-surface-1-fg-muted text-sm">
         {t('No volume discount program active')}
@@ -492,12 +609,59 @@ const VolumeTiers = ({
     );
   }
 
+  const tierIndex = currentTier
+    ? tiers.findIndex((t) =>
+        areFactorsEqual(t.discountFactors, currentTier.discountFactors)
+      )
+    : -1;
+
   return (
     <div>
       <SimpleTable
         className="bg-surface-0"
-        columns={[
+        columns={compact([
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
+          // discount factors
+          ...(showFactors
+            ? [
+                {
+                  name: 'discountInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      d<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountMakerFactor',
+                  displayName: (
+                    <span>
+                      d<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountLiquidityFactor',
+                  displayName: (
+                    <span>
+                      d<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
           {
             name: 'discount',
             displayName: t('Discount'),
@@ -520,7 +684,7 @@ const VolumeTiers = ({
             className: 'max-md:hidden',
             testId: 'your-tier',
           },
-        ]}
+        ])}
         data={Array.from(tiers).map((tier, i) => {
           const isUserTier = tierIndex === i;
           const indicator = isUserTier ? (
@@ -534,8 +698,19 @@ const VolumeTiers = ({
           );
           return {
             tier: tierIndicator,
-            discount: (
-              <>{formatPercentage(Number(tier.volumeDiscountFactor))}%</>
+            discount: <>{formatPercentage(tier.discountFactor, 2)}%</>, // TODO: This only shows the calculated discount, should it show the factors?
+            discountInfrastructureFactor: (
+              <span>
+                {formatPercentage(tier.discountFactors.infrastructureFactor)}%
+              </span>
+            ),
+            discountLiquidityFactor: (
+              <span>
+                {formatPercentage(tier.discountFactors.liquidityFactor)}%
+              </span>
+            ),
+            discountMakerFactor: (
+              <span>{formatPercentage(tier.discountFactors.makerFactor)}%</span>
             ),
             minTradingVolume: (
               <>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</>
@@ -556,24 +731,22 @@ const VolumeTiers = ({
 
 const ReferralTiers = ({
   tiers,
-  tierIndex,
+  currentTier,
   epochsInSet,
   referralVolumeInWindow,
   referralDiscountWindowLength,
+  showFactors = false,
 }: {
-  tiers: Array<{
-    referralDiscountFactor: string;
-    minimumRunningNotionalTakerVolume: string;
-    minimumEpochs: number;
-  }>;
-  tierIndex: number;
+  tiers: ReferralBenefitTier[] | undefined;
+  currentTier: ReferralBenefitTier | undefined;
   epochsInSet: number;
   referralVolumeInWindow: number;
   referralDiscountWindowLength: number;
+  showFactors?: boolean;
 }) => {
   const t = useT();
 
-  if (!tiers.length) {
+  if (!tiers || !tiers.length) {
     return (
       <p className="text-surface-1-fg-muted text-sm">
         {t('No referral program active')}
@@ -581,12 +754,59 @@ const ReferralTiers = ({
     );
   }
 
+  const tierIndex = currentTier
+    ? tiers.findIndex((t) =>
+        areFactorsEqual(t.discountFactors, currentTier.discountFactors)
+      )
+    : -1;
+
   return (
     <div>
       <SimpleTable
         className="bg-surface-0"
-        columns={[
+        columns={compact([
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
+          // discount factors
+          ...(showFactors
+            ? [
+                {
+                  name: 'discountInfrastructureFactor',
+                  displayName: (
+                    <span>
+                      d<sub>i</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker infrastructure fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountMakerFactor',
+                  displayName: (
+                    <span>
+                      d<sub>m</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker maker fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+                {
+                  name: 'discountLiquidityFactor',
+                  displayName: (
+                    <span>
+                      d<sub>l</sub>
+                    </span>
+                  ),
+                  tooltip: t(
+                    "The proportion of the referee's taker liquidity fees to be discounted"
+                  ),
+                  className: 'text-xs',
+                },
+              ]
+            : []),
           {
             name: 'discount',
             displayName: t('Discount'),
@@ -622,7 +842,7 @@ const ReferralTiers = ({
             className: 'max-md:hidden',
             testId: 'user-tier-or-unlocks',
           },
-        ]}
+        ])}
         data={Array.from(tiers).map((tier, i) => {
           const isUserTier = tierIndex === i;
           const requiredVolume = Number(tier.minimumRunningNotionalTakerVolume);
@@ -630,9 +850,9 @@ const ReferralTiers = ({
           const indicator = isUserTier ? (
             <YourTier testId={`your-referral-tier-${i}`} />
           ) : referralVolumeInWindow >= requiredVolume &&
-            epochsInSet < tier.minimumEpochs ? (
+            epochsInSet < tier.epochs ? (
             <span className="text-surface-1-fg-muted text-xs">
-              Unlocks in {tier.minimumEpochs - epochsInSet} epochs
+              Unlocks in {tier.epochs - epochsInSet} epochs
             </span>
           ) : null;
 
@@ -645,11 +865,22 @@ const ReferralTiers = ({
 
           return {
             tier: tierIndicator,
-            discount: (
-              <>{formatPercentage(Number(tier.referralDiscountFactor))}%</>
+            discount: <>{formatPercentage(tier.discountFactor, 2)}%</>, // TODO: Same as in volume this shows the calculated discounts, should it show the factors?
+            discountInfrastructureFactor: (
+              <span>
+                {formatPercentage(tier.discountFactors.infrastructureFactor)}%
+              </span>
+            ),
+            discountLiquidityFactor: (
+              <span>
+                {formatPercentage(tier.discountFactors.liquidityFactor)}%
+              </span>
+            ),
+            discountMakerFactor: (
+              <span>{formatPercentage(tier.discountFactors.makerFactor)}%</span>
             ),
             volume: formatNumber(tier.minimumRunningNotionalTakerVolume),
-            epochs: tier.minimumEpochs,
+            epochs: tier.epochs,
             indicator,
             className: cn(getTierGradient(i + 1, tiers.length), 'text-xs'),
           };

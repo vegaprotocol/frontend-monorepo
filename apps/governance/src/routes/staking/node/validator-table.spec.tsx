@@ -4,6 +4,7 @@ import { ValidatorTable } from './validator-table';
 import { ValidatorStatus } from '@vegaprotocol/types';
 import countryData from '../../../components/country-selector/country-data';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const mockNode = {
   id: 'bb1822715aa86ce0e205aa4c78e9b71cdeaec94596ce72d366f0d50589eb1bf5',
@@ -31,9 +32,11 @@ const decimals = 18;
 
 const renderComponent = () =>
   render(
-    <AppStateProvider>
-      <ValidatorTable node={mockNode} stakedTotal={mockStakedTotal} />
-    </AppStateProvider>
+    <TooltipProvider>
+      <AppStateProvider>
+        <ValidatorTable node={mockNode} stakedTotal={mockStakedTotal} />
+      </AppStateProvider>
+    </TooltipProvider>
   );
 
 describe('ValidatorTable', () => {

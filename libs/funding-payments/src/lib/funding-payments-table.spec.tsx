@@ -1,9 +1,13 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
 import type { FundingPayment } from './funding-payments-data-provider';
-import { FundingPaymentsTable } from './funding-payments-table';
+import {
+  FundingPaymentsTable,
+  type FundingPaymentsTableProps,
+} from './funding-payments-table';
 import { generateFundingPayment } from './test-helpers';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('FundingPaymentsTable', () => {
   let defaultFundingPayment: PartialDeep<FundingPayment>;
@@ -36,11 +40,16 @@ describe('FundingPaymentsTable', () => {
     };
   });
 
-  it('correct columns are rendered', async () => {
-    await act(async () => {
-      render(<FundingPaymentsTable rowData={[generateFundingPayment()]} />);
-    });
+  const renderComponent = (props: FundingPaymentsTableProps) => {
+    return render(
+      <TooltipProvider>
+        <FundingPaymentsTable {...props} />
+      </TooltipProvider>
+    );
+  };
 
+  it('correct columns are rendered', async () => {
+    renderComponent({ rowData: [generateFundingPayment()] });
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = ['Market', 'Amount', 'Date'];
     expect(headers).toHaveLength(expectedHeaders.length);
@@ -51,7 +60,7 @@ describe('FundingPaymentsTable', () => {
     const fundingPayment = generateFundingPayment({
       ...defaultFundingPayment,
     });
-    render(<FundingPaymentsTable rowData={[fundingPayment]} />);
+    renderComponent({ rowData: [fundingPayment] });
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       fundingPayment.market?.tradableInstrument.instrument.code || '',
@@ -73,7 +82,7 @@ describe('FundingPaymentsTable', () => {
       ...defaultFundingPayment,
       amount: `-${defaultFundingPayment.amount}`,
     });
-    render(<FundingPaymentsTable rowData={[fundingPayment]} />);
+    renderComponent({ rowData: [fundingPayment] });
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       fundingPayment.market?.tradableInstrument.instrument.code || '',

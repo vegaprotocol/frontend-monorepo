@@ -490,6 +490,7 @@ export interface TransferBody {
 export type ApplyReferralCode = {
   applyReferralCode: {
     id: string;
+    do_not_join_team?: boolean;
   };
 };
 

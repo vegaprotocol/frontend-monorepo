@@ -15,11 +15,10 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useT } from '../../lib/use-t';
-import { Link, Navigate } from 'react-router-dom';
-import { Links, Routes } from '../../lib/links';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { Navigate } from 'react-router-dom';
+import { Routes } from '../../lib/links';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
-import { Trans } from 'react-i18next';
 import {
   useFindReferralSet,
   useIsInReferralSet,
@@ -115,40 +114,6 @@ export const CreateCodeForm = () => {
           </Button>
         </span>
       </Tooltip>
-      <Tooltip
-        description={
-          <Trans
-            i18nKey={
-              'Make your referral code a Team to compete in Competitions with your friends, appear in leaderboards on the <0>Competitions Homepage</0>, and earn rewards'
-            }
-            components={[
-              <Link
-                key="homepage-link"
-                to={Links.COMPETITIONS()}
-                className="underline"
-              >
-                Competitions Homepage
-              </Link>,
-            ]}
-          />
-        }
-      >
-        <span>
-          <AnchorButton
-            intent={Intent.Primary}
-            disabled={isReadOnly}
-            className="w-full"
-            href={Links.COMPETITIONS_CREATE_TEAM()}
-          >
-            {t('Create a team')}
-          </AnchorButton>
-        </span>
-      </Tooltip>
-      <p className="text-xs">
-        <Link className="underline" to={Links.COMPETITIONS()}>
-          {t('Go to competitions')}
-        </Link>
-      </p>
 
       <Dialog
         title={t('Create a referral code')}
@@ -217,7 +182,8 @@ const CreateCodeDialog = ({
   const { stakeAvailable: currentStakeAvailable, requiredStake } =
     useReferralSetTransaction();
 
-  const { details: programDetails } = useReferralProgram();
+  const { referralProgram } = useCurrentPrograms();
+  const programDetails = referralProgram?.details;
 
   if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
     return (

@@ -30,7 +30,7 @@ import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
 } from '@vegaprotocol/web3';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, TooltipProvider } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
   useEnvironment,
@@ -247,9 +247,11 @@ function App() {
 
   return (
     <React.Suspense fallback={<Loader />}>
-      <NetworkLoader cache={cache}>
-        <AppContainer />
-      </NetworkLoader>
+      <TooltipProvider>
+        <NetworkLoader cache={cache}>
+          <AppContainer />
+        </NetworkLoader>
+      </TooltipProvider>
     </React.Suspense>
   );
 }

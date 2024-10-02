@@ -15,7 +15,7 @@ import { CodeTile } from './tile';
 import { useT } from '../../lib/use-t';
 import { ApplyCodeForm } from './apply-code-form';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { DEFAULT_AGGREGATION_DAYS } from './constants';
 import { useReferralSet } from './hooks/use-find-referral-set';
 import { Loader } from '@vegaprotocol/ui-toolkit';
@@ -27,6 +27,7 @@ export const RefereeStatistics = ({
   setId,
   pubKey,
   referrerPubKey,
+  withTeamTile,
 }: {
   /** The aggregation epochs used to calculate statistics. */
   aggregationEpochs: number;
@@ -36,6 +37,7 @@ export const RefereeStatistics = ({
   pubKey: string;
   /** The referrer's public key. */
   referrerPubKey: string;
+  withTeamTile?: boolean;
 }) => {
   const t = useT();
   const {
@@ -48,7 +50,8 @@ export const RefereeStatistics = ({
 
   const { isEligible } = useStakeAvailable(referrerPubKey);
 
-  const { details } = useReferralProgram();
+  const { referralProgram } = useCurrentPrograms();
+  const details = referralProgram?.details;
   const isProgramRunning = Boolean(details);
 
   return (
@@ -60,7 +63,7 @@ export const RefereeStatistics = ({
       >
         <div className={cn('grid grid-cols-1 grid-rows-1 gap-5')}>
           {/** TEAM TILE - referral set id is the same as team id */}
-          <TeamTile teamId={setId} />
+          {withTeamTile && <TeamTile teamId={setId} />}
           {/** TILES ROW 1 */}
           <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
             {isProgramRunning ? (
@@ -133,16 +136,16 @@ export const RefereeStatistics = ({
 
 export const PreviewRefereeStatistics = ({
   setId,
-  withTeamTile = true,
+  withTeamTile,
   className,
 }: {
   setId: string;
   withTeamTile?: boolean;
   className?: string;
 }) => {
-  const program = useReferralProgram();
+  const program = useCurrentPrograms();
   const aggregationEpochs =
-    program.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
+    program.referralProgram?.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
 
   const { pubKey } = useVegaWallet();
 
@@ -179,10 +182,12 @@ export const PreviewRefereeStatistics = ({
     error: undefined,
   });
 
-  const firstBenefitTier = stat(minBy(program.benefitTiers, (bt) => bt.epochs));
+  const firstBenefitTier = stat(
+    minBy(program.referralProgram?.benefitTiers, (bt) => bt.epochs)
+  );
 
   const secondBenefitTier = stat(
-    program.benefitTiers.find(
+    program.referralProgram?.benefitTiers.find(
       (bt) =>
         bt.tier ===
         (firstBenefitTier.value?.tier

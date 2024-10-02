@@ -9,6 +9,7 @@ import { type DeepPartial, mockStore } from '@/test-helpers/mock-store';
 import { locators as amountWithSymbolLocators } from '../string-amounts/amount-with-symbol';
 import { locators as priceWithTooltipLocators } from '../string-amounts/price-with-tooltip';
 import { locators as orderPriceLocators, OrderPrice } from './order-price';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@/stores/assets-store');
 jest.mock('@/stores/markets-store');
@@ -43,7 +44,9 @@ const renderComponent = ({
 }) => {
   render(
     <MockNetworkProvider>
-      <OrderPrice price={price} marketId={marketId} type={type} />
+      <TooltipProvider>
+        <OrderPrice price={price} marketId={marketId} type={type} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 };

@@ -18,7 +18,7 @@ import {
   Loader,
   TextChildrenTooltip as Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { type BenefitTier } from './hooks/use-referral-program';
+import { type ReferralBenefitTier } from '../../lib/hooks/use-current-programs';
 import { areTeamGames } from '../../lib/hooks/use-games';
 import { TeamCard } from '../../components/competitions/team-card';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
@@ -251,7 +251,7 @@ export const BenefitTierTile = ({
 }) => {
   const t = useT();
 
-  const formatter = (value: BenefitTier | undefined) =>
+  const formatter = (value: ReferralBenefitTier | undefined) =>
     value?.tier || t('None');
 
   const next = nextBenefitTier.value?.tier;
@@ -268,7 +268,7 @@ export const BenefitTierTile = ({
           : undefined
       }
     >
-      <Value<BenefitTier | undefined>
+      <Value<ReferralBenefitTier | undefined>
         data={benefitTier}
         formatter={formatter}
       />
@@ -327,25 +327,25 @@ export const NextTierVolumeTile = ({
     error: runningVolume.error || nextBenefitTier.error,
     value: [runningVolume.value, nextBenefitTier.value] as [
       BigNumber,
-      BenefitTier | undefined
+      ReferralBenefitTier | undefined
     ],
   };
 
   const formatter = ([runningVolume, nextBenefitTier]: [
     BigNumber,
-    BenefitTier | undefined
+    ReferralBenefitTier | undefined
   ]) => {
     if (!nextBenefitTier) return '0';
-    const volume = BigNumber(nextBenefitTier.minimumVolume).minus(
-      runningVolume
-    );
+    const volume = BigNumber(
+      nextBenefitTier.minimumRunningNotionalTakerVolume
+    ).minus(runningVolume);
     if (volume.isNaN() || volume.isLessThan(0)) return '0';
     return compactFormatter(0)(volume);
   };
 
   return (
     <StatTile title={t('Volume to next tier')} testId="vol-to-next-tier">
-      <Value<[BigNumber, BenefitTier | undefined]>
+      <Value<[BigNumber, ReferralBenefitTier | undefined]>
         data={data}
         formatter={formatter}
       />
@@ -374,7 +374,7 @@ export const NextTierEpochsTile = ({
   const data = {
     value: [epochs.value, nextBenefitTier.value] as [
       BigNumber,
-      BenefitTier | undefined
+      ReferralBenefitTier | undefined
     ],
     loading: epochs.loading || nextBenefitTier.loading,
     error: epochs.error || nextBenefitTier.error,
@@ -382,7 +382,7 @@ export const NextTierEpochsTile = ({
 
   const formatter = ([epochs, nextBenefitTier]: [
     BigNumber,
-    BenefitTier | undefined
+    ReferralBenefitTier | undefined
   ]) => {
     if (!nextBenefitTier) return '-';
     const value = BigNumber(nextBenefitTier.epochs).minus(epochs);

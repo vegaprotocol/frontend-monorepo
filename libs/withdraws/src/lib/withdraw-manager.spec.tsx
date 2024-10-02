@@ -6,6 +6,7 @@ import { WithdrawManager } from './withdraw-manager';
 import BigNumber from 'bignumber.js';
 import { toAssetData, useGetWithdrawThreshold } from '@vegaprotocol/web3';
 import { useWithdrawAsset } from './use-withdraw-asset';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const asset = generateAsset();
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
@@ -60,14 +61,18 @@ describe('WithdrawManager', () => {
     };
   });
 
-  const generateJsx = (props: WithdrawManagerProps) => (
-    <WithdrawManager {...props} />
-  );
+  const renderComponent = (props: WithdrawManagerProps) => {
+    return render(
+      <TooltipProvider>
+        <WithdrawManager {...props} />
+      </TooltipProvider>
+    );
+  };
 
   it('calls submit if valid form submission', async () => {
     // 1002-WITH-002
     // 1002-WITH-003
-    const { container } = render(generateJsx(props));
+    const { container } = renderComponent(props);
     const select = container.querySelector('select[name="asset"]') as Element;
     await userEvent.selectOptions(select, props.assets[0].id);
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
@@ -85,7 +90,7 @@ describe('WithdrawManager', () => {
     // 1002-WITH-005
     // 1002-WITH-008
     // 1002-WITH-018
-    const { container } = render(generateJsx(props));
+    const { container } = renderComponent(props);
 
     // Set other fields to be valid
     const select = container.querySelector('select[name="asset"]') as Element;
@@ -117,14 +122,14 @@ describe('WithdrawManager', () => {
   });
   it('can set amount using use maximum button', async () => {
     // 1002-WITH-004
-    render(generateJsx(props));
+    renderComponent(props);
 
     await userEvent.click(screen.getByTestId('use-maximum'));
     expect(screen.getByTestId('amount-input')).toHaveValue(1);
   });
 
   it('shows withdraw delay notification if amount greater than threshold', async () => {
-    render(generateJsx(props));
+    renderComponent(props);
     await userEvent.type(screen.getByLabelText('Amount'), '1001');
     expect(
       await screen.findByTestId('amount-withdrawal-delay-notification')
@@ -144,7 +149,7 @@ describe('WithdrawManager', () => {
       handleSelectAsset: jest.fn(),
     });
 
-    render(generateJsx(props));
+    renderComponent(props);
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     expect(
       await screen.findByTestId('withdrawals-delay-notification')

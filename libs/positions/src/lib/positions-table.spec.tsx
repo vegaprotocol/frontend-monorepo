@@ -1,7 +1,13 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PositionsTable, OpenVolumeCell, PNLCell } from './positions-table';
-import type { Position } from './positions-data-providers';
+import {
+  PositionsTable,
+  OpenVolumeCell,
+  PNLCell,
+  type PositionsTableProps,
+  type PNLCellProps,
+  type OpenVolumeCellProps,
+} from './positions-table';
 import * as Schema from '@vegaprotocol/types';
 import { PositionStatus } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
@@ -9,6 +15,7 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { singleRow } from './positions.mock';
 import { useLatestTrade } from '@vegaprotocol/trades';
 import { type StopOrderFieldsFragment } from '@vegaprotocol/orders';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
@@ -20,27 +27,26 @@ jest.mock('@vegaprotocol/trades');
 describe('Positions', () => {
   const mockClose = jest.fn();
   const mockEditTPSL = jest.fn();
-  const renderComponent = async (rowData: Position) => {
-    await act(async () => {
-      render(
+
+  const renderComponent = async (props: Partial<PositionsTableProps>) => {
+    const result = render(
+      <TooltipProvider>
         <PositionsTable
-          rowData={[rowData]}
-          pubKey={rowData.partyId}
+          {...props}
           isReadOnly={false}
           onClose={mockClose}
           onEditTPSL={mockEditTPSL}
         />
-      );
-    });
+      </TooltipProvider>
+    );
+    // Wait for ag grid to render
+    expect((await screen.findAllByRole('row')).length).toBeGreaterThan(0);
+    return result;
   };
 
   it('should render successfully', async () => {
-    await act(async () => {
-      const { baseElement } = render(
-        <PositionsTable rowData={[]} isReadOnly={false} />
-      );
-      expect(baseElement).toBeTruthy();
-    });
+    const { baseElement } = await renderComponent({ rowData: [] });
+    expect(baseElement).toBeTruthy();
   });
 
   it('render correct columns', async () => {
@@ -56,7 +62,7 @@ describe('Positions', () => {
       '',
     ];
 
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
 
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(expectedHeaders.length);
@@ -66,19 +72,21 @@ describe('Positions', () => {
   });
 
   it('renders market code', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
     expect(screen.getByText(singleRow.marketCode)).toBeTruthy();
     expect(screen.getByText('Futr')).toBeInTheDocument();
   });
 
   it('Does not fail if the market name does not match the split pattern', async () => {
     const breakingMarketName = 'OP/USD AUG-SEP22 - Incentive';
-    await renderComponent({ ...singleRow, marketCode: breakingMarketName });
+    await renderComponent({
+      rowData: [{ ...singleRow, marketCode: breakingMarketName }],
+    });
     expect(screen.getByText(breakingMarketName)).toBeTruthy();
   });
 
   it('displays size / notional correctly for long position', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
     const cells = screen.getAllByRole('gridcell');
     const cell = cells[1];
 
@@ -94,7 +102,7 @@ describe('Positions', () => {
   });
 
   it('displays size / notional correctly for short position', async () => {
-    await renderComponent({ ...singleRow, openVolume: '-100' });
+    await renderComponent({ rowData: [{ ...singleRow, openVolume: '-100' }] });
     const cells = screen.getAllByRole('gridcell');
     const cell = cells[1];
 
@@ -110,7 +118,7 @@ describe('Positions', () => {
   });
 
   it('displays entry / mark price', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
     const cells = screen.getAllByRole('gridcell');
     const cell = within(cells[2]);
     expect(cell.getByTestId('stack-cell-primary')).toHaveTextContent('13.3');
@@ -119,8 +127,13 @@ describe('Positions', () => {
 
   it('does not render entry / mark if market is in opening auction', async () => {
     await renderComponent({
-      ...singleRow,
-      marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      rowData: [
+        {
+          ...singleRow,
+          marketTradingMode:
+            Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+        },
+      ],
     });
 
     const cells = screen.getAllByRole('gridcell');
@@ -128,22 +141,26 @@ describe('Positions', () => {
   });
 
   it('displays liquidation price', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[4].textContent).toEqual('liquidation price');
   });
 
   it('do not displays liquidation price if openVolume is 0', async () => {
     await renderComponent({
-      ...singleRow,
-      openVolume: '0',
+      rowData: [
+        {
+          ...singleRow,
+          openVolume: '0',
+        },
+      ],
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[4].textContent).toEqual('-');
   });
 
   it('displays margin and leverage', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
     const cells = screen.getAllByRole('gridcell');
 
     // margin
@@ -168,7 +185,7 @@ describe('Positions', () => {
       singleRow.assetDecimals
     );
 
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow] });
 
     const cells = screen.getAllByRole('gridcell');
     expect(cells[5]).toHaveTextContent(expectedRealised);
@@ -176,12 +193,12 @@ describe('Positions', () => {
   });
 
   it('displays close button', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow], pubKey: singleRow.partyId });
     expect(screen.getByTestId('close-position')).toBeInTheDocument();
   });
 
   it('do not display close button if openVolume is zero', async () => {
-    await renderComponent({ ...singleRow, openVolume: '0' });
+    await renderComponent({ rowData: [{ ...singleRow, openVolume: '0' }] });
     expect(
       screen.queryByRole('button', { name: 'Close' })
     ).not.toBeInTheDocument();
@@ -189,9 +206,13 @@ describe('Positions', () => {
 
   it('handle negative positionDecimalPlaces', async () => {
     await renderComponent({
-      ...singleRow,
-      openVolume: '-2000',
-      positionDecimalPlaces: -4,
+      rowData: [
+        {
+          ...singleRow,
+          openVolume: '-2000',
+          positionDecimalPlaces: -4,
+        },
+      ],
     });
     const cells = screen.getAllByRole('gridcell');
     const cell = cells[1];
@@ -201,20 +222,25 @@ describe('Positions', () => {
   });
 
   it('renders add button if there are no stop orders', async () => {
-    await renderComponent(singleRow);
+    await renderComponent({ rowData: [singleRow], pubKey: singleRow.partyId });
     expect(screen.getByTestId('edit-tpsl')).toHaveTextContent('Add');
   });
 
   it('renders edit button if there are stop orders', async () => {
     await renderComponent({
-      ...singleRow,
-      stopOrders: [{} as StopOrderFieldsFragment],
+      rowData: [
+        {
+          ...singleRow,
+          stopOrders: [{} as StopOrderFieldsFragment],
+        },
+      ],
+      pubKey: singleRow.partyId,
     });
     expect(screen.getByTestId('edit-tpsl')).toHaveTextContent('Edit');
   });
 
   it('do not display edit button if openVolume is zero', async () => {
-    await renderComponent({ ...singleRow, openVolume: '0' });
+    await renderComponent({ rowData: [{ ...singleRow, openVolume: '0' }] });
     expect(
       screen.queryByRole('button', { name: 'Add' })
     ).not.toBeInTheDocument();
@@ -225,8 +251,15 @@ describe('Positions', () => {
       data: undefined,
       valueFormatted: '100',
     };
+    const renderComponent = (props: PNLCellProps) => {
+      return render(
+        <TooltipProvider>
+          <PNLCell {...props} />
+        </TooltipProvider>
+      );
+    };
     it('renders a dash if no data', () => {
-      render(<PNLCell {...(props as ICellRendererParams)} />);
+      renderComponent(props as PNLCellProps);
       expect(screen.getByText('-')).toBeInTheDocument();
     });
 
@@ -238,7 +271,7 @@ describe('Positions', () => {
         },
         valueFormatted: '100',
       } as ICellRendererParams;
-      render(<PNLCell {...props} />);
+      renderComponent(props as PNLCellProps);
       expect(
         screen.getByText(props.valueFormatted as string)
       ).toBeInTheDocument();
@@ -254,7 +287,7 @@ describe('Positions', () => {
         },
         valueFormatted: '100',
       };
-      render(<PNLCell {...(props as ICellRendererParams)} />);
+      renderComponent(props as PNLCellProps);
       const content = screen.getByText(props.valueFormatted);
       expect(content).toBeInTheDocument();
       expect(screen.getByTestId(/icon-/)).toBeInTheDocument();
@@ -265,10 +298,18 @@ describe('Positions', () => {
     const props = {
       data: undefined,
       valueFormatted: '100',
-    } as ICellRendererParams;
+    };
+
+    const renderComponent = (props: OpenVolumeCellProps) => {
+      return render(
+        <TooltipProvider>
+          <OpenVolumeCell {...props} />
+        </TooltipProvider>
+      );
+    };
 
     it('renders a dash if no data', () => {
-      render(<OpenVolumeCell {...props} />);
+      renderComponent(props as OpenVolumeCellProps);
       expect(screen.getByText('-')).toBeInTheDocument();
     });
 
@@ -280,7 +321,7 @@ describe('Positions', () => {
         },
         valueFormatted: '100',
       };
-      render(<OpenVolumeCell {...(props as ICellRendererParams)} />);
+      renderComponent(props as OpenVolumeCellProps);
       expect(screen.getByText(props.valueFormatted)).toBeInTheDocument();
       expect(screen.queryByTestId(/icon-/)).not.toBeInTheDocument();
     });
@@ -296,7 +337,7 @@ describe('Positions', () => {
         data: singleRow,
         valueFormatted: '100',
       } as ICellRendererParams;
-      render(<OpenVolumeCell {...props} />);
+      renderComponent(props as OpenVolumeCellProps);
       const content = screen.getByText(props.valueFormatted as string);
       expect(content).toBeInTheDocument();
       expect(screen.getByTestId(/icon-/)).toBeInTheDocument();
@@ -306,8 +347,12 @@ describe('Positions', () => {
   describe('position status from size column', () => {
     it('does not show if position status is normal', async () => {
       await renderComponent({
-        ...singleRow,
-        status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+        rowData: [
+          {
+            ...singleRow,
+            status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
+          },
+        ],
       });
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[1];
@@ -322,7 +367,7 @@ describe('Positions', () => {
           price: '100',
         },
       });
-      await renderComponent(singleRow);
+      await renderComponent({ rowData: [singleRow] });
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[1];
       const tooltipTrigger = cell.querySelector('[data-state="closed"]');
@@ -338,9 +383,13 @@ describe('Positions', () => {
   describe('loss socialization from realised pnl column', () => {
     it('renders', async () => {
       await renderComponent({
-        ...singleRow,
-        lossSocializationAmount: '500',
-        assetDecimals: 2,
+        rowData: [
+          {
+            ...singleRow,
+            lossSocializationAmount: '500',
+            assetDecimals: 2,
+          },
+        ],
       });
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[5];

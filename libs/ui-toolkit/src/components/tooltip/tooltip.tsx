@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import React from 'react';
 import {
   Provider,
@@ -30,6 +30,10 @@ export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
       underline,
   });
 
+export const TooltipProvider = (props: ComponentProps<typeof Provider>) => {
+  return <Provider {...props} delayDuration={200} skipDelayDuration={100} />;
+};
+
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
   children,
@@ -41,10 +45,10 @@ export const Tooltip = ({
   side = 'bottom',
   underline,
   delayDuration = 200,
-}: TooltipProps) =>
-  description ? (
-    <Provider delayDuration={delayDuration} skipDelayDuration={100}>
-      <Root open={open}>
+}: TooltipProps) => {
+  if (description) {
+    return (
+      <Root open={open} delayDuration={delayDuration}>
         <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(underline)}>
           {children}
         </Trigger>
@@ -67,16 +71,17 @@ export const Tooltip = ({
           </Portal>
         )}
       </Root>
-    </Provider>
-  ) : (
-    children
-  );
+    );
+  }
+
+  return children;
+};
 
 export const TextChildrenTooltip = ({
   children,
   ...props
 }: Omit<TooltipProps, 'children'> & {
-  children: string | string[];
+  children: string | number | (string | number)[];
 }) => (
   <Tooltip {...props}>
     <span>{children}</span>

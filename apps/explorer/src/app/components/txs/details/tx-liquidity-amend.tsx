@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 export type LiquidityAmendment =
   components['schemas']['v1LiquidityProvisionAmendment'];
 
-interface TxDetailsLiquidityAmendmentProps {
+export interface TxDetailsLiquidityAmendmentProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;

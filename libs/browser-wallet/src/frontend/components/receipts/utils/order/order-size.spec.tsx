@@ -7,6 +7,7 @@ import { mockStore } from '@/test-helpers/mock-store';
 import { locators as amountWithSymbolLocators } from '../string-amounts/amount-with-symbol';
 import { locators as sizeWithTooltipLocators } from '../string-amounts/size-with-tooltip';
 import { OrderSize } from './order-size';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@/stores/markets-store');
 
@@ -19,7 +20,9 @@ const renderComponent = ({
 }) =>
   render(
     <MockNetworkProvider>
-      <OrderSize size={size} marketId={marketId} />
+      <TooltipProvider>
+        <OrderSize size={size} marketId={marketId} />
+      </TooltipProvider>
     </MockNetworkProvider>
   );
 

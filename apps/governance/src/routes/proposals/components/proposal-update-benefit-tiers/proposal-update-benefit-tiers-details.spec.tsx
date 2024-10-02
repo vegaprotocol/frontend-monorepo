@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProposalUpdateBenefitTiers } from './proposal-update-benefit-tiers-details';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   useAppState: () => ({
@@ -54,8 +55,17 @@ const mockChange2 = {
 };
 
 describe('ProposalUpdateBenefitTiers', () => {
+  // eslint-disable-next-line
+  const renderComponent = (props: any) => {
+    return render(
+      <TooltipProvider>
+        <ProposalUpdateBenefitTiers {...props} />
+      </TooltipProvider>
+    );
+  };
+
   it('should not render if proposal is null', () => {
-    render(<ProposalUpdateBenefitTiers change={null} />);
+    renderComponent({ change: null });
     expect(screen.queryByTestId('proposal-update-benefit-tiers')).toBeNull();
   });
 
@@ -68,12 +78,14 @@ describe('ProposalUpdateBenefitTiers', () => {
       },
     };
 
-    render(<ProposalUpdateBenefitTiers change={incompleteProposal} />);
+    renderComponent({
+      change: incompleteProposal,
+    });
     expect(screen.queryByTestId('proposal-update-benefit-tiers')).toBeNull();
   });
 
   it('should render a valid vesting benefit tier proposal', () => {
-    render(<ProposalUpdateBenefitTiers change={mockChange1} />);
+    renderComponent({ change: mockChange1 });
 
     // 3 tiers in the sample data
     expect(screen.getByText('Tier 1')).toBeInTheDocument();
@@ -94,7 +106,7 @@ describe('ProposalUpdateBenefitTiers', () => {
   });
 
   it('should render a valid activity streak benefit tier proposal', () => {
-    render(<ProposalUpdateBenefitTiers change={mockChange2} />);
+    renderComponent({ change: mockChange2 });
 
     // 3 tiers in the sample data
     expect(screen.getByText('Tier 1')).toBeInTheDocument();

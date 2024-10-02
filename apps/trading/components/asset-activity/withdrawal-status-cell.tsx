@@ -36,6 +36,10 @@ export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
   return <>{WithdrawalStatusMapping[data.detail.status]}</>;
 };
 
+// Keep track of the curretly active withdrawal, so that we only trigger one withdrawal
+// for the clicked cell
+let activeId: string;
+
 const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
   const { status: ethWalletStatus } = useAccount();
@@ -49,9 +53,6 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   });
 
   const handleComplete = () => {
-    // The onConnect handler from useModal is called twice
-    // so this is to make sure if a tx is already created we
-    // dont immediately create another one
     if (txData?.hash) return;
 
     const asset = data.asset;
@@ -80,7 +81,14 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   };
 
   const modal = useModal({
-    onConnect: handleComplete,
+    onConnect: () => {
+      // onConnect will be called for all mounted WithdrawalStatusCell components. To avoid
+      // multiple switch chain calls we only call handleComplete for the withdrawal that
+      // was clicked
+      if (activeId === data.detail.id) {
+        handleComplete();
+      }
+    },
   });
 
   const [status, setStatus] = useState<
@@ -111,7 +119,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const { data: delay } = useReadContract({
     address: cfg.collateral_bridge_contract.address,
     abi: BRIDGE_ABI,
-    functionName: 'default_withdraw_delay',
+    functionName: 'defaultWithdrawDelay',
     chainId: Number(cfg.chain_id),
   });
 
@@ -175,9 +183,10 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
     return (
       <span className="flex gap-1 items-center">
         <Button
-          intent={Intent.Secondary}
           size="xs"
+          intent={Intent.Secondary}
           onClick={() => {
+            activeId = data.detail.id;
             if (ethWalletStatus === 'disconnected') {
               modal.setOpen(true);
               return;

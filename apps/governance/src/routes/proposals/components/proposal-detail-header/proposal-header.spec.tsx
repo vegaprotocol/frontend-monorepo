@@ -27,6 +27,7 @@ import {
 } from '@vegaprotocol/proposals';
 import { type MockedResponse } from '@apollo/client/testing';
 import { type Proposal } from '../../types';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ...jest.requireActual('@vegaprotocol/proposals'),
@@ -43,11 +44,13 @@ const renderComponent = (
     <AppStateProvider>
       <BrowserRouter>
         <MockedProvider mocks={mocks}>
-          <ProposalHeader
-            proposal={proposal}
-            isListItem={isListItem}
-            voteState={voteState}
-          />
+          <TooltipProvider>
+            <ProposalHeader
+              proposal={proposal}
+              isListItem={isListItem}
+              voteState={voteState}
+            />
+          </TooltipProvider>
         </MockedProvider>
       </BrowserRouter>
     </AppStateProvider>

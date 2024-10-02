@@ -381,13 +381,13 @@ const useReadWithdrawalData = ({
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
-        functionName: 'default_withdraw_delay',
+        functionName: 'defaultWithdrawDelay',
         chainId: Number(assetChainId),
       },
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
-        functionName: 'get_withdraw_threshold',
+        functionName: 'getWithdrawThreshold',
         args: [assetAddress],
         chainId: Number(assetChainId),
       },

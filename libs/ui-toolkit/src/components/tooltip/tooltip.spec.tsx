@@ -1,12 +1,20 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Tooltip } from './tooltip';
+import { Tooltip, type TooltipProps, TooltipProvider } from './tooltip';
+
+const renderComponent = (props: TooltipProps) => {
+  return render(
+    <TooltipProvider>
+      <Tooltip {...props} />
+    </TooltipProvider>
+  );
+};
 
 it('Renders a tooltip', async () => {
   const props = {
     description: 'description',
     children: <button>Tooltip</button>,
   };
-  render(<Tooltip {...props} />);
+  renderComponent(props);
   // radix applies the data-state attribute
   expect(screen.getByRole('button')).toHaveAttribute('data-state', 'closed');
   fireEvent.pointerMove(screen.getByRole('button'));
@@ -19,7 +27,7 @@ it('Renders a controlled tooltip', async () => {
     children: <button>Tooltip</button>,
     open: true,
   };
-  render(<Tooltip {...props} />);
+  renderComponent(props);
   // radix applies the data-state attribute
   const trigger = screen.getByRole('button');
   expect(trigger).toHaveAttribute('data-state', 'instant-open');
@@ -31,7 +39,7 @@ it('Doesnt render a tooltip if no description provided', () => {
     description: undefined,
     children: <button>Tooltip</button>,
   };
-  render(<Tooltip {...props} />);
+  renderComponent(props);
   expect(screen.getByRole('button')).not.toHaveAttribute(
     'data-state',
     'closed'
@@ -46,7 +54,7 @@ it('Doesnt render a controlled tooltip if no description provided', () => {
     children: <button>Tooltip</button>,
     open: true,
   };
-  render(<Tooltip {...props} />);
+  renderComponent(props);
   expect(screen.getByRole('button')).not.toHaveAttribute(
     'data-state',
     'closed'

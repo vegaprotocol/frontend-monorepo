@@ -18,7 +18,7 @@ import {
   TxStatus,
 } from '@vegaprotocol/wallet-react';
 import { Links, Routes } from '../../lib/links';
-import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentPrograms } from '../../lib/hooks/use-current-programs';
 import { ns, useT } from '../../lib/use-t';
 import { useFundsAvailable } from '../../lib/hooks/use-funds-available';
 import { QUSDTooltip } from './qusd-tooltip';
@@ -85,7 +85,7 @@ type FormFields = {
 
 export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
-  const program = useReferralProgram();
+  const program = useCurrentPrograms();
   const navigate = useNavigate();
   const openWalletDialog = useDialogStore((store) => store.open);
 
@@ -220,7 +220,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   // calculate minimum amount of epochs a referee has to be in a set in order
   // to benefit from it
-  const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
+  const firstBenefitTier = minBy(
+    program.referralProgram?.benefitTiers,
+    (bt) => bt.epochs
+  );
   const minEpochs = firstBenefitTier ? firstBenefitTier.epochs : 0;
 
   return (

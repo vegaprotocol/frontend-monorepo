@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import {
   AddressField,
   TransferFee,
+  type TransferFeeProps,
   TransferForm,
   type TransferFormProps,
 } from './transfer-form';
@@ -22,6 +23,7 @@ import { removeDecimal } from '@vegaprotocol/utils';
 import type { TransferFeeQuery } from './__generated__/TransferFee';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 const feeFactor = 0.001;
 
@@ -51,7 +53,9 @@ describe('TransferForm', () => {
   const renderComponent = (props: TransferFormProps) => {
     return render(
       <MockedWalletProvider>
-        <TransferForm {...props} />
+        <TooltipProvider>
+          <TransferForm {...props} />
+        </TooltipProvider>
       </MockedWalletProvider>
     );
   };
@@ -508,8 +512,17 @@ describe('TransferForm', () => {
       fee: '20',
       decimals: 2,
     };
+
+    const renderComponent = (props: TransferFeeProps) => {
+      render(
+        <TooltipProvider>
+          <TransferFee {...props} />
+        </TooltipProvider>
+      );
+    };
+
     it('calculates and renders amounts and fee', () => {
-      render(<TransferFee {...props} />);
+      renderComponent(props);
       expect(screen.queryByTestId('discount')).not.toBeInTheDocument();
       expect(screen.getByTestId('transfer-fee')).toHaveTextContent('0.2');
       expect(screen.getByTestId('transfer-amount')).toHaveTextContent('200.00');
@@ -519,7 +532,7 @@ describe('TransferForm', () => {
     });
 
     it('calculates and renders amounts, fee and discount', () => {
-      render(<TransferFee {...props} discount="10" />);
+      renderComponent({ ...props, discount: '10' });
       expect(screen.getByTestId('discount')).toHaveTextContent('0.1');
       expect(screen.getByTestId('transfer-fee')).toHaveTextContent('0.2');
       expect(screen.getByTestId('transfer-amount')).toHaveTextContent('200.00');

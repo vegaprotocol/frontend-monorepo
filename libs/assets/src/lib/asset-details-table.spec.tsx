@@ -7,8 +7,10 @@ import {
   useRows,
   testId,
   num,
+  type AssetDetailsTableProps,
 } from './asset-details-table';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 describe('num formatting', () => {
   it('show unlimited for large values', () => {
@@ -20,6 +22,14 @@ describe('num formatting', () => {
 });
 
 describe('AssetDetailsTable', () => {
+  const renderComponent = (props: AssetDetailsTableProps) => {
+    return render(
+      <TooltipProvider>
+        <AssetDetailsTable {...props} />
+      </TooltipProvider>
+    );
+  };
+
   const cases: [string, Asset, { key: AssetDetail; value: string }[]][] = [
     [
       'ERC20 asset',
@@ -52,12 +62,13 @@ describe('AssetDetailsTable', () => {
       ],
     ],
   ];
+
   it.each(cases)(
     "displays the available asset's data of %p with correct labels",
     async (_type, asset, details) => {
       const { result } = renderHook(() => useRows());
       const rows = result.current;
-      render(<AssetDetailsTable asset={asset} />);
+      renderComponent({ asset });
       for (const detail of details) {
         expect(
           await (
@@ -70,10 +81,11 @@ describe('AssetDetailsTable', () => {
       }
     }
   );
+
   it('omits specified rows when omitRows prop is provided', async () => {
     const asset = generateERC20Asset(1, Schema.AssetStatus.STATUS_ENABLED);
     const omittedKeys = [AssetDetail.TYPE, AssetDetail.DECIMALS];
-    render(<AssetDetailsTable asset={asset} omitRows={omittedKeys} />);
+    renderComponent({ asset, omitRows: omittedKeys });
 
     for (const key of omittedKeys) {
       expect(screen.queryByTestId(testId(key, 'label'))).toBeNull();

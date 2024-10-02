@@ -305,7 +305,7 @@ const Games = ({
     return <p>{t('No game results available')}</p>;
   }
 
-  const dependable = (value: string | JSX.Element) => {
+  const renderValueWithSpinner = (value: string | JSX.Element) => {
     if (transfersLoading) return <Loader size="small" />;
     return value;
   };
@@ -327,7 +327,7 @@ const Games = ({
             name: 'asset',
             displayName: t('Reward asset'),
           },
-          { name: 'daily', displayName: t('Daily reward amount') },
+          { name: 'amountAvailable', displayName: t('Amount available') },
           { name: 'rank', displayName: t('Rank') },
           { name: 'amount', displayName: t('Amount earned this epoch') },
           {
@@ -361,7 +361,7 @@ const Games = ({
           if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
           const asset = transfer?.transfer.asset;
 
-          const dailyAmount =
+          const amountPerEpoch =
             asset && transfer
               ? addDecimalsFormatNumberQuantum(
                   transfer.transfer.amount,
@@ -390,9 +390,9 @@ const Games = ({
 
           return {
             id: game.id,
-            amount: dependable(earnedAmount),
-            asset: dependable(assetSymbol),
-            daily: dependable(dailyAmount),
+            amount: renderValueWithSpinner(earnedAmount),
+            asset: renderValueWithSpinner(assetSymbol),
+            amountAvailable: renderValueWithSpinner(amountPerEpoch),
             endtime: <EndTimeCell epoch={game.epoch} />,
             epoch: game.epoch,
             participatingMembers: game.numberOfParticipants,
@@ -400,7 +400,7 @@ const Games = ({
             rank: game.team.rank,
             total: totalAmount,
             // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
-            type: dependable(
+            type: renderValueWithSpinner(
               <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
             ),
           };

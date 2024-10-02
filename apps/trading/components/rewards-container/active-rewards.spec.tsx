@@ -16,6 +16,7 @@ import {
   type EnrichedRewardTransfer,
 } from '../../lib/hooks/use-rewards';
 import { ActiveRewardCard } from './reward-card';
+import { TooltipProvider } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../../lib/hooks/__generated__/Rewards', () => ({
   useTWAPQuery: () => ({
@@ -90,7 +91,11 @@ describe('ActiveRewards', () => {
   };
 
   it('renders with valid props', () => {
-    render(<ActiveRewardCard transferNode={reward} currentEpoch={115500} />);
+    render(
+      <TooltipProvider>
+        <ActiveRewardCard transferNode={reward} currentEpoch={115500} />
+      </TooltipProvider>
+    );
 
     expect(
       screen.getByText(/Liquidity provision fees received/i)

@@ -431,6 +431,11 @@ html [data-theme='dark'] {
 .ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
   background: rgb(var(--color-blue-300));
 }
+.ag-theme-balham
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: rgb(var(--color-blue-350));
+}
 
 /* Dark variables */
 .ag-theme-balham-dark {
@@ -453,6 +458,11 @@ html [data-theme='dark'] {
 
 .ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
   background: rgb(var(--color-blue-700));
+}
+.ag-theme-balham-dark
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: rgb(var(--color-blue-650));
 }
 
 /**

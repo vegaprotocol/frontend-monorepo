@@ -13,6 +13,7 @@ import { useMemo } from 'react';
 import { type ColDef } from 'ag-grid-community';
 import { Emblem } from '@vegaprotocol/emblem';
 import type { ProductType } from '@vegaprotocol/types';
+import type { Factors } from '../../lib/hooks/use-current-programs';
 
 const useFeesTableColumnDefs = (): ColDef[] => {
   const t = useT();
@@ -95,12 +96,12 @@ const feesTableDefaultColDef = {
 
 export const MarketFees = ({
   markets,
-  referralDiscount,
-  volumeDiscount,
+  referralDiscountFactors,
+  volumeDiscountFactors,
 }: {
   markets: MarketMaybeWithDataAndCandles[] | null;
-  referralDiscount: number;
-  volumeDiscount: number;
+  referralDiscountFactors: Factors | undefined;
+  volumeDiscountFactors: Factors | undefined;
 }) => {
   const navigateWithMeta = useNavigateWithMeta();
   const colDef = useFeesTableColumnDefs();
@@ -112,9 +113,16 @@ export const MarketFees = ({
       const liquidityFee = new BigNumber(m.fees.factors.liquidityFee);
       const totalFee = infraFee.plus(makerFee).plus(liquidityFee);
 
+      const referralDiscounts = referralDiscountFactors
+        ? Object.values(referralDiscountFactors).map((d) => new BigNumber(d))
+        : [];
+      const volumeDiscounts = volumeDiscountFactors
+        ? Object.values(volumeDiscountFactors).map((d) => new BigNumber(d))
+        : [];
+
       const feeAfterDiscount = getAdjustedFee(
         [infraFee, makerFee, liquidityFee],
-        [new BigNumber(referralDiscount), new BigNumber(volumeDiscount)]
+        [...referralDiscounts, ...volumeDiscounts]
       );
 
       return {

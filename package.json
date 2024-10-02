@@ -1,6 +1,6 @@
 {
   "name": "nx-monorepo",
-  "version": "v0.28.0-preview.19",
+  "version": "v0.28.0-preview.21",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",

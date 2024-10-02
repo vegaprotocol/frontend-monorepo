@@ -2,6 +2,8 @@ import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { Link, useSearchParams } from 'react-router-dom';
 import { cn } from '@vegaprotocol/ui-toolkit';
+// @ts-ignore No types available for duration-js
+import Duration from 'duration-js';
 
 import {
   type DispatchMetric,
@@ -20,6 +22,7 @@ import {
   formatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
+import { formatDistanceStrict } from 'date-fns';
 
 import { NotFoundSplash } from '../../components/not-found-splash';
 import { HeaderPage } from '../../components/header-page';
@@ -63,7 +66,11 @@ export const RewardDetailContainer = (props: {
   stakingRequirement: string;
 }) => {
   const t = useT();
-  const { param, loading: paramLoading } = useNetworkParam('reward_asset');
+  const { param: rewardAssetParam, loading: rewardAssetParamLoading } =
+    useNetworkParam('reward_asset');
+  const { param: epochLengthParam, loading: epochLengthParamLoading } =
+    useNetworkParam('validators_epoch_length');
+
   const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
 
   const { data, loading: rewardsLoading } = useRewardsGrouped({
@@ -71,7 +78,12 @@ export const RewardDetailContainer = (props: {
   });
   const key = determineCardGroup(props);
 
-  if (paramLoading || assetsLoading || rewardsLoading) {
+  if (
+    rewardAssetParamLoading ||
+    epochLengthParamLoading ||
+    assetsLoading ||
+    rewardsLoading
+  ) {
     return (
       <Splash>
         <Loader />
@@ -79,9 +91,9 @@ export const RewardDetailContainer = (props: {
     );
   }
 
-  if (!param || !data || !assets) return null;
+  if (!rewardAssetParam || !epochLengthParam || !data || !assets) return null;
 
-  const rewardAsset = assets[param];
+  const rewardAsset = assets[rewardAssetParam];
   const group = data[key];
 
   if (!group?.length) {
@@ -113,15 +125,23 @@ export const RewardDetailContainer = (props: {
       if (!g.transfer.asset) return;
       const dispatchStrategy = g.transfer.kind.dispatchStrategy;
 
-      // Daily is the default if transferInternval is null
-      let rewardsPaid = t('Daily');
+      const duration = new Duration(epochLengthParam);
+      const epochMs = duration.milliseconds();
+      const distance = formatDistanceStrict(Date.now(), Date.now() + epochMs);
+
+      // If no transferInterval the default is 1 epoch length
+      let rewardsPaid = t('Every {{duration}}', { duration: distance });
 
       if (
         dispatchStrategy.transferInterval &&
         dispatchStrategy.transferInterval > 1
       ) {
-        rewardsPaid = t('daysCount', {
-          count: dispatchStrategy.transferInterval,
+        const distance = formatDistanceStrict(
+          Date.now(),
+          Date.now() + epochMs * dispatchStrategy.transferInterval
+        );
+        rewardsPaid = t('Every {{duration}}', {
+          duration: distance,
         });
       }
 
