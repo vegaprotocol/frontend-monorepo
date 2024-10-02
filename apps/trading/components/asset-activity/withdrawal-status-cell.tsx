@@ -111,7 +111,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const { data: delay } = useReadContract({
     address: cfg.collateral_bridge_contract.address,
     abi: BRIDGE_ABI,
-    functionName: 'default_withdraw_delay',
+    functionName: 'defaultWithdrawDelay',
     chainId: Number(cfg.chain_id),
   });
 
