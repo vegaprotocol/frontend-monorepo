@@ -27,11 +27,17 @@ export const Feedback = () => {
   const side = form.watch('side');
   const limitPrice = form.watch('price');
 
-  const { data: lastTradePrice } = useLastTradePrice(ticket.market.id);
-  const { data: marketState } = useMarketState(ticket.market.id);
-  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
+  const { data: lastTradePrice, loading: priceLoading } = useLastTradePrice(
+    ticket.market.id
+  );
+  const { data: marketState, loading: stateLoading } = useMarketState(
+    ticket.market.id
+  );
+  const { data: marketTradingMode, loading: tradingModeLoading } =
+    useMarketTradingMode(ticket.market.id);
 
-  if (!pubKey) return null;
+  if (!pubKey || priceLoading || stateLoading || tradingModeLoading)
+    {return null;}
 
   const price =
     type === OrderType.TYPE_LIMIT
