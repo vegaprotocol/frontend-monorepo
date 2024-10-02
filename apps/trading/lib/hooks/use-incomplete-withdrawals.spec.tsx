@@ -61,7 +61,7 @@ const ts = (ms: number) => new Date(ms).toISOString();
 // ready
 const mockIncompleteW1: Withdrawal = {
   id: 'w1',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '10000000000',
   createdTimestamp: ts(10),
   pendingOnForeignChain: true,
@@ -73,7 +73,7 @@ const mockIncompleteW1: Withdrawal = {
 // delay (10 + 1000 < 5000), ready
 const mockIncompleteW2: Withdrawal = {
   id: 'w2',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '100',
   createdTimestamp: ts(10),
   pendingOnForeignChain: true,
@@ -84,7 +84,7 @@ const mockIncompleteW2: Withdrawal = {
 // delay (4500 + 1000 > 5000), below threshold, ready
 const mockIncompleteW3: Withdrawal = {
   id: 'w3',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '1000',
   createdTimestamp: ts(4500),
   pendingOnForeignChain: true,
@@ -95,7 +95,7 @@ const mockIncompleteW3: Withdrawal = {
 // delay (5000 + 1000 > 5000), delayed
 const mockIncompleteW4: Withdrawal = {
   id: 'w4',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '10000',
   createdTimestamp: ts(5000),
   pendingOnForeignChain: true,
@@ -106,7 +106,7 @@ const mockIncompleteW4: Withdrawal = {
 // delay (4001 + 1000 > 5000), delayed
 const mockIncompleteW5: Withdrawal = {
   id: 'w5',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '100000',
   createdTimestamp: ts(4001),
   pendingOnForeignChain: true,
@@ -117,7 +117,7 @@ const mockIncompleteW5: Withdrawal = {
 // completed
 const mockCompleteW1: Withdrawal = {
   id: 'cw1',
-  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  status: Types.WithdrawalStatus.STATUS_OPEN,
   amount: '1000',
   createdTimestamp: ts(10),
   pendingOnForeignChain: false,

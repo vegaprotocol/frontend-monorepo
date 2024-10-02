@@ -412,6 +412,24 @@ html [data-theme='dark'] {
     --ag-header-height: 36px;
   }
 }
+.ag-theme-balham .ag-floating-top-container .ag-highlight-pinned {
+  background: theme(colors.vega.blue.300);
+}
+.ag-theme-balham
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: theme(colors.vega.blue.350);
+}
+
+.ag-theme-balham-dark .ag-floating-top-container .ag-highlight-pinned {
+  background: theme(colors.vega.blue.700);
+}
+
+.ag-theme-balham-dark
+  .ag-floating-top-container
+  .ag-highlight-pinned.ag-row-hover::before {
+  background: theme(colors.vega.blue.650);
+}
 
 /* Light variables */
 .ag-theme-balham {

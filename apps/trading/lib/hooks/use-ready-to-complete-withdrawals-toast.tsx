@@ -1,20 +1,10 @@
 import type { Toast } from '@vegaprotocol/ui-toolkit';
-import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';
+import { Button, Intent, ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
-import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
-import {
-  useEVMBridgeConfigs,
-  useEthereumConfig,
-  useWithdrawalApprovalQuery,
-} from '@vegaprotocol/web3';
-import { type WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
 import { useT } from '../use-t';
 import { Links } from '../links';
-import { useChainId, useSwitchChain } from 'wagmi';
-import { useEvmTx } from './use-evm-tx';
-import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useIncompleteWithdrawals } from './use-incomplete-withdrawals';
 
 const CHECK_INTERVAL = 1000;
@@ -40,7 +30,7 @@ export const useReadyToWithdrawalToasts = () => {
           intent: Intent.Warning,
           content:
             ready.length === 1 ? (
-              <SingleReadyToWithdrawToastContent withdrawal={ready[0].data} />
+              <SingleReadyToWithdrawToastContent />
             ) : (
               <MultipleReadyToWithdrawToastContent count={ready.length} />
             ),
@@ -62,9 +52,7 @@ export const useReadyToWithdrawalToasts = () => {
           const toast: Toast = {
             id,
             intent: Intent.Warning,
-            content: (
-              <SingleReadyToWithdrawToastContent withdrawal={withdrawal.data} />
-            ),
+            content: <SingleReadyToWithdrawToastContent />,
             onClose: () => {
               updateToast(id, { hidden: true });
             },
@@ -105,105 +93,23 @@ const MultipleReadyToWithdrawToastContent = ({ count }: { count: number }) => {
   );
 };
 
-const SingleReadyToWithdrawToastContent = ({
-  withdrawal,
-}: {
-  withdrawal: WithdrawalFieldsFragment;
-}) => {
+const SingleReadyToWithdrawToastContent = () => {
   const t = useT();
+  const navigate = useNavigate();
 
-  const { config } = useEthereumConfig();
-  const { configs } = useEVMBridgeConfigs();
-
-  const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
-  const { writeContract } = useEvmTx();
-
-  const { data } = useWithdrawalApprovalQuery({
-    variables: {
-      withdrawalId: withdrawal.id,
-    },
-  });
-
-  const submitWithdrawAsset = async () => {
-    if (!config || !configs) {
-      throw new Error('could not fetch ethereum configs');
-    }
-
-    if (!data?.withdrawal) {
-      throw new Error('no withdrawal');
-    }
-
-    if (!data.erc20WithdrawalApproval) {
-      throw new Error('no withdrawal approval');
-    }
-
-    const asset = data.withdrawal.asset;
-
-    if (asset.source.__typename !== 'ERC20') {
-      throw new Error(
-        `invalid asset type ${withdrawal.asset.source.__typename}`
-      );
-    }
-
-    const cfg = [config, ...configs].find(
-      // @ts-ignore asset is erc20 here
-      (c) => c.chain_id === asset.source.chainId
-    );
-
-    if (!cfg) {
-      throw new Error('could not find evm config for asset');
-    }
-
-    if (asset.source.chainId !== chainId.toString()) {
-      await switchChainAsync({ chainId: Number(asset.source.chainId) });
-    }
-
-    writeContract({
-      abi: BRIDGE_ABI,
-      address: cfg.collateral_bridge_contract.address as `0x${string}`,
-      functionName: 'withdrawAsset',
-      args: [
-        data.erc20WithdrawalApproval.assetSource,
-        data.erc20WithdrawalApproval.amount,
-        data.erc20WithdrawalApproval.targetAddress,
-        data.erc20WithdrawalApproval.creation,
-        data.erc20WithdrawalApproval.nonce,
-        data.erc20WithdrawalApproval.signatures,
-      ],
-      chainId: Number(asset.source.chainId),
-    });
-  };
-
-  const completeButton = (
-    <p className="mt-2">
-      <Button
-        intent={Intent.Warning}
-        data-testid="toast-complete-withdrawal"
-        size="xs"
-        onClick={submitWithdrawAsset}
-      >
-        {t('Complete withdrawal')}
-      </Button>
-    </p>
-  );
-  const amount = formatNumber(
-    toBigNum(withdrawal.amount, withdrawal.asset.decimals),
-    withdrawal.asset.decimals
-  );
   return (
     <>
       <ToastHeading>{t('Withdrawal ready')}</ToastHeading>
       <p>{t('Complete the withdrawal to release your funds')}</p>
-      <Panel>
-        <strong>
-          {t('Withdraw {{amount}} {{symbol}}', {
-            amount,
-            symbol: withdrawal.asset.symbol,
-          })}
-        </strong>
-      </Panel>
-      {completeButton}
+      <p className="mt-2">
+        <Button
+          data-testid="toast-view-withdrawals"
+          size="xs"
+          onClick={() => navigate(Links.PORTFOLIO())}
+        >
+          {t('View withdrawals')}
+        </Button>
+      </p>
     </>
   );
 };
