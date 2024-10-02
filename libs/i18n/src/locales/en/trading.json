@@ -265,8 +265,6 @@
   "Delayed": "Delayed",
   "Depending on data node retention you may not be able see the full 30 days": "Depending on data node retention you may not be able see the full 30 days",
   "Deposit": "Deposit",
-  "Deposit {{amount}}": "Deposit {{amount}}",
-  "Deposit {{assetSymbol}}": "Deposit {{assetSymbol}}",
   "Deposit cap": "Deposit cap",
   "Deposit complete": "Deposit complete",
   "Deposit failed": "Deposit failed",
