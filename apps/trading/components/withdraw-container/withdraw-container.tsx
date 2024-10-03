@@ -46,6 +46,8 @@ import { AccountType } from '@vegaprotocol/types';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
 import { useT } from '../../lib/use-t';
+import { APP_TOKEN_ID } from '../../lib/constants';
+
 import {
   FormSecondaryActionButton,
   FormSecondaryActionWrapper,
@@ -71,9 +73,11 @@ export const WithdrawContainer = ({
 
   const allConfigs = [config, ...configs];
 
-  const accounts = data?.filter(
-    (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
-  );
+  const accounts = data?.filter((a) => {
+    if (a.asset.id === APP_TOKEN_ID) return false;
+    if (a.type === AccountType.ACCOUNT_TYPE_GENERAL) return true;
+    return false;
+  });
 
   const account = accounts?.find((a) => a.asset.id === initialAssetId);
   const asset = account?.asset;
