@@ -3,6 +3,7 @@ import {
   getIntentIcon,
   Intent,
   NotificationBanner,
+  VegaIcon,
 } from '@vegaprotocol/ui-toolkit';
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
@@ -74,7 +75,7 @@ export const ProtocolUpgradeProposalNotification = ({
   return (
     <NotificationBanner
       intent={Intent.Warning}
-      icon={getIntentIcon(Intent.Warning)}
+      icon={<VegaIcon name={getIntentIcon(Intent.Warning)} />}
       onClose={() => {
         setVisible(false);
       }}
