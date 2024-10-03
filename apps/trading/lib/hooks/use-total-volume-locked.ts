@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ASSET_POOL_ADDRESSES } from '@vegaprotocol/web3';
 import { useAssets } from '@vegaprotocol/rest';
+import { APP_TOKEN_ID } from '../constants';
 
 export const useTotalValueLocked = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -16,7 +17,8 @@ export const useTotalValueLocked = () => {
 
   const addresses = ASSET_POOL_ADDRESSES[VEGA_ENV];
 
-  const contracts = assets.map((asset) => {
+  const tradableAssets = assets.filter((asset) => asset.id !== APP_TOKEN_ID);
+  const contracts = tradableAssets.map((asset) => {
     const chainId = Number(asset.chainId);
     const assetPoolAddress = addresses[chainId];
 
@@ -41,7 +43,7 @@ export const useTotalValueLocked = () => {
   });
 
   const result = (queryResult.data || []).map((res, i) => {
-    const asset = assets[i];
+    const asset = tradableAssets[i];
     const rawValue = res.result ? res.result.toString() : '0';
     const val = BigNumber(rawValue).div(asset.quantum);
     return val;

@@ -122,8 +122,8 @@ export const MarketsPage = () => {
       <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
         <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
           <Card key="24h-vol" className="flex grow">
-            <div className="flex flex-col h-full">
-              <h2 className="mb-3">{t('24h Volume')}</h2>
+            <div className="flex gap-2 flex-col h-full">
+              <h2>{t('24h Volume')}</h2>
               <div className="flex items-center gap-2 justify-between flex-wrap grow">
                 {totalVolume24h && (
                   <span className="text-xl">
@@ -134,13 +134,9 @@ export const MarketsPage = () => {
               </div>
             </div>
           </Card>
-          <Card
-            key="tvl"
-            className="flex grow"
-            loading={!tvl && tvlLoading}
-            title={t('TVL')}
-          >
-            <div className="flex flex-col h-full">
+          <Card key="tvl" className="flex grow" loading={!tvl && tvlLoading}>
+            <div className="flex gap-2 flex-col h-full">
+              <h2>{t('TVL')}</h2>
               {tvl && <span className="text-xl">${formatNumber(tvl, 2)}</span>}
             </div>
           </Card>
