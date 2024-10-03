@@ -5,7 +5,7 @@ import React from 'react';
  * @param segments string array of segments. Will be reversed.
  */
 export function useDocumentTitle(segments?: string[]) {
-  const base = 'VEGA explorer';
+  const base = 'Nebula Explorer';
   const split = ' | ';
 
   React.useEffect(() => {

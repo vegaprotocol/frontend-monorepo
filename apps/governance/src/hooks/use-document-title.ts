@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function useDocumentTitle(name?: string) {
-  const base = 'VEGA Governance';
+  const base = 'Nebula Governance';
 
   React.useEffect(() => {
     if (name) {

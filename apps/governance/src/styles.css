@@ -1,11 +1,6 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 
-@font-face {
-  font-family: AlphaLyrae;
-  src: url('/assets/AlphaLyrae.woff2') format('woff2');
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -208,9 +203,7 @@
     --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
       'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
       'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
-    --font-alt: AlphaLyrae, 'Helvetica Neue', -apple-system, BlinkMacSystemFont,
-      'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-alt: var(--font-sans);
 
     /* Buttons */
     --button-border-width: 1px;

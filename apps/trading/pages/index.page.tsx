@@ -10,29 +10,20 @@ export default function Index() {
   return (
     <>
       <Head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no"
-        />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        />
         <meta name="theme-color" content="#000000" />
-        <meta name="description" content="Vega Protocol - Console" />
+        <meta name="description" content="Nebula - Trading" />
         <meta name="og:type" content="website" />
-        <meta name="og:url" content="https://console.vega.xyz/" />
-        <meta name="og:title" content="Vega Protocol - Console" />
-        <meta name="og:site_name" content="Vega Protocol - Console" />
+        <meta name="og:url" content="https://trade.neb.exchange" />
+        <meta name="og:title" content="Nebula - Trading" />
+        <meta name="og:site_name" content="Nebula - Trading" />
         <meta name="og:image" content="./favicon.ico" />
         <meta name="twitter:card" content="./favicon.ico" />
-        <meta name="twitter:title" content="Vega Protocol - Console" />
-        <meta name="twitter:description" content="Vega Protocol - Console" />
+        <meta name="twitter:title" content="Nebula - Trading" />
+        <meta name="twitter:description" content="Nebula - Trading" />
         <meta name="twitter:image" content="./favicon.ico" />
-        <meta name="twitter:image:alt" content="VEGA logo" />
-        <meta name="twitter:site" content="@vegaprotocol" />
+        <meta name="twitter:image:alt" content="Nebula logo" />
       </Head>
       <ClientRouter />
     </>
