@@ -1,20 +1,18 @@
-import type { Asset, Decimal } from '@vegaprotocol/rest';
+import type { Decimal } from '@vegaprotocol/rest';
 import type BigNumber from 'bignumber.js';
 
 export const Currency = ({
   value,
-  asset,
+  symbol,
   formatDecimals,
 }: {
   value: Decimal | BigNumber | undefined;
-  asset: Asset;
+  symbol: string;
   formatDecimals?: number;
 }) => {
-  const format = Math.abs(formatDecimals || asset.decimals);
-
   return (
     <span>
-      {value?.toFormat(format) || 0} <span>{asset.symbol}</span>
+      {value?.toFormat(formatDecimals) || 0} {symbol}
     </span>
   );
 };
