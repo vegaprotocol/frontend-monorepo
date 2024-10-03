@@ -78,21 +78,16 @@ export const retrieveAMMs = async (
       throw new Error('market for amm not found');
     }
 
-    const settlementAsset = market.settlementAsset
-      ? market.settlementAsset
-      : market.quoteAsset;
-
-    if (!settlementAsset) {
-      throw new Error('Market has no settlement asset');
-    }
-
     const data = {
       id: a.id,
       marketId: a.marketId,
       partyId: a.partyId,
       ammPartyId: a.ammPartyId,
 
-      commitment: new Decimal(a.commitment || 0, settlementAsset.decimals),
+      commitment: new Decimal(
+        a.commitment || 0,
+        market.settlementAsset.decimals
+      ),
       proposedFee: a.proposedFee,
       status: a.status,
       statusReason: a.statusReason,
