@@ -41,7 +41,14 @@ export function useTotalVolume() {
           return acc.plus(candle.notional.rawValue);
         }, new BigNumber(0));
 
-        sum = sum.plus(notionalVol.div(market.quoteAsset.quantum));
+        const asset = market.settlementAsset
+          ? market.settlementAsset
+          : market.quoteAsset;
+        if (!asset) {
+          throw new Error('could not determine settlement asset');
+        }
+
+        sum = sum.plus(notionalVol.div(asset.quantum));
       }
 
       return sum;

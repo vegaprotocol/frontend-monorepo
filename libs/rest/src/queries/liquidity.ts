@@ -61,6 +61,15 @@ export async function retrieveLiquidityProvisions(
   ]);
 
   const data = removePaginationWrapper(res.data.liquidityProvisions?.edges);
+
+  const settlementAsset = market.settlementAsset
+    ? market.settlementAsset
+    : market.quoteAsset;
+
+  if (!settlementAsset) {
+    throw new Error('Market has no settlement asset');
+  }
+
   const allCurrentProvisions = compact(
     data
       .map((d) => d.current)
@@ -81,7 +90,7 @@ export async function retrieveLiquidityProvisions(
           partyId: p.partyId,
           commitmentAmount: new Decimal(
             p.commitmentAmount,
-            market.quoteAsset.decimals
+            settlementAsset.decimals
           ),
           status: p.status,
           version: Number(p.version),

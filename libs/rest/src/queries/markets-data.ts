@@ -106,11 +106,10 @@ export async function retrieveMarketData(
 }
 
 function mapMarketData(data: vegaMarketData, market: Market) {
-  const asset = market.quoteAsset;
   const priceSources = compact(
     data.markPriceState?.priceSources?.map((ps) => ({
       priceSource: ps.priceSource,
-      price: new Decimal(ps.price, asset.decimals),
+      price: new Decimal(ps.price, market.decimalPlaces),
       lastUpdated: Number(ps.lastUpdated),
     }))
   );

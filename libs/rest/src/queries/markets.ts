@@ -12,15 +12,20 @@ import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { type Assets, erc20AssetSchema, getAssets } from './assets';
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
+import { getBaseUnit, getQuoteUnit } from '@vegaprotocol/markets';
 
+// TODO: make union type for market types
 const marketSchema = z.object({
   id: z.string(),
   code: z.string(),
   name: z.string(),
   decimalPlaces: z.number(),
   positionDecimalPlaces: z.number(),
+  settlementAsset: z.nullable(erc20AssetSchema),
   baseAsset: z.nullable(erc20AssetSchema),
-  quoteAsset: erc20AssetSchema,
+  baseSymbol: z.string(),
+  quoteAsset: z.nullable(erc20AssetSchema),
+  quoteSymbol: z.string(),
   liquidityFee: z.number(),
   data: z.object({
     state: z.nativeEnum(vegaMarketState),
@@ -92,24 +97,33 @@ export const retrieveMarket = async (
 };
 
 function mapMarket(m: vegaMarket, assets: Assets) {
+  let settlementAsset = null;
   let baseAsset = null;
+  let baseSymbol = getBaseUnit(
+    get(m, 'tradableInstrument.instrument.metadata.tags', [])
+  );
   let quoteAsset = null;
+  let quoteSymbol = getQuoteUnit(
+    get(m, 'tradableInstrument.instrument.metadata.tags', [])
+  );
 
   if (m.tradableInstrument?.instrument?.future) {
-    quoteAsset = assets.get(
+    settlementAsset = assets.get(
       get(m, 'tradableInstrument.instrument.future.settlementAsset', '')
     );
   } else if (m.tradableInstrument?.instrument?.perpetual) {
-    quoteAsset = assets.get(
+    settlementAsset = assets.get(
       get(m, 'tradableInstrument.instrument.perpetual.settlementAsset', '')
     );
   } else if (m.tradableInstrument?.instrument?.spot) {
     baseAsset = assets.get(
       get(m, 'tradableInstrument.instrument.spot.baseAsset', '')
     );
+    baseSymbol = baseAsset?.symbol || baseSymbol;
     quoteAsset = assets.get(
       get(m, 'tradableInstrument.instrument.spot.quoteAsset', '')
     );
+    quoteSymbol = quoteAsset?.symbol || quoteSymbol;
   }
 
   return {
@@ -118,8 +132,11 @@ function mapMarket(m: vegaMarket, assets: Assets) {
     name: m.tradableInstrument?.instrument?.name,
     decimalPlaces: Number(m.decimalPlaces),
     positionDecimalPlaces: Number(m.positionDecimalPlaces),
+    settlementAsset,
     baseAsset,
+    baseSymbol,
     quoteAsset,
+    quoteSymbol,
     liquidityFee: Number(m.fees?.factors?.liquidityFee),
     data: {
       state: m.state,

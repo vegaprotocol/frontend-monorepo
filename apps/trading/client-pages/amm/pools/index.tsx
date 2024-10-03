@@ -97,7 +97,7 @@ export const Pools = () => {
           data,
         }: ValueFormatterParams<typeof rowData[0], BigNumber | undefined>) => {
           if (!value || !data) return '-';
-          return value.toFormat(data.positionDecimalPlaces);
+          return value.toFormat();
         },
       },
       {

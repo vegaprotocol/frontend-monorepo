@@ -67,6 +67,14 @@ export async function retrieveLiquidityFees(
 
   const data = removePaginationWrapper(res.data.paidLiquidityFees?.edges);
 
+  const feeAsset = market.settlementAsset
+    ? market.settlementAsset
+    : market.quoteAsset;
+
+  if (!feeAsset) {
+    throw new Error('could not determine settlement asset');
+  }
+
   const total = compact(
     data.map((d) => {
       if (!d.totalFeesPaid || !d.asset || !d.market) return undefined;
@@ -74,7 +82,7 @@ export async function retrieveLiquidityFees(
         assetId: d.asset,
         marketId: d.market,
         epoch: Number(d.epochSeq),
-        totalFeesPaid: new Decimal(d.totalFeesPaid, market.quoteAsset.decimals),
+        totalFeesPaid: new Decimal(d.totalFeesPaid, feeAsset.decimals),
       };
     })
   );
@@ -89,7 +97,7 @@ export async function retrieveLiquidityFees(
             assetId: d.asset,
             marketId: d.market,
             partyId: p.party,
-            amount: new Decimal(p.amount, market.quoteAsset.decimals),
+            amount: new Decimal(p.amount, feeAsset.decimals),
             quantumAmount: new Decimal(p.quantumAmount),
             epoch: Number(d.epochSeq),
           };
@@ -153,6 +161,14 @@ export async function retrieveMakerFees(
 
   const data = res.data.feesStats;
 
+  const feeAsset = market.settlementAsset
+    ? market.settlementAsset
+    : market.quoteAsset;
+
+  if (!feeAsset) {
+    throw new Error('could not determine settlement asset');
+  }
+
   const perParty = compact(
     data?.totalMakerFeesReceived?.map((d) => {
       if (!d.amount || !d.party || !d.quantumAmount) return undefined;
@@ -162,7 +178,7 @@ export async function retrieveMakerFees(
         marketId: data.market,
         partyId: d.party,
         epoch: Number(data.epochSeq),
-        amount: new Decimal(d.amount, market.quoteAsset.decimals),
+        amount: new Decimal(d.amount, feeAsset.decimals),
         quantumAmount: new Decimal(d.quantumAmount),
       };
     })

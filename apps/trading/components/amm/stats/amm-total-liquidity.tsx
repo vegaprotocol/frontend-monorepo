@@ -18,5 +18,5 @@ export const AMMTotalLiquidity = ({ market }: { market: Market }) => {
     commitments.length > 0 ? commitments : [0]
   );
 
-  return <Currency value={total} asset={market.quoteAsset} />;
+  return <Currency value={total} symbol={market.quoteSymbol} />;
 };

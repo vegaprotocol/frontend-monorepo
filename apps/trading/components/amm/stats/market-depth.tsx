@@ -19,7 +19,7 @@ export const MarketDepth = ({ market }: { market: Market }) => {
   return (
     <Currency
       value={buysSum.plus(sellsSum)}
-      asset={market.quoteAsset}
+      symbol={market.quoteSymbol}
       formatDecimals={market.decimalPlaces}
     />
   );
