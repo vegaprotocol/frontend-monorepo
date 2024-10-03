@@ -28,10 +28,10 @@ describe('ChartMenu', () => {
     render(<ChartMenu />);
 
     await userEvent.click(screen.getByTestId('chartlib-toggle-button'));
-    expect(useChartSettingsStore.getState().chartlib).toEqual('tradingview');
+    expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
 
     await userEvent.click(screen.getByTestId('chartlib-toggle-button'));
-    expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
+    expect(useChartSettingsStore.getState().chartlib).toEqual('tradingview');
   });
 
   describe('tradingview', () => {
@@ -49,7 +49,7 @@ describe('ChartMenu', () => {
 
       const buttons = screen.getAllByRole('button');
       expect(buttons).toHaveLength(1);
-      expect(buttons[0]).toHaveTextContent('Vega chart');
+      expect(buttons[0]).toHaveTextContent('Nebula chart');
 
       expect(screen.getByText('Chart by')).toBeInTheDocument();
     });
