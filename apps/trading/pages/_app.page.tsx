@@ -68,13 +68,13 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
 
   return (
-    <div className="h-full overflow-hidden">
+    <>
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <div className="grid relative h-full z-0 grid-rows-[repeat(3,min-content),minmax(0,1fr)]">
+      <div className="grid relative min-h-full z-0 grid-rows-[repeat(3,min-content),minmax(0,1fr)]">
         <OnboardBanner />
         <Navbar />
         <div data-testid="banners">
@@ -95,7 +95,7 @@ function AppBody({ Component }: AppProps) {
       <div className="hidden lg:block absolute bottom-1.5 pb-px right-2 z-10">
         <NodeHealthContainer />
       </div>
-    </div>
+    </>
   );
 }
 
