@@ -117,7 +117,7 @@ export const LiquidityForm = ({
                           value={field.value || ''}
                         />
                         <AssetPill
-                          asset={market.quoteAsset}
+                          asset={market.settlementAsset}
                           className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                         />
                       </div>
@@ -196,7 +196,7 @@ export const LiquidityForm = ({
                           value={field.value || ''}
                         />
                         <AssetPill
-                          asset={market.quoteAsset}
+                          asset={market.settlementAsset}
                           className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                         />
                       </div>
@@ -227,7 +227,7 @@ export const LiquidityForm = ({
                             value={field.value || ''}
                           />
                           <AssetPill
-                            asset={market.quoteAsset}
+                            asset={market.settlementAsset}
                             className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                           />
                         </div>
@@ -257,7 +257,7 @@ export const LiquidityForm = ({
                             value={field.value || ''}
                           />
                           <AssetPill
-                            asset={market.quoteAsset}
+                            asset={market.settlementAsset}
                             className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                           />
                         </div>
@@ -289,7 +289,7 @@ export const LiquidityForm = ({
                             value={field.value || ''}
                           />
                           <AssetPill
-                            asset={market.quoteAsset}
+                            asset={market.settlementAsset}
                             className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                           />
                         </div>
@@ -319,7 +319,7 @@ export const LiquidityForm = ({
                             value={field.value || ''}
                           />
                           <AssetPill
-                            asset={market.quoteAsset}
+                            asset={market.settlementAsset}
                             className="-translate-y-1/2 absolute top-1/2 right-2 transform"
                           />
                         </div>

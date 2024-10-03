@@ -25,7 +25,7 @@ export const MarketCard = ({ marketId }: { marketId: string }) => {
         <div className="flex gap-2 items-start min-w-0">
           <EmblemByAsset
             vegaChain={chainId}
-            asset={market.quoteAsset.id}
+            asset={market.settlementAsset.id}
             size={34}
           />
           <div className="min-w-0">
