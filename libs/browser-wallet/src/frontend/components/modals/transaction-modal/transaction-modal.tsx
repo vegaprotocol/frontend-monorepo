@@ -1,5 +1,3 @@
-import ReactTimeAgo from 'react-time-ago';
-
 import { useInteractionStore } from '@/stores/interaction-store';
 
 import { Splash } from '../../splash';
@@ -11,7 +9,6 @@ import { TransactionModalFooter } from './transaction-modal-footer';
 
 export const locators = {
   transactionWrapper: 'transaction-wrapper',
-  transactionTimeAgo: 'transaction-time-ago',
 };
 
 export const TransactionModal = () => {
@@ -27,10 +24,9 @@ export const TransactionModal = () => {
   return (
     <>
       <Splash data-testid={locators.transactionWrapper}>
-        <section className="pb-4 pt-2 px-5">
+        <section className="pb-28 pt-2 px-5">
           <TransactionHeader
-            origin={details.origin}
-            publicKey={details.publicKey}
+            receivedAt={details.receivedAt}
             name={details.name}
             transaction={details.transaction}
           />
@@ -41,17 +37,6 @@ export const TransactionModal = () => {
           />
           <EnrichedDetails transaction={details.transaction} />
           <RawTransaction transaction={details.transaction} />
-          <div
-            data-testid={locators.transactionTimeAgo}
-            className="text-sm text-surface-0-fg-muted mt-6 mb-20"
-          >
-            Received{' '}
-            <ReactTimeAgo
-              timeStyle="round"
-              date={new Date(details.receivedAt)}
-              locale="en-US"
-            />
-          </div>
         </section>
       </Splash>
       <TransactionModalFooter

@@ -7,7 +7,7 @@ import type { ReceiptComponentProperties } from '../../receipts';
 import { OrderBadges } from '../../utils/order/badges';
 import { OrderTable } from '../../utils/order-table';
 import { ReceiptWrapper } from '../../utils/receipt-wrapper';
-import { PriceWithTooltip } from '../../utils/string-amounts/price-with-tooltip';
+import { OrderPrice } from '../../utils/order/order-price';
 
 export const locators = {
   sectionHeader: 'section-header',
@@ -27,12 +27,12 @@ const SubmissionDetails = ({
     {
       prop: 'price',
       props: ['orderSubmission.marketId', 'price'],
-      render: (price, { marketId }) => [
+      render: (price, props) => [
         'Trigger price',
-        <PriceWithTooltip
+        <OrderPrice
           key={`${title}-trigger-price`}
           price={price}
-          marketId={marketId}
+          marketId={props['orderSubmission.marketId']}
         />,
       ],
     },

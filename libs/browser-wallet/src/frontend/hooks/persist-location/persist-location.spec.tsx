@@ -2,11 +2,11 @@ import { renderHook } from '@testing-library/react';
 import { type ReactNode, useEffect } from 'react';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
 
-import { LOCATION_KEY, usePersistLocation } from '.';
+import { previousLocation, setPreviousLocation, usePersistLocation } from '.';
 
 describe('PersistLocation', () => {
   beforeEach(() => {
-    localStorage.clear();
+    setPreviousLocation(null);
   });
   it('sets the current location in local storage', () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -19,13 +19,13 @@ describe('PersistLocation', () => {
         const navigate = useNavigate();
         usePersistLocation();
         if (!initialRoute) {
-          initialRoute = localStorage.getItem(LOCATION_KEY);
+          initialRoute = previousLocation;
         }
         useEffect(() => {
           navigate('/bar');
         }, [navigate]);
 
-        secondRoute = localStorage.getItem(LOCATION_KEY);
+        secondRoute = previousLocation;
       },
       { wrapper }
     );
@@ -42,7 +42,7 @@ describe('PersistLocation', () => {
     renderHook(
       () => {
         usePersistLocation();
-        initialRoute = localStorage.getItem(LOCATION_KEY);
+        initialRoute = previousLocation;
       },
       { wrapper }
     );

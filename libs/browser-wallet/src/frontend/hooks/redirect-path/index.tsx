@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useGlobalsStore } from '@/stores/globals';
 
 import { FULL_ROUTES } from '../../routes/route-names';
-import { LOCATION_KEY } from '../persist-location';
+import { previousLocation } from '../persist-location';
 
 interface State {
   loading: boolean;
@@ -29,7 +29,7 @@ export const useGetRedirectPath = () => {
       });
     } else if (globals.wallet) {
       // If the user has a path they were previously on then redirect to that
-      const path = localStorage.getItem(LOCATION_KEY);
+      const path = previousLocation;
       setResult({
         loading: false,
         path: path ?? FULL_ROUTES.wallets,

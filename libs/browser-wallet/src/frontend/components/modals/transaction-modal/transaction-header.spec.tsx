@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
-import { locators as headerLocators } from '@/components/header';
 import { locators as subheaderLocators } from '@/components/sub-header';
 
-import { locators, TransactionHeader } from './transaction-header';
+import { TransactionHeader } from './transaction-header';
 
 jest.mock('../../keys/vega-key', () => ({
   VegaKey: () => <div data-testid="vega-key" />,
@@ -38,20 +37,11 @@ describe('TransactionHeader', () => {
       <TransactionHeader
         transaction={transaction as any}
         name="Key 1"
-        origin="https://www.google.com"
-        publicKey="3fd42fd5ceb22d99ac45086f1d82d516118a5cb7ad9a2e096cd78ca2c8960c80"
+        receivedAt="0"
       />
     );
     const subheaders = screen.getAllByTestId(subheaderLocators.subHeader);
-    const [requestFromSubheader, signingWithSubheader] = subheaders;
-    expect(signingWithSubheader).toHaveTextContent('Signing with');
-    expect(requestFromSubheader).toHaveTextContent('Request from');
-    expect(screen.getByTestId(headerLocators.header)).toHaveTextContent(
-      'Order Submission'
-    );
-    expect(screen.getByTestId(locators.transactionRequest)).toHaveTextContent(
-      'https://www.google.com'
-    );
-    expect(screen.getByTestId('vega-key')).toBeInTheDocument();
+    const [requestFromSubheader] = subheaders;
+    expect(requestFromSubheader).toHaveTextContent('Signing with:');
   });
 });
