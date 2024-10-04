@@ -16,10 +16,7 @@
         "main": "apps/governance/src/main.tsx",
         "polyfills": "apps/governance/src/polyfills.ts",
         "tsConfig": "apps/governance/tsconfig.app.json",
-        "assets": [
-          "apps/governance/src/favicon.ico",
-          "apps/governance/src/assets"
-        ],
+        "assets": ["apps/governance/src/assets"],
         "styles": ["apps/governance/src/styles.css"],
         "scripts": [],
         "webpackConfig": "apps/governance/webpack.config.js"
