@@ -16,9 +16,13 @@ export const Feedback = () => {
   const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('default');
 
-  const { data: positionEstimate } = useEstimatePosition();
-  const { data: marketState } = useMarketState(ticket.market.id);
-  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
+  const { loading: estimateLoading, data: positionEstimate } =
+    useEstimatePosition();
+  const { loading: stateLoading, data: marketState } = useMarketState(
+    ticket.market.id
+  );
+  const { loading: tradingModeLoading, data: marketTradingMode } =
+    useMarketTradingMode(ticket.market.id);
 
   const requiredCollateral = toBigNum(
     positionEstimate?.estimatePosition?.collateralIncreaseEstimate.bestCase ||
@@ -44,7 +48,7 @@ export const Feedback = () => {
   }
 
   // Dont show any collateral/margin related warnings unless the user is connected
-  if (!pubKey) {
+  if (!pubKey || estimateLoading || stateLoading || tradingModeLoading) {
     return null;
   }
 

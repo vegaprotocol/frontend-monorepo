@@ -27,16 +27,24 @@ export const FeedbackStop = () => {
     'spam_protection_max_stopOrdersPerMarket'
   );
 
-  const { data: positionEstimate } = useEstimatePosition();
-  const { data: marketState } = useMarketState(ticket.market.id);
-  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
-  const { data: activeStopOrders } = useActiveStopOrders(
-    pubKey,
-    ticket.market.id,
-    !form.formState.isDirty && !form.formState.submitCount
+  const { loading: estimateLoading, data: positionEstimate } =
+    useEstimatePosition();
+  const { loading: marketStateLoading, data: marketState } = useMarketState(
+    ticket.market.id
   );
+  const { loading: marketTradingModeLoading, data: marketTradingMode } =
+    useMarketTradingMode(ticket.market.id);
+  const { loading: activeOrdersLoading, data: activeOrders } = useActiveOrders(
+    pubKey,
+    ticket.market.id
+  );
+  const { loading: activeStopOrdersLoading, data: activeStopOrders } =
+    useActiveStopOrders(
+      pubKey,
+      ticket.market.id,
+      !form.formState.isDirty && !form.formState.submitCount
+    );
   const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {};
-  const { data: activeOrders } = useActiveOrders(pubKey, ticket.market.id);
 
   const side = form.watch('side');
   const oco = form.watch('oco');
@@ -64,7 +72,18 @@ export const FeedbackStop = () => {
     return <Msg.MarketClosed marketState={marketState} />;
   }
 
-  if (!pubKey) return null;
+  if (
+    !pubKey ||
+    [
+      estimateLoading,
+      marketStateLoading,
+      marketTradingModeLoading,
+      activeOrdersLoading,
+      activeStopOrdersLoading,
+    ].some((l) => l)
+  ) {
+    return null;
+  }
   if (!maxStopOrders) return null;
 
   if (ticket.marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
