@@ -344,7 +344,7 @@ const List = ({
 
   return (
     <FixedSizeList
-      className="vega-scrollbar"
+      className="vega-scrollbar mb-2"
       itemCount={data.length}
       itemData={itemData}
       itemSize={itemSize}
