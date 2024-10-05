@@ -7,7 +7,7 @@ export const MarkPrice = ({ market }: { market: Market }) => {
   return (
     <Currency
       value={marketData?.markPrice}
-      asset={market.quoteAsset}
+      symbol={market.quoteSymbol}
       formatDecimals={market.decimalPlaces}
     />
   );

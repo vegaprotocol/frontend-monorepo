@@ -19,7 +19,7 @@ export const Volume24 = ({ market }: { market: Market }) => {
   return (
     <Currency
       value={notional}
-      asset={market.quoteAsset}
+      symbol={market.quoteSymbol}
       formatDecimals={market.positionDecimalPlaces}
     />
   );

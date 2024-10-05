@@ -74,7 +74,10 @@ export async function retrieveLiquidityFees(
         assetId: d.asset,
         marketId: d.market,
         epoch: Number(d.epochSeq),
-        totalFeesPaid: new Decimal(d.totalFeesPaid, market.quoteAsset.decimals),
+        totalFeesPaid: new Decimal(
+          d.totalFeesPaid,
+          market.settlementAsset.decimals
+        ),
       };
     })
   );
@@ -89,7 +92,7 @@ export async function retrieveLiquidityFees(
             assetId: d.asset,
             marketId: d.market,
             partyId: p.party,
-            amount: new Decimal(p.amount, market.quoteAsset.decimals),
+            amount: new Decimal(p.amount, market.settlementAsset.decimals),
             quantumAmount: new Decimal(p.quantumAmount),
             epoch: Number(d.epochSeq),
           };
@@ -162,7 +165,7 @@ export async function retrieveMakerFees(
         marketId: data.market,
         partyId: d.party,
         epoch: Number(data.epochSeq),
-        amount: new Decimal(d.amount, market.quoteAsset.decimals),
+        amount: new Decimal(d.amount, market.settlementAsset.decimals),
         quantumAmount: new Decimal(d.quantumAmount),
       };
     })
