@@ -124,12 +124,7 @@ export const AccountCard = ({
           <div className="z-10">
             <AccountsActionsDropdown
               isReadOnly={isReadOnly || !partyId}
-              assetId={asset.id}
-              assetContractAddress={
-                asset.source?.__typename === 'ERC20'
-                  ? asset.source.contractAddress
-                  : undefined
-              }
+              asset={asset}
               onClickDeposit={() => {
                 actions.onClickDeposit?.(asset.id);
               }}
