@@ -1,5 +1,6 @@
 import { type ReactNode, forwardRef } from 'react';
 import { type ConnectorType } from '@vegaprotocol/wallet';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 const CONNECTION_OPTION_CLASSES =
   'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-surface-1';
@@ -11,20 +12,33 @@ export const ConnectionOptionLink = forwardRef<
   {
     children: ReactNode;
     id: ConnectorType;
-    href: string;
+    href?: string;
     onClick?: () => void;
     icon?: ReactNode;
   }
 >(({ children, id, icon, href, onClick }, ref) => {
+  const props = {
+    ref,
+    'data-testid': `connector-${id}`,
+    target: '_blank',
+    rel: 'noreferrer',
+    onClick,
+  };
+
+  if (href) {
+    return (
+      <a {...props} href={href}>
+        {icon}
+        {children}
+      </a>
+    );
+  }
+
   return (
     <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className={CONNECTION_OPTION_CLASSES}
-      data-testid={`connector-${id}`}
-      ref={ref}
-      onClick={onClick}
+      {...props}
+      aria-disabled={true}
+      className={cn(CONNECTION_OPTION_CLASSES, 'opacity-40')}
     >
       {icon}
       {children}
@@ -37,19 +51,32 @@ export const ConnectionOptionLinkWithDescription = forwardRef<
   {
     children: ReactNode;
     id: ConnectorType;
-    href: string;
+    href?: string;
     icon?: ReactNode;
     onClick?: () => void;
   }
 >(({ children, icon, href, onClick }, ref) => {
+  const props = {
+    ref,
+    target: '_blank',
+    rel: 'noreferrer',
+    onClick,
+  };
+
+  if (href) {
+    return (
+      <a {...props} href={href}>
+        {icon}
+        {children}
+      </a>
+    );
+  }
+
   return (
     <a
-      ref={ref}
-      className={CONNECTION_OPTION_CLASSES_DESC}
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      onClick={onClick}
+      {...props}
+      aria-disabled={true}
+      className={cn(CONNECTION_OPTION_CLASSES_DESC, 'opacity-40')}
     >
       {icon}
       {children}

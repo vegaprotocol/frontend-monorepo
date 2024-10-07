@@ -23,7 +23,6 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { VegaWalletPrompt } from './vega-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
@@ -78,18 +77,15 @@ const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
   const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
-    <>
-      <Button
-        onClick={() => {
-          openVegaWalletDialog();
-        }}
-        fill={true}
-        data-testid="connect-vega-wallet"
-      >
-        {t('connectVegaWalletToUseAssociated')}
-      </Button>
-      <VegaWalletPrompt />
-    </>
+    <Button
+      onClick={() => {
+        openVegaWalletDialog();
+      }}
+      fill={true}
+      data-testid="connect-vega-wallet"
+    >
+      {t('connectVegaWalletToUseAssociated')}
+    </Button>
   );
 };
 

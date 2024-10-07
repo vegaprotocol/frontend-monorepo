@@ -192,11 +192,6 @@ export const ExternalLinks = {
   PROPOSALS_FORUM: 'https://community.vega.xyz/c/governance/25',
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
-  VEGA_WALLET_URL: 'https://vega.xyz/wallet',
-  VEGA_WALLET_URL_ABOUT: 'https://vega.xyz/wallet/#overview',
-  VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
-  VEGA_WALLET_BROWSER_LIST: '',
-  BLOG: 'https://blog.vega.xyz/',
 };
 
 export const TokenStaticLinks = {

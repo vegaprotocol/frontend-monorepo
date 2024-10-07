@@ -1,6 +1,5 @@
-import { ExternalLink, InputError } from '@vegaprotocol/ui-toolkit';
+import { InputError } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { Trans } from 'react-i18next';
 
 export const NoWalletWarning = ({
   isReadOnly,
@@ -10,22 +9,17 @@ export const NoWalletWarning = ({
   noWalletConnected?: boolean;
 }) => {
   const t = useT();
+
   if (noWalletConnected) {
     return (
       <div className="mb-2">
         <InputError testId="deal-ticket-error-message-summary">
-          <Trans
-            defaults="You need a <0>Vega wallet</0> to start trading in this market."
-            components={[
-              <ExternalLink href="https://vega.xyz/wallet" key="link">
-                Vega wallet
-              </ExternalLink>,
-            ]}
-          />
+          {t('Connect your wallet')}
         </InputError>
       </div>
     );
   }
+
   if (isReadOnly) {
     return (
       <div className="mb-2">
@@ -37,5 +31,6 @@ export const NoWalletWarning = ({
       </div>
     );
   }
+
   return null;
 };
