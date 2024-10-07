@@ -29,14 +29,11 @@ import { formatNumber } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { FeedbackDialog } from './feedback-dialog';
 
-export const FallbackDepositForm = ({
-  assets,
-  initialAsset,
-  configs,
-}: {
+export const FallbackDepositForm = (props: {
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
   configs: Configs;
+  onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
 }) => {
   const t = useT();
   const { pubKey, pubKeys } = useVegaWallet();
@@ -53,8 +50,8 @@ export const FallbackDepositForm = ({
       // and shows up as an error if its not set
       fromAddress: address,
       fromChain: String(chainId),
-      fromAsset: initialAsset?.source.contractAddress,
-      toAsset: initialAsset?.id,
+      fromAsset: props.initialAsset?.source.contractAddress,
+      toAsset: props.initialAsset?.id,
       toPubKey: pubKey,
       amount: '',
     },
@@ -62,7 +59,7 @@ export const FallbackDepositForm = ({
 
   const fields = form.watch();
 
-  const toAsset = assets?.find((a) => a.id === fields.toAsset);
+  const toAsset = props.assets?.find((a) => a.id === fields.toAsset);
 
   // Data relating to the select asset, like balance on address, allowance
   const { data: balanceData, queryKey } = useAssetReadContracts({
@@ -73,7 +70,7 @@ export const FallbackDepositForm = ({
           decimals: toAsset.decimals,
         }
       : undefined,
-    configs,
+    configs: props.configs,
   });
 
   const deposit = useEvmDeposit();
@@ -83,13 +80,13 @@ export const FallbackDepositForm = ({
       <form
         data-testid="deposit-form"
         onSubmit={form.handleSubmit(async (fields) => {
-          const toAsset = assets?.find((a) => a.id === fields.toAsset);
+          const toAsset = props.assets?.find((a) => a.id === fields.toAsset);
 
           if (!toAsset || toAsset.source.__typename !== 'ERC20') {
             throw new Error('invalid asset');
           }
 
-          const config = configs.find(
+          const config = props.configs.find(
             (c) => c.chain_id === toAsset.source.chainId
           );
 
@@ -101,7 +98,7 @@ export const FallbackDepositForm = ({
           // to asset is selected will get changed to the squid receiver address
           const bridgeAddress = config.collateral_bridge_contract.address;
 
-          deposit.write({
+          const res = await deposit.write({
             asset: toAsset,
             bridgeAddress: bridgeAddress as `0x${string}`,
             amount: fields.amount,
@@ -110,6 +107,8 @@ export const FallbackDepositForm = ({
             chainId: Number(config.chain_id),
             requiredConfirmations: config.confirmations,
           });
+
+          props.onDeposit && props.onDeposit(res);
         })}
       >
         <Fields.FromAddress control={form.control} />
@@ -142,7 +141,7 @@ export const FallbackDepositForm = ({
         <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
         <Fields.ToAsset
           control={form.control}
-          assets={assets}
+          assets={props.assets}
           toAsset={toAsset}
           queryKey={queryKey}
         />

@@ -243,7 +243,7 @@ export const useRouterConfig = (): RouteObject[] => {
       ],
     },
     {
-      path: `${AppRoutes.INVITE}`,
+      path: AppRoutes.INVITE,
       element: <LayoutCentered />,
       children: [{ index: true, path: '*', element: <Invite /> }],
     },

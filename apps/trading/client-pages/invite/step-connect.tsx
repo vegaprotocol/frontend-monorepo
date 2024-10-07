@@ -32,6 +32,7 @@ import {
 import { usePartyProfile } from '../../lib/hooks/use-party-profiles';
 import { GradientText } from 'apps/trading/components/gradient-text';
 import { ExitInvite } from './exit-invite';
+import { useAccount } from 'wagmi';
 
 export const StepConnect = () => {
   const t = useT();
@@ -210,6 +211,19 @@ const EmbeddQuickStartButton = (props: {
     connector: props.connector,
     onSuccess: props.onSuccess,
   });
+  const account = useAccount();
+
+  const renderButtonContent = () => {
+    if (isPending || account.status === 'connecting') {
+      return <Loader />;
+    }
+
+    if (account.status === 'disconnected') {
+      return t('Connect wallet');
+    }
+
+    return t('Create wallet');
+  };
 
   return (
     <>
@@ -220,7 +234,7 @@ const EmbeddQuickStartButton = (props: {
         disabled={isPending}
         className="min-w-[140px]"
       >
-        {isPending ? <Loader /> : t('Create wallet')}
+        {renderButtonContent()}
       </Button>
       <ErrorMessage id="embedded-wallet-quickstart" error={error} />
     </>

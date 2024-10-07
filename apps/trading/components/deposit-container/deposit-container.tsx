@@ -65,6 +65,7 @@ export const DepositContainer = ({
       assets={assets as AssetERC20[]}
       initialAsset={asset as AssetERC20}
       configs={allConfigs}
+      onDeposit={onDeposit}
     />
   );
 };
