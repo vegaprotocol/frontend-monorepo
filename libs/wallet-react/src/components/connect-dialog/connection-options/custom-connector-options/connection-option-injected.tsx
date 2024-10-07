@@ -33,22 +33,26 @@ export const ConnectionOptionInjected = ({
 }: ConnectionOptionProps) => {
   const t = useT();
   const userAgent = useUserAgent();
-  const link = userAgent
-    ? vegaExtensionsLinks[userAgent]
-    : Links.walletOverview;
+  const link = userAgent && vegaExtensionsLinks[userAgent];
 
   if (showDescription) {
-    return isBrowserWalletInstalled() ? (
-      <ConnectionOptionButtonWithDescription
-        icon={<ConnectorIcon id={id} />}
-        onClick={onClick}
-      >
-        <span className="flex flex-col justify-start text-left">
-          <span className="capitalize leading-5">{name}</span>
-          <span className="text-surface-0-fg-muted text-sm">{description}</span>
-        </span>
-      </ConnectionOptionButtonWithDescription>
-    ) : (
+    if (isBrowserWalletInstalled()) {
+      return (
+        <ConnectionOptionButtonWithDescription
+          icon={<ConnectorIcon id={id} />}
+          onClick={onClick}
+        >
+          <span className="flex flex-col justify-start text-left">
+            <span className="capitalize leading-5">{name}</span>
+            <span className="text-surface-0-fg-muted text-sm">
+              {description}
+            </span>
+          </span>
+        </ConnectionOptionButtonWithDescription>
+      );
+    }
+
+    return (
       <ConnectionOptionLinkWithDescription
         icon={<ConnectorIcon id={id} />}
         id={id}
