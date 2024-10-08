@@ -22,7 +22,7 @@ import * as Fields from './fields';
 import {
   type FormFields,
   type Configs,
-  fallbackFormSchema,
+  useFallbackFormSchema,
 } from './form-schema';
 import { AssetOption } from '../asset-option';
 import { formatNumber } from '@vegaprotocol/utils';
@@ -34,6 +34,7 @@ export const FallbackDepositForm = (props: {
   initialAsset?: AssetERC20;
   configs: Configs;
   onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
+  minAmount?: string;
 }) => {
   const t = useT();
   const { pubKey, pubKeys } = useVegaWallet();
@@ -42,8 +43,9 @@ export const FallbackDepositForm = (props: {
 
   const chainId = useChainId();
 
+  const schema = useFallbackFormSchema({ minAmount: props.minAmount });
   const form = useForm<FormFields>({
-    resolver: zodResolver(fallbackFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation

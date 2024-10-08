@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { useT } from '../use-t';
 import { Links } from '../links';
 import { useIncompleteWithdrawals } from './use-incomplete-withdrawals';
-import { useEvmWithdraw } from './use-evm-withdraw';
-import { type AssetERC20 } from '@vegaprotocol/assets';
 
 const CHECK_INTERVAL = 1000;
 const ON_APP_START_TOAST_ID = `ready-to-withdraw`;

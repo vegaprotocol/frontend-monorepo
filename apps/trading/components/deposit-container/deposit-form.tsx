@@ -14,7 +14,7 @@ import { useT } from '../../lib/use-t';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { useSquidRoute } from './use-squid-route';
 import { SwapInfo } from './swap-info';
-import { type FormFields, formSchema, type Configs } from './form-schema';
+import { type FormFields, type Configs, useFormSchema } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
 import * as Fields from './fields';
 import BigNumber from 'bignumber.js';
@@ -23,27 +23,25 @@ import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 
-export const DepositForm = ({
-  squid,
-  assets,
-  initialAsset,
-  configs,
-  onDeposit,
-}: {
+export const DepositForm = (props: {
   squid: Squid;
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
   configs: Configs;
   onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
+  minAmount?: string;
 }) => {
   const { pubKey, pubKeys } = useVegaWallet();
   const { address } = useAccount();
 
   const chainId = useChainId();
-  const defaultChain = squid.chains.find((c) => c.chainId === String(chainId));
+  const defaultChain = props.squid.chains.find(
+    (c) => c.chainId === String(chainId)
+  );
 
+  const schema = useFormSchema({ minAmount: props.minAmount });
   const form = useForm<FormFields>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       fromAddress: address,
       fromChain: defaultChain && defaultChain.chainId,
@@ -51,7 +49,7 @@ export const DepositForm = ({
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
-      toAsset: initialAsset?.id,
+      toAsset: props.initialAsset?.id,
       toPubKey: pubKey,
       amount: '',
     },
@@ -59,14 +57,14 @@ export const DepositForm = ({
 
   const fields = form.watch();
 
-  const tokens = squid.tokens?.filter((t) => {
+  const tokens = props.squid.tokens?.filter((t) => {
     if (!fields.fromChain) return false;
     if (t.chainId === fields.fromChain) return true;
     return false;
   });
 
-  const chain = squid.chains.find((c) => c.chainId === fields.fromChain);
-  const toAsset = assets?.find((a) => a.id === fields.toAsset);
+  const chain = props.squid.chains.find((c) => c.chainId === fields.fromChain);
+  const toAsset = props.assets?.find((a) => a.id === fields.toAsset);
   const fromAsset = tokens?.find((t) => t.address === fields.toAsset);
 
   // Data relating to the selected from asset, like balance on address and allowance
@@ -74,7 +72,7 @@ export const DepositForm = ({
   const { data: balanceData, queryKey: balanceDataQueryKey } =
     useAssetReadContracts({
       token: fromAsset,
-      configs,
+      configs: props.configs,
     });
 
   // Because the read contracts above don't work with native balances we need to
@@ -115,7 +113,7 @@ export const DepositForm = ({
             (t) =>
               t.address === fields.fromAsset && t.chainId === fields.fromChain
           );
-          const toAsset = assets?.find((a) => a.id === fields.toAsset);
+          const toAsset = props.assets?.find((a) => a.id === fields.toAsset);
 
           if (!toAsset || toAsset.source.__typename !== 'ERC20') {
             throw new Error('no to asset');
@@ -137,13 +135,13 @@ export const DepositForm = ({
               routeData,
               chainId: Number(fields.fromChain),
             });
-            onDeposit && onDeposit(res);
+            props.onDeposit && props.onDeposit(res);
           } else {
             // Same asset, no swap required, use normal ethereum bridge
             // or normal arbitrum bridge to swap
 
             // Find the matching config for the selected asset
-            const config = configs.find(
+            const config = props.configs.find(
               (c) => c.chain_id === toAsset.source.chainId
             );
 
@@ -161,15 +159,15 @@ export const DepositForm = ({
               chainId: Number(config.chain_id),
               requiredConfirmations: config.confirmations,
             });
-            onDeposit && onDeposit(res);
+            props.onDeposit && props.onDeposit(res);
           }
         })}
       >
         <Fields.FromAddress control={form.control} />
         <Fields.FromChain
           control={form.control}
-          chains={squid.chains}
-          tokens={squid.tokens}
+          chains={props.squid.chains}
+          tokens={props.squid.tokens}
         />
         <Fields.FromAsset
           control={form.control}
@@ -184,7 +182,7 @@ export const DepositForm = ({
         <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
         <Fields.ToAsset
           control={form.control}
-          assets={assets}
+          assets={props.assets}
           toAsset={toAsset}
           queryKey={balanceDataQueryKey}
           route={routeData?.route}
