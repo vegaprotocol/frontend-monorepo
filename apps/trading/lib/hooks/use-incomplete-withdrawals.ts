@@ -64,7 +64,6 @@ export const getReadyAndDelayed = (
 ) => {
   const incompleteWithdrawals = withdrawals?.filter((w) => {
     if (w.status === WithdrawalStatus.STATUS_REJECTED) return false;
-    if (w.status === WithdrawalStatus.STATUS_FINALIZED) return false;
     if (w.txHash) return false;
     return true;
   });
