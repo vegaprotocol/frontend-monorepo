@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   type ReferralSetsQueryVariables,
   useReferralSetsQuery,
@@ -41,7 +40,7 @@ export const prepareVariables = (
   return [variables, skip];
 };
 
-export const useFindReferralSet = (pubKey?: string) => {
+export const useFindReferralSet = (pubKey?: string, pollInterval?: number) => {
   const [referrerVariables, referrerSkip] = prepareVariables({
     pubKey,
     role: 'referrer',
@@ -55,21 +54,21 @@ export const useFindReferralSet = (pubKey?: string) => {
     data: referrerData,
     loading: referrerLoading,
     error: referrerError,
-    refetch: referrerRefetch,
   } = useReferralSetsQuery({
     variables: referrerVariables,
     skip: referrerSkip,
     fetchPolicy: 'cache-and-network',
+    pollInterval,
   });
   const {
     data: refereeData,
     loading: refereeLoading,
     error: refereeError,
-    refetch: refereeRefetch,
   } = useReferralSetsQuery({
     variables: refereeVariables,
     skip: refereeSkip,
     fetchPolicy: 'cache-and-network',
+    pollInterval,
   });
 
   const referrer = first(
@@ -88,17 +87,11 @@ export const useFindReferralSet = (pubKey?: string) => {
 
   const { isEligible } = useStakeAvailable(set?.referrer);
 
-  const refetch = useCallback(() => {
-    referrerRefetch();
-    refereeRefetch();
-  }, [refereeRefetch, referrerRefetch]);
-
   return {
     data: set,
     role,
     loading: referrerLoading || refereeLoading,
     error: referrerError || refereeError,
-    refetch,
     isEligible: set ? isEligible : undefined,
   };
 };

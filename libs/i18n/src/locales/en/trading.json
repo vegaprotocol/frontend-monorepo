@@ -535,7 +535,7 @@
   "ONBOARDING_INVITE_BY_HEADER": "You've been invited to join {{appName}} by <0>{{name}}</0>",
   "ONBOARDING_INVITE_CONTINUE_BANNER_ACTION": "Continue here",
   "ONBOARDING_INVITE_CONTINUE_BANNER": "You haven't finished your onboarding process yet.",
-  "ONBOARDING_INVITE_HEADER": "You've been invited to join {{appName}}",
+  "ONBOARDING_INVITE_HEADER": "Get started with {{appName}}",
   "ONBOARDING_STEP_CONNECT": "Connect with {{option}}",
   "ONBOARDING_STEP_APPLY_CODE": "Apply code",
   "ONBOARDING_STEP_APPLY_CODE_DISCOUNT_DESCRIPTION": "Trading discount",

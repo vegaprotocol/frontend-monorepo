@@ -219,7 +219,7 @@ const EmbeddQuickStartButton = (props: {
     }
 
     if (account.status === 'disconnected') {
-      return t('Connect wallet');
+      return t('Connect');
     }
 
     return t('Create wallet');

@@ -10,7 +10,6 @@ import { StepHeader } from './step-header';
 import { Loader } from '@vegaprotocol/ui-toolkit';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
-import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
 import { Trans } from 'react-i18next';
 import { QUSDTooltip } from '../referrals/qusd-tooltip';
@@ -43,7 +42,7 @@ export const StepDeposit = () => {
   return (
     <>
       <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <StepHeader title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
+        <StepHeader title={t('ONBOARDING_STEP_DEPOSIT')} />
         <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
           <h3 className="text-2xl">
