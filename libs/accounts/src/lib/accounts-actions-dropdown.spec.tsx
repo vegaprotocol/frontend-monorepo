@@ -1,9 +1,18 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 import userEvent from '@testing-library/user-event';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 describe('AccountsActionsDropdown', () => {
+  const asset = {
+    id: 'asset-id',
+    source: {
+      __typename: 'ERC20',
+      chainId: '1',
+      contractAddress: '0x123',
+    },
+  } as AssetFieldsFragment;
+
   let onClickDeposit: jest.Mock;
   let onClickWithdraw: jest.Mock;
   let onClickTransfer: jest.Mock;
@@ -22,8 +31,7 @@ describe('AccountsActionsDropdown', () => {
     // 1003-TRAN-001
     render(
       <AccountsActionsDropdown
-        assetId="testAssetId"
-        assetContractAddress="testAssetContractAddress"
+        asset={asset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         onClickTransfer={onClickTransfer}
@@ -44,8 +52,7 @@ describe('AccountsActionsDropdown', () => {
   it('should call callback functions on click', async () => {
     render(
       <AccountsActionsDropdown
-        assetId="testAssetId"
-        assetContractAddress="testAssetContractAddress"
+        asset={asset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         onClickTransfer={onClickTransfer}
