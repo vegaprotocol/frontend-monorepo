@@ -73,7 +73,7 @@ export const aliasWalletConnectQuery = (
       body: {
         jsonrpc: '2.0',
         result: {
-          chainID: 'vega-fairground-202305051805',
+          chainID: 'fairground-20240816',
         },
         id: '1',
       },
