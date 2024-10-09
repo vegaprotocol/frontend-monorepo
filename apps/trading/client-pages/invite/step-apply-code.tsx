@@ -99,7 +99,7 @@ export const StepApplyCode = () => {
     send({
       applyReferralCode: {
         id: codeField,
-        do_not_join_team: true,
+        doNotJoinTeam: true,
       },
     });
   };
