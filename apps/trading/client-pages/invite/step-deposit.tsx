@@ -11,8 +11,9 @@ import { Loader } from '@vegaprotocol/ui-toolkit';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { Card } from '../../components/card';
-import { DepositContainer } from '../../components/deposit-container';
+import { OnboardDeposit } from '../../components/deposit-container';
 import { ExitInvite } from './exit-invite';
+import { ONBOARDING_TARGET_ASSET } from '../../lib/constants';
 
 export const StepDeposit = () => {
   const navigate = useNavigate();
@@ -42,11 +43,12 @@ export const StepDeposit = () => {
         <StepHeader title={t('ONBOARDING_STEP_DEPOSIT')} />
         <ProgressionChain currentStep={currentStep} progression={progression} />
         <Card className="p-8 flex flex-col gap-4 ">
-          <DepositContainer
+          <OnboardDeposit
             onDeposit={() => {
               navigate(StepLinks[Step.JoinTeam]);
             }}
             minAmount={requiredFunds?.toString()}
+            initialAssetId={ONBOARDING_TARGET_ASSET}
           />
         </Card>
       </div>

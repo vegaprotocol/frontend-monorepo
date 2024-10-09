@@ -13,7 +13,7 @@ import { useAssetReadContracts } from './use-asset-read-contracts';
 import {
   type FormFields,
   type Configs,
-  useFallbackFormSchema,
+  fallbackFormSchema,
 } from './form-schema';
 import BigNumber from 'bignumber.js';
 import { type TxDeposit } from '../../stores/evm';
@@ -30,9 +30,8 @@ export const useFallbackDepositForm = (props: {
   const { address } = useAccount();
   const chainId = useChainId();
 
-  const schema = useFallbackFormSchema({ minAmount: props.minAmount });
   const form = useForm<FormFields>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(fallbackFormSchema),
     defaultValues: {
       // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
@@ -42,7 +41,7 @@ export const useFallbackDepositForm = (props: {
       fromAsset: props.initialAsset?.source.contractAddress,
       toAsset: props.initialAsset?.id,
       toPubKey: pubKey,
-      amount: 0,
+      amount: '',
     },
   });
 

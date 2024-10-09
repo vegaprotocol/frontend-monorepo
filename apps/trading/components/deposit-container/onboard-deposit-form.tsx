@@ -16,7 +16,7 @@ import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 import { useDepositForm } from './use-deposit-form';
 
-export const DepositForm = (props: {
+export const OnboardDepositForm = (props: {
   squid: Squid;
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
@@ -58,13 +58,11 @@ export const DepositForm = (props: {
           balanceOf={balances.data?.balanceOf}
           nativeBalanceOf={nativeBalance.data}
         />
-        <Fields.ToPubKeySelect control={form.control} pubKeys={pubKeys} />
-        <Fields.ToAsset
-          control={form.control}
-          assets={props.assets}
+        <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
+        <Fields.Receives
+          amount={route.data?.route.estimate.toAmount}
+          token={route.data?.route.estimate.toToken}
           toAsset={toAsset}
-          queryKey={balances.queryKey}
-          route={route.data?.route}
         />
         {isSwap && (
           <div className="mb-4">

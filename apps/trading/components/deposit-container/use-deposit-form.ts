@@ -8,11 +8,12 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { useSquidRoute } from './use-squid-route';
-import { type FormFields, type Configs, useFormSchema } from './form-schema';
+import { type FormFields, type Configs, formSchema } from './form-schema';
 import { useNativeBalance } from './use-native-balance';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { useEvmSquidDeposit } from 'apps/trading/lib/hooks/use-evm-squid-deposit';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
+import BigNumber from 'bignumber.js';
 
 /**
  * Form logic for deposits
@@ -33,9 +34,8 @@ export const useDepositForm = (props: {
     (c) => c.chainId === String(chainId)
   );
 
-  const schema = useFormSchema({ minAmount: props.minAmount });
   const form = useForm<FormFields>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       fromAddress: address,
       fromChain: defaultChain && defaultChain.chainId,
@@ -45,7 +45,7 @@ export const useDepositForm = (props: {
       // and shows up as an error if its not set
       toAsset: props.initialAsset?.id,
       toPubKey: pubKey,
-      amount: 0,
+      amount: '',
     },
   });
 
@@ -112,6 +112,22 @@ export const useDepositForm = (props: {
       toAsset.source.contractAddress.toLowerCase();
 
     if (isSwapRequired) {
+      if (!route.data) {
+        throw new Error('no route data');
+      }
+
+      const quantumizedAmount = BigNumber(
+        route.data.route.estimate.toAmount
+      ).div(toAsset.quantum);
+
+      if (props.minAmount && quantumizedAmount.isLessThan(props.minAmount)) {
+        // TODO: use i18n and qUSD tooltip
+        form.setError('amount', {
+          message: 'You must deposit at least 10 qUSD',
+        });
+        return;
+      }
+
       const res = await squidDeposit.write({
         asset: toAsset,
         amount: fields.amount.toString(),

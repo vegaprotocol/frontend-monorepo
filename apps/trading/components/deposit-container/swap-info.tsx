@@ -1,5 +1,5 @@
 import groupBy from 'lodash/groupBy';
-import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { type RouteResponse } from '@0xsquid/sdk/dist/types';
 import { TradingInputError } from '@vegaprotocol/ui-toolkit';
@@ -26,16 +26,6 @@ export const SwapInfo = (props: {
 
   return (
     <dl className="text-xs">
-      <div className="grid grid-cols-2">
-        <dt className="text-surface-1-fg-muted">{t('Amount')}</dt>
-        <dd className="text-right">
-          {addDecimalsFormatNumber(
-            estimate.toAmount,
-            estimate.toToken.decimals
-          )}{' '}
-          {estimate.toToken.symbol}
-        </dd>
-      </div>
       {Object.entries(gasGroups).map(([key, group]) => {
         const fees = group.map((f) => {
           return toBigNum(f.amount, f.token.decimals);

@@ -4,35 +4,33 @@ import { ETHEREUM_ADDRESS_REGEX, VEGA_ID_REGEX } from '@vegaprotocol/utils';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
 
 import i18n from '../../lib/i18n';
-import { useMemo } from 'react';
 
-type SchemaArgs = { minAmount?: string };
+export const formSchema = z.object({
+  fromAddress: z
+    .string()
+    .regex(ETHEREUM_ADDRESS_REGEX, i18n.t('Connect wallet')),
+  fromChain: z.string(),
+  fromAsset: z.string(),
+  toAsset: z.string().regex(VEGA_ID_REGEX),
+  toPubKey: z.string().regex(VEGA_ID_REGEX),
+  // Use a string but parse it as a number for validation
+  amount: z.string().refine(
+    (v) => {
+      const n = Number(v);
 
-export const createFormSchema = ({ minAmount = '0' }: SchemaArgs) => {
-  return z.object({
-    fromAddress: z
-      .string()
-      .regex(ETHEREUM_ADDRESS_REGEX, i18n.t('Connect wallet')),
-    fromChain: z.string(),
-    fromAsset: z.string(),
-    toAsset: z.string().regex(VEGA_ID_REGEX),
-    toPubKey: z.string().regex(VEGA_ID_REGEX),
-    // Use a string but parse it as a number for validation
-    amount: z.coerce.number().min(Number(minAmount)),
-  });
-};
+      if (v?.length <= 0) return false;
+      if (isNaN(n)) return false;
+      if (n <= 0) return false;
 
-export const createFallbackFormSchema = (args: SchemaArgs) => {
-  return createFormSchema(args).partial({ fromAsset: true });
-};
+      return true;
+    },
+    { message: 'Invalid number' }
+  ),
+});
 
-export type FormFields = z.infer<ReturnType<typeof createFormSchema>>;
+export const fallbackFormSchema = formSchema.partial({
+  fromAsset: true,
+});
+
+export type FormFields = z.infer<typeof formSchema>;
 export type Configs = Array<EthereumConfig | EVMBridgeConfig>;
-
-export const useFormSchema = (args: SchemaArgs) => {
-  return useMemo(() => createFormSchema(args), [args]);
-};
-
-export const useFallbackFormSchema = (args: SchemaArgs) => {
-  return useMemo(() => createFallbackFormSchema(args), [args]);
-};

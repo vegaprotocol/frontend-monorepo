@@ -64,7 +64,7 @@ export const FallbackDepositForm = (props: {
             ) : undefined
           }
         />
-        <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
+        <Fields.ToPubKeySelect control={form.control} pubKeys={pubKeys} />
         <Fields.ToAsset
           control={form.control}
           assets={props.assets}
