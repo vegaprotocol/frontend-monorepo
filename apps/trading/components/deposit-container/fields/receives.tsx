@@ -1,29 +1,22 @@
-import { FormGroup } from '@vegaprotocol/ui-toolkit';
-
-import { useT } from '../../../lib/use-t';
-import { type Token } from '@0xsquid/squid-types';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { type AssetERC20 } from '@vegaprotocol/assets';
+import { getExternalChainShortLabel } from '@vegaprotocol/environment';
+import { cn } from '@vegaprotocol/ui-toolkit';
 
 export function Receives(props: {
+  label: string;
   amount: string | undefined;
-  token: Token | undefined;
-  toAsset: AssetERC20 | undefined;
+  toAsset: AssetERC20;
+  className?: string;
 }) {
-  const t = useT();
-
-  if (!props.toAsset) return null;
-
   return (
-    <FormGroup label={t('Receive')} labelFor="receive">
-      {props.amount && props.token ? (
+    <div className={cn('grid grid-cols-2 text-xs', props.className)}>
+      <dt className="text-surface-1-fg-muted">{props.label}</dt>
+      <dd className="text-right">
         <div>
-          {addDecimalsFormatNumber(props.amount, props.token.decimals)}{' '}
-          {props.token.symbol}
+          {props.amount} {props.toAsset.symbol} (
+          {getExternalChainShortLabel(props.toAsset.source.chainId)})
         </div>
-      ) : (
-        <div>0 {props.toAsset.symbol}</div>
-      )}
-    </FormGroup>
+      </dd>
+    </div>
   );
 }

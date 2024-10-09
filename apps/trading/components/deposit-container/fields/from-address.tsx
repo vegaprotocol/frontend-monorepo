@@ -1,6 +1,6 @@
 import { type Control, Controller, useFormContext } from 'react-hook-form';
 
-import { useAccount, useDisconnect, useAccountEffect } from 'wagmi';
+import { useAccount, useDisconnect, useChainId, useAccountEffect } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 
 import {
@@ -9,6 +9,7 @@ import {
   TradingInputError,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
+import { Emblem } from '@vegaprotocol/emblem';
 
 import { useT } from '../../../lib/use-t';
 
@@ -24,6 +25,7 @@ export function FromAddress(props: { control: Control<FormFields> }) {
   const form = useFormContext();
   const { disconnect } = useDisconnect();
   const { isConnected, address } = useAccount();
+  const chainId = useChainId();
 
   useAccountEffect({
     onConnect: ({ address }) => {
@@ -42,6 +44,7 @@ export function FromAddress(props: { control: Control<FormFields> }) {
             <>
               {isConnected ? (
                 <div className="flex items-center gap-1">
+                  <Emblem chainId={chainId} />
                   <input
                     value={address}
                     readOnly

@@ -312,6 +312,7 @@
   "epochsStreak": "{{count}} epochs streak",
   "epochStreak_one": "{{count}} epoch streak",
   "Error occurred": "Error occurred",
+  "Est. Amount": "Est. Amount",
   "Est. uncrossing price": "Est. uncrossing price",
   "Est. uncrossing vol": "Est. uncrossing vol",
   "Estimated fees": "Estimated rewards",

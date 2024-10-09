@@ -5,6 +5,7 @@ import { type AssetERC20, useEnabledAssets } from '@vegaprotocol/assets';
 import { useSquid } from './use-squid';
 import { useT } from '../../lib/use-t';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
+import { OnboardFallbackDepositForm } from './onboard-fallback-deposit-form';
 
 /**
  * Gets env vars, assets, and configs required for the deposit form
@@ -17,8 +18,8 @@ export const OnboardDeposit = (props: {
   const t = useT();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { data: assets, loading } = useEnabledAssets();
-  const { data: squid, error: squidError } = useSquid();
+  const { data: assets, loading: assetsLoading } = useEnabledAssets();
+  const { data: squid, isPending: squidPending } = useSquid();
 
   if (!config) return null;
   if (!configs?.length) return null;
@@ -28,23 +29,27 @@ export const OnboardDeposit = (props: {
   // Make sure asset is an existing enabled asset
   const asset = assets?.find((a) => a.id === props.initialAssetId);
 
-  if (!squid) {
-    return <p>No squid</p>;
-  }
-
-  if (squidError) {
-    return <p>Squid error {squidError.message}</p>;
-  }
-
-  if (loading) {
+  if (assetsLoading || squidPending) {
     return (
       <p className="text-sm text-surface-1-fg-muted pt-2">{t('Loading...')}</p>
     );
   }
 
+  if (squid && squid.initialized) {
+    return (
+      <OnboardDepositForm
+        squid={squid}
+        assets={assets as AssetERC20[]}
+        initialAsset={asset as AssetERC20}
+        configs={allConfigs}
+        onDeposit={props.onDeposit}
+        minAmount={props.minAmount}
+      />
+    );
+  }
+
   return (
-    <OnboardDepositForm
-      squid={squid}
+    <OnboardFallbackDepositForm
       assets={assets as AssetERC20[]}
       initialAsset={asset as AssetERC20}
       configs={allConfigs}

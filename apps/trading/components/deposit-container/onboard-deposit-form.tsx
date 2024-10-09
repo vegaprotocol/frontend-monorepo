@@ -24,12 +24,13 @@ export const OnboardDepositForm = (props: {
   onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
   minAmount?: string;
 }) => {
+  const t = useT();
   const { pubKeys } = useVegaWallet();
   const {
     form,
+    toAsset,
     chain,
     tokens,
-    toAsset,
     balances,
     nativeBalance,
     route,
@@ -43,31 +44,48 @@ export const OnboardDepositForm = (props: {
     <FormProvider {...form}>
       <form data-testid="deposit-form" onSubmit={onSubmit}>
         <Fields.FromAddress control={form.control} />
-        <Fields.FromChain
-          control={form.control}
-          chains={props.squid.chains}
-          tokens={props.squid.tokens}
-        />
-        <Fields.FromAsset
-          control={form.control}
-          tokens={tokens}
-          chain={chain}
-        />
+        {props.squid && props.squid.initialized ? (
+          <>
+            <Fields.FromChain
+              control={form.control}
+              chains={props.squid.chains}
+              tokens={props.squid.tokens}
+            />
+            <Fields.FromAsset
+              control={form.control}
+              tokens={tokens}
+              chain={chain}
+            />
+          </>
+        ) : (
+          <div />
+        )}
+
         <Fields.Amount
           control={form.control}
           balanceOf={balances.data?.balanceOf}
           nativeBalanceOf={nativeBalance.data}
         />
         <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
-        <Fields.Receives
-          amount={route.data?.route.estimate.toAmount}
-          token={route.data?.route.estimate.toToken}
-          toAsset={toAsset}
-        />
-        {isSwap && (
+        {toAsset && (
           <div className="mb-4">
-            <SwapInfo route={route.data?.route} error={route.error} />
+            <Fields.Receives
+              label={t('Est. Amount')}
+              amount={addDecimalsFormatNumber(
+                route.data?.route.estimate.toAmount || 0,
+                toAsset.decimals
+              )}
+              toAsset={toAsset}
+            />
           </div>
+        )}
+        {isSwap && (
+          <>
+            <hr className="my-2" />
+            <div className="mb-4">
+              <SwapInfo route={route.data?.route} error={route.error} />
+            </div>
+          </>
         )}
         <SubmitButton
           isSwap={isSwap}

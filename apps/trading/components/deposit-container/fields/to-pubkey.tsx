@@ -22,21 +22,25 @@ export function ToPubKey(props: {
       render={({ field, fieldState }) => {
         const key = props.pubKeys.find((p) => p.publicKey === field.value);
 
+        if (key) {
+          return (
+            <div className="grid grid-cols-2 text-xs">
+              <dt className="text-surface-1-fg-muted">{t('Recipient')}</dt>
+              <dd className="text-right">
+                <div>
+                  {key.name} | {truncateMiddle(key.publicKey)}
+                </div>
+              </dd>
+            </div>
+          );
+        }
+
         return (
           <FormGroup
             label={t('DEPOSIT_FIELD_TO_PUBKEY', { appName: APP_NAME })}
             labelFor="toPubKey"
           >
-            {key ? (
-              <div className="text-sm leading-4">
-                <div>{key.name}</div>
-                <div className="text-xs text-surface-0-fg-muted">
-                  {truncateMiddle(key.publicKey)}
-                </div>
-              </div>
-            ) : (
-              <Input {...field} value={field.value} />
-            )}
+            <Input {...field} value={field.value} />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}

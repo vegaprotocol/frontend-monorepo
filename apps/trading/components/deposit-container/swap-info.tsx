@@ -55,6 +55,10 @@ export const SwapInfo = (props: {
         );
       })}
       <div className="grid grid-cols-2">
+        <dt className="text-surface-1-fg-muted">{t('Price impact')}</dt>
+        <dd className="text-right">{estimate.aggregatePriceImpact}%</dd>
+      </div>
+      <div className="grid grid-cols-2">
         <dt className="text-surface-1-fg-muted">{t('Slippage')}</dt>
         <dd className="text-right">
           {

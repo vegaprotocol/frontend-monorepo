@@ -111,7 +111,7 @@ export const useDepositForm = (props: {
       fromAsset.address.toLowerCase() !==
       toAsset.source.contractAddress.toLowerCase();
 
-    if (isSwapRequired) {
+    if (props.squid.initialized && isSwapRequired) {
       if (!route.data) {
         throw new Error('no route data');
       }
