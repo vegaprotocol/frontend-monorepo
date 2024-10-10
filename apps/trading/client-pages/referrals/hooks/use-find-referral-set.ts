@@ -54,6 +54,7 @@ export const useFindReferralSet = (pubKey?: string, pollInterval?: number) => {
     data: referrerData,
     loading: referrerLoading,
     error: referrerError,
+    refetch: referrerRefetch,
   } = useReferralSetsQuery({
     variables: referrerVariables,
     skip: referrerSkip,
@@ -64,6 +65,7 @@ export const useFindReferralSet = (pubKey?: string, pollInterval?: number) => {
     data: refereeData,
     loading: refereeLoading,
     error: refereeError,
+    refetch: refereeRefetch,
   } = useReferralSetsQuery({
     variables: refereeVariables,
     skip: refereeSkip,
@@ -87,11 +89,16 @@ export const useFindReferralSet = (pubKey?: string, pollInterval?: number) => {
 
   const { isEligible } = useStakeAvailable(set?.referrer);
 
+  const refetch = () => {
+    referrerRefetch();
+    refereeRefetch();
+  };
   return {
     data: set,
     role,
     loading: referrerLoading || refereeLoading,
     error: referrerError || refereeError,
+    refetch,
     isEligible: set ? isEligible : undefined,
   };
 };
