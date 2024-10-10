@@ -24,7 +24,7 @@ export const TokenOption = (props: {
       />
       <div className="text-sm text-left leading-4">
         <div>
-          {props.name} {props.symbol}
+          {props.name !== props.symbol ? props.symbol : ''} {props.symbol}
         </div>
         <div className="text-secondary text-xs">
           {truncateMiddle(props.address)}

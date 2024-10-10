@@ -2,60 +2,45 @@ import {
   FormGroup,
   Input,
   TradingInputError,
-  TradingRichSelect,
-  TradingRichSelectOption,
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
-import { type Control, Controller, useFormContext } from 'react-hook-form';
-import { VegaKeySelect } from '../vega-key-select';
+import { type Control, Controller } from 'react-hook-form';
 import { type FormFields } from '../form-schema';
-import { type Key } from '@vegaprotocol/wallet';
 import { useT } from '../../../lib/use-t';
 import { APP_NAME } from '../../../lib/constants';
+import { type Key } from '@vegaprotocol/wallet';
 
 export function ToPubKey(props: {
   control: Control<FormFields>;
   pubKeys: Key[];
 }) {
   const t = useT();
-  const form = useFormContext();
   return (
     <Controller
       name="toPubKey"
       control={props.control}
       render={({ field, fieldState }) => {
+        const key = props.pubKeys.find((p) => p.publicKey === field.value);
+
+        if (key) {
+          return (
+            <div className="grid grid-cols-2 text-xs">
+              <dt className="text-surface-1-fg-muted">{t('Recipient')}</dt>
+              <dd className="text-right">
+                <div>
+                  {key.name} | {truncateMiddle(key.publicKey)}
+                </div>
+              </dd>
+            </div>
+          );
+        }
+
         return (
           <FormGroup
             label={t('DEPOSIT_FIELD_TO_PUBKEY', { appName: APP_NAME })}
             labelFor="toPubKey"
           >
-            <VegaKeySelect
-              onChange={() => form.setValue('toPubKey', '')}
-              input={<Input {...field} />}
-              select={
-                <TradingRichSelect
-                  placeholder={t('Select public key')}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  {props.pubKeys.map((k) => {
-                    return (
-                      <TradingRichSelectOption
-                        value={k.publicKey}
-                        key={k.publicKey}
-                      >
-                        <div className="leading-4">
-                          <div>{k.name}</div>
-                          <div className="text-xs text-secondary">
-                            {truncateMiddle(k.publicKey)}
-                          </div>
-                        </div>
-                      </TradingRichSelectOption>
-                    );
-                  })}
-                </TradingRichSelect>
-              }
-            />
+            <Input {...field} value={field.value} />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}

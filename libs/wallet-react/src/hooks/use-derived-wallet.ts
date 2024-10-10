@@ -10,8 +10,7 @@ export const ETHEREUM_CHAIN_ID = 1;
  */
 export const useCreateDerivedWallet = (
   connector: QuickStartConnector,
-  onSuccess: () => void,
-  address?: string
+  onSuccess: () => void
 ) => {
   const state = useConfig();
   const { signTypedDataAsync } = useSignTypedData();
@@ -21,14 +20,9 @@ export const useCreateDerivedWallet = (
 
   const mutationResult = useMutation({
     retry: false,
-    mutationKey: ['ethereum.signTypedData', address],
-    mutationFn: async () => {
+    mutationKey: ['ethereum.signTypedData'],
+    mutationFn: async (address: string) => {
       try {
-        if (!address) {
-          throw new Error(
-            'Attempted to create a dervided wallet while not connected'
-          );
-        }
         state.store.setState({
           status: 'creating',
         });

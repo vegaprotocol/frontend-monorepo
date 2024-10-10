@@ -1,7 +1,9 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { cn } from '@vegaprotocol/ui-toolkit';
 
-const BADGE_SIZING = cn('w-8 h-8 rounded-full relative flex-shrink-0');
+const BADGE_SIZING = cn(
+  'self-start w-8 h-8 rounded-full relative flex-shrink-0'
+);
 const BADGE_BACKGROUND = 'bg-surface-2 ';
 const INNER_ICON_SIZING = cn(
   'w-6 h-6', // 24
@@ -15,7 +17,7 @@ export const PendingBadge = () => {
         <VegaIcon
           name={VegaIconNames.LOADING}
           size={24}
-          className={cn('animate-spin', 'stroke-gs-200')}
+          className={cn('animate-spin', 'stroke-gs-200 dark:stroke-gs-800')}
         />
       </div>
     </div>
@@ -28,7 +30,7 @@ export const FailedBadge = () => {
       <VegaIcon
         name={VegaIconNames.EXCLAMATION_SIGN}
         size={24}
-        className={cn(INNER_ICON_SIZING, 'fill-gs-50')}
+        className={cn(INNER_ICON_SIZING, 'fill-gs-950 dark:fill-gs-50')}
       />
     </div>
   );
@@ -40,7 +42,7 @@ export const DefaultBadge = () => {
       <VegaIcon
         name={VegaIconNames.SLIM_TICK}
         size={24}
-        className={cn(INNER_ICON_SIZING, 'stroke-gs-200')}
+        className={cn(INNER_ICON_SIZING, 'stroke-gs-400 dark:stroke-gs-600')}
       />
     </div>
   );
@@ -48,11 +50,11 @@ export const DefaultBadge = () => {
 
 export const ConfirmedBadge = () => {
   return (
-    <div className={cn(BADGE_SIZING, 'bg-surface-0')}>
+    <div className={cn(BADGE_SIZING, 'bg-gs-950 dark:bg-gs-50')}>
       <VegaIcon
         name={VegaIconNames.SLIM_TICK}
         size={24}
-        className={cn(INNER_ICON_SIZING, 'stroke-surface-0-fg')}
+        className={cn(INNER_ICON_SIZING, 'stroke-gs-50 dark:stroke-gs-950')}
       />
     </div>
   );

@@ -61,11 +61,13 @@ export const TransactionSteps = ({
   if (result?.txHash) {
     aStepDescription = (
       <a
-        className="text-surface-1-fg-muted inline-flex gap-1 items-center hover:underline"
+        className="text-surface-1-fg-muted inline-flex gap-1 items-center"
         href={explorerLink(EXPLORER_TX.replace(':hash', result.txHash))}
         title={t('View on explorer')}
       >
-        <span>{t('Transaction submitted successfully')}</span>
+        <span className="underline underline-offset-4">
+          {t('Transaction submitted successfully')}
+        </span>
         <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
       </a>
     );
@@ -134,14 +136,18 @@ export const TransactionSteps = ({
           {aStepIcon}
           <div className="flex flex-col gap-0">
             <span>{t('Submit transaction')}</span>
-            {aStepDescription && <span>{aStepDescription}</span>}
+            {aStepDescription && (
+              <span className="text-sm">{aStepDescription}</span>
+            )}
           </div>
         </li>
         <li className="flex flex-row flex-grow-0 items-center gap-4">
           {bStepIcon}
           <div className="flex flex-col gap-0 min-w-0">
             <span>{t('Confirm transaction')}</span>
-            {bStepDescription && <span>{bStepDescription}</span>}
+            {bStepDescription && (
+              <span className="text-sm">{bStepDescription}</span>
+            )}
           </div>
         </li>
       </ul>

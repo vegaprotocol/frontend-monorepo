@@ -1,21 +1,18 @@
-import { type QueryKey, useQueryClient } from '@tanstack/react-query';
-import { useChainId, useSimulateContract, useSwitchChain } from 'wagmi';
+import uniqueId from 'lodash/uniqueId';
+import { useSimulateContract } from 'wagmi';
 
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { ERC20_ABI } from '@vegaprotocol/smart-contracts';
 
-import { useEvmTx } from './use-evm-tx';
+import { useEvmTxStore, type TxFaucet } from '../../stores/evm';
+import { useRef } from 'react';
 
-export const useEvmFaucet = ({
-  asset,
-  queryKey,
-}: {
-  asset: AssetERC20;
-  queryKey: QueryKey;
-}) => {
-  const queryClient = useQueryClient();
-  const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
+export const useEvmFaucet = ({ asset }: { asset: AssetERC20 }) => {
+  const idRef = useRef<string>(uniqueId());
+  const faucet = useEvmTxStore((store) => store.faucet);
+  const reset = useEvmTxStore((store) => store.resetTx);
+  const txs = useEvmTxStore((store) => store.txs);
+  const data = idRef.current ? txs.get(idRef.current) : undefined;
 
   const contractParamters = {
     abi: ERC20_ABI,
@@ -23,28 +20,21 @@ export const useEvmFaucet = ({
     functionName: 'faucet',
     chainId: Number(asset.source.chainId),
   };
-
   // Check to see if the faucet is available on the token
   const { data: contractRequestData } = useSimulateContract(contractParamters);
 
-  const { writeContract, data } = useEvmTx();
-
-  const submitFaucet = async () => {
-    if (asset.source.__typename !== 'ERC20') {
-      throw new Error('invalid asset');
-    }
-
-    if (Number(asset.source.chainId) !== chainId) {
-      await switchChainAsync({ chainId: Number(asset.source.chainId) });
-    }
-
-    await writeContract(contractParamters);
-
-    queryClient.invalidateQueries({ queryKey });
+  const write = () => {
+    return faucet(idRef.current, {
+      asset,
+      chainId: Number(asset.source.chainId),
+    });
   };
 
   return {
-    submitFaucet: contractRequestData ? submitFaucet : undefined,
-    data,
+    write: contractRequestData ? write : undefined,
+    reset: () => {
+      reset(idRef.current);
+    },
+    data: data as TxFaucet,
   };
 };

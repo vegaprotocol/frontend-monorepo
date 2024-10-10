@@ -28,6 +28,7 @@ export const useSquid = () => {
         throw new Error('squid unable to initialize');
       }
     },
+    retry: false,
   });
 
   return queryResult;

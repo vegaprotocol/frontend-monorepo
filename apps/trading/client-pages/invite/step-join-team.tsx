@@ -7,7 +7,7 @@ import {
 } from './step-utils';
 import { StepHeader } from './step-header';
 import { Loader } from '@vegaprotocol/ui-toolkit';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
@@ -20,6 +20,7 @@ import { CompactTeamStats } from '../../components/competitions/team-stats';
 import { JoinTeam } from '../competitions/join-team';
 import last from 'lodash/last';
 import { ExitInvite } from './exit-invite';
+import { Links } from '../../lib/links';
 
 export const StepJoinTeam = () => {
   const t = useT();
@@ -91,6 +92,11 @@ export const StepJoinTeam = () => {
 
         <JoinTeam team={team} partyTeam={partyTeam} onSuccess={onSuccess} />
       </Card>
+      <p className="flex gap-4 justify-center text-center">
+        <Link to={Links.MARKETS()} className="underline underline-offset-4">
+          {t('Take me to all markets')}
+        </Link>
+      </p>
     </div>
   );
 };

@@ -4,7 +4,12 @@ import { cn } from '../../utils/cn';
 import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
 
-import type { ReactNode } from 'react';
+import {
+  forwardRef,
+  type ElementRef,
+  type ComponentProps,
+  type ReactNode,
+} from 'react';
 import { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
@@ -112,14 +117,20 @@ export function Dialog({
   );
 }
 
-export const DialogTitle = (props: {
+type DialogTitleProps = ComponentProps<typeof DialogPrimitives.Title> & {
   icon?: ReactNode;
-  children: ReactNode;
-}) => {
+};
+
+export const DialogTitle = forwardRef<
+  ElementRef<typeof DialogPrimitives.Title>,
+  DialogTitleProps
+>((props, ref) => {
   return (
     <DialogPrimitives.Title
-      className="text-xl flex gap-4"
       data-testid="dialog-title"
+      {...props}
+      className={cn('text-xl flex gap-4', props.className)}
+      ref={ref}
     >
       {props.icon && (
         <span className="fill-current flex items-center">{props.icon}</span>
@@ -127,4 +138,4 @@ export const DialogTitle = (props: {
       {props.children}
     </DialogPrimitives.Title>
   );
-};
+});

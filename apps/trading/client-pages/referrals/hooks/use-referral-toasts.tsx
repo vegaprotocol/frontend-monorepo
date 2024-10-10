@@ -18,25 +18,14 @@ const NON_ELIGIBLE_REFERRAL_SET_TOAST_ID = 'non-eligible-referral-set';
 
 const useNonEligibleReferralSet = () => {
   const { pubKey } = useVegaWallet();
-  const { data, loading, role, isEligible, refetch } =
-    useFindReferralSet(pubKey);
+  const { data, loading, role, isEligible } = useFindReferralSet(
+    pubKey,
+    REFETCH_INTERVAL
+  );
 
-  const {
-    data: epochData,
-    loading: epochLoading,
-    refetch: epochRefetch,
-  } = useEpochInfoQuery();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refetch();
-      epochRefetch();
-    }, REFETCH_INTERVAL);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [epochRefetch, refetch]);
+  const { data: epochData, loading: epochLoading } = useEpochInfoQuery({
+    pollInterval: REFETCH_INTERVAL,
+  });
 
   return {
     data,

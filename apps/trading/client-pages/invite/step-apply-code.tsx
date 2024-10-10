@@ -14,7 +14,7 @@ import {
   Intent,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { APP_NAME } from '../../lib/constants';
 import { Card } from '../../components/card';
@@ -36,6 +36,7 @@ import { TransactionSteps } from '../../components/transaction-dialog/transactio
 import minBy from 'lodash/minBy';
 import { ExitInvite } from './exit-invite';
 import BigNumber from 'bignumber.js';
+import { Links } from '../../lib/links';
 
 export const StepApplyCode = () => {
   const t = useT();
@@ -197,6 +198,11 @@ export const StepApplyCode = () => {
             />
           </Dialog>
         </Card>
+        <p className="flex gap-4 justify-center text-center">
+          <Link to={Links.MARKETS()} className="underline underline-offset-4">
+            {t('Take me to all markets')}
+          </Link>
+        </p>
       </div>
     </>
   );
