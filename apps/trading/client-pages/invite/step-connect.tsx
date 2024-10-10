@@ -19,7 +19,7 @@ import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useState, type PropsWithChildren, type ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { StepHeader } from './step-header';
 import type { ConnectorType, QuickStartConnector } from '@vegaprotocol/wallet';
 import { useOnboardStore } from '../../stores/onboard';
@@ -33,6 +33,7 @@ import { usePartyProfile } from '../../lib/hooks/use-party-profiles';
 import { GradientText } from 'apps/trading/components/gradient-text';
 import { ExitInvite } from './exit-invite';
 import { useAccount } from 'wagmi';
+import { Links } from '../../lib/links';
 
 export const StepConnect = () => {
   const t = useT();
@@ -99,10 +100,13 @@ export const StepConnect = () => {
           )}
         </StepHeader>
         <ProminentConnectionOptions />
-        <p className="text-center">
+        <p className="flex gap-4 justify-center text-center">
           <ButtonLink onClick={() => setShowAdvanced(true)}>
             {t('Advanced connection options')}
           </ButtonLink>
+          <Link to={Links.MARKETS()} className="underline underline-offset-4">
+            {t('Take me to all markets')}
+          </Link>
         </p>
         {showAdvanced && <SecondaryConnectionOptions />}
       </div>

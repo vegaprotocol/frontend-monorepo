@@ -8,12 +8,13 @@ import {
 } from './step-utils';
 import { StepHeader } from './step-header';
 import { Loader } from '@vegaprotocol/ui-toolkit';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { ProgressionChain } from './step-progression-chain';
 import { Card } from '../../components/card';
 import { OnboardDeposit } from '../../components/deposit-container';
 import { ExitInvite } from './exit-invite';
 import { ONBOARDING_TARGET_ASSET } from '../../lib/constants';
+import { Links } from '../../lib/links';
 
 export const StepDeposit = () => {
   const navigate = useNavigate();
@@ -38,20 +39,23 @@ export const StepDeposit = () => {
   }
 
   return (
-    <>
-      <div className="md:w-7/12 mx-auto flex flex-col gap-10">
-        <StepHeader title={t('ONBOARDING_STEP_DEPOSIT')} />
-        <ProgressionChain currentStep={currentStep} progression={progression} />
-        <Card className="p-8 flex flex-col gap-4 ">
-          <OnboardDeposit
-            onDeposit={() => {
-              navigate(StepLinks[Step.JoinTeam]);
-            }}
-            minAmount={requiredFunds?.toString()}
-            initialAssetId={ONBOARDING_TARGET_ASSET}
-          />
-        </Card>
-      </div>
-    </>
+    <div className="md:w-7/12 mx-auto flex flex-col gap-10">
+      <StepHeader title={t('ONBOARDING_STEP_DEPOSIT')} />
+      <ProgressionChain currentStep={currentStep} progression={progression} />
+      <Card className="p-8 flex flex-col gap-4 ">
+        <OnboardDeposit
+          onDeposit={() => {
+            navigate(StepLinks[Step.JoinTeam]);
+          }}
+          minAmount={requiredFunds?.toString()}
+          initialAssetId={ONBOARDING_TARGET_ASSET}
+        />
+      </Card>
+      <p className="flex gap-4 justify-center text-center">
+        <Link to={Links.MARKETS()} className="underline underline-offset-4">
+          {t('Take me to all markets')}
+        </Link>
+      </p>
+    </div>
   );
 };
