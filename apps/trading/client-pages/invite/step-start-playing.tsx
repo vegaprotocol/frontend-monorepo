@@ -1,21 +1,13 @@
 import { useT } from '../../lib/use-t';
-import {
-  Step,
-  StepLinks,
-  useDetermineCurrentStep,
-  useDetermineStepProgression,
-} from './step-utils';
 import { StepHeader } from './step-header';
 import { Button, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { Link, Navigate } from 'react-router-dom';
-import { ProgressionChain } from './step-progression-chain';
+import { Link } from 'react-router-dom';
 import { APP_NAME } from '../../lib/constants';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { CompetitionsActions } from '../../components/competitions/competitions-cta';
-import last from 'lodash/last';
 import { useOnboardStore } from '../../stores/onboard';
-import { ExitInvite } from './exit-invite';
 import { Links } from '../../lib/links';
+import { ProgressionChain } from './step-progression-chain';
 
 export const StepStartPlaying = () => {
   const t = useT();
@@ -25,32 +17,23 @@ export const StepStartPlaying = () => {
     loading: myTeamLoading,
   } = useMyTeam();
 
-  const progression = useDetermineStepProgression();
-  const { step: currentStep, loading } = useDetermineCurrentStep(progression);
+  const finish = useOnboardStore((s) => s.finish);
+  const step = useOnboardStore((s) => s.step);
+  const steps = useOnboardStore((s) => s.steps);
 
-  const store = useOnboardStore();
-
-  /** Marks onboarding progression as finished if this is the last step */
+  // Marks onboarding progression as finished as this step is always last
   const onAction = () => {
-    const lastStep = last(progression);
-    if (!currentStep || !lastStep) return;
-    if (currentStep === lastStep && store.finished === 0) {
-      store.finish();
-    }
+    finish();
   };
 
-  if (loading || myTeamLoading) {
+  if (myTeamLoading) {
     return <Loader className="text-surface-0-fg" />;
-  }
-  if (!currentStep) return <ExitInvite />;
-  if (currentStep !== Step.StartPlaying) {
-    return <Navigate to={StepLinks[currentStep]} />;
   }
 
   return (
     <div className="mx-auto flex flex-col gap-10">
       <StepHeader title={t('ONBOARDING_HEADER', { appName: APP_NAME })} />
-      <ProgressionChain currentStep={currentStep} progression={progression} />
+      <ProgressionChain currentStep={step} progression={steps} />
       <p className="text-center">
         {t('ONBOARDING_STEP_START_PLAYING_DESCRIPTION')}
       </p>
@@ -59,25 +42,24 @@ export const StepStartPlaying = () => {
         myTeamId={myTeamId}
         onAction={onAction}
       />
-      <div className="text-center text-surface-0-fg-muted flex flex-col gap-4">
+      <p className="text-center text-surface-0-fg-muted flex flex-col items-center gap-4">
         <span>{t('ONBOARDING_STEP_START_PLAYING_DISMISS_MESSAGE')}</span>
         <DismissButton />
-      </div>
+      </p>
     </div>
   );
 };
 
 const DismissButton = () => {
   const t = useT();
-  const store = useOnboardStore();
+  const finish = useOnboardStore((s) => s.finish);
   return (
     <Link
       key="dismiss-invitation"
       to={Links.MARKETS()}
       onClick={() => {
-        store.finish();
+        finish();
       }}
-      className="underline"
     >
       <Button intent={Intent.Primary}>{t('Go to markets')}</Button>
     </Link>

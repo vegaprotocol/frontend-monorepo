@@ -19,29 +19,18 @@ import { Trans } from 'react-i18next';
 import { useReferralSet } from '../referrals/hooks/use-find-referral-set';
 import { useState, type PropsWithChildren, type ReactNode } from 'react';
 import { useTeam } from '../../lib/hooks/use-team';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { StepHeader } from './step-header';
 import type { ConnectorType, QuickStartConnector } from '@vegaprotocol/wallet';
 import { useOnboardStore } from '../../stores/onboard';
-import {
-  Step,
-  StepLinks,
-  useDetermineCurrentStep,
-  useDetermineStepProgression,
-} from './step-utils';
 import { usePartyProfile } from '../../lib/hooks/use-party-profiles';
 import { GradientText } from 'apps/trading/components/gradient-text';
-import { ExitInvite } from './exit-invite';
 import { useAccount } from 'wagmi';
 import { Links } from '../../lib/links';
 
-export const StepConnect = () => {
+export const Connect = (props: { onComplete: () => void }) => {
   const t = useT();
   const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const progression = useDetermineStepProgression();
-  const { step: currentStep, loading: stepLoading } =
-    useDetermineCurrentStep(progression);
 
   const [code, team] = useOnboardStore((state) => [state.code, state.team]);
 
@@ -74,19 +63,10 @@ export const StepConnect = () => {
     );
   }
 
-  const loading =
-    stepLoading || referralLoading || profileLoading || teamLoading;
+  const loading = referralLoading || profileLoading || teamLoading; // stepLoading
 
   if (loading) {
     return <Loader className="text-surface-0-fg" />;
-  }
-
-  if (!currentStep) {
-    return <ExitInvite />;
-  }
-
-  if (currentStep !== Step.Connect) {
-    return <Navigate to={StepLinks[currentStep]} />;
   }
 
   return (
@@ -99,13 +79,13 @@ export const StepConnect = () => {
             </p>
           )}
         </StepHeader>
-        <ProminentConnectionOptions />
+        <ProminentConnectionOptions onConnect={props.onComplete} />
         <p className="flex gap-4 justify-center text-center">
           <ButtonLink onClick={() => setShowAdvanced(true)}>
             {t('Advanced connection options')}
           </ButtonLink>
           <Link to={Links.MARKETS()} className="underline underline-offset-4">
-            {t('Take me to all markets')}
+            {t('Go to markets')}
           </Link>
         </p>
         {showAdvanced && <SecondaryConnectionOptions />}
@@ -114,17 +94,13 @@ export const StepConnect = () => {
   );
 };
 
-const ProminentConnectionOptions = () => {
-  const navigate = useNavigate();
+const ProminentConnectionOptions = (props: { onConnect: () => void }) => {
   const t = useT();
   const { connect, connectors } = useConnect();
 
   const handleConnect = async (id: ConnectorType) => {
-    const res = await connect(id);
-
-    if (res.status === 'connected') {
-      setTimeout(() => navigate(StepLinks[Step.Deposit]), 1000);
-    }
+    await connect(id);
+    props.onConnect();
   };
 
   const quickStartConnector = connectors.find(

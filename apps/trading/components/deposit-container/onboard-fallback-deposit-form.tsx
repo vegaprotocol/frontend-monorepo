@@ -88,12 +88,17 @@ export const OnboardFallbackDepositForm = (props: {
         {toAsset && (
           <Fields.Receives
             label={t('Amount')}
-            className="mb-4"
             amount={amount || '0'}
             toAsset={toAsset}
           />
         )}
-        <Button type="submit" size="lg" fill={true} intent={Intent.Secondary}>
+        <Button
+          type="submit"
+          size="lg"
+          className="mt-4"
+          fill={true}
+          intent={Intent.Secondary}
+        >
           {t('Deposit')}
         </Button>
       </form>

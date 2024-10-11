@@ -141,7 +141,7 @@ const SubmitButton = (props: {
       fill={true}
       intent={Intent.Secondary}
       disabled={props.isFetchingRoute || props.isExecuting}
-      className="flex gap-2 items-center"
+      className="flex gap-2 items-center mt-4"
     >
       {text}
       {props.isExecuting && <Loader size="small" />}
