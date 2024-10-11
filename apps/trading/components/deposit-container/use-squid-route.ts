@@ -9,8 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useSquid } from './use-squid';
 import { type FormFields, formSchema } from './form-schema';
 import { encodeFunctionData } from 'viem';
-import { getErc20Abi } from 'apps/trading/lib/utils/get-erc20-abi';
-import { SQUID_RECEIVER_ADDRESS } from './constants';
+import { getErc20Abi } from '../../lib/utils/get-erc20-abi';
+import { SQUID_RECEIVER_ADDRESS } from '../../lib/constants';
 import { useT } from '../../lib/use-t';
 
 /**

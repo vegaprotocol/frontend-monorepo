@@ -7,9 +7,7 @@ import {
 export const FormSecondaryActionWrapper = (
   props: HTMLAttributes<HTMLDivElement>
 ) => {
-  return (
-    <div {...props} className="absolute right-0 top-0 pt-0.5 flex gap-2" />
-  );
+  return <div {...props} className="absolute right-0 top-0 flex gap-2" />;
 };
 
 export const FormSecondaryActionButton = (

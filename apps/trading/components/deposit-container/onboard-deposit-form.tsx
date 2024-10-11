@@ -16,7 +16,7 @@ import { FeedbackDialog, SquidFeedbackDialog } from './feedback-dialog';
 import { type TxDeposit, type TxSquidDeposit } from '../../stores/evm';
 import { useDepositForm } from './use-deposit-form';
 
-export const DepositForm = (props: {
+export const OnboardDepositForm = (props: {
   squid: Squid;
   assets: Array<AssetERC20>;
   initialAsset?: AssetERC20;
@@ -24,12 +24,13 @@ export const DepositForm = (props: {
   onDeposit?: (tx: TxDeposit | TxSquidDeposit) => void;
   minAmount?: string;
 }) => {
+  const t = useT();
   const { pubKeys } = useVegaWallet();
   const {
     form,
+    toAsset,
     chain,
     tokens,
-    toAsset,
     balances,
     nativeBalance,
     route,
@@ -43,33 +44,48 @@ export const DepositForm = (props: {
     <FormProvider {...form}>
       <form data-testid="deposit-form" onSubmit={onSubmit}>
         <Fields.FromAddress control={form.control} />
-        <Fields.FromChain
-          control={form.control}
-          chains={props.squid.chains}
-          tokens={props.squid.tokens}
-        />
-        <Fields.FromAsset
-          control={form.control}
-          tokens={tokens}
-          chain={chain}
-        />
+        {props.squid && props.squid.initialized ? (
+          <>
+            <Fields.FromChain
+              control={form.control}
+              chains={props.squid.chains}
+              tokens={props.squid.tokens}
+            />
+            <Fields.FromAsset
+              control={form.control}
+              tokens={tokens}
+              chain={chain}
+            />
+          </>
+        ) : (
+          <div />
+        )}
+
         <Fields.Amount
           control={form.control}
           balanceOf={balances.data?.balanceOf}
           nativeBalanceOf={nativeBalance.data}
         />
-        <Fields.ToPubKeySelect control={form.control} pubKeys={pubKeys} />
-        <Fields.ToAsset
-          control={form.control}
-          assets={props.assets}
-          toAsset={toAsset}
-          queryKey={balances.queryKey}
-          route={route.data?.route}
-        />
-        {isSwap && (
+        <Fields.ToPubKey control={form.control} pubKeys={pubKeys} />
+        {toAsset && (
           <div className="mb-4">
-            <SwapInfo route={route.data?.route} error={route.error} />
+            <Fields.Receives
+              label={t('Est. Amount')}
+              amount={addDecimalsFormatNumber(
+                route.data?.route.estimate.toAmount || 0,
+                toAsset.decimals
+              )}
+              toAsset={toAsset}
+            />
           </div>
+        )}
+        {isSwap && (
+          <>
+            <hr className="my-2" />
+            <div className="mb-4">
+              <SwapInfo route={route.data?.route} error={route.error} />
+            </div>
+          </>
         )}
         <SubmitButton
           isSwap={isSwap}
@@ -125,7 +141,7 @@ const SubmitButton = (props: {
       fill={true}
       intent={Intent.Secondary}
       disabled={props.isFetchingRoute || props.isExecuting}
-      className="flex gap-2 items-center"
+      className="flex gap-2 items-center mt-4"
     >
       {text}
       {props.isExecuting && <Loader size="small" />}

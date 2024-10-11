@@ -3,7 +3,6 @@ import { useCreateDerivedWallet } from './use-derived-wallet';
 import { type QuickStartConnector } from '@vegaprotocol/wallet';
 import { useModal } from 'connectkit';
 import { type Address } from 'viem';
-import { useRef } from 'react';
 
 export const useQuickstart = ({
   connector,
@@ -12,35 +11,28 @@ export const useQuickstart = ({
   connector: QuickStartConnector;
   onSuccess: () => void;
 }) => {
-  const awaitingWallet = useRef(false);
   const modal = useModal();
   const account = useAccount();
-  const mutationResult = useCreateDerivedWallet(
-    connector,
-    onSuccess,
-    account.address
-  );
+  const mutation = useCreateDerivedWallet(connector, onSuccess);
 
+  // Create the wallet if address is provided otherwise open the
+  // connect dialog
   const createWallet = (args: { address?: Address }) => {
-    if (!args.address) {
-      awaitingWallet.current = true;
-      modal.setOpen(true);
+    if (args.address) {
+      mutation.mutate(args.address);
       return;
     }
 
-    mutationResult.mutate();
+    modal.setOpen(true);
   };
 
+  // When the user connects create the wallet
   useAccountEffect({
-    onConnect: (data) => {
-      if (awaitingWallet.current) {
-        createWallet(data);
-      }
-    },
+    onConnect: (data) => mutation.mutate(data.address),
   });
 
   return {
-    ...mutationResult,
+    ...mutation,
     createWallet: () => createWallet(account),
   };
 };

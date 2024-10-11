@@ -13,14 +13,14 @@ export const Faucet = ({
   queryKey: QueryKey;
 }) => {
   const t = useT();
-  const { submitFaucet } = useEvmFaucet({ asset, queryKey });
+  const { write } = useEvmFaucet({ asset });
 
   // If no faucet function useSimulate contract failed and this
   // function is not available
-  if (!submitFaucet) return null;
+  if (!write) return null;
 
   return (
-    <FormSecondaryActionButton onClick={submitFaucet}>
+    <FormSecondaryActionButton onClick={write}>
       {t('Get {{symbol}}', { symbol: asset.symbol })}
     </FormSecondaryActionButton>
   );

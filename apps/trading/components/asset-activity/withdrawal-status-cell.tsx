@@ -19,6 +19,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { type AssetERC20 } from '@vegaprotocol/assets';
 
 type Props = {
   data: RowWithdrawal;
@@ -45,7 +46,7 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const { status: ethWalletStatus } = useAccount();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { submitWithdraw, data: txData } = useEvmWithdraw();
+  const withdraw = useEvmWithdraw();
   const { data: approval } = useWithdrawalApprovalQuery({
     variables: {
       withdrawalId: data.detail.id,
@@ -53,7 +54,10 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   });
 
   const handleComplete = () => {
-    if (txData?.hash) return;
+    // The onConnect handler from useModal is called twice
+    // so this is to make sure if a tx is already created we
+    // dont immediately create another one
+    if (withdraw.data.data?.hash) return;
 
     const asset = data.asset;
 
@@ -73,10 +77,11 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
       throw new Error(`could not find evm config for asset ${asset.id}`);
     }
 
-    submitWithdraw({
+    withdraw.write({
       bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
       approval: approval.erc20WithdrawalApproval,
-      asset,
+      asset: asset as AssetERC20,
+      chainId: Number(asset.source.chainId),
     });
   };
 
