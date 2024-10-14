@@ -68,6 +68,7 @@ export const ConnectionOptionQuickstartWagmi = ({
   );
 };
 
+// TODO change to 1!!!!
 export const ETHEREUM_CHAIN_ID = 11155111;
 
 export const ConnectionOptionQuickstart = ({
