@@ -80,10 +80,12 @@ export const ConnectionOptionQuickstart = ({
   }
   const state = useConfig();
   const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const { open } = useWeb3ConnectStore();
   const { account, connector: ethConnector } = useWeb3React();
   const createWallet = useCallback(async () => {
     try {
+      setError(null);
       state.store.setState({
         status: 'creating',
       });
@@ -119,7 +121,7 @@ export const ConnectionOptionQuickstart = ({
       state.store.setState({
         status: 'disconnected',
       });
-      throw e;
+      setError(e as Error);
     }
   }, [ethConnector, state, account]);
   const clickHandler = () => {
@@ -131,6 +133,7 @@ export const ConnectionOptionQuickstart = ({
     }
   };
 
+  // TODO this is reacting to a change of state which is not pleasant
   useEffect(() => {
     if (account && isCreating) {
       createWallet();
@@ -138,13 +141,26 @@ export const ConnectionOptionQuickstart = ({
   }, [account, isCreating]);
 
   return (
-    <ConnectionOptionButton
-      icon={<ConnectorIcon id="embedded-wallet-quickstart" />}
-      id="embedded-wallet-quickstart"
-      onClick={clickHandler}
-      disabled={false}
-    >
-      {t('Connect with Ethereum')}
-    </ConnectionOptionButton>
+    <>
+      <ConnectionOptionButton
+        icon={<ConnectorIcon id="embedded-wallet-quickstart" />}
+        id="embedded-wallet-quickstart"
+        onClick={clickHandler}
+        disabled={false}
+      >
+        {t('Connect with Ethereum')}
+      </ConnectionOptionButton>
+      {error &&
+        error instanceof ConnectorError &&
+        error.code !== USER_REJECTED_CODE && (
+          <p
+            className="text-intent-danger text-sm first-letter:uppercase"
+            data-testid="connection-error"
+          >
+            {error.message}
+            {error.data ? `: ${error.data}` : ''}
+          </p>
+        )}
+    </>
   );
 };
