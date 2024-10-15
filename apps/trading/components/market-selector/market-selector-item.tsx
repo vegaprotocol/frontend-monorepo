@@ -5,8 +5,8 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
-  getAsset,
   getProductType,
+  getQuoteName,
 } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
@@ -76,7 +76,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       : '0.00';
 
   const productType = getProductType(market);
-  const symbol = getAsset(market).symbol || '';
+  const symbol = getQuoteName(market);
 
   return (
     <>
