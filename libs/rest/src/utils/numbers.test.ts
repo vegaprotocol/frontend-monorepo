@@ -61,4 +61,12 @@ describe('Decimal', () => {
     expect(Decimal.format('1234')).toBe('1,234');
     expect(Decimal.format('1999', 1, 0)).toBe('199');
   });
+
+  test.each([
+    { quantum: '1000000', dp: 6, value: 2 },
+    { quantum: '100', dp: 2, value: 0 },
+    { quantum: '50000000000000000000', dp: 18, value: 3 },
+  ])('getQuantumDecimals quantum: $quantum dp: $dp', () => {
+    expect(Decimal.getQuantumDecimals('1000000', 6)).toBe(2);
+  });
 });

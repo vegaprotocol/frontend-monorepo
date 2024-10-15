@@ -49,6 +49,18 @@ export class Decimal {
     return Decimal.toBigNum(value, decimals).toFormat(formatDecimals);
   }
 
+  // Return number of decimals relevant to the quantum
+  static getQuantumDecimals(quantum: string | number, decimals = 0) {
+    const baseValue = 100;
+    const dps = Math.max(
+      0,
+      Math.log10(
+        baseValue / Decimal.toBigNum(Number(quantum), decimals).toNumber()
+      )
+    );
+    return Math.ceil(dps);
+  }
+
   toFormat(formatDecimals?: number) {
     return this.value.toFormat(formatDecimals);
   }
