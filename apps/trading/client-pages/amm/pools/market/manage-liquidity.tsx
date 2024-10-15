@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { useWallet } from '@vegaprotocol/wallet-react';
-import { useAMMs, useMarket, isActiveAMM } from '@vegaprotocol/rest';
+import { useAMM, useMarket } from '@vegaprotocol/rest';
 
 import { useT } from '../../../../lib/use-t';
 import { Links } from '../../../../lib/links';
@@ -17,6 +17,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../../../../components/ui/breadcrumb';
+import { MarkPrice } from 'apps/trading/components/amm/stats/mark-price';
 
 export const ManageLiquidity = () => {
   const t = useT();
@@ -28,17 +29,10 @@ export const ManageLiquidity = () => {
 
   const isConnected = status === 'connected' && pubKey;
 
-  const { data: amms } = useAMMs({
+  const { data: amm } = useAMM({
     marketId,
     partyId: pubKey,
   });
-
-  let amm = undefined;
-  if (isConnected && amms) {
-    amm = amms
-      .filter(isActiveAMM)
-      .find((a) => a.partyId === pubKey && a.marketId === marketId);
-  }
 
   if (!market) {
     return (
@@ -93,9 +87,32 @@ export const ManageLiquidity = () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex items-baseline justify-between">
-        <HeaderPage>{market.code}</HeaderPage>
-      </div>
+      <HeaderPage>{market.code}</HeaderPage>
+
+      <dl className="flex gap-2">
+        {amm && (
+          <>
+            <div>
+              <dt className="text-surface-1-fg-muted uppercase text-xs">
+                {t('My liquidity')}
+              </dt>
+              <dd>
+                {amm.commitment.value.toFormat()}{' '}
+                {market.settlementAsset.symbol}
+              </dd>
+            </div>
+            <div className="border-r mx-2" />
+          </>
+        )}
+        <div>
+          <dt className="text-surface-1-fg-muted uppercase text-xs">
+            {t('Mark price')}
+          </dt>
+          <dd>
+            <MarkPrice market={market} />
+          </dd>
+        </div>
+      </dl>
 
       <div>
         {!isConnected ? (
