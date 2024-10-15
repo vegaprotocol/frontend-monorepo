@@ -66,6 +66,7 @@ export const useVegaWalletConfig = () => {
         etherscanUrl: ETHERSCAN_URL ?? '',
       },
       appName: APP_NAME,
+      useWeb3React: true,
     });
 
     return config;

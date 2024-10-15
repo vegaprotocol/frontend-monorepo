@@ -165,7 +165,10 @@ export const ConnectionOptionQuickstartWeb3React = ({
   );
 };
 
-export const ConnectionOptionQuickstart = ({
-  connector,
-  onClick,
-}: ConnectionOptionProps) => {};
+export const ConnectionOptionQuickstart = (props: ConnectionOptionProps) => {
+  const state = useConfig();
+  if (state.useWeb3React) {
+    return <ConnectionOptionQuickstartWeb3React {...props} />;
+  }
+  return <ConnectionOptionQuickstart {...props} />;
+};
