@@ -10,7 +10,7 @@ import type {
   MarketDataUpdateFieldsFragment,
   MarketDataUpdateSubscription,
 } from '@vegaprotocol/markets';
-import { MarketCandlesDocument, getAsset } from '@vegaprotocol/markets';
+import { MarketCandlesDocument } from '@vegaprotocol/markets';
 import { MarketDataUpdateDocument } from '@vegaprotocol/markets';
 import {
   AuctionTrigger,
@@ -28,6 +28,7 @@ jest.mock('@vegaprotocol/wallet-react', () => ({
 describe('MarketSelectorItem', () => {
   const yesterday = new Date();
   yesterday.setHours(yesterday.getHours() - 20);
+  const quoteName = 'USD';
   const market = createMarketFragment({
     id: 'market-0',
     decimalPlaces: 2,
@@ -38,11 +39,8 @@ describe('MarketSelectorItem', () => {
     ],
     tradableInstrument: {
       instrument: {
-        product: {
-          __typename: 'Future',
-          settlementAsset: {
-            symbol: 'SYM',
-          },
+        metadata: {
+          tags: [`quote:${quoteName}`],
         },
       },
     },
@@ -124,8 +122,6 @@ describe('MarketSelectorItem', () => {
   });
 
   it('renders market information', async () => {
-    const symbol = getAsset(market).symbol;
-
     const mock: MockedResponse<MarketDataUpdateSubscription> = {
       request: {
         query: MarketDataUpdateDocument,
@@ -179,11 +175,11 @@ describe('MarketSelectorItem', () => {
     expect(link).toHaveClass('bg-surface-2');
 
     expect(screen.getByTitle('24h vol')).toHaveTextContent('0.00');
-    expect(screen.getByTitle(symbol)).toHaveTextContent('-');
+    expect(screen.getByTitle(quoteName)).toHaveTextContent('-');
 
     await waitFor(() => {
       expect(screen.getByTitle('24h vol')).toHaveTextContent('100');
-      expect(screen.getByTitle(symbol)).toHaveTextContent(
+      expect(screen.getByTitle(quoteName)).toHaveTextContent(
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
     });
