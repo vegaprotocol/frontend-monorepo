@@ -18,6 +18,7 @@ const initialAppState: AppState = {
   transactionOverlay: false,
   bannerMessage: '',
   disconnectNotice: false,
+  embeddedWalletOpen: false,
 };
 
 function appStateReducer(state: AppState, action: AppStateAction): AppState {
@@ -52,6 +53,12 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
       return {
         ...state,
         disconnectNotice: action.isVisible,
+      };
+    }
+    case AppStateActionType.SET_EMBEDDED_WALLET_MANAGE_OVERLAY: {
+      return {
+        ...state,
+        embeddedWalletOpen: action.isOpen,
       };
     }
   }

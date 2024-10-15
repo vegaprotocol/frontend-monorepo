@@ -42,6 +42,8 @@ export interface AppState {
    * ethereum network to an incompatible one.
    */
   disconnectNotice: boolean;
+
+  embeddedWalletOpen: boolean;
 }
 
 export enum AppStateActionType {
@@ -50,6 +52,7 @@ export enum AppStateActionType {
   SET_ALLOWANCE,
   REFRESH_BALANCES,
   SET_VEGA_WALLET_MANAGE_OVERLAY,
+  SET_EMBEDDED_WALLET_MANAGE_OVERLAY,
   REFRESH_ASSOCIATED_BALANCES,
   SET_ASSOCIATION_BREAKDOWN,
   SET_TRANSACTION_OVERLAY,
@@ -66,6 +69,10 @@ export type AppStateAction =
     }
   | {
       type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY;
+      isOpen: boolean;
+    }
+  | {
+      type: AppStateActionType.SET_EMBEDDED_WALLET_MANAGE_OVERLAY;
       isOpen: boolean;
     }
   | {

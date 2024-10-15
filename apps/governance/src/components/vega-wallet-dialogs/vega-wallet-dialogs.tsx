@@ -1,6 +1,7 @@
 import {
   ConnectDialogWithRiskAck,
   useDialogStore,
+  useWallet,
 } from '@vegaprotocol/wallet-react';
 import {
   AppStateActionType,
@@ -10,6 +11,37 @@ import { RiskMessage } from './risk-message';
 import { VegaManageDialog } from '../manage-dialog';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { BrowserWallet } from '@vegaprotocol/browser-wallet';
+
+const EmbeddedWalletDialog = () => {
+  const { appState, appDispatch } = useAppState();
+  const state = useEnvironment();
+  const vegaChainId = useWallet((store) => store.chainId);
+  return (
+    <Dialog
+      open={appState.embeddedWalletOpen}
+      onChange={(open) =>
+        appDispatch({
+          type: AppStateActionType.SET_EMBEDDED_WALLET_MANAGE_OVERLAY,
+          isOpen: open,
+        })
+      }
+      size="small"
+    >
+      <div className="h-full" style={{ height: 650 }}>
+        <BrowserWallet
+          explorer={state.VEGA_EXPLORER_URL ?? ''}
+          docs={state.VEGA_DOCS_URL ?? ''}
+          governance={state.VEGA_TOKEN_URL ?? ''}
+          console={state.VEGA_CONSOLE_URL ?? ''}
+          chainId={vegaChainId}
+          etherscanUrl={state.ETHERSCAN_URL ?? ''}
+        />
+      </div>
+    </Dialog>
+  );
+};
 
 export const VegaWalletDialogs = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -43,6 +75,7 @@ export const VegaWalletDialogs = () => {
           })
         }
       />
+      <EmbeddedWalletDialog />
     </>
   );
 };
