@@ -145,6 +145,11 @@ function mapMarket(m: vegaMarket, assets: Assets) {
     quoteAsset = assets.get(
       get(m, 'tradableInstrument.instrument.spot.quoteAsset', '')
     );
+
+    // In spot markets, though there is technically no settlement asset. For other markets
+    // fees are paid in the settlementAsset so to keep things simple its useful for all markets
+    // to have an assigned settlementAsset which we know can be safely displayed to the user as
+    // the asset fees are paid in.
     settlementAsset = quoteAsset;
     quoteSymbol = quoteAsset?.symbol || quoteSymbol;
   }

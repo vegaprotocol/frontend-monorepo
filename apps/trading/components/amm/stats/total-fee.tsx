@@ -13,12 +13,7 @@ export const TotalFees = ({ market }: { market: Market }) => {
   const lf = liquidityFees?.totalFeesPaid.value || BigNumber(0);
   const mf = makerFees?.totalFeesPaid.value || BigNumber(0);
 
-  if (market.settlementAsset) {
-    return (
-      <Currency value={lf.plus(mf)} symbol={market.settlementAsset.symbol} />
-    );
-  }
-
-  // TODO: handle spot markets which won't have a settlement asset
-  return null;
+  return (
+    <Currency value={lf.plus(mf)} symbol={market.settlementAsset.symbol} />
+  );
 };
