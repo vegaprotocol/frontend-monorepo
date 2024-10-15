@@ -22,6 +22,7 @@ export const mockConfig = createConfig({
     etherscanUrl: 'etherscanUrl',
   },
   appName: 'Vega',
+  web3ReactProps: null,
 });
 
 export function MockedWalletProvider({
