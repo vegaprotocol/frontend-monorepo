@@ -3,7 +3,7 @@ import { useT } from '../../../../hooks/use-t';
 import { ConnectionOptionButton } from '../connection-option-button';
 import { ConnectorIcon } from '../connector-icon';
 import { type ConnectionOptionProps } from '../types';
-import { useQuickstart } from 'libs/wallet-react/src/hooks/use-quickstart';
+import { useQuickstart } from '../../../../hooks/use-quickstart';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
@@ -68,10 +68,9 @@ export const ConnectionOptionQuickstartWagmi = ({
   );
 };
 
-// TODO change to 1!!!!
-export const ETHEREUM_CHAIN_ID = 11155111;
+export const ETHEREUM_CHAIN_ID = 1;
 
-export const ConnectionOptionQuickstart = ({
+export const ConnectionOptionQuickstartWeb3React = ({
   connector,
   onClick,
 }: ConnectionOptionProps) => {
@@ -165,3 +164,8 @@ export const ConnectionOptionQuickstart = ({
     </>
   );
 };
+
+export const ConnectionOptionQuickstart = ({
+  connector,
+  onClick,
+}: ConnectionOptionProps) => {};
