@@ -4,7 +4,6 @@ import { ConnectionOptionButton } from '../connection-option-button';
 import { ConnectorIcon } from '../connector-icon';
 import { type ConnectionOptionProps } from '../types';
 import { useQuickstart } from '../../../../hooks/use-quickstart';
-import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
 import { useConfig } from '@vegaprotocol/wallet-react';
@@ -81,7 +80,6 @@ export const ConnectionOptionQuickstartWeb3React = ({
   const state = useConfig();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { open } = useWeb3ConnectStore();
   const { account, connector: ethConnector } = useWeb3React();
   const createWallet = useCallback(async () => {
     try {
@@ -126,7 +124,7 @@ export const ConnectionOptionQuickstartWeb3React = ({
   }, [ethConnector, state, account]);
   const clickHandler = () => {
     if (!account) {
-      open(ETHEREUM_CHAIN_ID);
+      state.web3ReactProps?.open(ETHEREUM_CHAIN_ID);
       setIsCreating(true);
     } else {
       createWallet();
@@ -167,7 +165,7 @@ export const ConnectionOptionQuickstartWeb3React = ({
 
 export const ConnectionOptionQuickstart = (props: ConnectionOptionProps) => {
   const state = useConfig();
-  if (state.useWeb3React) {
+  if (state.web3ReactProps) {
     return <ConnectionOptionQuickstartWeb3React {...props} />;
   }
   return <ConnectionOptionQuickstart {...props} />;

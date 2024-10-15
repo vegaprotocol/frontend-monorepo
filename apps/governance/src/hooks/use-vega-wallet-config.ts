@@ -14,6 +14,7 @@ import {
   QuickStartConnector,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 
 export const useVegaWalletConfig = () => {
   const {
@@ -28,6 +29,7 @@ export const useVegaWalletConfig = () => {
     CONFIGURED_WALLETS,
     APP_NAME,
   } = useEnvironment();
+  const { open } = useWeb3ConnectStore();
   return useMemo(() => {
     if (!VEGA_ENV || !API_NODE || !VEGA_WALLET_URL || !APP_NAME) return;
 
@@ -66,7 +68,7 @@ export const useVegaWalletConfig = () => {
         etherscanUrl: ETHERSCAN_URL ?? '',
       },
       appName: APP_NAME,
-      useWeb3React: true,
+      web3ReactProps: { open },
     });
 
     return config;

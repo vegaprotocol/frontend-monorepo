@@ -100,7 +100,9 @@ export type Config = {
     etherscanUrl: string;
   };
   // TODO: ugly. Added for speed.
-  useWeb3React: boolean;
+  web3ReactProps: {
+    open: (chainId?: number) => void;
+  } | null;
 };
 
 export type Wallet = {
@@ -120,7 +122,9 @@ export type Wallet = {
     etherscanUrl: string;
   };
   appName: string;
-  useWeb3React: boolean;
+  web3ReactProps: {
+    open: (chainId?: number) => void;
+  } | null;
 };
 
 declare global {

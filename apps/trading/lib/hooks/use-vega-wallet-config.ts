@@ -73,7 +73,7 @@ export const useVegaWalletConfig = () => {
         etherscanUrl: ETHERSCAN_URL ?? '',
       },
       appName: APP_NAME,
-      useWeb3React: false,
+      web3ReactProps: null,
     });
     return config;
   }, [
