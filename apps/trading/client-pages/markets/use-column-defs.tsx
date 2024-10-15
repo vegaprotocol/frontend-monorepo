@@ -60,17 +60,35 @@ const OpenInterestCell = ({
   const openInterestData = data && openInterestValues(data);
   if (!openInterestData) return null;
   const { openInterest, openInterestNotional } = openInterestData;
-  const quoteName = getQuoteName(data);
+  const assetSymbol = getOpenInterestCellUnits(data);
   const openInterestNotionalFormatted =
-    quoteName === 'USDT'
+    assetSymbol.toUpperCase() === 'USDT'
       ? `$${formatNumber(openInterestNotional, 0)}`
-      : `${formatNumber(openInterestNotional, 0)} ${quoteName}`;
+      : `${formatNumber(openInterestNotional, 0)} ${assetSymbol}`;
   return (
     <StackedCell
       primary={openInterest}
       secondary={openInterestNotionalFormatted}
     />
   );
+};
+
+/**
+ * Open Interest should be expressed in settlement units as per:
+ * frontend-monorepo/issues/7024
+ */
+const getOpenInterestCellUnits = (
+  data: MarketMaybeWithData | undefined
+): string => {
+  if (!data) return '';
+
+  const p = data?.tradableInstrument?.instrument?.product;
+  if (p.__typename === 'Perpetual' || p.__typename === 'Future') {
+    return p.settlementAsset.symbol;
+  }
+
+  // Spot markets have no explicit settlement asset, so we use the quote instead
+  return getQuoteName(data);
 };
 
 export const priceChangeRenderer = (
