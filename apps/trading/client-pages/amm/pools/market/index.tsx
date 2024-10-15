@@ -106,8 +106,8 @@ export const MarketPage = () => {
         </div>
         <div className="flex gap-1">
           <Link to={Links.AMM_POOL_MANAGE(market.id)}>
-            <Button size="sm" className="flex gap-1" intent={Intent.Primary}>
-              <DownloadIcon size={16} />{' '}
+            <Button size="sm" className="flex gap-1.5" intent={Intent.Primary}>
+              <DownloadIcon size={14} />{' '}
               {!committed
                 ? t('AMM_POOLS_ADD_LIQUIDITY')
                 : t('AMM_POOLS_MANAGE_LIQUIDITY')}
