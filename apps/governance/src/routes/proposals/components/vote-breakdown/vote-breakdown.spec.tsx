@@ -31,6 +31,7 @@ const mockAppState: AppState = {
   transactionOverlay: false,
   bannerMessage: '',
   disconnectNotice: false,
+  embeddedWalletOpen: false,
 };
 
 jest.mock('../../../../contexts/app-state/app-state-context', () => ({
