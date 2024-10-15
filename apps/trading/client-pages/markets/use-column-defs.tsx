@@ -156,7 +156,7 @@ export const useMarketsColumnDefs = () => {
       {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
-        minWidth: 150,
+        minWidth: 410,
         pinned: true,
         cellClass: 'text-base',
         cellRenderer: ({
@@ -178,12 +178,12 @@ export const useMarketsColumnDefs = () => {
                 <StackedCell
                   primary={
                     <span className="flex gap-1 items-center">
-                      {value}
+                      {data?.tradableInstrument?.instrument.name}
                       <MarketProductPill productType={productType} />
                       <MarketIcon data={data} />
                     </span>
                   }
-                  secondary={data?.tradableInstrument?.instrument.name}
+                  secondary={value}
                 />
               </span>
             </Tooltip>

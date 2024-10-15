@@ -44,11 +44,11 @@ const useFeesTableColumnDefs = (): ColDef[] => {
                 <StackedCell
                   primary={
                     <span className="flex gap-1 items-center">
-                      {value}
+                      {data.name}
                       <MarketProductPill productType={productType} />
                     </span>
                   }
-                  secondary={data.name}
+                  secondary={value}
                 />
               </span>
             );
