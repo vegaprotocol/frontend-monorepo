@@ -126,6 +126,18 @@ const mockCompleteW1: Withdrawal = {
   asset: HIGH_THRESHOLD_ASSET,
 };
 
+// completed (finalized does not mean complete, only presence of txHash does)
+const mockFinalizedButNotComplete: Withdrawal = {
+  id: 'cw2',
+  status: Types.WithdrawalStatus.STATUS_FINALIZED,
+  amount: '1000',
+  createdTimestamp: ts(10),
+  pendingOnForeignChain: false,
+  withdrawnTimestamp: ts(11),
+  txHash: null,
+  asset: HIGH_THRESHOLD_ASSET,
+};
+
 describe('getReadyAndDelayed', () => {
   const withdrawals = [
     mockIncompleteW1,
@@ -134,6 +146,7 @@ describe('getReadyAndDelayed', () => {
     mockIncompleteW4,
     mockIncompleteW5,
     mockCompleteW1,
+    mockFinalizedButNotComplete,
   ];
   const delays = new Map([[1, BigInt(1)]]);
   let now: jest.SpyInstance<number, []>;
@@ -149,10 +162,12 @@ describe('getReadyAndDelayed', () => {
 
   it('returns a collection of ready to complete withdrawals', async () => {
     const { ready } = getReadyAndDelayed(withdrawals, delays);
-    expect(ready).toHaveLength(3);
-    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW1.id);
-    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW2.id);
-    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW3.id);
+    expect(ready).toHaveLength(4);
+    const ids = ready.map((w) => w.data.id);
+    expect(ids).toContain(mockIncompleteW1.id);
+    expect(ids).toContain(mockIncompleteW2.id);
+    expect(ids).toContain(mockIncompleteW3.id);
+    expect(ids).toContain(mockIncompleteW3.id);
   });
 
   it('returns a collection of delayed withdrawals', async () => {
