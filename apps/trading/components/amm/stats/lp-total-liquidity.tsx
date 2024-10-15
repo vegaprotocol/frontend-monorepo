@@ -3,7 +3,7 @@ import { vegaLiquidityProvisionStatus } from '@vegaprotocol/rest-clients/dist/tr
 import BigNumber from 'bignumber.js';
 import compact from 'lodash/compact';
 import { LoaderCircleIcon } from 'lucide-react';
-import { Currency } from '../currency';
+import { formatNumberRounded } from '@vegaprotocol/utils';
 
 export const LPTotalLiquidity = ({ market }: { market: Market }) => {
   const { data: provisions, status } = useLiquidityProvisions(market.id);
@@ -29,5 +29,9 @@ export const LPTotalLiquidity = ({ market }: { market: Market }) => {
     commitments.length > 0 ? commitments : [0]
   );
 
-  return <Currency value={total} symbol={market.quoteSymbol} />;
+  return (
+    <span>
+      {formatNumberRounded(total)} {market.quoteSymbol}
+    </span>
+  );
 };
