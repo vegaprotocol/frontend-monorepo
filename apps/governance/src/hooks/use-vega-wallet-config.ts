@@ -73,6 +73,7 @@ export const useVegaWalletConfig = () => {
 
     return config;
   }, [
+    open,
     API_NODE,
     VEGA_ENV,
     VEGA_WALLET_URL,

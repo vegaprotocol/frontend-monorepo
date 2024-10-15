@@ -121,7 +121,7 @@ export const ConnectionOptionQuickstartWeb3React = ({
       });
       setError(e as Error);
     }
-  }, [ethConnector, state, account]);
+  }, [ethConnector, state, account, connector, onClick]);
   const clickHandler = () => {
     if (!account) {
       state.web3ReactProps?.open(ETHEREUM_CHAIN_ID);
@@ -136,7 +136,7 @@ export const ConnectionOptionQuickstartWeb3React = ({
     if (account && isCreating) {
       createWallet();
     }
-  }, [account, isCreating]);
+  }, [account, isCreating, createWallet]);
 
   return (
     <>
