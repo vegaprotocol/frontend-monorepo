@@ -12,20 +12,42 @@ import keyBy from 'lodash/keyBy';
 import { z } from 'zod';
 import { type Assets, erc20AssetSchema, getAssets } from './assets';
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
+import { getBaseUnit, getQuoteUnit } from '@vegaprotocol/markets';
 
-const marketSchema = z.object({
+const baseSchema = z.object({
   id: z.string(),
   code: z.string(),
   name: z.string(),
   decimalPlaces: z.number(),
   positionDecimalPlaces: z.number(),
-  baseAsset: z.nullable(erc20AssetSchema),
-  quoteAsset: erc20AssetSchema,
+  baseSymbol: z.string(),
+  quoteSymbol: z.string(),
   liquidityFee: z.number(),
+  settlementAsset: erc20AssetSchema,
   data: z.object({
     state: z.nativeEnum(vegaMarketState),
   }),
 });
+
+const futureSchema = baseSchema.extend({
+  type: z.literal('future'),
+});
+
+const perpSchema = baseSchema.extend({
+  type: z.literal('perp'),
+});
+
+const spotSchema = baseSchema.extend({
+  type: z.literal('spot'),
+  baseAsset: erc20AssetSchema,
+  quoteAsset: erc20AssetSchema,
+});
+
+const marketSchema = z.discriminatedUnion('type', [
+  futureSchema,
+  perpSchema,
+  spotSchema,
+]);
 
 const marketsSchema = z.map(z.string(), marketSchema);
 
@@ -92,34 +114,58 @@ export const retrieveMarket = async (
 };
 
 function mapMarket(m: vegaMarket, assets: Assets) {
-  let baseAsset = null;
-  let quoteAsset = null;
+  let type;
+  let settlementAsset;
+  let baseAsset;
+  let quoteAsset;
+
+  let baseSymbol = getBaseUnit(
+    get(m, 'tradableInstrument.instrument.metadata.tags', [])
+  );
+  let quoteSymbol = getQuoteUnit(
+    get(m, 'tradableInstrument.instrument.metadata.tags', [])
+  );
 
   if (m.tradableInstrument?.instrument?.future) {
-    quoteAsset = assets.get(
+    type = 'future';
+    settlementAsset = assets.get(
       get(m, 'tradableInstrument.instrument.future.settlementAsset', '')
     );
   } else if (m.tradableInstrument?.instrument?.perpetual) {
-    quoteAsset = assets.get(
+    type = 'perp';
+    settlementAsset = assets.get(
       get(m, 'tradableInstrument.instrument.perpetual.settlementAsset', '')
     );
   } else if (m.tradableInstrument?.instrument?.spot) {
+    type = 'spot';
     baseAsset = assets.get(
       get(m, 'tradableInstrument.instrument.spot.baseAsset', '')
     );
+    baseSymbol = baseAsset?.symbol || baseSymbol;
     quoteAsset = assets.get(
       get(m, 'tradableInstrument.instrument.spot.quoteAsset', '')
     );
+
+    // In spot markets, though there is technically no settlement asset. For other markets
+    // fees are paid in the settlementAsset so to keep things simple its useful for all markets
+    // to have an assigned settlementAsset which we know can be safely displayed to the user as
+    // the asset fees are paid in.
+    settlementAsset = quoteAsset;
+    quoteSymbol = quoteAsset?.symbol || quoteSymbol;
   }
 
   return {
     id: m.id,
+    type,
     code: m.tradableInstrument?.instrument?.code,
     name: m.tradableInstrument?.instrument?.name,
     decimalPlaces: Number(m.decimalPlaces),
     positionDecimalPlaces: Number(m.positionDecimalPlaces),
+    settlementAsset,
     baseAsset,
+    baseSymbol,
     quoteAsset,
+    quoteSymbol,
     liquidityFee: Number(m.fees?.factors?.liquidityFee),
     data: {
       state: m.state,

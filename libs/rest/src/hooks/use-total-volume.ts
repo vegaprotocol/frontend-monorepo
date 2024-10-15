@@ -41,7 +41,7 @@ export function useTotalVolume() {
           return acc.plus(candle.notional.rawValue);
         }, new BigNumber(0));
 
-        sum = sum.plus(notionalVol.div(market.quoteAsset.quantum));
+        sum = sum.plus(notionalVol.div(market.settlementAsset.quantum));
       }
 
       return sum;

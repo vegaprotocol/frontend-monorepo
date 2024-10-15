@@ -1,5 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { type SearchParams, queryKeys, retrieveAMMs } from '../queries/amms';
+import {
+  type SearchParams,
+  isActiveAMM,
+  queryKeys,
+  retrieveAMMs,
+} from '../queries/amms';
 import { Time } from '../utils/datetime';
 
 export const useAMMs = (params?: SearchParams) => {
@@ -11,4 +16,22 @@ export const useAMMs = (params?: SearchParams) => {
   });
 
   return queryResult;
+};
+
+export const useAMM = (params: { partyId?: string; marketId?: string }) => {
+  const queryResult = useAMMs(params);
+  const enabled = Boolean(params.partyId && params.marketId);
+  const amm =
+    enabled &&
+    queryResult.data
+      ?.filter(isActiveAMM)
+      .find(
+        (a) => a.partyId === params.partyId && a.marketId === params.marketId
+      );
+
+  return {
+    ...queryResult,
+    data: amm,
+    enabled,
+  };
 };

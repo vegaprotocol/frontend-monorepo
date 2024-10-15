@@ -1,4 +1,5 @@
 import {
+  Decimal,
   useLiquidityFees,
   useMakerFees,
   type Market,
@@ -10,8 +11,20 @@ export const TotalFees = ({ market }: { market: Market }) => {
   const { data: liquidityFees } = useLiquidityFees(market.id);
   const { data: makerFees } = useMakerFees(market.id);
 
-  const lf = liquidityFees?.totalFeesPaid.value || BigNumber(0);
-  const mf = makerFees?.totalFeesPaid.value || BigNumber(0);
+  const liqFeesVal = liquidityFees?.totalFeesPaid.value || BigNumber(0);
+  const makerFeesVal = makerFees?.totalFeesPaid.value || BigNumber(0);
 
-  return <Currency value={lf.plus(mf)} asset={market.quoteAsset} />;
+  const value = liqFeesVal.plus(makerFeesVal);
+  const formatDecimals = Decimal.getQuantumDecimals(
+    market.settlementAsset.quantum,
+    market.settlementAsset.decimals
+  );
+
+  return (
+    <Currency
+      value={value}
+      formatDecimals={formatDecimals}
+      symbol={market.settlementAsset.symbol}
+    />
+  );
 };

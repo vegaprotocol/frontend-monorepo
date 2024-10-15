@@ -1,5 +1,5 @@
 export { useAccounts, useSuspenseAccounts } from './use-accounts';
-export { useAMMs } from './use-amms';
+export { useAMM, useAMMs } from './use-amms';
 export { useAsset, useAssets, useSuspenseAssets } from './use-assets';
 export { useCandles } from './use-candles';
 export { useLiquidityFees, useMakerFees } from './use-fees';

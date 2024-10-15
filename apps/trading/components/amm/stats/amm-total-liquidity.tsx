@@ -2,7 +2,7 @@ import { useAMMs, type Market } from '@vegaprotocol/rest';
 import { v1AMMStatus } from '@vegaprotocol/rest-clients/dist/trading-data';
 import BigNumber from 'bignumber.js';
 import compact from 'lodash/compact';
-import { Currency } from '../currency';
+import { formatNumberRounded } from '@vegaprotocol/utils';
 
 export const AMMTotalLiquidity = ({ market }: { market: Market }) => {
   const { data: amms } = useAMMs({ marketId: market.id });
@@ -18,5 +18,9 @@ export const AMMTotalLiquidity = ({ market }: { market: Market }) => {
     commitments.length > 0 ? commitments : [0]
   );
 
-  return <Currency value={total} asset={market.quoteAsset} />;
+  return (
+    <span>
+      {formatNumberRounded(total)} {market.quoteSymbol}
+    </span>
+  );
 };

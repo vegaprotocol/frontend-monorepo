@@ -21,7 +21,7 @@ import { useAMMs, useMarket, type Market } from '@vegaprotocol/rest';
 
 import { TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { v1AMMStatus } from '@vegaprotocol/rest-clients/dist/trading-data';
-import { DownloadIcon, Edit2Icon, ShareIcon } from 'lucide-react';
+import { DownloadIcon, Edit2Icon } from 'lucide-react';
 
 import { Link, useParams } from 'react-router-dom';
 import { useWallet } from '@vegaprotocol/wallet-react';
@@ -32,6 +32,8 @@ import {
   CopyWithTooltip,
   Intent,
   Notification,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
@@ -104,8 +106,8 @@ export const MarketPage = () => {
         </div>
         <div className="flex gap-1">
           <Link to={Links.AMM_POOL_MANAGE(market.id)}>
-            <Button size="sm" className="flex gap-1" intent={Intent.Primary}>
-              <DownloadIcon size={16} />{' '}
+            <Button size="sm" className="flex gap-1.5" intent={Intent.Primary}>
+              <DownloadIcon size={14} />{' '}
               {!committed
                 ? t('AMM_POOLS_ADD_LIQUIDITY')
                 : t('AMM_POOLS_MANAGE_LIQUIDITY')}
@@ -118,7 +120,7 @@ export const MarketPage = () => {
 
           <CopyWithTooltip text={globalThis.location.href}>
             <Button size="sm">
-              <ShareIcon size={12} />
+              <VegaIcon name={VegaIconNames.COPY} size={12} />
             </Button>
           </CopyWithTooltip>
         </div>

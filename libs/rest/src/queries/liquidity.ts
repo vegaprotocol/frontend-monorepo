@@ -61,6 +61,7 @@ export async function retrieveLiquidityProvisions(
   ]);
 
   const data = removePaginationWrapper(res.data.liquidityProvisions?.edges);
+
   const allCurrentProvisions = compact(
     data
       .map((d) => d.current)
@@ -81,7 +82,7 @@ export async function retrieveLiquidityProvisions(
           partyId: p.partyId,
           commitmentAmount: new Decimal(
             p.commitmentAmount,
-            market.quoteAsset.decimals
+            market.settlementAsset.decimals
           ),
           status: p.status,
           version: Number(p.version),

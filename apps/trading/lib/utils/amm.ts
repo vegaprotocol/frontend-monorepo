@@ -25,7 +25,7 @@ export const createSubmitAmmTransaction = (
   market: Market
 ) => {
   // required fields
-  const _amount = Decimal.toString(amount, market.quoteAsset.decimals);
+  const _amount = Decimal.toString(amount, market.settlementAsset.decimals);
   const _fee = String(fee);
   const _slippageTolerance = String(slippageTolerance);
   const _base = Decimal.toString(base, market.decimalPlaces);
@@ -81,7 +81,7 @@ export const createAmendAmmTransaction = (
   const _slippageTolerance = String(slippageTolerance);
 
   // optional fields
-  const _amount = Decimal.toString(amount, market.quoteAsset.decimals);
+  const _amount = Decimal.toString(amount, market.settlementAsset.decimals);
   const _fee = fee ? String(fee) : undefined;
   const _base = Decimal.toString(base, market.decimalPlaces);
   const _upperBound = Decimal.toString(upperBound, market.decimalPlaces);

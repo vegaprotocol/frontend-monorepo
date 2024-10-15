@@ -101,7 +101,9 @@ export const Home = () => {
           {Array.from(markets.values()).map((market) => {
             return (
               <li key={market.id}>
-                <MarketCard marketId={market.id} />
+                <Link to={Links.MARKET(market.id)}>
+                  <MarketCard marketId={market.id} />
+                </Link>
               </li>
             );
           })}
