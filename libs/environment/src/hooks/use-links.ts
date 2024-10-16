@@ -184,14 +184,10 @@ export const ETHERSCAN_ADDRESS = '/address/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
 
 export const ExternalLinks = {
-  FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
   GITHUB: 'https://github.com/vegaprotocol/token-frontend',
-  DISCORD: 'https://vega.xyz/discord',
   GOVERNANCE_PAGE: 'https://vega.xyz/governance',
   VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
   PROPOSALS_FORUM: 'https://community.vega.xyz/c/governance/25',
-  MARGIN_CREDIT_RISK:
-    'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
 };
 
 export const TokenStaticLinks = {
