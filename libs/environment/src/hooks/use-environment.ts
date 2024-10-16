@@ -364,10 +364,6 @@ const compileEnvVars = () => {
       'ANNOUNCEMENTS_CONFIG_URL',
       process.env['NX_ANNOUNCEMENTS_CONFIG_URL']
     ),
-    VEGA_INCIDENT_URL: windowOrDefault(
-      'VEGA_INCIDENT_URL',
-      process.env['NX_VEGA_INCIDENT_URL']
-    ),
     APP_VERSION: windowOrDefault('APP_VERSION', process.env['NX_APP_VERSION']),
     TENDERMINT_URL: windowOrDefault(
       'NX_TENDERMINT_URL',

@@ -102,7 +102,6 @@ export const envSchema = z
     ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
-    VEGA_INCIDENT_URL: z.optional(z.string()),
     APP_VERSION: z.optional(z.string()),
     TENDERMINT_URL: z.optional(z.string()),
     TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),

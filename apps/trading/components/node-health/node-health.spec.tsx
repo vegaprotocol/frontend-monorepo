@@ -18,7 +18,6 @@ jest.mock('@vegaprotocol/environment', () => ({
       graphQLApiUrl: 'https://vega-url.wtf',
       restApiUrl: 'https://vega-url.wtf',
     },
-    VEGA_INCIDENT_URL: 'https://blog.vega.community',
   })),
   useNodeSwitcherStore: jest.fn(() => mockSetNodeSwitcher),
 }));
@@ -82,9 +81,6 @@ describe('NodeHealthContainer', () => {
 
       // two tooltips get rendered, I believe for animation purposes
       const tooltip = within(portal.getAllByTestId('tooltip-content')[0]);
-      expect(
-        tooltip.getByRole('link', { name: /^Mainnet status & incidents/ })
-      ).toBeInTheDocument();
       expect(tooltip.getByText('Operational')).toBeInTheDocument();
       expect(tooltip.getByTitle('Connected node')).toHaveTextContent(
         'vega-url.wtf'
