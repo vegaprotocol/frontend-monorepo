@@ -1,5 +1,3 @@
-import { ExternalLinks } from '@vegaprotocol/environment';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Trans } from 'react-i18next';
 import { useT } from '../../use-t';
@@ -75,26 +73,12 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
 
     tau: (
       <span>
-        <Trans
-          defaults="Projection horizon measured as a year fraction used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short"
-          components={[
-            <ExternalLink href={ExternalLinks.MARGIN_CREDIT_RISK}>
-              Expected Shortfall
-            </ExternalLink>,
-          ]}
-        />
+        <Trans defaults="Projection horizon measured as a year fraction used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short" />
       </span>
     ),
     riskAversionParameter: (
       <span>
-        <Trans
-          defaults="Probability level used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short"
-          components={[
-            <ExternalLink href={ExternalLinks.MARGIN_CREDIT_RISK}>
-              Expected Shortfall
-            </ExternalLink>,
-          ]}
-        />
+        <Trans defaults="Probability level used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short" />
       </span>
     ),
 

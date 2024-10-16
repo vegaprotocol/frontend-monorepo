@@ -3,7 +3,7 @@ import {
   useNodeHealth,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
-import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Indicator, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { cn } from '@vegaprotocol/ui-toolkit';
 import { useMatch } from 'react-router-dom';
@@ -13,8 +13,7 @@ export const NodeHealthContainer = ({
 }: {
   variant?: 'normal' | 'compact';
 }) => {
-  const t = useT();
-  const { API_NODE, VEGA_INCIDENT_URL } = useEnvironment();
+  const { API_NODE } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const { text, intent, datanodeBlockHeight } = useNodeHealth();
 
@@ -37,11 +36,6 @@ export const NodeHealthContainer = ({
             <p>
               <NodeUrl url={API_NODE.graphQLApiUrl} />
             </p>
-          )}
-          {VEGA_INCIDENT_URL && (
-            <ExternalLink href={VEGA_INCIDENT_URL}>
-              {t('Mainnet status & incidents')}
-            </ExternalLink>
           )}
         </div>
       }
