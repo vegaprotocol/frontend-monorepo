@@ -174,7 +174,18 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   }, [currentStakeAvailable, decimals, delegations]);
 
   const footer = (
-    <div className="flex justify-end">
+    <div className="flex justify-between">
+      <ButtonLink
+        data-testid="manage-vega-wallet"
+        onClick={() =>
+          appDispatch({
+            type: AppStateActionType.SET_EMBEDDED_WALLET_MANAGE_OVERLAY,
+            isOpen: true,
+          })
+        }
+      >
+        Open wallet
+      </ButtonLink>
       <ButtonLink
         data-testid="manage-vega-wallet"
         onClick={() =>

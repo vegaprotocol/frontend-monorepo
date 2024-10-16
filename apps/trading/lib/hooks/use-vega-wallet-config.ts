@@ -10,6 +10,7 @@ import {
   mirror,
   stagnet,
   InBrowserConnector,
+  SnapConnector,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
@@ -44,12 +45,19 @@ export const useVegaWalletConfig = () => {
       url: VEGA_WALLET_URL,
     });
 
+    const snap = new SnapConnector({
+      node: new URL(API_NODE.graphQLApiUrl).origin,
+      snapId: 'npm:@vegaprotocol/snap',
+      version: '1.0.1',
+    });
+
     const viewParty = new ViewPartyConnector();
     const filteredConnectors = [
       quickStart,
       injected,
       jsonRpc,
       viewParty,
+      snap,
       inBrowser,
     ].filter((c) => CONFIGURED_WALLETS.includes(c.id));
     const config = createConfig({
@@ -65,6 +73,7 @@ export const useVegaWalletConfig = () => {
         etherscanUrl: ETHERSCAN_URL ?? '',
       },
       appName: APP_NAME,
+      web3ReactProps: null,
     });
     return config;
   }, [

@@ -207,5 +207,6 @@ export function createConfig(cfg: Config): Wallet {
     get connectors() {
       return connectors.getState();
     },
+    web3ReactProps: cfg.web3ReactProps,
   };
 }

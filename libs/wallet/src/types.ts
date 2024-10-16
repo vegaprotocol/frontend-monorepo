@@ -99,6 +99,10 @@ export type Config = {
     chainId: string;
     etherscanUrl: string;
   };
+  // TODO: ugly. Added for speed.
+  web3ReactProps: {
+    open: (chainId?: number) => void;
+  } | null;
 };
 
 export type Wallet = {
@@ -118,6 +122,9 @@ export type Wallet = {
     etherscanUrl: string;
   };
   appName: string;
+  web3ReactProps: {
+    open: (chainId?: number) => void;
+  } | null;
 };
 
 declare global {
