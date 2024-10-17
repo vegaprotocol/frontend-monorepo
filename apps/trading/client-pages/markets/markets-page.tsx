@@ -389,7 +389,7 @@ export const MarketTable = ({
             <Input
               prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
               placeholder={t('Search by market')}
-              className="text-sm"
+              className="text-sm h-8"
               onChange={(ev) => {
                 const value = trim(ev.target.value);
                 setSearchTerm(value);
