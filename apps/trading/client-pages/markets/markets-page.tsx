@@ -5,6 +5,8 @@ import {
   Input,
   VegaIcon,
   VegaIconNames,
+  Button,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
@@ -23,7 +25,6 @@ import { type ReactNode, useEffect } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
-import { cn } from '@vegaprotocol/ui-toolkit';
 import {
   useNewListings,
   useTopGainers,
@@ -278,41 +279,33 @@ export const MarketTable = ({
       <div className="flex flex-wrap gap-2 justify-between items-baseline">
         {/** MARKET TYPE FILTER */}
         <div className="flex gap-2">
-          <button
+          <Button
             key="all"
             id="all"
-            className={cn(
-              'border border-gs-300 dark:border-gs-700 rounded-lg px-3 py-1.5 text-sm h-8',
-              {
-                'bg-surface-1':
-                  marketTypes.length === 0 ||
-                  marketTypes.length ===
-                    Object.keys(marketTypeFilterOptions).length,
-                'text-surface-1-fg-muted':
-                  marketTypes.length > 0 &&
-                  marketTypes.length <
-                    Object.keys(marketTypeFilterOptions).length,
-              }
-            )}
+            size="sm"
+            intent={
+              marketTypes.length === 0 ||
+              marketTypes.length === Object.keys(marketTypeFilterOptions).length
+                ? Intent.Primary
+                : Intent.None
+            }
             onClick={() => {
               setMarketTypes([]);
             }}
           >
             {t('All')}
-          </button>
+          </Button>
           {Object.keys(marketTypeFilterOptions).map((key) => {
             const marketType = key as IMarketType;
             return (
-              <button
+              <Button
                 key={marketType}
-                className={cn(
-                  'border border-gs-300 dark:border-gs-700 rounded-lg px-3 py-1.5 text-sm',
-                  {
-                    'bg-surface-1': isMarketTypeSelected(marketType),
-                    'text-surface-1-fg-muted':
-                      !isMarketTypeSelected(marketType),
-                  }
-                )}
+                size="sm"
+                intent={
+                  isMarketTypeSelected(marketType)
+                    ? Intent.Primary
+                    : Intent.None
+                }
                 id={marketType}
                 onClick={() => {
                   let types = marketTypes;
@@ -325,65 +318,61 @@ export const MarketTable = ({
                 }}
               >
                 {marketTypeFilterOptions[marketType]}
-              </button>
+              </Button>
             );
           })}
         </div>
 
         <div className="flex justify-end gap-2">
-          <div>
-            <MultiSelect placeholder="Status" trigger={marketStateTrigger}>
-              {Object.keys(marketStateFilterOptions).map((key) => {
-                const marketState = key as IMarketState;
-                const isChecked = marketStates.includes(marketState);
-                return (
-                  <MultiSelectOption
-                    checked={isChecked}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setMarketStates(uniq([...marketStates, marketState]));
-                      } else {
-                        setMarketStates(
-                          marketStates.filter((s) => s !== marketState)
-                        );
-                      }
-                    }}
-                    key={key}
-                  >
-                    {marketStateFilterOptions[marketState]}
-                  </MultiSelectOption>
-                );
-              })}
-            </MultiSelect>
-          </div>
-          <div>
-            <MultiSelect placeholder="Assets" trigger={assetTrigger}>
-              {assetFilterOptions.map((asset) => {
-                const chainName = getChainName(
-                  asset.source.__typename === 'ERC20'
-                    ? Number(asset.source.chainId)
-                    : undefined
-                );
-                const isChecked = assets.includes(asset.id);
-                return (
-                  <MultiSelectOption
-                    checked={isChecked}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setAssets(uniq([...assets, asset.id]));
-                      } else {
-                        setAssets(assets.filter((a) => a !== asset.id));
-                      }
-                    }}
-                    key={asset.id}
-                  >
-                    <span>{asset.symbol}</span>{' '}
-                    <span className="text-xs">({chainName})</span>
-                  </MultiSelectOption>
-                );
-              })}
-            </MultiSelect>
-          </div>
+          <MultiSelect placeholder="Status" trigger={marketStateTrigger}>
+            {Object.keys(marketStateFilterOptions).map((key) => {
+              const marketState = key as IMarketState;
+              const isChecked = marketStates.includes(marketState);
+              return (
+                <MultiSelectOption
+                  checked={isChecked}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setMarketStates(uniq([...marketStates, marketState]));
+                    } else {
+                      setMarketStates(
+                        marketStates.filter((s) => s !== marketState)
+                      );
+                    }
+                  }}
+                  key={key}
+                >
+                  {marketStateFilterOptions[marketState]}
+                </MultiSelectOption>
+              );
+            })}
+          </MultiSelect>
+          <MultiSelect placeholder="Assets" trigger={assetTrigger}>
+            {assetFilterOptions.map((asset) => {
+              const chainName = getChainName(
+                asset.source.__typename === 'ERC20'
+                  ? Number(asset.source.chainId)
+                  : undefined
+              );
+              const isChecked = assets.includes(asset.id);
+              return (
+                <MultiSelectOption
+                  checked={isChecked}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setAssets(uniq([...assets, asset.id]));
+                    } else {
+                      setAssets(assets.filter((a) => a !== asset.id));
+                    }
+                  }}
+                  key={asset.id}
+                >
+                  <span>{asset.symbol}</span>{' '}
+                  <span className="text-xs">({chainName})</span>
+                </MultiSelectOption>
+              );
+            })}
+          </MultiSelect>
           {/** MARKET NAME FILTER */}
           <div className="w-2/3">
             <Input

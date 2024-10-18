@@ -143,20 +143,19 @@ export const MarketSelector = ({
               }
             }}
           />
-          <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
-            <div className="flex-1">
-              <Input
-                onChange={(e) => {
-                  const searchTerm = e.target.value;
-                  setSearchTerm(searchTerm);
-                }}
-                value={searchTerm}
-                type="text"
-                placeholder={t('Search')}
-                data-testid="search-term"
-                prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
-              />
-            </div>
+          <div className="text-sm grid grid-cols-[2fr_1fr_1fr] gap-1 ">
+            <Input
+              onChange={(e) => {
+                const searchTerm = e.target.value;
+                setSearchTerm(searchTerm);
+              }}
+              value={searchTerm}
+              type="text"
+              placeholder={t('Search')}
+              data-testid="search-term"
+              prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
+              className="h-8"
+            />
             <AssetDropdown
               assets={marketAssets}
               checkedAssets={assets}
