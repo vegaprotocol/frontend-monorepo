@@ -168,5 +168,5 @@ export const ConnectionOptionQuickstart = (props: ConnectionOptionProps) => {
   if (state.web3ReactProps) {
     return <ConnectionOptionQuickstartWeb3React {...props} />;
   }
-  return <ConnectionOptionQuickstart {...props} />;
+  return <ConnectionOptionQuickstartWagmi {...props} />;
 };
