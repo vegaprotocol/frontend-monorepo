@@ -14,6 +14,6 @@ export const ONBOARDING_TARGET_ASSET = APP_TOKEN_ID;
 // The smart contract to receive squid deposits so that recovery of assets can
 // be done if the swap was not successfull
 export const SQUID_RECEIVER_ADDRESS =
-  '0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa' as Address;
+  '0x35a297F91F356C6830D8F426713Db463B2F66dc8' as Address;
 
 export const DEFAULT_DISPLAY_DPS = 2;
