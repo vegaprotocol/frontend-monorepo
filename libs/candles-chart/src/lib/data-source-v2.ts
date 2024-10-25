@@ -1,4 +1,3 @@
-import { type ApolloClient } from '@apollo/client';
 import { type Duration } from 'date-fns';
 import {
   add,
@@ -8,31 +7,8 @@ import {
 } from 'date-fns';
 import { type DataSource, type PriceMonitoringBounds } from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
-import { addDecimal } from '@vegaprotocol/utils';
-import {
-  CandlesEventsDocument,
-  type CandlesEventsSubscription,
-  type CandlesEventsSubscriptionVariables,
-  type CandleFieldsFragment,
-} from './__generated__/Candles';
-import { type Subscription } from 'zen-observable-ts';
-import * as Schema from '@vegaprotocol/types';
 import { type QueryClient } from '@tanstack/react-query';
 import { candleDataQueryOptionsV2, marketOptions } from '@vegaprotocol/rest';
-
-const INTERVAL_TO_PENNANT_MAP = {
-  [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,
-  [PennantInterval.I5M]: Schema.Interval.INTERVAL_I5M,
-  [PennantInterval.I15M]: Schema.Interval.INTERVAL_I15M,
-  [PennantInterval.I30M]: Schema.Interval.INTERVAL_I30M,
-  [PennantInterval.I1H]: Schema.Interval.INTERVAL_I1H,
-  [PennantInterval.I4H]: Schema.Interval.INTERVAL_I4H,
-  [PennantInterval.I6H]: Schema.Interval.INTERVAL_I6H,
-  [PennantInterval.I8H]: Schema.Interval.INTERVAL_I8H,
-  [PennantInterval.I12H]: Schema.Interval.INTERVAL_I12H,
-  [PennantInterval.I1D]: Schema.Interval.INTERVAL_I1D,
-  [PennantInterval.I7D]: Schema.Interval.INTERVAL_I7D,
-};
 
 const INTERVAL_TO_SEC_MAP = {
   [PennantInterval.I1M]: '60',
@@ -78,15 +54,13 @@ type PennantCandle = {
  * A data access object that provides access to the Vega GraphQL API.
  */
 export class VegaDataSourceV2 implements DataSource {
-  apolloClient: ApolloClient<object>;
   client: QueryClient;
   from?: Date;
   marketId: string;
   partyId: null | string;
+  interval: NodeJS.Timer | null;
   _decimalPlaces = 0;
   _positionDecimalPlaces = 0;
-
-  candlesSub: Subscription | null = null;
 
   /**
    * Indicates the number of decimal places that an integer must be shifted by in order to get a correct
@@ -112,14 +86,13 @@ export class VegaDataSourceV2 implements DataSource {
    */
   constructor(
     client: QueryClient,
-    apolloClient: ApolloClient<object>,
     marketId: string,
     partyId: null | string = null
   ) {
     this.client = client;
-    this.apolloClient = apolloClient;
     this.marketId = marketId;
     this.partyId = partyId;
+    this.interval = null;
   }
 
   /**
@@ -220,36 +193,35 @@ export class VegaDataSourceV2 implements DataSource {
     interval: PennantInterval,
     onSubscriptionData: (data: PennantCandle) => void
   ) {
-    const res = this.apolloClient.subscribe<
-      CandlesEventsSubscription,
-      CandlesEventsSubscriptionVariables
-    >({
-      query: CandlesEventsDocument,
-      variables: {
-        marketId: this.marketId,
-        interval: INTERVAL_TO_PENNANT_MAP[interval],
-      },
-    });
+    this.interval = setInterval(async () => {
+      const data = await this.client.fetchQuery(
+        candleDataQueryOptionsV2({
+          marketId: this.marketId,
+          interval: INTERVAL_TO_SEC_MAP[interval],
+          fromTimestamp: String(Date.now()),
+        })
+      );
 
-    this.candlesSub = res.subscribe(({ data }) => {
-      if (data) {
-        const candle = parseCandle(
-          data.candles,
-          this.decimalPlaces,
-          this.positionDecimalPlaces
-        );
-        if (!isValidBar(candle)) return;
-        if (!this.from || candle.date < this.from) return;
-        onSubscriptionData(candle);
+      const bar = data[0];
+
+      if (isValidBar(bar)) {
+        onSubscriptionData({
+          date: new Date(bar.closingTimestamp),
+          low: bar.low,
+          high: bar.high,
+          open: bar.open,
+          close: bar.close,
+          volume: bar.volume,
+        });
       }
-    });
+    }, 5000);
   }
 
   /**
    * Used by the charting library to clean-up a subscription to streaming data.
    */
   unsubscribeData() {
-    this.candlesSub && this.candlesSub.unsubscribe();
+    this.interval && clearInterval(this.interval);
   }
 }
 
@@ -362,27 +334,13 @@ const checkGranulationContinuity =
     return agg;
   };
 
-function parseCandle(
-  candle: CandleFieldsFragment,
-  decimalPlaces: number,
-  positionDecimalPlaces: number
-) {
-  return {
-    date: new Date(candle.periodStart),
-    high: Number(addDecimal(candle.high, decimalPlaces)),
-    low: Number(addDecimal(candle.low, decimalPlaces)),
-    open: Number(addDecimal(candle.open, decimalPlaces)),
-    close: Number(addDecimal(candle.close, decimalPlaces)),
-    volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
-  };
-}
-
-const isValidBar = (bar: {
+const isValidBar = (bar?: {
   close: string | number;
   open: string | number;
   low: string | number;
   high: string | number;
 }) => {
+  if (!bar) return false;
   if (!bar.close) return false;
   if (!bar.open) return false;
   if (!bar.low) return false;

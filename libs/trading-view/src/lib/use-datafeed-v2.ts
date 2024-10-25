@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { type Subscription } from 'zen-observable-ts';
 import { Interval } from '@vegaprotocol/types';
-import {
-  LastBarDocument,
-  type BarFragment,
-  type LastBarSubscription,
-  type LastBarSubscriptionVariables,
-} from './__generated__/Bars';
-import { getMarketExpiryDate, toBigNum } from '@vegaprotocol/utils';
+import { getMarketExpiryDate } from '@vegaprotocol/utils';
 import {
   type IBasicDataFeed,
   type DatafeedConfiguration,
@@ -16,7 +9,6 @@ import {
 } from '../charting-library';
 import { useQueryClient } from '@tanstack/react-query';
 import { candleDataQueryOptionsV2, marketOptions } from '@vegaprotocol/rest';
-import { useApolloClient } from '@apollo/client';
 
 const EXCHANGE = 'Nebula';
 
@@ -59,10 +51,9 @@ const configurationData: DatafeedConfiguration = {
 let requestedSymbol: string | undefined = undefined;
 
 export const useDatafeedV2 = (marketId: string) => {
-  const subRef = useRef<Subscription>();
+  const intervalRef = useRef<NodeJS.Timer>();
   const hasHistory = useRef(false);
   const client = useQueryClient();
-  const apolloClient = useApolloClient();
 
   const datafeed = useMemo(() => {
     const feed: IBasicDataFeed & { setSymbol: (symbol: string) => void } = {
@@ -133,11 +124,6 @@ export const useDatafeedV2 = (marketId: string) => {
             has_intraday: true, // required for less than 1 day interval
             has_empty_bars: true, // library will generate bars if there are gaps, useful for auctions
             has_ticks: false, // switch to true when enabling block intervals
-
-            // @ts-ignore required for data conversion
-            vegaDecimalPlaces: market.decimalPlaces,
-            // @ts-ignore required for data conversion
-            vegaPositionDecimalPlaces: market.positionDecimalPlaces,
           };
 
           onSymbolResolvedCallback(symbolInfo);
@@ -180,7 +166,7 @@ export const useDatafeedV2 = (marketId: string) => {
           const bars = data
             .filter((d) => isValidBar(d))
             .map((d) => ({
-              time: d.closingTimestamp,
+              time: d.openingTimestamp,
               low: d.low,
               high: d.high,
               open: d.open,
@@ -205,10 +191,6 @@ export const useDatafeedV2 = (marketId: string) => {
         onTick
         // subscriberUID,  // chart will subscribe and unsbuscribe when the parent market of the page changes so we don't need to use subscriberUID as of now
       ) => {
-        if (!symbolInfo.ticker) {
-          throw new Error('No symbolInfo.ticker');
-        }
-
         // Dont start the subscription if there is no candle history. This protects against a
         // problem where drawing on the chart throws an error if there is no prior history, instead
         // no you'll just get the no data message
@@ -216,45 +198,50 @@ export const useDatafeedV2 = (marketId: string) => {
           return;
         }
 
-        subRef.current = apolloClient
-          .subscribe<LastBarSubscription, LastBarSubscriptionVariables>({
-            query: LastBarDocument,
-            variables: {
-              marketId: symbolInfo.ticker,
-              interval: resolutionMap[resolution],
-            },
-          })
-          .subscribe(({ data }) => {
-            if (data && isValidBar(data.candles)) {
-              const bar = prepareBar(
-                data.candles,
-                // @ts-ignore added in resolveSymbol
-                symbolInfo.vegaDecimalPlaces,
-                // @ts-ignore added in resolveSymbol
-                symbolInfo.vegaPositionDecimalPlaces
-              );
+        intervalRef.current = setInterval(async () => {
+          if (!symbolInfo.ticker) {
+            throw new Error('No symbolInfo.ticker');
+          }
 
-              onTick(bar);
-            }
-          });
+          const data = await client.fetchQuery(
+            candleDataQueryOptionsV2({
+              marketId: symbolInfo.ticker,
+              interval: resolutionSecMap[resolution],
+              fromTimestamp: String(Date.now()),
+            })
+          );
+
+          const bar = data[0];
+
+          if (isValidBar(bar)) {
+            onTick({
+              time: bar.openingTimestamp,
+              low: bar.low,
+              high: bar.high,
+              open: bar.open,
+              close: bar.close,
+              volume: bar.volume,
+            });
+          }
+        }, 5000);
       },
 
       /**
        * We only have one active subscription no need to use the uid provided by unsubscribeBars
        */
       unsubscribeBars: () => {
-        if (subRef.current) {
-          subRef.current.unsubscribe();
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
         }
       },
     };
     return feed;
-  }, [client, apolloClient, marketId]);
+  }, [client, marketId]);
 
   useEffect(() => {
     return () => {
-      if (subRef.current) {
-        subRef.current.unsubscribe();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
   }, []);
@@ -262,27 +249,13 @@ export const useDatafeedV2 = (marketId: string) => {
   return datafeed;
 };
 
-const prepareBar = (
-  bar: BarFragment,
-  decimalPlaces: number,
-  positionDecimalPlaces: number
-) => {
-  return {
-    time: new Date(bar.periodStart).getTime(),
-    low: toBigNum(bar.low, decimalPlaces).toNumber(),
-    high: toBigNum(bar.high, decimalPlaces).toNumber(),
-    open: toBigNum(bar.open, decimalPlaces).toNumber(),
-    close: toBigNum(bar.close, decimalPlaces).toNumber(),
-    volume: toBigNum(bar.volume, positionDecimalPlaces).toNumber(),
-  };
-};
-
-const isValidBar = (bar: {
+const isValidBar = (bar?: {
   close: string | number;
   open: string | number;
   low: string | number;
   high: string | number;
 }) => {
+  if (!bar) return false;
   if (!bar.close) return false;
   if (!bar.open) return false;
   if (!bar.low) return false;

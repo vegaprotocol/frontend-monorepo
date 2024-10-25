@@ -17,6 +17,7 @@ const candleSchema = z.object({
   symbol: z.string(),
   marketId: z.string(),
   interval: z.number(),
+  openingTimestamp: z.number(),
   closingTimestamp: z.number(),
   open: z.number(),
   close: z.number(),

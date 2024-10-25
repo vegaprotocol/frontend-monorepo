@@ -7,7 +7,6 @@ import {
   type Study,
 } from 'pennant';
 import { VegaDataSourceV2 } from './data-source-v2';
-import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -44,7 +43,6 @@ export const CandlesChartContainer = ({
   setOverlays,
 }: CandlesChartContainerProps) => {
   const client = useQueryClient();
-  const apolloClient = useApolloClient();
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
   const t = useT();
@@ -59,8 +57,8 @@ export const CandlesChartContainer = ({
   );
 
   const dataSource = useMemo(() => {
-    return new VegaDataSourceV2(client, apolloClient, marketId, pubKey);
-  }, [client, apolloClient, marketId, pubKey]);
+    return new VegaDataSourceV2(client, marketId, pubKey);
+  }, [client, marketId, pubKey]);
 
   return (
     <AutoSizer>
