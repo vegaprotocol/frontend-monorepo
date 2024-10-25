@@ -185,6 +185,7 @@
   "Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.": "Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.",
   "Chart by <0>TradingView</0>": "Chart by <0>TradingView</0>",
   "Chart": "Chart",
+  "Chart initialization failed": "Chart initialization failed",
   "Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.": "Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.",
   "checkOutProposalsAndVote_one": "Check out the terms of the proposal and vote:",
   "checkOutProposalsAndVote_other": "Check out the terms of the proposals and vote:",

@@ -5,77 +5,41 @@ import {
   ALLOWED_TRADINGVIEW_HOSTNAMES,
   TRADINGVIEW_INTERVAL_MAP,
 } from '@vegaprotocol/trading-view';
-import {
-  CandlesChartContainer,
-  PENNANT_INTERVAL_MAP,
-} from '@vegaprotocol/candles-chart';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
+import { useChartSettings } from './use-chart-settings';
 import { SUPPORTED_INTERVALS, type SupportedInterval } from './constants';
+import { useT } from '../../lib/use-t';
 
 /**
  * Renders either the pennant chart or the tradingview chart
  */
 export const ChartContainer = ({ marketId }: { marketId: string }) => {
+  const t = useT();
   const { CHARTING_LIBRARY_PATH, CHARTING_LIBRARY_HASH } = useEnvironment();
 
-  const {
-    chartlib,
-    interval,
-    chartType,
-    overlays,
-    studies,
-    studySizes,
-    setInterval,
-    setStudies,
-    setStudySizes,
-    setOverlays,
-  } = useChartSettings();
+  const { interval, setInterval } = useChartSettings();
 
-  const pennantChart = (
-    <CandlesChartContainer
-      marketId={marketId}
-      interval={toPennantInterval(interval as SupportedInterval)}
-      chartType={chartType}
-      overlays={overlays}
-      studies={studies}
-      studySizes={studySizes}
-      setStudySizes={setStudySizes}
-      setStudies={setStudies}
-      setOverlays={setOverlays}
-      defaultStudySize={STUDY_SIZE}
-    />
-  );
+  const fallback = <p>{t('Chart initialization failed')}</p>;
 
   if (!ALLOWED_TRADINGVIEW_HOSTNAMES.includes(window.location.hostname)) {
-    return pennantChart;
+    return fallback;
   }
 
   if (!CHARTING_LIBRARY_PATH || !CHARTING_LIBRARY_HASH) {
-    return pennantChart;
+    return fallback;
   }
 
-  switch (chartlib) {
-    case 'tradingview': {
-      return (
-        <TradingViewContainer
-          libraryPath={CHARTING_LIBRARY_PATH}
-          libraryHash={CHARTING_LIBRARY_HASH}
-          marketId={marketId}
-          interval={toTradingViewResolution(interval as SupportedInterval)}
-          onIntervalChange={(newInterval) => {
-            setInterval(fromTradingViewResolution(newInterval));
-          }}
-        />
-      );
-    }
-    case 'pennant': {
-      return pennantChart;
-    }
-    default: {
-      throw new Error('invalid chart lib');
-    }
-  }
+  return (
+    <TradingViewContainer
+      libraryPath={CHARTING_LIBRARY_PATH}
+      libraryHash={CHARTING_LIBRARY_HASH}
+      marketId={marketId}
+      interval={toTradingViewResolution(interval as SupportedInterval)}
+      onIntervalChange={(newInterval) => {
+        setInterval(fromTradingViewResolution(newInterval));
+      }}
+    />
+  );
 };
 
 const toTradingViewResolution = (interval: SupportedInterval) => {
@@ -104,20 +68,4 @@ const fromTradingViewResolution = (resolution: string) => {
   }
 
   return interval as Interval;
-};
-
-const toPennantInterval = (interval: SupportedInterval) => {
-  if (!SUPPORTED_INTERVALS.includes(interval)) {
-    throw new Error(`interval ${interval} is not supported`);
-  }
-
-  const pennantInterval = PENNANT_INTERVAL_MAP[interval];
-
-  if (!pennantInterval) {
-    throw new Error(
-      `failed to convert interval: ${interval} to valid pennant interval`
-    );
-  }
-
-  return pennantInterval;
 };

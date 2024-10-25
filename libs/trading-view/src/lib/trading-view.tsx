@@ -114,7 +114,6 @@ export const TradingView = ({
       if (!widgetRef.current) return;
 
       const activeChart = widgetRef.current.activeChart();
-      activeChart.createStudy('Volume');
 
       // Subscribe to interval changes so it can be persisted in chart settings
       activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
