@@ -8,7 +8,11 @@ import {
   type ResolutionString,
 } from '../charting-library';
 import { useQueryClient } from '@tanstack/react-query';
-import { candleDataQueryOptionsV2, marketOptions } from '@vegaprotocol/rest';
+import {
+  candleDataPollOptionsV2,
+  candleDataQueryOptionsV2,
+  marketOptions,
+} from '@vegaprotocol/rest';
 
 const EXCHANGE = 'Nebula';
 
@@ -149,9 +153,9 @@ export const useDatafeedV2 = (marketId: string) => {
             candleDataQueryOptionsV2({
               marketId: symbolInfo.ticker,
               interval: resolutionSecMap[resolution],
-              fromTimestamp: String(
-                unixTimestampToDate(periodParams.from).getTime()
-              ),
+              fromTimestamp: periodParams.firstDataRequest
+                ? '1'
+                : String(unixTimestampToDate(periodParams.from).getTime()),
               toTimestamp: String(
                 unixTimestampToDate(periodParams.to).getTime()
               ),
@@ -203,11 +207,14 @@ export const useDatafeedV2 = (marketId: string) => {
             throw new Error('No symbolInfo.ticker');
           }
 
+          const now = Date.now();
+          const secInterval = resolutionSecMap[resolution];
+          const intervalMS = 1000 * Number(secInterval);
           const data = await client.fetchQuery(
-            candleDataQueryOptionsV2({
+            candleDataPollOptionsV2({
               marketId: symbolInfo.ticker,
-              interval: resolutionSecMap[resolution],
-              fromTimestamp: String(Date.now()),
+              interval: secInterval,
+              fromTimestamp: String(now - intervalMS * 3), // Buffer fromTimestamp with 3 intervals of data
             })
           );
 

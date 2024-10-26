@@ -44,6 +44,20 @@ export function candleDataQueryOptionsV2(params: {
   });
 }
 
+// Options for when polling candles for TV. Never cached as its passed directly to the chart.
+export function candleDataPollOptionsV2(params: {
+  marketId: string;
+  interval: string;
+  fromTimestamp: string;
+  toTimestamp?: string;
+}) {
+  return queryOptions({
+    queryKey: ['temp'],
+    queryFn: () => retrieveCandleDataV2(params),
+    gcTime: 0,
+  });
+}
+
 export async function retrieveCandleDataV2(params: QueryParams) {
   const pathparams = parametersSchema.parse(params);
   const base = 'https://candles.neb.exchange';
