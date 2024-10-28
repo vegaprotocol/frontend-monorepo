@@ -205,9 +205,9 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
       <WalletCardAsset
         image={vegaWhite}
         decimals={decimals}
-        name="VEGA"
+        name="Neb"
         subheading={t('Associated')}
-        symbol="VEGA"
+        symbol="NEB"
         balance={currentStakeAvailable}
         allowZeroBalance={true}
       />
@@ -216,18 +216,18 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
           <WalletCardAsset
             image={vegaWhite}
             decimals={decimals}
-            name="VEGA"
+            name="Neb"
             subheading={t('Pending association')}
-            symbol="VEGA"
+            symbol="NEB"
             balance={totalPending}
             allowZeroBalance={true}
           />
           <WalletCardAsset
             image={vegaWhite}
             decimals={decimals}
-            name="VEGA"
+            name="Neb"
             subheading={t('Total associated after pending')}
-            symbol="VEGA"
+            symbol="NEB"
             balance={pendingStakeAmount}
             allowZeroBalance={true}
           />
