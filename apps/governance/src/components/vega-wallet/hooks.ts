@@ -5,8 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import noIcon from '../../images/token-no-icon.png';
-import vegaBlack from '../../images/vega_black.png';
-import vegaVesting from '../../images/vega_vesting.png';
+import neb from '../../images/neb.png';
 import { BigNumber } from '../../lib/bignumber';
 import { type WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -118,8 +117,8 @@ export const usePollForDelegations = () => {
 
                   let icon = noIcon;
                   if (isVega) {
-                    if (isVesting) icon = vegaVesting;
-                    else icon = vegaBlack;
+                    if (isVesting) icon = neb;
+                    else icon = neb;
                   }
 
                   return {
