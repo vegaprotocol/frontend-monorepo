@@ -146,13 +146,6 @@ const LazyContracts = React.lazy(
     )
 );
 
-const LazyWithdrawals = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-withdrawals", webpackPrefetch: true */ './withdrawals'
-    )
-);
-
 const LazyDisclaimer = React.lazy(
   () =>
     import(
@@ -164,10 +157,6 @@ const redirects = [
   {
     path: Routes.VALIDATORS,
     element: <Navigate to={Routes.VALIDATORS} replace />,
-  },
-  {
-    path: '/withdrawals',
-    element: <Navigate to={Routes.WITHDRAWALS} replace />,
   },
   {
     path: Routes.PROTOCOL_UPGRADES,
@@ -241,10 +230,6 @@ const routerConfig = [
       {
         element: <Home name="Token" />,
         index: true,
-      },
-      {
-        path: Routes.WITHDRAWALS,
-        element: <LazyWithdrawals name="Withdrawals" />,
       },
       { path: 'associate', element: <LazyStakingAssociate name="Associate" /> },
       {

@@ -10,7 +10,6 @@ const Routes = {
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
   TOKEN: '/token',
-  WITHDRAWALS: '/token/withdraw',
   ASSOCIATE: '/token/associate',
   DISASSOCIATE: '/token/disassociate',
   DISCLAIMER: '/disclaimer',
@@ -38,10 +37,6 @@ export const TOKEN_DROPDOWN_ROUTES = [
     name: 'Token',
     path: Routes.TOKEN,
     end: true,
-  },
-  {
-    name: 'Withdraw',
-    path: Routes.WITHDRAWALS,
   },
   {
     name: 'Associate',
