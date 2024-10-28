@@ -10,7 +10,6 @@ import {
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
-import { RewardsMovedNotification } from '../notifications/rewards-moved-notification';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -49,7 +48,6 @@ const NotificationsContainer = () => {
 
   return (
     <div data-testid="banners">
-      <RewardsMovedNotification />
       <ProtocolUpgradeProposalNotification
         mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
       />
