@@ -619,7 +619,6 @@
   "rewardsColTotalHeader": "TOTAL",
   "rewardsComingSoon": "Rewards is coming soon",
   "rewardsIntro": "Earn rewards and infrastructure fees for trading and maintaining the network.",
-  "rewardsMovedNotification": "Trading and liquidity rewards have moved. Visit <0>Console</0> to view your rewards.",
   "rewardTokenContractAddress": "Reward token contract address ($VEGA)",
   "rewardType": "Reward type",
   "Scope the dispatch to this market only under the metric asset": "Scope the dispatch to this market only under the metric asset",

@@ -295,16 +295,6 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
             </Link>
           </div>
         </div>
-
-        <div className="min-w-[360px] flex-1" data-testid="home-vega-token">
-          <Heading title={t('vegaToken')} marginTop={false} />
-          <h3 className="mb-6">{t('homeVegaTokenIntro')}</h3>
-          <div className="flex items-center mb-8 gap-4">
-            <Link to={Routes.WITHDRAWALS}>
-              <Button size="md">{t('homeVegaTokenButtonText')}</Button>
-            </Link>
-          </div>
-        </div>
       </section>
     </AsyncRenderer>
   );
